@@ -1,0 +1,313 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\pc\\source\\repos\\SmartHousse\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\datn_acv_dev\\controllers\\product\\detailproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\product\\detailproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\model_dto\\product_dto\\detailproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\model_dto\\product_dto\\detailproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\product\\deleteproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\product\\deleteproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\entity\\tbinvoicedetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbinvoicedetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\invoice\\createinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\createinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\entity\\tbaddressdelivery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbaddressdelivery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\entity\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\order\\createordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\order\\createordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\invoice\\getlistinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\getlistinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\entity\\tbinvoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbinvoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\invoice\\editinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\editinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\invoice\\detailinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\detailinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\ghn_api\\createorderghncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\ghn_api\\createorderghncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\addressdelivery\\createaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\addressdelivery\\createaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\connection.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\connection.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DetailProductResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAxwBUAAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-12T13:49:44.681Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DetailProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-12T13:05:16.951Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DeleteProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
+              "ViewState": "AQIAAD8AAAAAAAAAAAAQwCQAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-12T13:04:55.164Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TbInvoiceDetail.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:10:10.768Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MappingProfile.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\MappingProfile.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\MappingProfile.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\MappingProfile.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\MappingProfile.cs",
+              "ViewState": "AQIAAGwAAAAAAAAAAAAqwIQAAABNAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:10:01.366Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "TbAddressDelivery.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:09:14.702Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CreateOrderController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
+              "ViewState": "AQIAAE0AAAAAAAAAAAAqwFwAAAA6AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:09:04.375Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "GetListInvoiceController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
+              "ViewState": "AQIAAA8AAAAAAAAAAAAqwC4AAAAxAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:09:02.44Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "TbInvoice.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbInvoice.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbInvoice.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbInvoice.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbInvoice.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwA4AAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:05:54.149Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "EditInvoiceController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
+              "ViewState": "AQIAABwAAAAAAAAAAAAqwC0AAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:08:40.931Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CreateInvoiceController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
+              "ViewState": "AQIAACgAAAAAAAAAAAA2wDkAAAA3AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:04:51.637Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "DetailInvoiceController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAUwDMAAAA4AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:05:20.32Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAkwBMAAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:02:29.079Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "CreateOrderGHNController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
+              "ViewState": "AQIAAEgAAAAAAAAAAAAqwFwAAAAwAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:04:49.184Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "CreateAddressController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
+              "ViewState": "AQIAACsAAAAAAAAAAAAqwD8AAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:04:46.785Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "connection.txt",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\connection.txt",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\connection.txt",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\connection.txt",
+              "RelativeToolTip": "DATN_ACV_DEV\\connection.txt",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2024-04-16T06:04:08.903Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Program.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Program.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Program.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAABXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:02:14.78Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\appsettings.json",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\appsettings.json",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\appsettings.json",
+              "RelativeToolTip": "DATN_ACV_DEV\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-04-16T06:02:09.115Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

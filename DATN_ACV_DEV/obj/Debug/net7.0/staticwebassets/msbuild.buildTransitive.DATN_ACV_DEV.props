@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\DATN_ACV_DEV.props" />
+</Project>
