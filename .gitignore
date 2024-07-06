@@ -11,3 +11,5 @@
 /DATN_ACV_DEV/obj/Debug/net7.0/DATN_ACV_DEV.assets.cache
 /DATN_ACV_DEV/obj/Debug/net7.0/DATN_ACV_DEV.GeneratedMSBuildEditorConfig.editorconfig
 /.vs/DATN_ACV_DEV/v17/.suo
+/**/obj
+/**/bin

@@ -58,4 +58,5 @@ public partial class TbProduct
     public virtual ICollection<TbInvoiceDetail> TbInvoiceDetails { get; set; } = new List<TbInvoiceDetail>();
 
     public virtual ICollection<TbOrderDetail> TbOrderDetails { get; set; } = new List<TbOrderDetail>();
+    public virtual TbImage Image { get; set; }
 }
