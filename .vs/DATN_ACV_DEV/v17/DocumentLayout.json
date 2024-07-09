@@ -1,78 +1,346 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\pc\\source\\repos\\SmartHousse\\",
+  "WorkspaceRootPath": "C:\\Users\\pc\\source\\repos\\Customer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\datn_acv_dev\\controllers\\product\\detailproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\user\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\user\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\product\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\product\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\product\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\product\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\product\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\product\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\getlistproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\getlistproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\views\\indexoject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\views\\indexoject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\model_dto\\homepage\\homepagemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\model_dto\\homepage\\homepagemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\product\\getlistproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\product\\getlistproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\product\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\product\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\user_dto\\getlistuserresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\user_dto\\getlistuserresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\user\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\user\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\user_dto\\views\\indexobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\user_dto\\views\\indexobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\detailproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\detailproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\product\\editproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\product\\editproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\model_dto\\product_dto\\createproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\model_dto\\product_dto\\createproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\product\\detailproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\product\\detailproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\model_dto\\product_dto\\detailproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\product\\createproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\product\\createproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\createproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\createproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\order\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\order\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\user_dto\\detailuserresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\user_dto\\detailuserresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\user_dto\\createuserrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\user_dto\\createuserrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\shared\\httpservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\shared\\httpservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\getlistproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\getlistproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\user_dto\\detailuserrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\user_dto\\detailuserrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\editproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\editproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\user\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\user\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\controllers\\shared\\controllersharedbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\shared\\controllersharedbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\editproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\editproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\filebase\\baserequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\filebase\\baserequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\model_dto\\product_dto\\detailproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\model_dto\\product_dto\\detailproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\product\\deleteproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\detailproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\detailproductrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\deleteproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\deleteproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\product_dto\\createproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\product_dto\\createproductresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\product\\deleteproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\product\\deleteproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\entity\\tbinvoicedetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbinvoicedetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\user_dto\\createuserresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\user_dto\\createuserresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\invoice\\createinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\createinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\user_dto\\edituserrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\user_dto\\edituserrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\user_dto\\getlistuserrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\user_dto\\getlistuserrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\entity\\tbaddressdelivery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbaddressdelivery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\entity\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\order_dto\\orderlistitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\order_dto\\orderlistitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\models\\dtos\\order_dto\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\dtos\\order_dto\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\order\\getorderadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\order\\getorderadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\order\\createordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\order\\createordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tbpropertiesdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbpropertiesdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\invoice\\getlistinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\getlistinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\entity\\tbinvoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbinvoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\invoice\\editinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\editinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\invoice\\detailinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\detailinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\ghn_api\\createorderghncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\ghn_api\\createorderghncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\controllers\\addressdelivery\\createaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\addressdelivery\\createaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\connection.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\connection.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|C:\\Users\\pc\\source\\repos\\SmartHousse\\datn_acv_dev\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\order\\orderdetailadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\order\\orderdetailadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tbuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tborder1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tborder1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tborder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tborder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tbinvoicedetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbinvoicedetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tbinvoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbinvoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tbaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tbproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\order\\createordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\order\\createordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\customer\\gui\\views\\order\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\order\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\invoice\\getlistinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\getlistinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\ghn_api\\createorderghncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\ghn_api\\createorderghncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\addressdelivery\\getlistaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\addressdelivery\\getlistaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\addressdelivery\\deleteaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\addressdelivery\\deleteaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\addressdelivery\\createaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\addressdelivery\\createaddresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\usergroup\\getlistusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\usergroup\\getlistusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\usergroup\\editusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\usergroup\\editusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\usergroup\\deleteusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\usergroup\\deleteusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\usergroup\\detailusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\usergroup\\detailusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\usergroup\\addusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\usergroup\\addusergroupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\invoice\\editinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\editinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\invoice\\detailinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\detailinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\invoice\\createinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\invoice\\createinvoicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\controllers\\condition\\conditionorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\controllers\\condition\\conditionorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\connection.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\connection.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\customer\\datn_acv_dev\\entity\\tbaddressdelivery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\tbaddressdelivery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -82,228 +350,1147 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 11,
           "Children": [
             {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Product\\Index.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Product\\Index.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Product\\Index.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Product\\Index.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T06:05:40.269Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e78e0cf7-2e4e-48a7-bf7f-a94d9330a3be}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "GUI\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "GUI\\Controllers\\ProductController.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAYwCcAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:26:12.233Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GetListProductResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\GetListProductResponse.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\GetListProductResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\GetListProductResponse.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\GetListProductResponse.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAsAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:04:18.936Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Product\\Edit.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Product\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Product\\Edit.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Product\\Edit.cshtml",
+              "ViewState": "AQIAAA8AAAAAAAAAAAAAABsAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T06:53:00.407Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "DetailProductResponse.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAxwBUAAAAbAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-12T13:49:44.681Z"
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Product\\Create.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Product\\Create.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Product\\Create.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Product\\Create.cshtml",
+              "ViewState": "AQIAACoAAAAAAAAAAAAAAD0AAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T05:27:44.688Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
+              "Title": "IndexOject.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\Views\\IndexOject.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\Views\\IndexOject.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\Views\\IndexOject.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\Views\\IndexOject.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAcAAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:19:37.476Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "HomePageModel.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Model_DTO\\HomePage\\HomePageModel.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Model_DTO\\HomePage\\HomePageModel.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Model_DTO\\HomePage\\HomePageModel.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Model_DTO\\HomePage\\HomePageModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T07:43:16.263Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:03:04.104Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "GetListProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\GetListProductController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Product\\GetListProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\GetListProductController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Product\\GetListProductController.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAABAAAAB5AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:05:11.556Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Privacy.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Home\\Privacy.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Home\\Privacy.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Home\\Privacy.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Home\\Privacy.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:03:08.839Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Home\\Index.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:03:09.844Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "GetListUserResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\GetListUserResponse.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\User_DTO\\GetListUserResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\GetListUserResponse.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\User_DTO\\GetListUserResponse.cs",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAowAcAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:05:26.217Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Product\\Delete.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Product\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Product\\Delete.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Product\\Delete.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T05:55:42.003Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Program.cs",
+              "RelativeDocumentMoniker": "GUI\\Program.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Program.cs",
+              "RelativeToolTip": "GUI\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:01:03.604Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "GUI\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "GUI\\Controllers\\HomeController.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABUAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:45:33.212Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Error.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Shared\\Error.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Shared\\Error.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Shared\\Error.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Shared\\Error.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:03:06.484Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "_ViewImports.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\_ViewImports.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\_ViewImports.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\_ViewImports.cshtml",
+              "RelativeToolTip": "GUI\\Views\\_ViewImports.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:02:59.917Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "_ViewStart.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\_ViewStart.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\_ViewStart.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\_ViewStart.cshtml",
+              "RelativeToolTip": "GUI\\Views\\_ViewStart.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:02:59.297Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\User\\Edit.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\User\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\User\\Edit.cshtml",
+              "RelativeToolTip": "GUI\\Views\\User\\Edit.cshtml",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAABoAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T06:03:25.311Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "GUI\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\UserController.cs",
+              "RelativeToolTip": "GUI\\Controllers\\UserController.cs",
+              "ViewState": "AQIAAEYAAAAAAAAAAAAgwF8AAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:45:33.823Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "IndexObject.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\Views\\IndexObject.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\User_DTO\\Views\\IndexObject.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\Views\\IndexObject.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\User_DTO\\Views\\IndexObject.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAgAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:14:15.762Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "DetailProductResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\DetailProductResponse.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\DetailProductResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\DetailProductResponse.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\DetailProductResponse.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:03:11.636Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "EditProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\EditProductController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Product\\EditProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\EditProductController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Product\\EditProductController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:09:17.065Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "CreateProductRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Model_DTO\\Product_DTO\\CreateProductRequest.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Model_DTO\\Product_DTO\\CreateProductRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Model_DTO\\Product_DTO\\CreateProductRequest.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Model_DTO\\Product_DTO\\CreateProductRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAsAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T06:03:50.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
               "Title": "DetailProductController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
               "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Product\\DetailProductController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAABAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAB2AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-12T13:05:16.951Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 26,
+              "Title": "CreateProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\CreateProductController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Product\\CreateProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\CreateProductController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Product\\CreateProductController.cs",
+              "ViewState": "AQIAAGgAAAAAAAAAAAAAAHgAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T04:55:32.232Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "CreateProductRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\CreateProductRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\CreateProductRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\CreateProductRequest.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\CreateProductRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwA0AAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:02:07.412Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "DetailUserResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\DetailUserResponse.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\User_DTO\\DetailUserResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\DetailUserResponse.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\User_DTO\\DetailUserResponse.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:05:40.488Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "CreateUserRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\CreateUserRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\User_DTO\\CreateUserRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\CreateUserRequest.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\User_DTO\\CreateUserRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwBIAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:00:56.643Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Order\\Index.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Order\\Index.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Order\\Index.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Order\\Index.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAA4AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:31:39.473Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "HttpService.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Shared\\HttpService.cs",
+              "RelativeDocumentMoniker": "GUI\\Shared\\HttpService.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Shared\\HttpService.cs",
+              "RelativeToolTip": "GUI\\Shared\\HttpService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAUwBEAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T06:08:35.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "DetailUserRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\DetailUserRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\User_DTO\\DetailUserRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\DetailUserRequest.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\User_DTO\\DetailUserRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:05:39.246Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "GetListProductRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\GetListProductRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\GetListProductRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\GetListProductRequest.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\GetListProductRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:04:05.945Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\User\\Create.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\User\\Create.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\User\\Create.cshtml",
+              "RelativeToolTip": "GUI\\Views\\User\\Create.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACIAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T05:27:24.194Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:03:05.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "EditProductRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\EditProductRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\EditProductRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\EditProductRequest.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\EditProductRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:03:28.478Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "ControllerSharedBase.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\Shared\\ControllerSharedBase.cs",
+              "RelativeDocumentMoniker": "GUI\\Controllers\\Shared\\ControllerSharedBase.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\Shared\\ControllerSharedBase.cs",
+              "RelativeToolTip": "GUI\\Controllers\\Shared\\ControllerSharedBase.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAARAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:14:40.899Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "EditProductResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\EditProductResponse.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\EditProductResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\EditProductResponse.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\EditProductResponse.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:03:40.574Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "BaseRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\FileBase\\BaseRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\FileBase\\BaseRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\FileBase\\BaseRequest.cs",
+              "RelativeToolTip": "GUI\\FileBase\\BaseRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:10:43.696Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "DetailProductRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\DetailProductRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\DetailProductRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\DetailProductRequest.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\DetailProductRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:02:55.759Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "DeleteProduct.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\DeleteProduct.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\DeleteProduct.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\DeleteProduct.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\DeleteProduct.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:08:42.118Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "DetailProductResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Model_DTO\\Product_DTO\\DetailProductResponse.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB4AAAAyAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-12T13:49:44.681Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "CreateProductResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\CreateProductResponse.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Product_DTO\\CreateProductResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Product_DTO\\CreateProductResponse.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Product_DTO\\CreateProductResponse.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:02:24.005Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
               "Title": "DeleteProductController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
               "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Product\\DeleteProductController.cs",
-              "ViewState": "AQIAAD8AAAAAAAAAAAAQwCQAAAAiAAAA",
+              "ViewState": "AQIAACkAAAAAAAAAAAAwwDgAAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-12T13:04:55.164Z"
+              "WhenOpened": "2024-05-12T13:04:55.164Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 45,
+              "Title": "CreateUserResponse.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\CreateUserResponse.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\User_DTO\\CreateUserResponse.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\CreateUserResponse.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\User_DTO\\CreateUserResponse.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:05:39.929Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "EditUserRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\EditUserRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\User_DTO\\EditUserRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\EditUserRequest.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\User_DTO\\EditUserRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:05:50.964Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "GetListUserRequest.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\GetListUserRequest.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\User_DTO\\GetListUserRequest.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\User_DTO\\GetListUserRequest.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\User_DTO\\GetListUserRequest.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:05:37.388Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "OrderDetail.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Order_DTO\\OrderDetail.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Order_DTO\\OrderDetail.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Order_DTO\\OrderDetail.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Order_DTO\\OrderDetail.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:00:39.155Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "OrderListItem.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Order_DTO\\OrderListItem.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\DTOs\\Order_DTO\\OrderListItem.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Models\\DTOs\\Order_DTO\\OrderListItem.cs",
+              "RelativeToolTip": "GUI\\Models\\DTOs\\Order_DTO\\OrderListItem.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAIAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T05:00:37.726Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "GetOrderAdminController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Order\\GetOrderAdminController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Order\\GetOrderAdminController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Order\\GetOrderAdminController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Order\\GetOrderAdminController.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAIwCgAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:28:47.829Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 66,
+              "Title": "Detail.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Order\\Detail.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Order\\Detail.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\Order\\Detail.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Order\\Detail.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T03:31:38.502Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 56,
+              "Title": "OrderDetailAdminController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Order\\OrderDetailAdminController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Order\\OrderDetailAdminController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Order\\OrderDetailAdminController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Order\\OrderDetailAdminController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAmAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:29:16.728Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 55,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Program.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Program.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Program.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAA0AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:02:14.78Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "OrderController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\OrderController.cs",
+              "RelativeDocumentMoniker": "GUI\\Controllers\\OrderController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Controllers\\OrderController.cs",
+              "RelativeToolTip": "GUI\\Controllers\\OrderController.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAABIAAABQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:38:10.237Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 52,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "ViewState": "AQIAAD8AAAAAAAAAAAAAwE8AAABGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:02:29.079Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
+              "Title": "TbPropertiesDetail.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbPropertiesDetail.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbPropertiesDetail.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbPropertiesDetail.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbPropertiesDetail.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:51:16.449Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Properties\\launchSettings.json",
+              "RelativeToolTip": "DATN_ACV_DEV\\Properties\\launchSettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABoAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-07-06T03:37:29.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 57,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "GUI\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Properties\\launchSettings.json",
+              "RelativeToolTip": "GUI\\Properties\\launchSettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAfAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-07-06T03:36:06.911Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 59,
+              "Title": "TbOrder1.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbOrder1.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbOrder1.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbOrder1.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbOrder1.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:51:37.276Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 58,
+              "Title": "TbUser.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbUser.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbUser.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbUser.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbUser.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:51:17.563Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 60,
+              "Title": "TbOrder.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbOrder.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbOrder.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbOrder.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbOrder.cs",
+              "ViewState": "AQIAABcAAAAAAAAAAAAAwC0AAAA0AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:48:29.551Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 62,
+              "Title": "TbInvoice.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbInvoice.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbInvoice.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbInvoice.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbInvoice.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwBcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:05:54.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 64,
+              "Title": "TbProduct.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbProduct.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbProduct.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbProduct.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbProduct.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:49:39.281Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 63,
+              "Title": "TbAccount.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbAccount.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbAccount.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbAccount.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbAccount.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:51:04.184Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 61,
               "Title": "TbInvoiceDetail.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
               "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbInvoiceDetail.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:10:10.768Z"
+              "WhenOpened": "2024-04-16T06:10:10.768Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 65,
+              "Title": "CreateOrderController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
+              "ViewState": "AQIAAEQAAAAAAAAAAAAgwGYAAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:09:04.375Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 70,
+              "Title": "DeleteAddressController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\DeleteAddressController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\DeleteAddressController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\DeleteAddressController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\DeleteAddressController.cs",
+              "ViewState": "AQIAABEAAAAAAAAAAAA1wC8AAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:18:19.864Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 68,
+              "Title": "CreateOrderGHNController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
+              "ViewState": "AQIAADEAAAAAAAAAAAAQwEgAAAB+AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:04:49.184Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 69,
+              "Title": "GetListAddressController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\GetListAddressController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\GetListAddressController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\GetListAddressController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\GetListAddressController.cs",
+              "ViewState": "AQIAABQAAAAAAAAAAAAgwC8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:18:24.992Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 67,
+              "Title": "GetListInvoiceController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAQwCMAAABdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:09:02.44Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 71,
+              "Title": "CreateAddressController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
+              "ViewState": "AQIAABIAAAAAAAAAAAAgwCoAAAA/AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:04:46.785Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 72,
+              "Title": "GetListUserGroupController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\GetListUserGroupController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\UserGroup\\GetListUserGroupController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\GetListUserGroupController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\UserGroup\\GetListUserGroupController.cs",
+              "ViewState": "AQIAADgAAAAAAAAAAAAwwFgAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:21:13.292Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 73,
+              "Title": "EditUserGroupController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\EditUserGroupController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\UserGroup\\EditUserGroupController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\EditUserGroupController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\UserGroup\\EditUserGroupController.cs",
+              "ViewState": "AQIAADUAAAAAAAAAAAAwwGMAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:21:04.71Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 74,
+              "Title": "DeleteUserGroupController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\DeleteUserGroupController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\UserGroup\\DeleteUserGroupController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\DeleteUserGroupController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\UserGroup\\DeleteUserGroupController.cs",
+              "ViewState": "AQIAADIAAAAAAAAAAAAwwGAAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:17:28.713Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 75,
+              "Title": "DetailUserGroupController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\DetailUserGroupController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\UserGroup\\DetailUserGroupController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\DetailUserGroupController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\UserGroup\\DetailUserGroupController.cs",
+              "ViewState": "AQIAADYAAAAAAAAAAAAwwGQAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:19:11.957Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 76,
+              "Title": "AddUserGroupController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\AddUserGroupController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\UserGroup\\AddUserGroupController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\UserGroup\\AddUserGroupController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\UserGroup\\AddUserGroupController.cs",
+              "ViewState": "AQIAADcAAAAAAAAAAAAcwGYAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:27:38.182Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 77,
+              "Title": "EditInvoiceController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
+              "ViewState": "AQIAABkAAAAAAAAAAAAQwDAAAABDAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:08:40.931Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 78,
+              "Title": "DetailInvoiceController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
+              "ViewState": "AQIAABkAAAAAAAAAAAAQwDcAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:05:20.32Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 79,
+              "Title": "CreateInvoiceController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
+              "ViewState": "AQIAABwAAAAAAAAAAAAQwEIAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-16T06:04:51.637Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 80,
+              "Title": "ConditionOrder.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Condition\\ConditionOrder.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Condition\\ConditionOrder.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Controllers\\Condition\\ConditionOrder.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Condition\\ConditionOrder.cs",
+              "ViewState": "AQIAACMAAAAAAAAAAAAgwEIAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-06T03:18:29.448Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 81,
               "Title": "MappingProfile.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\MappingProfile.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\MappingProfile.cs",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\MappingProfile.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\MappingProfile.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\MappingProfile.cs",
               "RelativeToolTip": "DATN_ACV_DEV\\MappingProfile.cs",
-              "ViewState": "AQIAAGwAAAAAAAAAAAAqwIQAAABNAAAA",
+              "ViewState": "AQIAAGYAAAAAAAAAAAAwwIAAAABRAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:10:01.366Z"
+              "WhenOpened": "2024-04-16T06:10:01.366Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 84,
               "Title": "TbAddressDelivery.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
               "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbAddressDelivery.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:09:14.702Z"
+              "WhenOpened": "2024-04-16T06:09:14.702Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "CreateOrderController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Order\\CreateOrderController.cs",
-              "ViewState": "AQIAAE0AAAAAAAAAAAAqwFwAAAA6AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:09:04.375Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "GetListInvoiceController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\GetListInvoiceController.cs",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAqwC4AAAAxAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:09:02.44Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "TbInvoice.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbInvoice.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbInvoice.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbInvoice.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbInvoice.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAqwA4AAAAnAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:05:54.149Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "EditInvoiceController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\EditInvoiceController.cs",
-              "ViewState": "AQIAABwAAAAAAAAAAAAqwC0AAAAuAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:08:40.931Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CreateInvoiceController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\CreateInvoiceController.cs",
-              "ViewState": "AQIAACgAAAAAAAAAAAA2wDkAAAA3AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:04:51.637Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "DetailInvoiceController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\Invoice\\DetailInvoiceController.cs",
-              "ViewState": "AQIAAB4AAAAAAAAAAAAUwDMAAAA4AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:05:20.32Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "DBContext.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\DBContext.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\DBContext.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\DBContext.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\DBContext.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAkwBMAAAAqAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:02:29.079Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "CreateOrderGHNController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\GHN_API\\CreateOrderGHNController.cs",
-              "ViewState": "AQIAAEgAAAAAAAAAAAAqwFwAAAAwAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:04:49.184Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "CreateAddressController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Controllers\\AddressDelivery\\CreateAddressController.cs",
-              "ViewState": "AQIAACsAAAAAAAAAAAAqwD8AAAAQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:04:46.785Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "connection.txt",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\connection.txt",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\connection.txt",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\connection.txt",
-              "RelativeToolTip": "DATN_ACV_DEV\\connection.txt",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2024-04-16T06:04:08.903Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Program.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Program.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Program.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAABXAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-16T06:02:14.78Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 83,
               "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\appsettings.json",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\appsettings.json",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\appsettings.json",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\appsettings.json",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\appsettings.json",
               "RelativeToolTip": "DATN_ACV_DEV\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-04-16T06:02:09.115Z"
+              "WhenOpened": "2024-04-16T06:02:09.115Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 82,
+              "Title": "connection.txt",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\connection.txt",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\connection.txt",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\DATN_ACV_DEV\\connection.txt",
+              "RelativeToolTip": "DATN_ACV_DEV\\connection.txt",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2024-04-16T06:04:08.903Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\User\\Index.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\User\\Index.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\Views\\User\\Index.cshtml",
+              "RelativeToolTip": "GUI\\Views\\User\\Index.cshtml",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAADoAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-06T06:12:19.455Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -30,6 +30,4 @@ public partial class TbUser
     public Guid CreateBy { get; set; }
 
     public Guid? UserGroupId { get; set; }
-
-    public virtual TbUserGroup? UserGroup { get; set; }
 }
