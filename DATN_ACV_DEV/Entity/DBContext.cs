@@ -17,6 +17,8 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbAccount> TbAccounts { get; set; }
 
+    public virtual DbSet<TbAddressDelivery> TbAddressDeliveries { get; set; }
+
     public virtual DbSet<TbCart> TbCarts { get; set; }
 
     public virtual DbSet<TbCartDetail> TbCartDetails { get; set; }
@@ -41,6 +43,8 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbInvoiceDetail> TbInvoiceDetails { get; set; }
 
+    public virtual DbSet<TbMaterial> TbMaterials { get; set; }
+
     public virtual DbSet<TbOrder> TbOrders { get; set; }
 
     public virtual DbSet<TbOrderDetail> TbOrderDetails { get; set; }
@@ -62,6 +66,8 @@ public partial class DBContext : DbContext
     public virtual DbSet<TbUser> TbUsers { get; set; }
 
     public virtual DbSet<TbUserFuntion> TbUserFuntions { get; set; }
+
+    public virtual DbSet<TbUserGroup> TbUserGroups { get; set; }
 
     public virtual DbSet<TbVoucher> TbVouchers { get; set; }
 
@@ -120,10 +126,10 @@ public partial class DBContext : DbContext
             entity.Property(e => e.WardId).HasColumnName("wardId");
             entity.Property(e => e.WardName).HasColumnName("wardName");
 
-            //entity.HasOne(d => d.Account).WithMany(p => p.TbAddressDeliveries)
-            //    .HasForeignKey(d => d.AccountId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull)
-            //    .HasConstraintName("FK_tb_AddressDelivery_tb_Account");
+            entity.HasOne(d => d.Account).WithMany(p => p.TbAddressDeliveries)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tb_AddressDelivery_tb_Account");
         });
 
         modelBuilder.Entity<TbCart>(entity =>
