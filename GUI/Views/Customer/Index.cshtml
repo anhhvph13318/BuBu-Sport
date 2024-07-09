@@ -1,0 +1,77 @@
+﻿@model GUI.Models.DTOs.Customer_DTO.Views.IndexObject
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Khách Hàng</h1>
+
+<p>
+    <a asp-action="Create">Tạo mới</a>
+</p>
+<div>
+    <form asp-controller="User" asp-action="Index" method="get">
+        <p>
+            Tìm kiếm: <input type="text" name="s" />
+            <input type="submit" value="Tìm kiếm" />
+        </p>
+    </form>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên
+            </th>
+            <th>
+                Địa Chỉ
+            </th>
+            <th>
+                Rank
+            </th>
+            <th>
+                Trạng Thái
+            </th>
+            <th>
+                YearOfBirth
+            </th>
+            <th>
+                Giới Tính
+            </th>
+            <th>
+                Điểm
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Data.LstCustomer) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rank)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.YearOfBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sex)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Point)
+                </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
