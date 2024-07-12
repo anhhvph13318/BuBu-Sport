@@ -5,6 +5,9 @@
 }
 
 <div class="container">
+    <div class="d-flex justify-content-end p-2">
+        <a asp-controller="Order" asp-action="Create" class="btn btn-primary me-2">Tạo hoá đơn</a>
+    </div>
     <h3>Danh sách hóa đơn</h3>
     <hr />
     <form asp-action="Index" method="get" class="d-flex justify-content-between" id="search">

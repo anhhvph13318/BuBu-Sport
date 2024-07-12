@@ -1,0 +1,74 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container" id="order-container">
+    <div class="row">
+        <div class="col-md-8 p-1">
+            <form onsubmit="return false;" autocomplete="off" class="w-100">
+                <div class="mb-3 autocomplete w-100">
+                <input placeholder="Tên, mã sản phẩm..." class="form-control" name="product-name" id="productSearch"/>
+                <div class="autocomplete-items" id="autocomplete-list">
+                </div>
+            </div>
+            </form>
+            <hr />
+            <h5 class="mb-3">Giỏ hàng</h5>
+            <div id="cart-container">
+
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Thông tin khách hàng</h4>
+            <hr />
+            <div class="border rounded mb-3 p-3">
+                <div class="mb-2">
+                    <label>Tên</label>
+                    <input class="form-control" name="customerName" type="text"/>
+                </div>
+                <div class="mb-2">
+                    <label>Số điện thoại</label>
+                    <input class="form-control" name="customerPhoneNumber" type="text"/>
+                </div>
+                <div class="mb-2">
+                    <label>Địa chỉ</label>
+                    <input class="form-control" name="customerAddress" type="text"/>
+                </div>
+            </div>
+            <div class="mb-3"> 
+                <h4>Thông tin đơn hàng</h4>
+                <hr />
+                <div class="p-3 border rounded">
+                    <table class="table">
+                    <tbody>
+                        <tr>
+                            <td class="text-start ms-1">Số tiền:</td>
+                            <td class="text-end me-1" ><span id="amount">0</span> VNĐ</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start ms-1">Tiền giảm giá: </td>
+                            <td class="text-end me-1" ><span id="discountAmount">0</span> VNĐ</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start ms-1">Thành tiền: </td>
+                            <td class="text-end me-1"><span id="totalAmount">0</span> VNĐ</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            <hr />
+            <button id="createOrder" class="btn btn-primary text-white">Tạo hoá đơn</button>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/order.js"></script>
+    <script src="~/js/product.js"></script>
+    <script src="~/js/orderPage.js"></script>
+}

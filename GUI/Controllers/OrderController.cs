@@ -35,4 +35,11 @@ public class OrderController : Controller
         
         return View(response.Data);
     }
+
+    [HttpGet]
+    [Route("create")]
+    public IActionResult Create()
+    {
+        return View();
+    }
 }
