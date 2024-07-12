@@ -57,14 +57,12 @@ namespace DATN_ACV_DEV.Controllers.Invoice
             {
                 _InvoiceDetails.Add(new TbInvoiceDetail()
                 {
-                    Id = Guid.NewGuid(),
+                    InvoiceId = _Invoice.Id,
                     ProductId = item.ProductId,
                     ProductName = item.ProductName,
                     Quantity = item.Quantity,
                     Price = item.price,
-                    Unit = item.Unit,
-                    SupplierId = item.SupplierId,
-                    IdInvoice = _Invoice.Id
+                    Unit = item.Unit
                 });
                 var product = _context.TbProducts.Where(c => c.Id == item.ProductId).FirstOrDefault();
                 if (product != null)

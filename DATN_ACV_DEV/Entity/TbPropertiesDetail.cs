@@ -10,8 +10,4 @@ public partial class TbPropertiesDetail
     public Guid? PropertiesId { get; set; }
 
     public Guid? ProductId { get; set; }
-
-    public virtual TbProduct? Product { get; set; }
-
-    public virtual TbProperty? Properties { get; set; }
 }

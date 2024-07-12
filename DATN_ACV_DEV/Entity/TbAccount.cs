@@ -27,7 +27,5 @@ public partial class TbAccount
 
     public virtual TbCustomer Customer { get; set; } = null!;
 
-    public virtual ICollection<TbAddressDelivery> TbAddressDeliveries { get; set; } = new List<TbAddressDelivery>();
-
     public virtual ICollection<TbWallet> TbWallets { get; set; } = new List<TbWallet>();
 }
