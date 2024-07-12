@@ -1,0 +1,44 @@
+﻿@model DATN_ACV_DEV.Model_DTO.Account_DTO.CreatedAccountRequest
+
+@{
+	Layout = null;
+	ViewData["Title"] = "SignUp";
+	string rePassword = "";
+}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>ĐĂNG KÝ TÀI KHOẢN</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<link href="~/css/signup.css" rel="stylesheet" />
+	<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
+</head>
+<body>
+	<div class="main-w3layouts wrapper">
+		<h1>Đăng Ký</h1>
+		<div class="main-agileinfo">
+			<div class="agileits-top">
+				<form asp-action="SignUp" asp-controller="Home">
+					<input class="text" type="text" name="Name" asp-for="Name" placeholder="Họ và tên" required="">
+					<input class="text email" type="email" name="Email" asp-for="Email" placeholder="Email" required="">
+					<input class="text email" type="text" name="PhoneNumber" asp-for="PhoneNumber" placeholder="Số điện thoại" required="">
+					<input class="text" type="password" name="Password" asp-for="Password" placeholder="Mật khẩu" required="">
+					<input class="text w3lpass" type="password" asp-for="@rePassword" placeholder="Nhập lại mật khẩu" required="">
+					<input class="input_1" type="date" name="yearofbirth" placeholder="Ngày sinh" style="margin-top: 0;">
+					<select class="input_1">
+						<option selected>--Giới tính--</option>
+						<option>Nam</option>
+						<option>Nữ</option>
+					</select>
+					<input type="submit" value="Đăng Ký">
+				</form>
+				<p>Đã có tài khoản? <a href="#"> Đăng nhập!</a></p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+
