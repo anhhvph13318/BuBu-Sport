@@ -44,12 +44,13 @@ namespace DATN_ACV_DEV.Controllers.User
                 _User = _context.TbUsers.Where(p => p.Id == _request.ID).FirstOrDefault();
                 if (_User != null)
                 {
-                    _User.UserName = _request.UserName;
+                    //_User.UserName = _request.UserName;
                     _User.UserCode = _request.UserCode;
-                    _User.Password = _request.Password;
+                    //_User.Password = _request.Password;
                     _User.Email = _request.Email;
                     _User.FullName = _request.FullName;
                     _User.Position = _request.Position;
+                    _User.InActive = _request.InActive;
                     _User.UpdateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993");//Guid của 1 tài khoản có trong DB
                     _User.UpdateDate = DateTime.Now; // Ngày hiện tại 
                 }

@@ -32,7 +32,7 @@ namespace DATN_ACV_DEV.Controllers.User
         {
             try
             {
-                _User = _context.TbUsers.Where(p => p.Id == _request.Id && p.InActive == false).FirstOrDefault();
+                _User = _context.TbUsers.Where(p => p.Id == _request.Id).FirstOrDefault();
                 if (_User != null)
                 {
                     _response.Id = _User.Id;
@@ -42,7 +42,7 @@ namespace DATN_ACV_DEV.Controllers.User
                     _response.Position = _User.Position;
                     _response.UserCode = _User.UserCode;
                     _response.FullName = _User.FullName;
-                    _response.InActive = _User.InActive;
+                    _response.InActive = _User.InActive ?? false;
 
                 }
             }

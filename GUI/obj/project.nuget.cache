@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9Kk4vPuA+ck=",
+  "dgSpecHash": "SnSB2EiRF+8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\GUI.csproj",
+  "projectFilePath": "C:\\Users\\pc\\Source\\Repos\\SmartHousse\\GUI\\GUI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pc\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\pc\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

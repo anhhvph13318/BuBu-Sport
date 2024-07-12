@@ -9668,11 +9668,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\GUI.csproj",
+      "projectUniqueName": "C:\\Users\\pc\\Source\\Repos\\SmartHousse\\GUI\\GUI.csproj",
       "projectName": "GUI",
-      "projectPath": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\GUI.csproj",
+      "projectPath": "C:\\Users\\pc\\Source\\Repos\\SmartHousse\\GUI\\GUI.csproj",
       "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\pc\\source\\repos\\Customer\\GUI\\obj\\",
+      "outputPath": "C:\\Users\\pc\\Source\\Repos\\SmartHousse\\GUI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
