@@ -46,14 +46,13 @@ namespace DATN_ACV_DEV.Controllers.Invoice
                     _response.Id = invoice.Id;
                     _response.Code = invoice.Code;
                     _response.InputDate = invoice.InputDate;
-                    var lstInvoiceProduct = _context.TbInvoiceDetails.Where(i => i.IdInvoice == invoice.Id)
+                    var lstInvoiceProduct = _context.TbInvoiceDetails.Where(i => i.InvoiceId == invoice.Id)
                         .Select(s => new DetailInvoiceProduct
                         {
                             NameProduct = s.ProductName,
                             Quantity = s.Quantity,
                             Price = s.Price,
-                            Unit = s.Unit,
-                            SupplierId = s.SupplierId
+                            Unit = s.Unit
                         });
                     var supplier = _context.TbSuppliers.Where(c => lstInvoiceProduct.Select(a => a.SupplierId).Contains(c.Id)).Distinct();
                     lstInvoiceProduct.ToList().ForEach(p =>

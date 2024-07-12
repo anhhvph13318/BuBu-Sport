@@ -5,10 +5,7 @@ namespace DATN_ACV_DEV.Entity;
 
 public partial class TbInvoiceDetail
 {
-    public Guid Id { get; set; }
-    public Guid SupplierId { get; set; }
     public Guid InvoiceId { get; set; }
-    public Guid IdInvoice { get; set; }
 
     public Guid ProductId { get; set; }
 

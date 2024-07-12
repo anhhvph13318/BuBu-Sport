@@ -1,0 +1,26 @@
+﻿@model GUI.Models.DTOs.Product_DTO.DetailProductResponse
+
+@{
+    ViewData["Title"] = "View";
+}
+
+
+<h3>Có chắc muốn thay đổi trạng thái?</h3>
+<div>
+    <h4>Sản phẩm</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @* @Html.DisplayNameFor(model => model.Product):  *@
+        </dt>
+        <dd class = "col-sm-10">
+            @* @Html.DisplayFor(model => model.Product) *@
+        </dd>
+    </dl>
+    
+    <form asp-action="ConfirmDelete">
+        <input name="Id" value="@Model.Id" hidden/>
+        <input type="submit" value="Xóa" class="btn btn-danger" /> |
+        <a asp-action="Index">Quay lại</a>
+    </form>
+</div>

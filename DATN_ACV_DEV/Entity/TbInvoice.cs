@@ -8,7 +8,7 @@ public partial class TbInvoice
     public Guid Id { get; set; }
 
     public string Unit { get; set; } = null!;
-    public string Code { get; set; } = null!;
+    public string Code { get; set; }
 
     public int QuantityProduct { get; set; }
 
