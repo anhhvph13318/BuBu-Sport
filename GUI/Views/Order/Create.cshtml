@@ -28,15 +28,15 @@
             <div class="border rounded mb-3 p-3">
                 <div class="mb-2">
                     <label>Tên</label>
-                    <input class="form-control" name="customerName" type="text"/>
+                    <input class="form-control" id="customerName" name="customerName" type="text" />
                 </div>
                 <div class="mb-2">
                     <label>Số điện thoại</label>
-                    <input class="form-control" name="customerPhoneNumber" type="text"/>
+                    <input class="form-control" id="customerPhoneNumber" name="customerPhoneNumber" type="text" />
                 </div>
                 <div class="mb-2">
                     <label>Địa chỉ</label>
-                    <input class="form-control" name="customerAddress" type="text"/>
+                    <input class="form-control" id="customerAddress" name="customerAddress" type="text" />
                 </div>
             </div>
             <div class="mb-3"> 
@@ -62,7 +62,10 @@
                 </div>
             </div>
             <hr />
-            <button id="createOrder" class="btn btn-primary text-white">Tạo hoá đơn</button>
+            <div class="d-flex justify-content-around">
+                <button id="createOrder" class="btn btn-primary text-white">Tạo hoá đơn</button>
+                <button id="reset" class="btn btn-danger">Reset</button>
+            </div>
         </div>
     </div>
 </div>

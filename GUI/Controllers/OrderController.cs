@@ -9,11 +9,13 @@ namespace GUI.Controllers;
 [Route("orders")]
 public class OrderController : Controller
 {
+    private const string URI = "http://localhost:5059";
+
     [HttpGet]
     public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)
     {
         using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri("https://localhost:44383");
+        httpClient.BaseAddress = new Uri(URI);
         var rawResponse = await httpClient.GetAsync($"/api/admin/orders?code={code}&customerName={customerName}&status={status}");
         var response =
             JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
@@ -27,7 +29,7 @@ public class OrderController : Controller
     public async Task<IActionResult> Detail(string id)
     {
         using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri("https://localhost:44383");
+        httpClient.BaseAddress = new Uri(URI);
         var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{id}");
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(

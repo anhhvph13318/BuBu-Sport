@@ -28,6 +28,7 @@ public class GetOrderAdminController : ControllerBase
             .Where(e => (string.IsNullOrEmpty(code) || e.OrderCode == code)
                         && (string.IsNullOrEmpty(customerName) || e.Customer.Name.StartsWith(customerName))
                         && (status == 0 || e.Status == status))
+            .OrderByDescending(e => e.CreateDate)
             .Select(e => new OrderListItem()
             {
                 code = e.OrderCode,

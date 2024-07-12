@@ -26,39 +26,39 @@
     }
 
     reCalculateOrderPrice() {
-        if(this.items.length === 0) return this.getOrderPrice();
+        let tempAmount = 0;
+        for(let i = 0; i < this.items.length; i++) {
+            tempAmount += (this.items[i].quantity * this.items[i].price);
+        }
 
-        this.amount = this.items.reduce((prev, current) => prev.price * prev.quantity + current.price * current.quantity, {
-            price: 0,
-            quantity: 0,
-            productId: ''
-        });
+        this.amount = tempAmount;
+
         this.totalAmount = this.amount - this.discountAmout;
 
-        console.log(this.amount);
 
         return this.getOrderPrice();
     }
 
-    addItem(productId, quantity, price) {
-        const item = this.items.find(e => e.productId === productId);
+    addItem(id, quantity, price) {
+        const item = this.items.find(e => e.id === id);
         if (item == null || item == undefined) {
             this.items.push({
-                productId,
+                id,
                 quantity,
                 price
             });
 
             this.reCalculateOrderPrice();
-            return;
+            return false;
         }
 
-        items.quantity++;
+        item.quantity++;
         this.reCalculateOrderPrice();
+        return true;
     }
 
-    updateQuantity(productId, quantity) {
-        const item = this.items.find(e => e.productId === productId);
+    updateQuantity(id, quantity) {
+        const item = this.items.find(e => e.id === id);
         if (item == null) return false;
 
         item.quantity = quantity;
@@ -66,16 +66,8 @@
         return true;
     }
 
-    removeItem(productId) {
-        this.items = this.items.filter(e => e.productId !== productId);
+    removeItem(id) {
+        this.items = this.items.filter(e => e.id !== id);
         this.reCalculateOrderPrice();
     }
-
-    createPayload() {
-        return {
-
-        }
-    }
-
-
 }
