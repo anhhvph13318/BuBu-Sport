@@ -11,4 +11,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DATN_ACV_DEV\DATN_ACV_DEV.csproj" />
+  </ItemGroup>
+
 </Project>
