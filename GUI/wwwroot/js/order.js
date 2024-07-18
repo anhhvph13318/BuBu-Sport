@@ -1,26 +1,14 @@
 ﻿class Order {
     items = [];
     totalAmount = 0;
-    discountAmout = 0;
+    discountAmount = 0;
     amount = 0;
     customer = {};
-
-    initialize() {
-        this.customer = {
-            name: "",
-            phoneNumber: "",
-            address: ""
-        };
-        this.items = [];
-        this.amount = 0;
-        this.discountAmout = 0;
-        this.totalAmount = 0;
-    }
 
     getOrderPrice() {
         return {
             amount: this.amount,
-            discountAmount: this.discountAmout,
+            discountAmount: this.discountAmount,
             totalAmount: this.totalAmount
         }
     }
@@ -33,19 +21,21 @@
 
         this.amount = tempAmount;
 
-        this.totalAmount = this.amount - this.discountAmout;
+        this.totalAmount = this.amount - this.discountAmount;
 
 
         return this.getOrderPrice();
     }
 
-    addItem(id, quantity, price) {
+    addItem(id, quantity, price, name, image) {
         const item = this.items.find(e => e.id === id);
         if (item == null || item == undefined) {
             this.items.push({
                 id,
                 quantity,
-                price
+                price,
+                name,
+                image
             });
 
             this.reCalculateOrderPrice();
@@ -63,11 +53,20 @@
 
         item.quantity = quantity;
 
+        this.reCalculateOrderPrice();
+
         return true;
     }
 
     removeItem(id) {
-        this.items = this.items.filter(e => e.id !== id);
+        this.items = this.items.filter(e => e.id !== id) || [];
         this.reCalculateOrderPrice();
+    }
+
+    updateCustomerInfo(e) {
+        this.customer = {
+            ...this.customer,
+            [e.target.name]: e.target.value
+        }
     }
 }

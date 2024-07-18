@@ -6,65 +6,42 @@
     Layout = "_Layout";
 }
 
-<div class="container" id="order-container">
-    <div class="row">
-        <div class="col-md-8 p-1">
-            <form onsubmit="return false;" autocomplete="off" class="w-100">
-                <div class="mb-3 autocomplete w-100">
-                <input placeholder="Tên, mã sản phẩm..." class="form-control" name="product-name" id="productSearch"/>
-                <div class="autocomplete-items" id="autocomplete-list">
-                </div>
-            </div>
-            </form>
-            <hr />
-            <h5 class="mb-3">Giỏ hàng</h5>
-            <div id="cart-container">
-
-            </div>
+<div class="container-fluid" id="order-container">
+    <nav class="d-flex">
+        <div class="nav nav-tabs" id="order-tab" role="tablist">
+            <button class="nav-link active" id="order-0-tab" data-bs-toggle="tab" data-bs-target="#order-0" type="button" role="tab" aria-controls="nav-order-0" aria-selected="true">Giỏ hàng 1</button>
         </div>
-        <div class="col-md-4">
-            <h4>Thông tin khách hàng</h4>
-            <hr />
-            <div class="border rounded mb-3 p-3">
-                <div class="mb-2">
-                    <label>Tên</label>
-                    <input class="form-control" id="customerName" name="customerName" type="text" />
-                </div>
-                <div class="mb-2">
-                    <label>Số điện thoại</label>
-                    <input class="form-control" id="customerPhoneNumber" name="customerPhoneNumber" type="text" />
-                </div>
-                <div class="mb-2">
-                    <label>Địa chỉ</label>
-                    <input class="form-control" id="customerAddress" name="customerAddress" type="text" />
-                </div>
-            </div>
-            <div class="mb-3"> 
-                <h4>Thông tin đơn hàng</h4>
-                <hr />
-                <div class="p-3 border rounded">
-                    <table class="table">
-                    <tbody>
-                        <tr>
-                            <td class="text-start ms-1">Số tiền:</td>
-                            <td class="text-end me-1" ><span id="amount">0</span> VNĐ</td>
-                        </tr>
-                        <tr>
-                            <td class="text-start ms-1">Tiền giảm giá: </td>
-                            <td class="text-end me-1" ><span id="discountAmount">0</span> VNĐ</td>
-                        </tr>
-                        <tr>
-                            <td class="text-start ms-1">Thành tiền: </td>
-                            <td class="text-end me-1"><span id="totalAmount">0</span> VNĐ</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <button class="btn btn-primary" id="newCartAddBtn">+</button>
+    </nav>
+    <div class="tab-content mb-2" id="order-tabContent">
+        <div class="tab-pane fade show active" id="order-0" role="tabpanel" aria-labelledby="order-0-tab" tabindex="0">
+            <div class="p-3 border mb-3">
+                <h5>Thông tin khách hàng</h5>
+                <div class="row">
+                    <div class="mb-2 col-4">
+                        <label>Tên</label>
+                        <input class="form-control" id="customerName-0" name="name" type="text" onchange="customerAreaInputChange(event, 0)">
+                    </div>
+                    <div class="mb-2 col-4">
+                        <label>Số điện thoại</label>
+                        <input class="form-control" id="customerPhoneNumber-0" name="phoneNumber" type="text" onchange="customerAreaInputChange(event, 0)">
+                    </div>
+                    <div class="mb-2 col-4">
+                        <label>Địa chỉ</label>
+                        <input class="form-control" id="customerAddress-0" name="address" type="text" onchange="customerAreaInputChange(event, 0)">
+                    </div>
                 </div>
             </div>
-            <hr />
-            <div class="d-flex justify-content-around">
-                <button id="createOrder" class="btn btn-primary text-white">Tạo hoá đơn</button>
-                <button id="reset" class="btn btn-danger">Reset</button>
+            <form autocomplete="off" class="w-100" onsubmit="return false"><div class="mb-3 autocomplete w-100"><input placeholder="Tên, mã sản phẩm..." id="search-0" class="form-control"><div class="autocomplete-items" id="autocomplete-list-0"></div></div></form>
+            <div id="table-area-0"><p class="text-center m-3" id="empty-order-0-message">Giỏ hàng trống</p></div>
+            <div id="checkout-area-2">
+                <div class="d-flex justify-content-end">
+                    <div class="me-3">
+                        <p>Khuyến mãi: <span id="discount-amount-0">0&nbsp;₫</span></p>
+                        <p>Tổng: <span id="total-amount-0">0&nbsp;₫</span></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="checkout(0)">Thanh toán</button>
+                </div>
             </div>
         </div>
     </div>
@@ -73,5 +50,6 @@
 @section scripts {
     <script src="~/js/order.js"></script>
     <script src="~/js/product.js"></script>
+    <script src="~/js/orderStorage.js"></script>
     <script src="~/js/orderPage.js"></script>
 }
