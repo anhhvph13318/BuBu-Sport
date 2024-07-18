@@ -1,0 +1,49 @@
+@model GUI.Models.DTOs.Login_DTO.CheckLoginRequest
+@using System.Globalization
+@{
+    Layout = "_LoginLayout";
+}
+
+<div  class="login-body">
+<div class="container right-panel-active">
+    <!-- Sign Up -->
+    <!-- Sign In -->
+    <div class="container__form container--signin">
+    
+        <div class="former">
+            <h2 class="form__title text-center">Đăng nhập</h2>
+            <input type="email" placeholder="Email" id="EmailLogin" minlength="10" maxlength="225" required class="input"/>
+            <input type="password" placeholder="Password" id="PasswordLogin" minlength="3" maxlength="50" required class="input"/>
+            <a href="/Login" class="link">Bạn quên mật khẩu?</a>
+            <button class="btn" type="button">Đăng nhập</button>
+        </div>
+    </div>
+    <div class="container__form container--signup">
+        <div  class="former" >
+            @* <h2 class="form__title text-center">Đăng ký</h2> *@
+           
+            @* <input type="email" placeholder="Email" minlength="10" maxlength="225"  id="Email" required class="input" /> *@
+            @* <input type="password" placeholder="Password" minlength="3" maxlength="50" class="input" id="Password" required /> *@
+            @* <input type="text" placeholder="FirstName" minlength="2" maxlength="50" class="input"  id="FirstName" /> *@
+            @* <input type="text" placeholder="LastName" minlength="2" maxlength="50" class="input"  id="LastName" /> *@
+            @* <input type="text" placeholder="PhoneNumber" minlength="8" maxlength="12" class="input" id="PhoneNumber" required /> *@
+            @* <input type="text" placeholder="Address" minlength="2" maxlength="50" class="input" id="Address" /> *@
+            <button  class="btn"  type="submit">Đăng ký</button>
+        </div>
+    </div>
+    <!-- Overlay -->
+    <div class="container__overlay">
+        <div class="overlay">
+            <div class="overlay__panel overlay--left">
+                <button class="btn" id="signIn">Đăng nhập</button>
+            </div>
+            <div class="overlay__panel overlay--right">
+                <button class="btn" id="signUp">Đăng ký</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
