@@ -5,8 +5,32 @@
       "PackagePath": "staticwebassets/GUI.bundle.scp.css"
     },
     {
+      "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/assets/bglogin.jpeg",
+      "PackagePath": "staticwebassets/assets/bglogin.jpeg"
+    },
+    {
+      "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/assets/overlay2.jpeg",
+      "PackagePath": "staticwebassets/assets/overlay2.jpeg"
+    },
+    {
+      "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/assets/overlay3.png",
+      "PackagePath": "staticwebassets/assets/overlay3.png"
+    },
+    {
+      "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/assets/overlaylogin.jpeg",
+      "PackagePath": "staticwebassets/assets/overlaylogin.jpeg"
+    },
+    {
+      "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/css/signup.css",
+      "PackagePath": "staticwebassets/css/signup.css"
+    },
+    {
       "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/css/site.css",
       "PackagePath": "staticwebassets/css/site.css"
+    },
+    {
+      "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/css/sweetalert.css",
+      "PackagePath": "staticwebassets/css/sweetalert.css"
     },
     {
       "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/favicon.ico",
@@ -39,6 +63,10 @@
     {
       "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/js/site.js",
       "PackagePath": "staticwebassets/js/site.js"
+    },
+    {
+      "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/js/sweetalert.min.js",
+      "PackagePath": "staticwebassets/js/sweetalert.min.js"
     },
     {
       "Id": "/Users/tana/Documents/SmartHousse/GUI/wwwroot/lib/bootstrap/LICENSE",

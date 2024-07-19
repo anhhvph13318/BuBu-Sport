@@ -9,10 +9,16 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SweetAlert.Bootstrap" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DATN_ACV_DEV\DATN_ACV_DEV.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\ForgotPassword\" />
+    <Folder Include="wwwroot\assets\" />
   </ItemGroup>
 
 </Project>

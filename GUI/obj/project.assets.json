@@ -75,6 +75,12 @@
           }
         }
       },
+      "bootstrap/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "jquery": "1.9.0"
+        }
+      },
       "Humanizer/2.14.1": {
         "type": "package",
         "dependencies": {
@@ -682,6 +688,9 @@
         "runtime": {
           "lib/netstandard2.1/jose-jwt.dll": {}
         }
+      },
+      "jQuery/1.9.0": {
+        "type": "package"
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.13": {
         "type": "package",
@@ -2389,6 +2398,12 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+      "SweetAlert.Bootstrap/1.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Twitter.Bootstrap": "3.0.1.1"
+        }
+      },
       "System.AppContext/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -3959,6 +3974,12 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
+      "Twitter.Bootstrap/3.0.1.1": {
+        "type": "package",
+        "dependencies": {
+          "bootstrap": "3.0.1"
+        }
+      },
       "DATN_ACV_DEV/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
@@ -4053,6 +4074,27 @@
         "azureicon.png",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "bootstrap/3.0.1": {
+      "sha512": "rwpiPJiWRbGRypo/NnyqzwS9hWLMLujLU1vM2OfeuZJ2yNGb86RzmQKEcWbewWu+eJkcYatCqpn/U5zNgotVHQ==",
+      "type": "package",
+      "path": "bootstrap/3.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "bootstrap.3.0.1.nupkg.sha512",
+        "bootstrap.nuspec",
+        "content/Content/bootstrap-theme.css",
+        "content/Content/bootstrap-theme.min.css",
+        "content/Content/bootstrap.css",
+        "content/Content/bootstrap.min.css",
+        "content/Scripts/bootstrap.js",
+        "content/Scripts/bootstrap.min.js",
+        "content/fonts/glyphicons-halflings-regular.eot",
+        "content/fonts/glyphicons-halflings-regular.svg",
+        "content/fonts/glyphicons-halflings-regular.ttf",
+        "content/fonts/glyphicons-halflings-regular.woff"
       ]
     },
     "Humanizer/2.14.1": {
@@ -4815,6 +4857,26 @@
         "lib/net472/jose-jwt.dll",
         "lib/netstandard1.4/jose-jwt.dll",
         "lib/netstandard2.1/jose-jwt.dll"
+      ]
+    },
+    "jQuery/1.9.0": {
+      "sha512": "bS6OGSd/QL39vKKhATpeehgZDCzV6foRJ52EocEGAB29VetwXkQHN6KQIBlBbW9VJzuHr+rQxHYZ13MnPGQ/vw==",
+      "type": "package",
+      "path": "jquery/1.9.0",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Content/Scripts/jquery-1.9.0-vsdoc.js",
+        "Content/Scripts/jquery-1.9.0.js",
+        "Content/Scripts/jquery-1.9.0.min.js",
+        "Content/Scripts/jquery-1.9.0.min.map",
+        "Tools/common.ps1",
+        "Tools/install.ps1",
+        "Tools/jquery-1.9.0.intellisense.js",
+        "Tools/uninstall.ps1",
+        "jquery.1.9.0.nupkg.sha512",
+        "jquery.nuspec"
       ]
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.13": {
@@ -7724,6 +7786,19 @@
         "lib/netstandard2.0/Swashbuckle.AspNetCore.SwaggerUI.xml",
         "swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512",
         "swashbuckle.aspnetcore.swaggerui.nuspec"
+      ]
+    },
+    "SweetAlert.Bootstrap/1.0.1": {
+      "sha512": "GOwRZiUaTDUegSgIwz+0kiW7ChrrXaM7vPCVfkynT4LX8hW1lA8mPfDZr454CnNbd/KXT2oywPio66zRemlaaA==",
+      "type": "package",
+      "path": "sweetalert.bootstrap/1.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Content/Content/sweetalert.css",
+        "Content/Scripts/sweetalert.min.js",
+        "sweetalert.bootstrap.1.0.1.nupkg.sha512",
+        "sweetalert.bootstrap.nuspec"
       ]
     },
     "System.AppContext/4.3.0": {
@@ -11660,6 +11735,18 @@
         "system.xml.xdocument.nuspec"
       ]
     },
+    "Twitter.Bootstrap/3.0.1.1": {
+      "sha512": "9SzxEOEB/rKKeTO/2Tv9uPRzQg/chRfofY9yZ71Sgpxfubp1IXiQlRRFc7IhH+fxo3S/u0umS4dUSgHeYnFIsw==",
+      "type": "package",
+      "path": "twitter.bootstrap/3.0.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "readme.txt",
+        "twitter.bootstrap.3.0.1.1.nupkg.sha512",
+        "twitter.bootstrap.nuspec"
+      ]
+    },
     "DATN_ACV_DEV/1.0.0": {
       "type": "project",
       "path": "../DATN_ACV_DEV/DATN_ACV_DEV.csproj",
@@ -11670,7 +11757,8 @@
     "net7.0": [
       "DATN_ACV_DEV >= 1.0.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 7.0.12",
-      "Newtonsoft.Json >= 13.0.3"
+      "Newtonsoft.Json >= 13.0.3",
+      "SweetAlert.Bootstrap >= 1.0.1"
     ]
   },
   "packageFolders": {
@@ -11721,6 +11809,10 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.3, )"
+          },
+          "SweetAlert.Bootstrap": {
+            "target": "Package",
+            "version": "[1.0.1, )"
           }
         },
         "imports": [

@@ -177,6 +177,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "SweetAlert.Bootstrap": {
+              "target": "Package",
+              "version": "[1.0.1, )"
             }
           },
           "imports": [
