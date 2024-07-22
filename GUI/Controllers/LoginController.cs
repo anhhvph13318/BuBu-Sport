@@ -22,6 +22,7 @@ namespace GUI.Controllers
             httpService = new();
         }
 
+        [Route("/SignIn")]
         public IActionResult Login()
         {
 
