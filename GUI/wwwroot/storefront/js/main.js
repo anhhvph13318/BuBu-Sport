@@ -166,6 +166,7 @@
 	}
 
 	$(function () {
+		debugger;
 		let path = window.location.pathname.slice(0, 6);
 		if (path == "/store") {
 			$("#nav-bar li").removeClass("active");
