@@ -21,7 +21,6 @@ namespace DATN_ACV_DEV.Controllers.Order
         public async Task<IActionResult> Create(Order payload)
         {
             var tempGroup = await _context.TbGroupCustomers.FirstOrDefaultAsync();
-
             var customer = new TbCustomer
             {
                 Id = Guid.NewGuid(),
@@ -29,6 +28,11 @@ namespace DATN_ACV_DEV.Controllers.Order
                 Name = payload.Customer.Name,
                 GroupCustomer = tempGroup!
             };
+
+            if (!string.IsNullOrEmpty(payload.Customer.Id))
+            {
+                customer = await _context.TbCustomers.FirstOrDefaultAsync(e => e.Id == Guid.Parse(payload.Customer.Id));
+            }
 
             var items = payload.Items.Select(e => new TbOrderDetail
             {
@@ -49,6 +53,15 @@ namespace DATN_ACV_DEV.Controllers.Order
                 CreateDate = DateTime.Now,
             };
 
+            // re-update product stock
+            foreach(var item in payload.Items)
+            {
+                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
+                    ?? throw new NullReferenceException();
+
+                product.Quantity -= item.Quantity;
+            }
+
             await _context.TbOrders.AddAsync(order);
             await _context.SaveChangesAsync();
 
@@ -56,7 +69,7 @@ namespace DATN_ACV_DEV.Controllers.Order
         }
 
         public record OrderItem(string Id, int Quantity);
-        public record Customer(string Name, string PhoneNumber, string Address);
+        public record Customer(string Id, string Name, string PhoneNumber, string Address);
         public record Order(Customer Customer, IEnumerable<OrderItem> Items, decimal TotalAmount, decimal DiscountAmount);
     }
 }

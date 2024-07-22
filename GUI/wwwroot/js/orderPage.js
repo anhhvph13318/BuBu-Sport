@@ -51,6 +51,22 @@ async function checkout(orderNumber) {
         return;
     }
 
+    if($(`#customerName-${orderNumber}`).val() === '') {
+        const key = `#order-${orderNumber}-customer-name`;
+        $(`#order-${orderNumber}-customer-name`).css({'display': 'block'});
+        return;
+    }
+
+    if($(`#customerPhoneNumber-${orderNumber}`).val() === '') {
+        $(`#order-${orderNumber}-customer-phone`).css({'display': 'block'});
+        return;
+    }
+
+    if($(`#customerAddress-${orderNumber}`).val() === '') {
+        $(`#order-${orderNumber}-customer-address`).css({'display': 'block'});
+        return;
+    }
+
     const res = await fetch(ORDER_SUBMIT_API, {
         headers: {
             'Content-Type': 'application/json'
@@ -61,6 +77,14 @@ async function checkout(orderNumber) {
 
     if (res.status === 204) {
         alert("Tạo thành công");
+        orderStorage.dropOrder(orderNumber);
+        $(`#order-${orderNumber}-tab`).remove();
+        $(`#order-${orderNumber}`).remove();
+
+        if(orderStorage.isEmpty()) {
+            addNewEmptyOrder();
+            $(`#order-${orderNumber}-tab`).click();
+        }
     }
 }
 
@@ -77,14 +101,17 @@ function generateCustomerArea(orderNumber) {
                 <div class="mb-2 col-4">
                     <label>Tên</label>
                     <input class="form-control" id="customerName-${orderNumber}" name="name" type="text" onchange="customerAreaInputChange(event, ${orderNumber})"/>
+                    <p class="text-danger" style="display:none" id="order-${orderNumber}-customer-name">Trường này là bắt buộc</p>
                 </div>
                 <div class="mb-2 col-4">
                     <label>Số điện thoại</label>
                     <input class="form-control" id="customerPhoneNumber-${orderNumber}" name="phoneNumber" type="text" onchange="customerAreaInputChange(event, ${orderNumber})"/>
+                    <p class="text-danger" style="display:none" id="order-${orderNumber}-customer-phone">Trường này là bắt buộc</p>
                 </div>
                 <div class="mb-2 col-4">
                     <label>Địa chỉ</label>
                     <input class="form-control" id="customerAddress-${orderNumber}" name="address" type="text" onchange="customerAreaInputChange(event, ${orderNumber})"/>
+                    <p class="text-danger" style="display:none" id="order-${orderNumber}-customer-address">Trường này là bắt buộc</p>
                 </div>
             </div>
         </div>
@@ -166,6 +193,7 @@ function generateTableBody(order) {
                 <td>${order.items[i].price.toLocaleString('vi', {style : 'currency', currency : 'VND'})}</td>
                 <td>
                     <input class="form-control" value="${order.items[i].quantity}" type="number" onchange="handleInputChange(event, '${order.items[i].id.toString()}', ${order.tempId})"/>
+                    <p class="text-danger" id="order-${order.tempId}-${order.items[i].id}"></p>
                 </td>
                 <td>
                     <button class="btn btn-danger" onclick="handleRemoveItem(${order.tempId}, '${order.items[i].id}')">Xoá</button>
@@ -254,10 +282,24 @@ function handleRemoveItem (orderNumber, id) {
     reRenderCheckoutArea(orderNumber);
 }
 
-function handleInputChange (e, id, orderNumber) {
+async function handleInputChange (e, id, orderNumber) {
+    const quantity = parseInt(e.target.value);
     const order = orderStorage.getOrder(orderNumber);
-    order.updateQuantity(id, parseInt(e.target.value));
+    const product = await productStorage.getProductStock(id);
+    const elementKey = `#order-${orderNumber}-${id}`;
+    const message = `Chỉ còn ${product.stock} trong kho.`;
+
+    if(product.stock < quantity) {
+        $(elementKey).css({ 'display': 'block' });
+        $(elementKey).text(message)
+        order.pushError(elementKey, message);
+        return;
+    }
+    
+    order.updateQuantity(id, quantity);
     reRenderCheckoutArea(orderNumber);
+    $(elementKey).css({ 'display': 'none' });
+    order.dropError(elementKey);
 }
 
 function handleItemSelect (id, name, price, image, orderNumber) {
@@ -268,13 +310,15 @@ function handleItemSelect (id, name, price, image, orderNumber) {
     reRenderCheckoutArea(orderNumber);
 };
 
-$('#newCartAddBtn').on('click', function () {
+function addNewEmptyOrder() {
     const nextOrderNumber = orderStorage.getNextOrderNumber();
     if(nextOrderNumber >= 10) return;
     orderStorage.addOrder(nextOrderNumber);
-    $('#order-tab').append(`<button class="nav-link" id="order-${nextOrderNumber}-tab" data-bs-toggle="tab" data-bs-target="#order-${nextOrderNumber}" type="button" role="tab" aria-controls="order-${nextOrderNumber}" aria-selected="true">Giỏ hàng ${nextOrderNumber + 1}</button>`)
+    $('#order-tab').append(`<button class="nav-link nav-order-button" id="order-${nextOrderNumber}-tab" data-bs-toggle="tab" data-bs-target="#order-${nextOrderNumber}" type="button" role="tab" aria-controls="order-${nextOrderNumber}" aria-selected="true">Giỏ hàng ${nextOrderNumber + 1}</button>`)
     $('#order-tabContent').append(generateOrderViewContent(nextOrderNumber));
-})
+}
+
+$('#newCartAddBtn').on('click', addNewEmptyOrder);
 
 $('#search-0').on('input', async function(e) {
     await search(e, 0);

@@ -18,8 +18,17 @@ class OrderStorage {
         return order;
     }
 
+    getFirstOrderNumber() {
+        if(this.orders.length === 0) return 0;
+        return this.orders[0].tempId;
+    }
+
     getNextOrderNumber()  {
         return this.orders.length;
+    }
+
+    isEmpty() {
+        return this.orders.length === 0;
     }
 
     async createOrder(tempId) {
@@ -39,5 +48,9 @@ class OrderStorage {
         }
 
         return false;
+    }
+
+    dropOrder(orderNumber) {
+        this.orders = this.orders.filter(e => e.tempId !== orderNumber);
     }
 }

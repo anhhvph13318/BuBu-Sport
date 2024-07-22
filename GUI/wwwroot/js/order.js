@@ -3,7 +3,10 @@
     totalAmount = 0;
     discountAmount = 0;
     amount = 0;
-    customer = {};
+    customer = {
+        id: ''
+    };
+    errors = [];
 
     getOrderPrice() {
         return {
@@ -68,5 +71,17 @@
             ...this.customer,
             [e.target.name]: e.target.value
         }
+    }
+
+    pushError(key, value) {
+        this.errors = [...this.errors, { key: value }]
+    }
+
+    dropError(key) {
+        this.errors = this.errors.filter(e => e.key !== key);
+    }
+
+    verify() {
+        return this.errors.length === 0;
     }
 }
