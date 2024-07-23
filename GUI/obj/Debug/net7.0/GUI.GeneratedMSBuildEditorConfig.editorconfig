@@ -9,95 +9,99 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = GUI
 build_property.RootNamespace = GUI
-build_property.ProjectDir = C:\Users\pc\Source\Repos\SmartHousse\GUI\
+build_property.ProjectDir = C:\Users\pc\source\repos\SmartHousse\GUI\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\pc\Source\Repos\SmartHousse\GUI
+build_property.MSBuildProjectDirectory = C:\Users\pc\source\repos\SmartHousse\GUI
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Customer/Create.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Customer/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Customer/Delete.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Customer/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Customer/Edit.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Customer/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Customer/Index.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Customer/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Home/Index.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Home/Privacy.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Order/Detail.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Order/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Order/Detail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcRGV0YWlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Order/Index.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Order/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Product/Create.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Product/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Product/Delete.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Product/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Product/Edit.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Product/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Product/Index.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Product/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Shared/Error.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/User/Create.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/User/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/User/Delete.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/User/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/User/Edit.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/User/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/User/Index.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/User/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/_ViewImports.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/_ViewStart.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pc/Source/Repos/SmartHousse/GUI/Views/Shared/_Layout.cshtml]
+[C:/Users/pc/source/repos/SmartHousse/GUI/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-npbeol5hjh
