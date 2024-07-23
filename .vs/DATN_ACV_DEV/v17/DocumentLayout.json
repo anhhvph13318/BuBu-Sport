@@ -3,20 +3,68 @@
   "WorkspaceRootPath": "C:\\Users\\pc\\source\\repos\\SmartHousse\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\customer\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\customer\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\controllers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\datn_acv_dev\\entity\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\entity\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\wwwroot\\js\\product.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\wwwroot\\js\\product.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\wwwroot\\js\\orderstorage.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\wwwroot\\js\\orderstorage.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\wwwroot\\js\\orderpage.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\wwwroot\\js\\orderpage.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\wwwroot\\js\\order.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\wwwroot\\js\\order.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\order\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\order\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\datn_acv_dev\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|solutionrelative:datn_acv_dev\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\order\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\order\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\order\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\order\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\user\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\user\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -27,16 +75,32 @@
       "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\user\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\user\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\user\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\user\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\controllers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\gui\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D40FE7C7-3545-4D47-87DA-99739FC5E452}|GUI\\GUI.csproj|solutionrelative:gui\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B93F411-4202-4BEE-869E-51AC421E921D}|DATN_ACV_DEV\\DATN_ACV_DEV.csproj|c:\\users\\pc\\source\\repos\\smarthousse\\datn_acv_dev\\entity\\tbaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -58,7 +122,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 14,
           "Children": [
             {
               "$type": "Bookmark",
@@ -90,63 +154,226 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Customer\\Index.cshtml",
-              "RelativeDocumentMoniker": "GUI\\Views\\Customer\\Index.cshtml",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Customer\\Index.cshtml",
-              "RelativeToolTip": "GUI\\Views\\Customer\\Index.cshtml",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAiAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-07-12T19:52:50.164Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CustomerController.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\CustomerController.cs",
-              "RelativeDocumentMoniker": "GUI\\Controllers\\CustomerController.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\CustomerController.cs",
-              "RelativeToolTip": "GUI\\Controllers\\CustomerController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-12T19:52:34.345Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "GUI\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Shared\\_Layout.cshtml*",
-              "RelativeToolTip": "GUI\\Views\\Shared\\_Layout.cshtml*",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAA3AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-07-12T19:25:29.068Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "_ViewStart.cshtml",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\_ViewStart.cshtml",
-              "RelativeDocumentMoniker": "GUI\\Views\\_ViewStart.cshtml",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\_ViewStart.cshtml",
-              "RelativeToolTip": "GUI\\Views\\_ViewStart.cshtml",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-07-12T19:24:16.382Z",
-              "EditorCaption": ""
+              "Title": "orderStorage.js",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\orderStorage.js",
+              "RelativeDocumentMoniker": "GUI\\wwwroot\\js\\orderStorage.js",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\orderStorage.js",
+              "RelativeToolTip": "GUI\\wwwroot\\js\\orderStorage.js",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwBkAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-07-22T15:17:36.754Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "orderPage.js",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\orderPage.js",
+              "RelativeDocumentMoniker": "GUI\\wwwroot\\js\\orderPage.js",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\orderPage.js",
+              "RelativeToolTip": "GUI\\wwwroot\\js\\orderPage.js",
+              "ViewState": "AQIAAOYAAAAAAAAAAAAqwBgBAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-07-22T15:16:48.778Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Order\\Create.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Order\\Create.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Order\\Create.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Order\\Create.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-22T14:57:53.612Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Order\\Index.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Order\\Index.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Order\\Index.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Order\\Index.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-22T14:34:37.833Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "OrderController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\OrderController.cs",
+              "RelativeDocumentMoniker": "GUI\\Controllers\\OrderController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\OrderController.cs",
+              "RelativeToolTip": "GUI\\Controllers\\OrderController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-22T14:32:20.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ErrorViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Models\\ErrorViewModel.cs",
+              "RelativeDocumentMoniker": "GUI\\Models\\ErrorViewModel.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Models\\ErrorViewModel.cs",
+              "RelativeToolTip": "GUI\\Models\\ErrorViewModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-12T21:01:41.318Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\User\\Edit.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\User\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\User\\Edit.cshtml",
+              "RelativeToolTip": "GUI\\Views\\User\\Edit.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-12T21:01:31.612Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "site.js",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\site.js",
+              "RelativeDocumentMoniker": "GUI\\wwwroot\\js\\site.js",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\site.js",
+              "RelativeToolTip": "GUI\\wwwroot\\js\\site.js",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAABDAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-07-22T14:35:37.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "site.css",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\css\\site.css",
+              "RelativeDocumentMoniker": "GUI\\wwwroot\\css\\site.css",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\css\\site.css",
+              "RelativeToolTip": "GUI\\wwwroot\\css\\site.css",
+              "ViewState": "AQIAACoAAAAAAAAAAAAgwEMAAAAmAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-07-22T14:35:14.432Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\DBContext.cs",
+              "ViewState": "AQIAAD8AAAAAAAAAAAAzwFIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-12T19:18:58.712Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "product.js",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\product.js",
+              "RelativeDocumentMoniker": "GUI\\wwwroot\\js\\product.js",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\product.js",
+              "RelativeToolTip": "GUI\\wwwroot\\js\\product.js",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwBQAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-07-22T15:17:50.285Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\User\\Delete.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\User\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\User\\Delete.cshtml",
+              "RelativeToolTip": "GUI\\Views\\User\\Delete.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-12T21:01:30.816Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB4AAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-12T19:25:29.068Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "order.js",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\order.js",
+              "RelativeDocumentMoniker": "GUI\\wwwroot\\js\\order.js",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\js\\order.js",
+              "RelativeToolTip": "GUI\\wwwroot\\js\\order.js",
+              "ViewState": "AQIAABcAAAAAAAAAAAAqwCkAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-07-22T14:35:58.849Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Properties\\launchSettings.json",
+              "RelativeToolTip": "DATN_ACV_DEV\\Properties\\launchSettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-07-12T20:26:05.007Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Detail.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Order\\Detail.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Order\\Detail.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Order\\Detail.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Order\\Detail.cshtml",
+              "ViewState": "AQIAACcAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-22T14:48:25.113Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\User\\Create.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\User\\Create.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\User\\Create.cshtml",
+              "RelativeToolTip": "GUI\\Views\\User\\Create.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-12T21:01:30.031Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "GUI\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "GUI\\Controllers\\ProductController.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAACUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-12T21:01:23.808Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
               "Title": "_ViewImports.cshtml",
               "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\_ViewImports.cshtml",
               "RelativeDocumentMoniker": "GUI\\Views\\_ViewImports.cshtml",
@@ -154,25 +381,47 @@
               "RelativeToolTip": "GUI\\Views\\_ViewImports.cshtml",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-07-12T19:24:15.739Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-12T19:24:15.739Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Privacy.cshtml",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Home\\Privacy.cshtml",
-              "RelativeDocumentMoniker": "GUI\\Views\\Home\\Privacy.cshtml",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Home\\Privacy.cshtml",
-              "RelativeToolTip": "GUI\\Views\\Home\\Privacy.cshtml",
+              "DocumentIndex": 16,
+              "Title": "_ViewStart.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\_ViewStart.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\_ViewStart.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\_ViewStart.cshtml",
+              "RelativeToolTip": "GUI\\Views\\_ViewStart.cshtml",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-07-12T19:24:13.49Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-12T19:24:16.382Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 21,
+              "Title": "CustomerController.cs",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\CustomerController.cs",
+              "RelativeDocumentMoniker": "GUI\\Controllers\\CustomerController.cs",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\CustomerController.cs",
+              "RelativeToolTip": "GUI\\Controllers\\CustomerController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-12T21:01:21.498Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "GUI\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Properties\\launchSettings.json",
+              "RelativeToolTip": "GUI\\Properties\\launchSettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-07-12T20:26:46.015Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "GUI\\Controllers\\HomeController.cs",
@@ -180,25 +429,23 @@
               "RelativeToolTip": "GUI\\Controllers\\HomeController.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-12T19:23:55.429Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-12T19:23:55.429Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "DBContext.cs",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\DBContext.cs",
-              "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\DBContext.cs",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\DBContext.cs",
-              "RelativeToolTip": "DATN_ACV_DEV\\Entity\\DBContext.cs",
-              "ViewState": "AQIAABQAAAAAAAAAAAAAwCAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-12T19:18:58.712Z",
-              "EditorCaption": ""
+              "DocumentIndex": 24,
+              "Title": "Privacy.cshtml",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Home\\Privacy.cshtml",
+              "RelativeDocumentMoniker": "GUI\\Views\\Home\\Privacy.cshtml",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Home\\Privacy.cshtml",
+              "RelativeToolTip": "GUI\\Views\\Home\\Privacy.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-12T19:24:13.49Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 23,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "GUI\\Views\\Home\\Index.cshtml",
@@ -206,12 +453,11 @@
               "RelativeToolTip": "GUI\\Views\\Home\\Index.cshtml",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-07-12T19:23:51.121Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-12T19:23:51.121Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 27,
               "Title": "TbUser.cs",
               "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbUser.cs",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbUser.cs",
@@ -219,12 +465,11 @@
               "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbUser.cs",
               "ViewState": "AQIAAAMAAAAAAAAAAAAAABoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-12T19:20:13.283Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-12T19:20:13.283Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 26,
               "Title": "TbUserGroup.cs",
               "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbUserGroup.cs",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbUserGroup.cs",
@@ -232,12 +477,11 @@
               "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbUserGroup.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAtAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-12T19:20:04.116Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-12T19:20:04.116Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 25,
               "Title": "TbAccount.cs",
               "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\SmartHousse\\DATN_ACV_DEV\\Entity\\TbAccount.cs",
               "RelativeDocumentMoniker": "DATN_ACV_DEV\\Entity\\TbAccount.cs",
@@ -245,8 +489,7 @@
               "RelativeToolTip": "DATN_ACV_DEV\\Entity\\TbAccount.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-12T19:19:22.262Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-12T19:19:22.262Z"
             }
           ]
         }
