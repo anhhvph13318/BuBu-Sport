@@ -6,7 +6,8 @@ public class OrderDetail
     public string CustomerName { get; set; }
     public string ShippingAddress { get; set; }
     public string PhoneNumber { get; set; }
-    public string Status { get; set; }
+    public string StatusText { get; set; }
+    public int Status { get; set; }
     public string PaymentMethodName { get; set; }
     public decimal TotalAmount { get; set; }
     public decimal VoucherDiscountAmount { get; set; }

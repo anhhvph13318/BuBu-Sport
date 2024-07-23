@@ -25,7 +25,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             {
                 Id = Guid.NewGuid(),
                 Adress = payload.Customer.Address,
-                Name = payload.Customer.Name,
+                Name = string.IsNullOrEmpty(payload.Customer.Name) ? "Khách vãng lai" : payload.Customer.Name,
                 GroupCustomer = tempGroup!
             };
 

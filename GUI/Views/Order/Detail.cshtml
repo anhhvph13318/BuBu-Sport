@@ -47,7 +47,7 @@ else
                 <hr/>
                 <tr>
                     <td>Trạng thái:</td>
-                    <td>@Model.Status</td>
+                    <td>@Model.StatusText</td>
                 </tr>
                 <tr>
                     <td>Phương thức thanh toán: </td>
@@ -67,6 +67,30 @@ else
                 </tr>
                 </tbody>
             </table>
+            <div class="mb-3 mt-3">
+                @if(Model.Status == 0)
+                {
+                    <button class="btn btn-primary" onclick="confirmOrder()">Xác nhận</button>
+                } else
+                {
+                    <a class="btn btn-primary" asp-controller="Order" asp-action="Index">Trở về</a>
+                }
+            </div>
         </div>
     </div>
+}
+
+@section Scripts {
+    <script defer>
+        const confirmOrder = () => {
+            fetch(ORDER_CONFIRM_API('@Model.Id'), {
+                method: 'POST'
+            }).then(res => {
+                if (res.status == 204) {
+                    alert("Xác nhận thành công");
+                    window.location.href = "/orders";
+                }
+            });
+        }
+    </script>
 }

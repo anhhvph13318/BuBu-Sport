@@ -4,7 +4,10 @@
     discountAmount = 0;
     amount = 0;
     customer = {
-        id: ''
+        id: '',
+        name: '',
+        address: '',
+        phoneNumber: '' 
     };
     errors = [];
 

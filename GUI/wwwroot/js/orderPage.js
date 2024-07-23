@@ -51,21 +51,21 @@ async function checkout(orderNumber) {
         return;
     }
 
-    if($(`#customerName-${orderNumber}`).val() === '') {
-        const key = `#order-${orderNumber}-customer-name`;
-        $(`#order-${orderNumber}-customer-name`).css({'display': 'block'});
-        return;
-    }
+    // if($(`#customerName-${orderNumber}`).val() === '') {
+    //     const key = `#order-${orderNumber}-customer-name`;
+    //     $(`#order-${orderNumber}-customer-name`).css({'display': 'block'});
+    //     return;
+    // }
 
-    if($(`#customerPhoneNumber-${orderNumber}`).val() === '') {
-        $(`#order-${orderNumber}-customer-phone`).css({'display': 'block'});
-        return;
-    }
+    // if($(`#customerPhoneNumber-${orderNumber}`).val() === '') {
+    //     $(`#order-${orderNumber}-customer-phone`).css({'display': 'block'});
+    //     return;
+    // }
 
-    if($(`#customerAddress-${orderNumber}`).val() === '') {
-        $(`#order-${orderNumber}-customer-address`).css({'display': 'block'});
-        return;
-    }
+    // if($(`#customerAddress-${orderNumber}`).val() === '') {
+    //     $(`#order-${orderNumber}-customer-address`).css({'display': 'block'});
+    //     return;
+    // }
 
     const res = await fetch(ORDER_SUBMIT_API, {
         headers: {
@@ -83,8 +83,12 @@ async function checkout(orderNumber) {
 
         if(orderStorage.isEmpty()) {
             addNewEmptyOrder();
-            $(`#order-${orderNumber}-tab`).click();
+            $(`#order-0-tab`).click();
+            return;
         }
+
+        const nextOrder = orderStorage.getNextOrderNumber();
+        $(`#order-${nextOrder}-tab`).click();
     }
 }
 

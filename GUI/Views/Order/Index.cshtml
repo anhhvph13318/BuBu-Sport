@@ -1,3 +1,4 @@
+@using System.Globalization
 @model IEnumerable<GUI.Models.DTOs.Order_DTO.OrderListItem>
 
 @{
@@ -55,7 +56,7 @@
                 <td>@order.code</td>
                 <td>@order.nameCustomer</td>
                 <td>@order.products</td>
-                <td>@order.totalAmount</td>
+                    <td>@order.totalAmount?.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                 <td>@order.status</td>
                 <td>
                     <a class="btn btn-link" asp-controller="Order" asp-action="Detail" asp-route-id="@order.id">Chi tiết</a>
