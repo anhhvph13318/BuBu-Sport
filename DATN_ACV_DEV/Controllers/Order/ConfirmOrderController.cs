@@ -120,7 +120,32 @@ namespace DATN_ACV_DEV.Controllers
                 CreateDate = DateTime.Now,
                 Status = Utility.Utility.ORDER_STATUS_PREPARE_GOODS
             };
-            foreach (var i in _listProduct)
+			if (_request.cartDetailId != null)
+			{
+				var lstcartDetail = _context.TbCartDetails.Where(cartDetail => _request.cartDetailId.Contains(cartDetail.Id));
+				_listCartDetail = lstcartDetail.ToList();
+				foreach (var item in _listCartDetail)
+				{
+					var model = _context.TbProducts.Where(product => product.Id == item.ProductId && product.IsDelete == false && product.Quantity >= item.Quantity).FirstOrDefault();
+					if (model != null)
+					{
+						var image = _context.TbImages.Where(i => i.Id == model.ImageId).FirstOrDefault();
+						OrderProduct product = new OrderProduct()
+						{
+							productId = model.Id,
+							categoryId = model.CategoryId,
+							productName = model.Name,
+							productCode = model.Code,
+							price = model.Price,
+							weight = model.Weight,
+							quantity = item.Quantity.Value,
+							url = image != null ? image.Url : ""
+						};
+						_listProduct.Add(product);
+					}
+				}
+			}
+			foreach (var i in _listProduct)
             {
                 _orderDetail = new TbOrderDetail()
                 {
