@@ -4,7 +4,7 @@ using GUI.Shared.CommonSettings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
-using DATN_ACV_DEV.FileBase;
+using GUI.FileBase;
 using DATN_ACV_DEV.Model_DTO.Login;
 using GUI.Shared;
 using Newtonsoft.Json;

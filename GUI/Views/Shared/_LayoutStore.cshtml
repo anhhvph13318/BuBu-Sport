@@ -25,7 +25,7 @@
 	<link rel="stylesheet" href="~/storefront/css/font-awesome.min.css">
 
 	<!-- Custom stlylesheet -->
-	<link type="text/css" rel="stylesheet" href="~/storefront/css/style.css" />
+	<link type="text/css" rel="stylesheet" href="~/storefront/css/style.css" asp-append-version="true"/>
 </head>
 <body>
 	<!-- HEADER -->
@@ -282,12 +282,12 @@
 	</footer>
 	<!-- /FOOTER -->
 	<script src="~/js/site.js" asp-append-version="true"></script>
-	<script src="~/storefront/js/jquery.min.js"></script>
-	<script src="~/storefront/js/bootstrap.min.js"></script>
-	<script src="~/storefront/js/slick.min.js"></script>
-	<script src="~/storefront/js/nouislider.min.js"></script>
-	<script src="~/storefront/js/jquery.zoom.min.js"></script>
-	<script src="~/storefront/js/main.js"></script>
+	<script src="~/storefront/js/jquery.min.js" asp-append-version="true"></script>
+	<script src="~/storefront/js/bootstrap.min.js" asp-append-version="true"></script>
+	<script src="~/storefront/js/slick.min.js" asp-append-version="true"></script>
+	<script src="~/storefront/js/nouislider.min.js" asp-append-version="true"></script>
+	<script src="~/storefront/js/jquery.zoom.min.js" asp-append-version="true"></script>
+	<script src="~/storefront/js/main.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

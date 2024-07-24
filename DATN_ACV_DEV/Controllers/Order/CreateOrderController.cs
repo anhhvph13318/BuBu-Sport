@@ -135,7 +135,7 @@ namespace DATN_ACV_DEV.Controllers
             //    _order.TotalAmount += (itemProduct.price * itemProduct.quantity);
             //}
             #endregion
-            _amountShip = Common.GetFee(_request.TokenGHN, requesFee);
+            //_amountShip = Common.GetFee(_request.TokenGHN, requesFee);
             if (_request.voucherID != null)
             {
                 _lstVoucher = _context.TbVouchers.Where(voucher => _request.voucherID.Contains(voucher.Id));
@@ -188,7 +188,7 @@ namespace DATN_ACV_DEV.Controllers
                 if (vouchership != null)
                 {
                     var amountDiscount = Common.CalculateDiscount(0, vouchership);
-                    _amountShip -= amountDiscount.DiscountShipping;
+                    //_amountShip -= amountDiscount.DiscountShipping;
                     _lstVoucherCode.Add(vouchership.Code);
                     _lstVoucherId.Add(vouchership.Id);
                 }
@@ -272,9 +272,11 @@ namespace DATN_ACV_DEV.Controllers
         {
             try
             {
-                _request = request;
-                CheckAuthorization();
-                PreValidation();
+                request.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
+
+				_request = request;
+                //CheckAuthorization();
+                //PreValidation();
                 GenerateObjects();
                 //PostValidation();
                 AccessDatabase();

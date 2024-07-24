@@ -1,6 +1,6 @@
-﻿using DATN_ACV_DEV.FileBase;
+﻿using GUI.FileBase;
 
-namespace DATN_ACV_DEV.Model_DTO.Order_DTO
+namespace GUI.Models.Order_DTO
 {
     public class CreateOrderRequest : BaseRequest
     {

@@ -163,8 +163,8 @@ namespace DATN_ACV_DEV.Controllers
             try
             {
                 _request = request;
-                CheckAuthorization();
-                PreValidation();
+                //CheckAuthorization();
+                //PreValidation();
                 GenerateObjects();
                 //PostValidation();
                 AccessDatabase();

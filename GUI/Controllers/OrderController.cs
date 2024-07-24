@@ -9,7 +9,8 @@ namespace GUI.Controllers;
 [Route("orders")]
 public class OrderController : Controller
 {
-    private const string URI = "http://localhost:5059";
+    //private const string URI = "http://localhost:5059";
+    private const string URI = "https://localhost:44383";
 
     [HttpGet]
     public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)

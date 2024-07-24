@@ -2188,3 +2188,13 @@ textarea.input {
     margin-top: 10px;
   }
 }
+
+.remove-item{
+    color:red;
+    font-size:10px;
+    cursor: pointer;
+}
+
+#order-submit{
+    cursor:pointer;
+}

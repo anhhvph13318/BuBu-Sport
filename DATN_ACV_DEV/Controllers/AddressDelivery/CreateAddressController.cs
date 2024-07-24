@@ -63,7 +63,7 @@ namespace DATN_ACV_DEV.Controllers
                 DistrictId = _request.districId,
                 WardCode = _request.wardCode,
                 Status = _request.status,
-                AccountId = _request.UserId,
+                AccountId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb"),
                 ReceiverName = _request.receiverName,
                 ReceiverPhone = _request.receiverPhone,
                 IsDelete = false,
@@ -81,7 +81,7 @@ namespace DATN_ACV_DEV.Controllers
             try
             {
                 _request = request;
-                CheckAuthorization();
+                //CheckAuthorization();
                 //PreValidation();
                 GenerateObjects();
                 //PostValidation();

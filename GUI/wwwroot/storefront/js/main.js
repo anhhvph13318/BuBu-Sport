@@ -128,13 +128,17 @@
 	var priceInputMax = document.getElementById('price-max'),
 			priceInputMin = document.getElementById('price-min');
 
-	priceInputMax.addEventListener('change', function(){
-		updatePriceSlider($(this).parent() , this.value)
-	});
+    if (priceInputMax) {
+		priceInputMax.addEventListener('change', function () {
+			updatePriceSlider($(this).parent(), this.value)
+		});
+    }
 
-	priceInputMin.addEventListener('change', function(){
-		updatePriceSlider($(this).parent() , this.value)
-	});
+    if (priceInputMin) {
+		priceInputMin.addEventListener('change', function () {
+			updatePriceSlider($(this).parent(), this.value)
+		});
+    }
 
 	function updatePriceSlider(elem , value) {
 		if ( elem.hasClass('price-min') ) {
@@ -166,11 +170,53 @@
 	}
 
 	$(function () {
-		debugger;
 		let path = window.location.pathname.slice(0, 6);
 		if (path == "/store") {
 			$("#nav-bar li").removeClass("active");
 			$("#store").addClass("active");
+		}
+	});
+
+	$('.add-to-cart-btn').on('click',function () {
+		$.post("/AddCart", { prId: $(this).attr('data-prId') }, function () {
+			window.location = "/checkout";
+		});
+	});
+
+	$('.remove-item').on('click', function () {
+		$.post("/DeleteItem", { id: $(this).attr('data-itemId') }, function () {
+			window.location.reload();
+		});
+	});
+
+	$('#order-submit').on('click', function (e) {
+		e.preventDefault();
+		let name = $('#order-name').val();
+		let phone = $('#order-phone').val();
+		let address = $('#order-address').val();
+		let district = $('#order-district').val();
+		let city = $('#order-city').val();
+		let code = $('#order-code').val();
+		let note = $('#order-note').val();
+		if (name && phone && address && district && city && code) {
+			$.post("/Buy", {
+				name: name,
+				phone: phone,
+				address: address,
+				district: district,
+				city: city,
+				zipCode: code,
+				note: note
+			}, function (data) {
+				if (data.success) {
+					window.location.href = "/store";
+				} else {
+                    alert("FAILED");
+				}
+			});
+		} else {
+            alert("fill all fields");
+			return false;
 		}
 	});
 
