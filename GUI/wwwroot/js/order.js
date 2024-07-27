@@ -1,4 +1,5 @@
-﻿class Order {
+﻿
+class Order {
     items = [];
     totalAmount = 0;
     discountAmount = 0;

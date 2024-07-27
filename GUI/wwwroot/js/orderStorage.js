@@ -40,7 +40,7 @@ class OrderStorage {
             method: 'POST',
             body: JSON.stringify(order)
         });
-    
+
         if (res.status === 204) {
             alert("Tạo thành công");
             this.orders = this.orders.filter(e => e.tempId != order.tempId);

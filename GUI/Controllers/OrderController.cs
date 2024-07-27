@@ -20,7 +20,7 @@ public class OrderController : Controller
         var response =
             JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
-        
+
         return View(response.Data);
     }
 
@@ -34,7 +34,7 @@ public class OrderController : Controller
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
-        
+
         return View(response.Data);
     }
 

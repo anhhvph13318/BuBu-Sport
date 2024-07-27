@@ -14,3 +14,14 @@
 /.vs/DATN_ACV_DEV/v17/.suo
 /**/obj
 /**/bin
+.vs/DATN_ACV_DEV/DesignTimeBuild/.dtbcache.v2
+.vs/DATN_ACV_DEV/config/applicationhost.config
+.vs/DATN_ACV_DEV/v17/.futdcache.v2
+.vs/DATN_ACV_DEV/v17/DocumentLayout.json
+.vs/DATN_ACV_DEV/v17/HierarchyCache.v1.txt
+.vs/DATN_SMARTHOUSE_DEV/v17/.suo
+.vs/DATN_SMARTHOUSE_DEV/v17/DocumentLayout.json
+.vs/DATN_ACV_DEV/v17/HierarchyCache.v1.txt
+/.vs
+GUI/bin
+GUI/obj

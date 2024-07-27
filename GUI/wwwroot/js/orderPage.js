@@ -32,7 +32,7 @@ async function search (e, orderNumber) {
             </div>
             
         `;
-        
+
         item.onclick = function () {
             const { id, name, price, image } = products[i]
             handleItemSelect(id, name, price, image, orderNumber);
@@ -85,11 +85,11 @@ async function checkout(orderNumber) {
             addNewEmptyOrder();
             $(`#order-0-tab`).click();
             return;
-        }
+    }
 
         const nextOrder = orderStorage.getNextOrderNumber();
         $(`#order-${nextOrder}-tab`).click();
-    }
+}
 }
 
 function customerAreaInputChange(e, orderNumber) {
@@ -224,7 +224,7 @@ function generateTableItem(orderNumber) {
     const body = document.createElement('tbody');
     table.setAttribute('class', 'table');
     body.setAttribute('id', `order-table-body-${orderNumber}`)
-    
+
     $(body).append(generateTableBody(order));
     $(table).append(generateTableHeader());
     $(table).append(body);
@@ -236,7 +236,7 @@ function generateOrderViewContent(orderNumber) {
     const container = document.createElement('div');
     const tableArea = document.createElement('div');
     const checkoutArea = document.createElement('div');
-    
+
     container.setAttribute('class', 'tab-pane fade');
     container.setAttribute('id', `order-${orderNumber}`);
     container.setAttribute('role', 'tabpanel');
