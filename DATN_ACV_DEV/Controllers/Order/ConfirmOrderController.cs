@@ -65,7 +65,6 @@ namespace DATN_ACV_DEV.Controllers
             _context.AddRange(_lstOrderDetail);
             _context.RemoveRange(_listCartDetail);
 
-
             _response.id = _order.Id;
             _response.orderCode = _order.OrderCode;
             _response.voucherCode = string.Join(", ", _lstVoucherCode);
@@ -157,6 +156,8 @@ namespace DATN_ACV_DEV.Controllers
                 _lstOrderDetail.Add(_orderDetail);
                 _response.products.Add(i);
             }
+
+            //_order.TotalAmount = 
         }
 
         public void PreValidation()
@@ -232,7 +233,7 @@ namespace DATN_ACV_DEV.Controllers
         {
             try
             {
-				request.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
+				request.UserId = new Guid("65809962-D69A-4D1F-9C14-E4D28DA106C4");
 				_request = request;
                 //CheckAuthorization();
                 //PreValidation();

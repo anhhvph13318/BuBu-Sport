@@ -16,7 +16,6 @@ public partial class TbAddressDelivery
     public int DistrictId { get; set; }
 
     public string WardName { get; set; } = null!;
-    public string WardCode { get; set; } = null!;
 
     public int WardId { get; set; }
 

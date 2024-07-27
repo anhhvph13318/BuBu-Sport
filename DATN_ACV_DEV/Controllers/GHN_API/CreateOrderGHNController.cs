@@ -90,7 +90,6 @@ namespace DATN_ACV_DEV.Controllers.GHN_API
                 to_name = _customer.Name ?? "Anh/Chị",
                 to_phone = _account.PhoneNumber,
                 to_address = $"{_addressDelivery.WardName}, {_addressDelivery.DistrictName}, {_addressDelivery.ProvinceName}",
-                to_ward_code = _addressDelivery.WardCode,
                 to_district_id = _addressDelivery.DistrictId,
                 cod_amount = (int)_order.TotalAmount,
                 weight = _lstItem.Sum(c => c.weight),

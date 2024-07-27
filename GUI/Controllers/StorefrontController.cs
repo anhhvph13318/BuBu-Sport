@@ -49,7 +49,7 @@ namespace GUI.Controllers
 		public async Task<IActionResult> AddToCart(Guid prId)
 		{
 			var req = new AddToCartRequest();
-			req.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
+			req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 			req.Quantity = 1;
 			req.ProductId = prId;
 			var URL = _settings.APIAddress + "api/AddToCart/Process";
@@ -69,7 +69,7 @@ namespace GUI.Controllers
 			var model = new List<CartDTO>();
 			var sum = 0m;
 			var req = new CartItemRequest();
-			req.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
+			req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 			var URL = _settings.APIAddress + "api/CartItem/Process";
 			var param = JsonConvert.SerializeObject(req);
 			var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
@@ -87,7 +87,7 @@ namespace GUI.Controllers
 		public async Task<IActionResult> DeleteItem(Guid id)
 		{
 			var req = new DeleteCartItemRequest();
-			req.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
+			req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 			req.Id = id;
 			var URL = _settings.APIAddress + "api/DeleteCartItem/Process";
 			var param = JsonConvert.SerializeObject(req);
@@ -117,7 +117,7 @@ namespace GUI.Controllers
 				districName = obj.district ?? "",
 				provinceName = obj.city ?? ""
 			};
-			addressReq.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
+			addressReq.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 			var URL = _settings.APIAddress + "api/CreateAddress/Process";
 			var paramAdd = JsonConvert.SerializeObject(addressReq);
 			var resAdd = await httpService.PostAsync(URL, paramAdd, HttpMethod.Post, "application/json");
@@ -131,11 +131,19 @@ namespace GUI.Controllers
 				addrId = new Guid();
 			}
 			var reqItems = new CartItemRequest();
-			reqItems.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
+			reqItems.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 			URL = _settings.APIAddress + "api/CartItem/Process";
 			var paramItems = JsonConvert.SerializeObject(reqItems);
 			var resItems = await httpService.PostAsync(URL, paramItems, HttpMethod.Post, "application/json");
 			var resultItems = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(resItems) ?? new();
+			var sum = 0m;
+			try
+			{
+				sum = resultItems.Data.CartItem.Sum(c => c.Quantity * c.Price);
+            }
+			catch (Exception)
+			{
+			}
 			if (resultItems.Status == "200")
 			{
 				cartDetails = resultItems.Data.CartItem.Select(c => c.CartDetailID).ToList();
@@ -147,7 +155,8 @@ namespace GUI.Controllers
 					cartDetailId = cartDetails,
 					description = obj.note ?? "",
 					addressDeliveryId = addrId,
-					paymentMethodId = new Guid()
+					paymentMethodId = new Guid(),
+					totalAmount = resultItems.Data.CartItem.Sum(c => c.Quantity * c.Price)
 				};
 				URL = _settings.APIAddress + "api/ConfirmOrder/Process";
 				var param = JsonConvert.SerializeObject(req);
