@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 builder.Services.Configure<CommonSettings>(builder.Configuration.GetSection("CommonSettings"));
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -17,7 +18,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 

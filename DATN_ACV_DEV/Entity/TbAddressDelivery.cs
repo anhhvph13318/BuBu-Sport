@@ -24,11 +24,11 @@ public partial class TbAddressDelivery
 
     public bool? IsDelete { get; set; }
 
-    public Guid AccountId { get; set; }
+    public Guid? AccountId { get; set; }
 
     public string? ReceiverName { get; set; }
 
     public string? ReceiverPhone { get; set; }
 
-    public virtual TbAccount Account { get; set; } = null!;
+    public virtual TbAccount? Account { get; set; } = null!;
 }

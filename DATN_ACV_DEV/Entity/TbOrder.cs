@@ -7,7 +7,7 @@ public partial class TbOrder
 {
     public Guid Id { get; set; }
 
-    public decimal? TotalAmount { get; set; }
+    public decimal TotalAmount { get; set; }
 
     public string? Description { get; set; }
 
@@ -47,7 +47,10 @@ public partial class TbOrder
 
     public string? AddressCustomer { get; set; }
 
+    public bool IsCustomerTakeYourself { get; set; }
+    public bool IsShippingAddressSameAsCustomerAddress { get; set; }
+
     public virtual ICollection<TbOrderDetail> TbOrderDetails { get; set; } = new List<TbOrderDetail>();
-    public virtual TbCustomer? Customer { get; set; }
+    public virtual TbCustomer Customer { get; set; } = null!;
     public virtual TbAddressDelivery? AddressDelivery { get; set; }
 }

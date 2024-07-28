@@ -75,7 +75,7 @@ public partial class DBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-KH6N123\\SQLEXPRESS;Initial Catalog=DB;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
+        => optionsBuilder.UseSqlServer("Server=127.0.0.1;Database=Houseware;UID=sa;PWD=M1ng@2002;Encrypt=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -126,7 +126,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.WardId).HasColumnName("wardId");
             entity.Property(e => e.WardName).HasColumnName("wardName");
 
-            entity.HasOne(d => d.Account).WithMany(p => p.TbAddressDelivery)
+            entity.HasOne(d => d.Account).WithMany(p => p.TbAddressDeliveries)
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tb_AddressDelivery_tb_Account");
@@ -203,6 +203,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(250);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.YearOfBirth).HasColumnType("datetime");
+            entity.Property(e => e.Phone).HasColumnType("varchar(20)");
 
             entity.HasOne(d => d.GroupCustomer).WithMany(p => p.TbCustomers)
                 .HasForeignKey(d => d.GroupCustomerId)
@@ -376,6 +377,8 @@ public partial class DBContext : DbContext
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TotalAmountDiscount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.IsCustomerTakeYourself).HasColumnName("IsCustomerTakeYourself");
+            entity.Property(e => e.IsShippingAddressSameAsCustomerAddress).HasColumnName("IsShippingAddressSameAsCustomerAddress");
         });
 
         modelBuilder.Entity<TbOrderDetail>(entity =>

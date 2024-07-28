@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-@if (string.IsNullOrEmpty(Model.CustomerName))
+@if (string.IsNullOrEmpty(Model.Customer.Name))
 {
     <p class="text-danger text-center">Lỗi không tìm thấy</p>
 }
@@ -34,15 +34,15 @@ else
                 <tbody>
                 <tr>
                     <td>Tên:</td>
-                    <td>@Model.CustomerName</td>
+                    <td>@Model.Customer.Name</td>
                 </tr>
                 <tr>
                     <td>Số điện thoại:</td>
-                    <td>@Model.PhoneNumber</td>
+                    <td>@Model.Customer.PhoneNumber</td>
                 </tr>
                 <tr>
                     <td>Địa chỉ giao hàng:</td>
-                    <td>@Model.ShippingAddress</td>
+                    <td>@Model.Customer.Address</td>
                 </tr>
                 <hr/>
                 <tr>
