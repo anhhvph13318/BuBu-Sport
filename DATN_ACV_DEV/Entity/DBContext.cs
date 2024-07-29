@@ -108,6 +108,8 @@ public partial class DBContext : DbContext
         {
             entity.ToTable("tb_AddressDelivery");
 
+            entity.Ignore(e => e.WardCode);
+
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.AccountId).HasColumnName("accountId");
             entity.Property(e => e.DistrictId).HasColumnName("districtId");

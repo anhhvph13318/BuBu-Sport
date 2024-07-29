@@ -18,6 +18,7 @@ public class OrderController : Controller
     private const string OrderCustomerInfoPartialView = "_OrderCustomerInfoPartialView";
     private const string OrderPaymentInfoPartialView = "_OrderPaymentInfoPartialView";
     private const string OrderShippingInfoPartialView = "_OrderShippingInfoPartialView";
+    private const string OrderButtonActionPartialView = "_OrderButtonActionPartialView";
 
     [HttpGet]
     public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)
@@ -72,7 +73,10 @@ public class OrderController : Controller
             Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
-            Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo)
+            Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, false),
+            order.ShippingInfo.IsCustomerTakeYourSelf,
+            order.Status
         });
     }
 
@@ -90,13 +94,6 @@ public class OrderController : Controller
         ViewData["OrderSaved"] = response.Data;
 
         return View();
-    }
-
-    [HttpGet]
-    [Route("temp")]
-    public IActionResult GetTempOrders()
-    {
-        return Json(HttpContext.Session.GetTempOrders());
     }
 
     [HttpPost]
@@ -238,10 +235,48 @@ public class OrderController : Controller
                 Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
                 Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
                 Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
-                Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo)
+                Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
+                Buttons = await RenderViewAsync(OrderButtonActionPartialView, true)
             });
         }
         
+        return BadRequest();
+    }
+
+    [HttpPatch]
+    [Route("update")]
+    public async Task<IActionResult> Update([FromBody] Checkout checkout)
+    {
+        var order = HttpContext.Session.GetCurrentOrder();
+
+        if (!checkout.IsShippingAddressSameAsCustomerAddress)
+            order.ShippingInfo = checkout.ShippingInfo;
+
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var payload = new
+        {
+            order.Id,
+            checkout.IsCustomerTakeYourSelf,
+            checkout.IsShippingAddressSameAsCustomerAddress,
+            checkout.Status,
+            Shipping = order.ShippingInfo,
+            Payment = order.PaymentInfo
+        };
+        var rawResponse = await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload);
+
+        if (rawResponse.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            return Json(new
+            {
+                Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
+                Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
+                Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+                Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
+                Buttons = await RenderViewAsync(OrderButtonActionPartialView, false)
+            });
+        }
+
         return BadRequest();
     }
 

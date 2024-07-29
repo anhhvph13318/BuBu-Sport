@@ -1,0 +1,20 @@
+﻿@model bool
+
+@if(Model) {
+    <div class="col-md-4">
+        <button class="btn btn-primary text-nowrap w-100" onclick="checkout()">Tạo</button>
+    </div>
+    <div class="col-md-4">
+        <button class="btn btn-secondary w-100">Lưu tạm</button>
+    </div>
+} else {
+    <div class="col-md-4">
+        <button class="btn btn-primary text-nowrap w-100" onclick="update()">Lưu</button>
+    </div>
+    <div class="col-md-4">
+        <button class="btn btn-secondary w-100" disabled>Lưu tạm</button>
+    </div>
+}
+<div class="col-md-4">
+    <button class="btn btn-danger w-100" onclick="clearOrder()">Xoá</button>
+</div>

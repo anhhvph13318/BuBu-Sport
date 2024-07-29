@@ -29,6 +29,7 @@
         height: 200px;
     }
 </style>
+<link href="~/lib/toastr/toastr.css" rel="stylesheet">
 
 
 <div class="container-fluid" id="order-container">
@@ -95,16 +96,8 @@
                     @await Html.PartialAsync("_OrderPaymentInfoPartialView", new PaymentInfo())
                 </div>
                 <hr />
-                <div class="row">
-                    <div class="col-md-4">
-                        <button class="btn btn-primary text-nowrap" onclick="checkout()">Thanh toán</button>
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-secondary w-100">Lưu tạm</button>
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-danger w-100" onclick="clearOrder()">Xoá</button>
-                    </div>
+                <div class="row" id="orderButtonActionContainer">
+                    @await Html.PartialAsync("_OrderButtonActionPartialView", true)
                 </div>
             </div>
         </div>
@@ -113,6 +106,7 @@
 
 
 @section scripts {
+    <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>
     <script src="~/js/orderPage.js"></script>
 }

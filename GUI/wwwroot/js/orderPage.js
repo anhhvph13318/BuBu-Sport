@@ -79,21 +79,24 @@ function updateAllView(data) {
         $('#customerInfoContainer').html('');
         $('#shippingInfoContainer').html('');
         $('#orderPaymentInfoContainer').html('');
-
+        $('#orderButtonActionContainer').html('');
         // show new data
         $('#orderItemContainer').html(data.items);
         $('#customerInfoContainer').html(data.customer);
         $('#shippingInfoContainer').html(data.shipping);
         $('#orderPaymentInfoContainer').html(data.payment);
+        $('#orderButtonActionContainer').html(data.buttons);
 }
 
 function show(id) {
-    const promise = fetch(SHOW_ORDER_API(id))
+    fetch(SHOW_ORDER_API(id))
     .then(res => res.json())
-    .then(data => updateAllView(data));
-
-    $.when(promise).done(() => {
+    .then(data => {
+        updateAllView(data);
+        $('#shippingLocation').val(data.isCustomerTakeYourSelf ? '0' : '1');
+        $('#orderStatus').val(data.status.toString());
         $('#shippingLocation').trigger('change');
+        $('#orderStatus').trigger('change');
     });
 }
 
@@ -165,7 +168,33 @@ function checkout() {
         },
         body: JSON.stringify(payload)
     }).then(res => res.json())
-    .then(data => updateAllView(data));
+    .then(data => updateAllView(data))
+    .then(_ => toastr.success("Tạo thành công"));
+}
+
+function update() {
+    const shippingInfo = {
+        name: $('#receiverName').val(),
+        phoneNumber: $('#receiverPhoneNumber').val(),
+        address: $('#receiverAddress').val()
+    }
+
+    const payload = {
+        isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
+        isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
+        status: $('#orderStatus').val(),
+        shippingInfo
+    }
+
+    fetch(ORDER_UPDATE_API, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).then(res => res.json())
+    .then(data => updateAllView(data))
+    .then(_ => toastr.success("Cập nhật thành công"));
 }
 
 function clearOrder() {
