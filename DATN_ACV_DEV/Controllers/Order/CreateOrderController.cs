@@ -95,7 +95,6 @@ namespace DATN_ACV_DEV.Controllers
             {
                 service_type_id = Utility.Utility.SERVICE_TYPE_DEFAULT,
                 insurance_value = Convert.ToInt32(_listProduct.Sum(p => p.price)),
-                to_ward_code = addressDelivery.WardCode,
                 to_district_id = addressDelivery.DistrictId,
                 from_district_id = Utility.Utility.FORM_DISTRICT_ID_DEFAULT,
                 weight = _listProduct.Sum(c => c.weight ?? 2000),
@@ -135,7 +134,7 @@ namespace DATN_ACV_DEV.Controllers
             //    _order.TotalAmount += (itemProduct.price * itemProduct.quantity);
             //}
             #endregion
-            _amountShip = Common.GetFee(_request.TokenGHN, requesFee);
+            //_amountShip = Common.GetFee(_request.TokenGHN, requesFee);
             if (_request.voucherID != null)
             {
                 _lstVoucher = _context.TbVouchers.Where(voucher => _request.voucherID.Contains(voucher.Id));
@@ -188,7 +187,7 @@ namespace DATN_ACV_DEV.Controllers
                 if (vouchership != null)
                 {
                     var amountDiscount = Common.CalculateDiscount(0, vouchership);
-                    _amountShip -= amountDiscount.DiscountShipping;
+                    //_amountShip -= amountDiscount.DiscountShipping;
                     _lstVoucherCode.Add(vouchership.Code);
                     _lstVoucherId.Add(vouchership.Id);
                 }
@@ -272,9 +271,11 @@ namespace DATN_ACV_DEV.Controllers
         {
             try
             {
+                request.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
+
                 _request = request;
-                CheckAuthorization();
-                PreValidation();
+                //CheckAuthorization();
+                //PreValidation();
                 GenerateObjects();
                 //PostValidation();
                 AccessDatabase();

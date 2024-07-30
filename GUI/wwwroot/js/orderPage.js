@@ -2,27 +2,27 @@ const productStorage = new ProductStorage();
 const orderStorage = new OrderStorage();
 
 const clearSearchResult = (_, orderNumber) => {
-    if (orderNumber === undefined) return;
+    if(orderNumber === undefined) return;
 
     $(`#autocomplete-list-${orderNumber}`).empty();
 }
 
 $('body').on('click', function () {
-    $('.autocomplete-items').each(function () {
+    $('.autocomplete-items').each(function() {
         $(this).empty();
     })
 });
 
 // 18/07/2024
-async function search(e, orderNumber) {
+async function search (e, orderNumber) {
     clearSearchResult(orderNumber);
 
     const value = e.target.value;
-    if (value === undefined || value === "") return;
+    if(value === undefined || value === "") return;
 
     const products = await productStorage.filter(value);
 
-    for (let i = 0; i < products.length; i++) {
+    for(let i = 0; i < products.length; i++) {
         const item = document.createElement('a');
         item.setAttribute('class', 'text-decoration-none');
         const itemContent = `
@@ -32,7 +32,7 @@ async function search(e, orderNumber) {
             </div>
             
         `;
-
+        
         item.onclick = function () {
             const { id, name, price, image } = products[i]
             handleItemSelect(id, name, price, image, orderNumber);
@@ -46,7 +46,7 @@ async function search(e, orderNumber) {
 async function checkout(orderNumber) {
     const order = orderStorage.getOrder(orderNumber);
 
-    if (order.items.length === 0) {
+    if(order.items.length === 0) {
         alert("Phải có ít nhất 1 sản phẩm trong giỏ hàng");
         return;
     }
@@ -97,8 +97,8 @@ function generateCheckoutArea(orderNumber) {
     return `
         <div class="d-flex justify-content-end">
             <div class="me-3">
-                <p>Khuyến mãi: <span id="discount-amount-${orderNumber}">${order.discountAmount.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</span></p>
-                <p>Tổng: <span id="total-amount-${orderNumber}">${order.totalAmount.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</span></p>
+                <p>Khuyến mãi: <span id="discount-amount-${orderNumber}">${order.discountAmount.toLocaleString('vi', {style : 'currency', currency : 'VND'})}</span></p>
+                <p>Tổng: <span id="total-amount-${orderNumber}">${order.totalAmount.toLocaleString('vi', {style : 'currency', currency : 'VND'})}</span></p>
             </div>
             <button class="btn btn-primary" onclick="checkout(${orderNumber})">Thanh toán</button>
         </div>
@@ -123,7 +123,7 @@ function generateSearchForm(orderNumber) {
     inputSearch.setAttribute('placeholder', 'Tên, mã sản phẩm...');
     inputSearch.setAttribute('class', 'form-control');
 
-    inputSearch.oninput = async function (e) {
+    inputSearch.oninput = async function(e) {
         await search(e, orderNumber);
     }
 
@@ -152,7 +152,7 @@ function generateTableHeader() {
 function generateTableBody(order) {
     let rows = ''
 
-    for (let i = 0; i < order.items.length; i++) {
+    for(let i = 0; i < order.items.length; i++) {
         const inputQuantity = document.createElement('input');
         inputQuantity.setAttribute('class', 'form-control');
 
@@ -163,7 +163,7 @@ function generateTableBody(order) {
                     <img src="${order.items[i].image}" class="img-thumbnail" style="width: 50%"/>
                 </td>
                 <td>${order.items[i].name}</td>
-                <td>${order.items[i].price.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</td>
+                <td>${order.items[i].price.toLocaleString('vi', {style : 'currency', currency : 'VND'})}</td>
                 <td>
                     <input class="form-control" value="${order.items[i].quantity}" type="number" onchange="handleInputChange(event, '${order.items[i].id.toString()}', ${order.tempId})"/>
                 </td>
@@ -192,7 +192,7 @@ function generateTableItem(orderNumber) {
     const body = document.createElement('tbody');
     table.setAttribute('class', 'table');
     body.setAttribute('id', `order-table-body-${orderNumber}`)
-
+    
     $(body).append(generateTableBody(order));
     $(table).append(generateTableHeader());
     $(table).append(body);
@@ -204,7 +204,7 @@ function generateOrderViewContent(orderNumber) {
     const container = document.createElement('div');
     const tableArea = document.createElement('div');
     const checkoutArea = document.createElement('div');
-
+    
     container.setAttribute('class', 'tab-pane fade');
     container.setAttribute('id', `order-${orderNumber}`);
     container.setAttribute('role', 'tabpanel');
@@ -230,7 +230,7 @@ function reRenderTableBody(orderNumber) {
     const order = orderStorage.getOrder(orderNumber);
     $(`#empty-order-${orderNumber}-message`).remove();
 
-    if ($(`#order-table-body-${orderNumber}`).length) {
+    if($(`#order-table-body-${orderNumber}`).length) {
         $(`#order-table-body-${orderNumber}`).empty();
         $(`#order-table-body-${orderNumber}`).append(generateTableBody(order));
     }
@@ -241,12 +241,12 @@ function reRenderTableBody(orderNumber) {
 
 function reRenderCheckoutArea(orderNumber) {
     const order = orderStorage.getOrder(orderNumber);
-    $(`#discount-amount-${orderNumber}`).text(order.discountAmount.toLocaleString('vi', { style: 'currency', currency: 'VND' }));
-    $(`#total-amount-${orderNumber}`).text(order.totalAmount.toLocaleString('vi', { style: 'currency', currency: 'VND' }));
+    $(`#discount-amount-${orderNumber}`).text(order.discountAmount.toLocaleString('vi', {style : 'currency', currency : 'VND'}));
+    $(`#total-amount-${orderNumber}`).text(order.totalAmount.toLocaleString('vi', {style : 'currency', currency : 'VND'}));
     $
 }
 
-function handleRemoveItem(orderNumber, id) {
+function handleRemoveItem (orderNumber, id) {
     const order = orderStorage.getOrder(orderNumber);
     order.removeItem(id);
     updateOrderPrice();
@@ -254,13 +254,13 @@ function handleRemoveItem(orderNumber, id) {
     reRenderCheckoutArea(orderNumber);
 }
 
-function handleInputChange(e, id, orderNumber) {
+function handleInputChange (e, id, orderNumber) {
     const order = orderStorage.getOrder(orderNumber);
     order.updateQuantity(id, parseInt(e.target.value));
     reRenderCheckoutArea(orderNumber);
 }
 
-function handleItemSelect(id, name, price, image, orderNumber) {
+function handleItemSelect (id, name, price, image, orderNumber) {
     clearSearchResult(orderNumber);
     const order = orderStorage.getOrder(orderNumber);
     order.addItem(id, 1, price, name, image);
@@ -270,12 +270,12 @@ function handleItemSelect(id, name, price, image, orderNumber) {
 
 $('#newCartAddBtn').on('click', function () {
     const nextOrderNumber = orderStorage.getNextOrderNumber();
-    if (nextOrderNumber >= 10) return;
+    if(nextOrderNumber >= 10) return;
     orderStorage.addOrder(nextOrderNumber);
     $('#order-tab').append(`<button class="nav-link" id="order-${nextOrderNumber}-tab" data-bs-toggle="tab" data-bs-target="#order-${nextOrderNumber}" type="button" role="tab" aria-controls="order-${nextOrderNumber}" aria-selected="true">Giỏ hàng ${nextOrderNumber + 1}</button>`)
     $('#order-tabContent').append(generateOrderViewContent(nextOrderNumber));
 })
 
-$('#search-0').on('input', async function (e) {
+$('#search-0').on('input', async function(e) {
     await search(e, 0);
 })

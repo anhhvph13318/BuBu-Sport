@@ -1,5 +1,4 @@
-﻿
-class Order {
+﻿class Order {
     items = [];
     totalAmount = 0;
     discountAmount = 0;
@@ -16,7 +15,7 @@ class Order {
 
     reCalculateOrderPrice() {
         let tempAmount = 0;
-        for (let i = 0; i < this.items.length; i++) {
+        for(let i = 0; i < this.items.length; i++) {
             tempAmount += (this.items[i].quantity * this.items[i].price);
         }
 

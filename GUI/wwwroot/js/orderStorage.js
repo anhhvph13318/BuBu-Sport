@@ -1,4 +1,4 @@
-﻿class OrderStorage {
+class OrderStorage {
     orders = [];
 
     constructor() {
@@ -18,7 +18,7 @@
         return order;
     }
 
-    getNextOrderNumber() {
+    getNextOrderNumber()  {
         return this.orders.length;
     }
 
@@ -31,7 +31,7 @@
             method: 'POST',
             body: JSON.stringify(order)
         });
-
+    
         if (res.status === 204) {
             alert("Tạo thành công");
             this.orders = this.orders.filter(e => e.tempId != order.tempId);
