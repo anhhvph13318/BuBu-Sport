@@ -204,3 +204,14 @@ function clearOrder() {
     .then(res => res.json())
     .then(data => updateAllView(data));
 }
+
+function saveTempOrder() {
+    fetch(ORDER_TEMP_SAVE_API, {
+        method: 'POST'
+    })
+    .then(res => res.json())
+    .then(data => {
+        $('#orderTempSaveContainer').html('');
+        $('#orderTempSaveContainer').html(data.tempOrders);
+    })
+}

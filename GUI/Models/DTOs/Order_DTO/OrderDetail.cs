@@ -16,7 +16,7 @@ public class OrderDetail
     public decimal VoucherDiscountAmount { get; set; }
     public decimal DiscountAmout { get; set; }
     public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
-    public bool IsDraft { get; set; }
+    public DateTime TempOrderCreatedTime { get; set; }
 
     public void ReCalculatePaymentInfo()
     {

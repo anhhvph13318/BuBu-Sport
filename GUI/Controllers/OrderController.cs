@@ -19,6 +19,7 @@ public class OrderController : Controller
     private const string OrderPaymentInfoPartialView = "_OrderPaymentInfoPartialView";
     private const string OrderShippingInfoPartialView = "_OrderShippingInfoPartialView";
     private const string OrderButtonActionPartialView = "_OrderButtonActionPartialView";
+    private const string OrderListPartialView = "_OrderListPartialView";
 
     [HttpGet]
     public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)
@@ -98,11 +99,19 @@ public class OrderController : Controller
 
     [HttpPost]
     [Route("save-to-session")]
-    public IActionResult SaveOrder([FromBody] OrderDetail order)
+    public async Task<IActionResult> SaveOrder()
     {
-        order.IsDraft = true;
-        HttpContext.Session.SaveTempOrder(order);
-        return Json(order);
+        var order = HttpContext.Session.GetCurrentOrder();
+
+        if (order.Items.Count == 0) return BadRequest();
+
+        order.TempOrderCreatedTime = DateTime.Now;
+        var tempOrders = HttpContext.Session.SaveTempOrder(order);
+
+        return Json(new
+        {
+            TempOrders = await RenderViewAsync(OrderListPartialView, tempOrders)
+        });
     }
 
     [HttpPost]

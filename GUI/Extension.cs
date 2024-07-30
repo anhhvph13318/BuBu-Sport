@@ -9,18 +9,20 @@ namespace GUI
         private static string ORDER_KEY = "temp_orders";
         private const string CURRENT_ORDER = "CURRENT_ORDER";
 
-        public static IList<OrderDetail> GetTempOrders(this ISession session)
+        public static List<OrderDetail> GetTempOrders(this ISession session)
         {
             var json = session.GetString(ORDER_KEY);
-            if (string.IsNullOrEmpty(json)) return Array.Empty<OrderDetail>();
-            return JsonConvert.DeserializeObject<IList<OrderDetail>>(json ?? throw new NullReferenceException()) ?? throw new NullReferenceException();
+            if (string.IsNullOrEmpty(json)) return new();
+            return JsonConvert.DeserializeObject<List<OrderDetail>>(json) ?? throw new NullReferenceException();
         }
 
-        public static void SaveTempOrder(this ISession session, OrderDetail order)
+        public static IEnumerable<OrderDetail> SaveTempOrder(this ISession session, OrderDetail order)
         {
             var orders = session.GetTempOrders();
             orders.Add(order);
             session.SetString(ORDER_KEY, JsonConvert.SerializeObject(orders));
+
+            return orders.OrderByDescending(e => e.TempOrderCreatedTime);
         }
 
         public static OrderDetail? GetOrderFromList(this ISession session, string id)
@@ -39,6 +41,7 @@ namespace GUI
                     ShippingInfo = new ShippingInfo(),
                     PaymentInfo = new PaymentInfo(),
                     Customer = new CustomerInfo(),
+                    Items = new List<OrderItem>()
                 };
 
                 session.SaveCurrentOrder(order);

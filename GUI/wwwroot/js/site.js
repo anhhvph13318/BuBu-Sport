@@ -17,5 +17,6 @@ const ORDER_REMOVE_ITEM = (id) => `${HOST_URL}/orders/items/${id}`;
 const ORDER_CHECKOUT_API = `${HOST_URL}/orders/checkout`;
 const ORDER_UPDATE_API = `${HOST_URL}/orders/update`;
 const ORDER_CLEAR_API = `${HOST_URL}/orders/clear`;
+const ORDER_TEMP_SAVE_API = `${HOST_URL}/orders/save-to-session`;
 
 const GET_BASIC_CUSTOMER_INFO = (phone) => `${HOST_URL}/orders/customers/${phone}`;
