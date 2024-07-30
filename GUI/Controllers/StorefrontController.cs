@@ -187,5 +187,10 @@ namespace GUI.Controllers
 			public string? zipCode { get; set; }
 			public string? note { get; set; }
         }
+
+		public class UpdateCartItemObject
+		{
+
+		}
 	}
 }

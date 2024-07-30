@@ -60,8 +60,14 @@ namespace DATN_ACV_DEV.Controllers
                     //    product.Quantity -= (_request.Quantity.Value - cartDetail.Quantity.Value);
 
                     //}
-                    cartDetail.Quantity = _request.Quantity;
-
+                    if (_request.IsIncrement)
+                    {
+						cartDetail.Quantity += _request.Quantity;
+                    }
+                    else
+                    {
+						cartDetail.Quantity = _request.Quantity;
+					}
 
                 }
             }

@@ -184,7 +184,7 @@
 	});
 
 	$('.remove-item').on('click', function () {
-		$.post("/DeleteItem", { id: $(this).attr('data-itemId') }, function () {
+		$.post("/DeleteItem", { id: $(this).parent().parent().attr('data-itemId') }, function () {
 			window.location.reload();
 		});
 	});
@@ -220,4 +220,17 @@
 		}
 	});
 
+	let changequant;
+	$('.input-quant').on('keyup', function () {
+		var value = $(this).val();
+        if (isNaN(value)) {
+			$(this).val($(this).attr('data-value'));
+		}
+        if (changequant) {
+			clearTimeout(changeQuant);
+        }
+		changeQuant = setTimeout(function () {
+
+		}, 500)
+	});
 })(jQuery);
