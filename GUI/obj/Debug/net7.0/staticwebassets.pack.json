@@ -5,6 +5,26 @@
       "PackagePath": "staticwebassets\\GUI.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\Image\\logo-1.png",
+      "PackagePath": "staticwebassets\\Image\\logo-1.png"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\assets\\bglogin.jpeg",
+      "PackagePath": "staticwebassets\\assets\\bglogin.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\assets\\overlay2.jpeg",
+      "PackagePath": "staticwebassets\\assets\\overlay2.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\assets\\overlay3.png",
+      "PackagePath": "staticwebassets\\assets\\overlay3.png"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\assets\\overlaylogin.jpeg",
+      "PackagePath": "staticwebassets\\assets\\overlaylogin.jpeg"
+    },
+    {
       "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
@@ -259,6 +279,94 @@
     {
       "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\storefront\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\css\\font-awesome.min.css",
+      "PackagePath": "staticwebassets\\storefront\\css\\font-awesome.min.css"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\css\\nouislider.min.css",
+      "PackagePath": "staticwebassets\\storefront\\css\\nouislider.min.css"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\css\\slick-theme.css",
+      "PackagePath": "staticwebassets\\storefront\\css\\slick-theme.css"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\css\\slick.css",
+      "PackagePath": "staticwebassets\\storefront\\css\\slick.css"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\css\\style.css",
+      "PackagePath": "staticwebassets\\storefront\\css\\style.css"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\FontAwesome.otf",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\FontAwesome.otf"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\fontawesome-webfont.eot",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\fontawesome-webfont.eot"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\fontawesome-webfont.svg",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\fontawesome-webfont.svg"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\fontawesome-webfont.ttf",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\fontawesome-webfont.ttf"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\fontawesome-webfont.woff",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\fontawesome-webfont.woff"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\fontawesome-webfont.woff2",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\fontawesome-webfont.woff2"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\slick.eot",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\slick.eot"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\slick.svg",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\slick.svg"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\slick.ttf",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\slick.ttf"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\fonts\\slick.woff",
+      "PackagePath": "staticwebassets\\storefront\\fonts\\slick.woff"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\storefront\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\js\\jquery.min.js",
+      "PackagePath": "staticwebassets\\storefront\\js\\jquery.min.js"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\js\\jquery.zoom.min.js",
+      "PackagePath": "staticwebassets\\storefront\\js\\jquery.zoom.min.js"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\js\\main.js",
+      "PackagePath": "staticwebassets\\storefront\\js\\main.js"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\js\\nouislider.min.js",
+      "PackagePath": "staticwebassets\\storefront\\js\\nouislider.min.js"
+    },
+    {
+      "Id": "C:\\Users\\pc\\source\\repos\\SmartHousse\\GUI\\wwwroot\\storefront\\js\\slick.min.js",
+      "PackagePath": "staticwebassets\\storefront\\js\\slick.min.js"
     },
     {
       "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.GUI.Microsoft.AspNetCore.StaticWebAssets.props",

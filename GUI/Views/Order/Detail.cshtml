@@ -14,12 +14,12 @@ else
     <div class="container row">
         <div class="col-md-8">
             <h3>Danh sách sản phẩm</h3>
-            <hr/>
+            <hr />
             @foreach (var item in Model.Items)
             {
                 <div class="mb-3 row">
                     <div class="col-md-4">
-                        <img class="img-thumbnail" src="@item.ProductImage" alt="@item.ProductName"/>
+                        <img class="img-thumbnail" src="@item.ProductImage" alt="@item.ProductName" />
                     </div>
                     <div class="col-md-8">
                         <p>@item.ProductName</p>
@@ -32,39 +32,39 @@ else
             <h3>Thông tin</h3>
             <table class="table table-striped">
                 <tbody>
-                <tr>
-                    <td>Tên:</td>
-                    <td>@Model.CustomerName</td>
-                </tr>
-                <tr>
-                    <td>Số điện thoại:</td>
-                    <td>@Model.PhoneNumber</td>
-                </tr>
-                <tr>
-                    <td>Địa chỉ giao hàng:</td>
-                    <td>@Model.ShippingAddress</td>
-                </tr>
-                <hr/>
-                <tr>
-                    <td>Trạng thái:</td>
-                    <td>@Model.Status</td>
-                </tr>
-                <tr>
-                    <td>Phương thức thanh toán: </td>
-                    <td>@Model.PaymentMethodName</td>
-                </tr>
-                <tr>
-                    <td>Voucher:</td>
-                    <td>@Model.VoucherDiscountAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                </tr>
-                <tr>
-                    <td>Khuyến mãi: </td>
-                    <td>@Model.DiscountAmout.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                </tr>
-                <tr>
-                    <td>Tổng:</td>
-                    <td>@Model.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                </tr>
+                    <tr>
+                        <td>Tên:</td>
+                        <td>@Model.CustomerName</td>
+                    </tr>
+                    <tr>
+                        <td>Số điện thoại:</td>
+                        <td>@Model.PhoneNumber</td>
+                    </tr>
+                    <tr>
+                        <td>Địa chỉ giao hàng:</td>
+                        <td>@Model.ShippingAddress</td>
+                    </tr>
+                    <hr />
+                    <tr>
+                        <td>Trạng thái:</td>
+                        <td>@Model.Status</td>
+                    </tr>
+                    <tr>
+                        <td>Phương thức thanh toán: </td>
+                        <td>@Model.PaymentMethodName</td>
+                    </tr>
+                    <tr>
+                        <td>Voucher:</td>
+                        <td>@Model.VoucherDiscountAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                    </tr>
+                    <tr>
+                        <td>Khuyến mãi: </td>
+                        <td>@Model.DiscountAmout.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                    </tr>
+                    <tr>
+                        <td>Tổng:</td>
+                        <td>@Model.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

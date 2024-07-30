@@ -37,7 +37,8 @@ public class OrderDetailAdminController : ControllerBase
                 DiscountAmout = 0,
                 VoucherDiscountAmount = 0,
                 TotalAmount = e.TotalAmount ?? 0,
-                Status = Common.ConvertStatusOrder(e.Status ?? 1),
+                StatusText = Common.ConvertStatusOrder(e.Status ?? 0),
+                Status = e.Status ?? 0,
                 Items = e.TbOrderDetails.Select(d => new OrderItem()
                 {
                     Id = d.Id,

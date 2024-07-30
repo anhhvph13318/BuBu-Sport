@@ -61,15 +61,14 @@ namespace DATN_ACV_DEV.Controllers
 
         public void CheckAuthorization()
         {
-            if (_request.LoginType)
-            {
-                _request.Authorization(_context, _apiCode);
-            }
-            else
-            {
-                _request.AuthorizationCustomer(_context, _apiCode);
-            }
-
+            //if (_request.LoginType)
+            //{
+            //    _request.Authorization(_context, _apiCode);
+            //}
+            //else
+            //{
+            //    _request.AuthorizationCustomer(_context, _apiCode);
+            //}
         }
         public void AddCartAdmin()
         {
@@ -124,7 +123,7 @@ namespace DATN_ACV_DEV.Controllers
                     AddCartCustomer();
                 }
             }
-            else
+            try
             {
                 var LstproductID = _context.TbCartDetails.Where(c => c.CartId == checkExistCart.Id).ToList();
                 var Product = LstproductID.Where(c => c.ProductId == _request.ProductId).FirstOrDefault();
@@ -143,6 +142,10 @@ namespace DATN_ACV_DEV.Controllers
                     };
                     checkProduct = true;
                 }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -163,8 +166,8 @@ namespace DATN_ACV_DEV.Controllers
             try
             {
                 _request = request;
-                CheckAuthorization();
-                PreValidation();
+                //CheckAuthorization();
+                //PreValidation();
                 GenerateObjects();
                 //PostValidation();
                 AccessDatabase();
