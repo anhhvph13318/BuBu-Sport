@@ -1,0 +1,26 @@
+﻿@model GUI.Model_DTO.User_DTO.DetailUserResponse
+
+@{
+    ViewData["Title"] = "View";
+}
+
+
+<h3>Có chắc muốn xóa?</h3>
+<div>
+    <h4>Người dùng</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UserName): 
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+    </dl>
+    
+    <form asp-action="ConfirmDelete">
+        <input name="Id" value="@Model.Id" hidden/>
+        <input type="submit" value="Xóa" class="btn btn-danger" /> |
+        <a asp-action="Index">Quay lại</a>
+    </form>
+</div>

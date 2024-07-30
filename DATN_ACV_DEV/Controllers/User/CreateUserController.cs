@@ -53,7 +53,7 @@ namespace DATN_ACV_DEV.Controllers.User
                 Position = _request.Position,
                 UserCode = _request.UserCode,
                 FullName = _request.FullName,
-                InActive = false,
+                InActive = _request.InActive,
                 CreateDate = DateTime.Now,
                 CreateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"),
             };
@@ -61,7 +61,10 @@ namespace DATN_ACV_DEV.Controllers.User
 
         public void PreValidation()
         {
-            throw new NotImplementedException();
+            var check = _context.TbUsers.Any(u => u.UserName == _request.UserName);
+            if (check) {
+                throw new ACV_Exception() { Messages = new List<Message>() { new Message() { MessageText = "Tên đăng nhập đã tồn tại" } } };
+            }
         }
         [HttpPost]
         [Route("Process")]
@@ -71,7 +74,7 @@ namespace DATN_ACV_DEV.Controllers.User
             {
                 _request = request;
                 //CheckAuthorization();
-                //PreValidation();
+                PreValidation();
                 GenerateObjects();
                 //PostValidation();
                 AccessDatabase();

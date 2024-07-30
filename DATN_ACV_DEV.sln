@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DATN_ACV_DEV", "DATN_ACV_DEV\DATN_ACV_DEV.csproj", "{3B93F411-4202-4BEE-869E-51AC421E921D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DATN_ACV_DEV", "DATN_ACV_DEV\DATN_ACV_DEV.csproj", "{3B93F411-4202-4BEE-869E-51AC421E921D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{D40FE7C7-3545-4D47-87DA-99739FC5E452}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{3B93F411-4202-4BEE-869E-51AC421E921D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B93F411-4202-4BEE-869E-51AC421E921D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B93F411-4202-4BEE-869E-51AC421E921D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D40FE7C7-3545-4D47-87DA-99739FC5E452}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D40FE7C7-3545-4D47-87DA-99739FC5E452}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D40FE7C7-3545-4D47-87DA-99739FC5E452}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D40FE7C7-3545-4D47-87DA-99739FC5E452}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

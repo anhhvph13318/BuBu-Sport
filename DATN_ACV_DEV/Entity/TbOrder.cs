@@ -48,4 +48,6 @@ public partial class TbOrder
     public string? AddressCustomer { get; set; }
 
     public virtual ICollection<TbOrderDetail> TbOrderDetails { get; set; } = new List<TbOrderDetail>();
+    public virtual TbCustomer? Customer { get; set; }
+    public virtual TbAddressDelivery? AddressDelivery { get; set; }
 }

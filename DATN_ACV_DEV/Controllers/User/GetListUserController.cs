@@ -34,9 +34,9 @@ namespace DATN_ACV_DEV.Controllers.User
             List<UserDTO> LstUser = new List<UserDTO>();
             var model = _context.TbUsers.Where(c => (!string.IsNullOrEmpty(_request.UserName) ? c.UserName.Contains(_request.UserName) : true)
                         && (!string.IsNullOrEmpty(_request.FullName) ? c.FullName == _request.FullName : true)
-                        && (!string.IsNullOrEmpty(_request.Position) ? c.Position.ToString() == _request.Position : true)
-                        && (!string.IsNullOrEmpty(_request.Email) ? c.Email.ToString() == _request.Email : true)
-                        && (!string.IsNullOrEmpty(_request.UserCode) ? c.UserCode.ToString() == _request.UserCode : true)
+                        && (!string.IsNullOrEmpty(_request.Position) ? c.Position == _request.Position : true)
+                        && (!string.IsNullOrEmpty(_request.Email) ? c.Email == _request.Email : true)
+                        && (!string.IsNullOrEmpty(_request.UserCode) ? c.UserCode == _request.UserCode : true)
                         ).OrderByDescending(d => d.CreateDate);
             _response.TotalCount = model.Count();
             var query = _mapper.Map<List<UserDTO>>(model);
