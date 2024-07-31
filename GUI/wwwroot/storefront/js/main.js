@@ -220,17 +220,79 @@
 		}
 	});
 
-	let changequant;
-	$('.input-quant').on('keyup', function () {
-		var value = $(this).val();
+	let changeQuant;
+	$('.input-quant').on('change', function () {
+		let el = $(this);
+		let value = $(this).val();
+		let id = $(this).parent().parent().attr('data-itemId');
         if (isNaN(value)) {
 			$(this).val($(this).attr('data-value'));
+			return;
 		}
-        if (changequant) {
+
+		if (changeQuant) {
 			clearTimeout(changeQuant);
         }
 		changeQuant = setTimeout(function () {
-
+			updateQuantity(value, id, false, el);
+			el.attr('data-value', value);
+			
 		}, 500)
 	});
+
+	$('.quant-down').on('click', function () {
+		let el = $(this);
+		let value = -1;
+		let id = $(this).attr('data-itemId');
+
+		let price = $(`#item-${id}`).attr('data-price');
+		let quant = $(`#quant-${id}`).val();
+		$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
+
+			updateQuantity(value, id, true, el);
+			el.attr('data-value', value);
+	});
+	$('.quant-up').on('click', function () {
+		let el = $(this);
+		let value = 1;
+		let id = $(this).attr('data-itemId');
+
+		let price = $(`#item-${id}`).attr('data-price');
+		let quant = $(`#quant-${id}`).val();
+		$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
+
+		updateQuantity(value, id, true, el);
+		el.attr('data-value', value);
+	});
+
+	const updateQuantity = function (quantity, id, incre, el) {
+		$.post("/ChangeQuantity", {
+			cartDetaiID: id,
+			quantity: quantity,
+			isIncrement: incre
+		}, function (data) {
+            if (data && data.success) {
+				let subTotal = parseFloat(data.data.quantity) * parseFloat(data.data.price);
+				if (!incre) {
+					$(`#sub-${id}`).text(subTotal);
+					UpdatePrice();
+                }
+			} else {
+				el.val(el.attr('data-value'));
+            }
+		});
+	}
+
+	const UpdatePrice = function () {
+		let subTotals = $('.sub-total');
+		let total = 0;
+		$.each(subTotals ,function (i, obj) {
+			let number = parseFloat(obj.innerText);
+            if (number) {
+				total += number;
+            }
+		});
+
+		$('.order-total').text(total);
+	}
 })(jQuery);

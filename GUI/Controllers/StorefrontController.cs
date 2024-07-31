@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NuGet.Configuration;
+using System.Security.Policy;
 
 namespace GUI.Controllers
 {
@@ -176,6 +177,38 @@ namespace GUI.Controllers
 			});
 		}
 
+		[HttpPost("/ChangeQuantity")]
+		public async Task<JsonResult> ChangeQuantity(UpdateCartItem obj)
+		{
+			try
+			{
+				var req = new EditCartRequest()
+				{
+					CartDetaiID = new Guid(obj.cartDetaiID),
+					Quantity = obj.quantity,
+					IsIncrement = obj.isIncrement
+				};
+				var URL = _settings.APIAddress + "api/EditCartItem/Process";
+				var param = JsonConvert.SerializeObject(req);
+				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+				var result = JsonConvert.DeserializeObject<BaseResponse<EditCartResponse>>(res) ?? new();
+				if (result.Status == "200")
+				{
+					return Json(new
+					{
+						success = true,
+						data = result.Data
+					});
+				}
+			}
+			catch (Exception)
+			{
+			}
+			return Json(new
+			{
+				success = false
+			});
+		}
 
 		public class CreateOrderObject
 		{
@@ -188,9 +221,11 @@ namespace GUI.Controllers
 			public string? note { get; set; }
         }
 
-		public class UpdateCartItemObject
-		{
-
+        public class UpdateCartItem
+        {
+			public string cartDetaiID { get; set; }
+			public int? quantity { get; set; }
+			public bool isIncrement { get; set; }
 		}
-	}
+    }
 }

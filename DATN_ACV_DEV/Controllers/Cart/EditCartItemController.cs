@@ -69,9 +69,11 @@ namespace DATN_ACV_DEV.Controllers
 						cartDetail.Quantity = _request.Quantity;
 					}
 
-                }
+				}
             }
             _context.SaveChanges();
+			_response.quantity = _request.Quantity ?? 0;
+			_response.price = cartDetail.Product.Price;
             _res.Data = _response;
         }
 
@@ -110,7 +112,7 @@ namespace DATN_ACV_DEV.Controllers
             try
             {
                 _request = request;
-                CheckAuthorization();
+                //CheckAuthorization();
                 PreValidation();
                 //GenerateObjects();
                 //PostValidation();

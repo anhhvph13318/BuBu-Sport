@@ -1,6 +1,6 @@
-﻿using DATN_ACV_DEV.FileBase;
+﻿using GUI.FileBase;
 
-namespace DATN_ACV_DEV.Model_DTO.Cart_DTO
+namespace GUI.Models.DTOs.Cart_DTO
 {
     public class EditCartRequest : BaseRequest
     {
