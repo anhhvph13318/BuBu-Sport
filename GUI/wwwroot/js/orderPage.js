@@ -97,6 +97,7 @@ function show(id) {
         $('#orderStatus').val(data.status.toString());
         $('#shippingLocation').trigger('change');
         $('#orderStatus').trigger('change');
+        $('#isSameAsCustomerAddress').trigger('change');
     });
 }
 

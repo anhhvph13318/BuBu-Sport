@@ -64,9 +64,10 @@ public class OrderController : Controller
                     await rawResponse.Content.ReadAsStringAsync());
              
             order = response!.Data;
-            order.ShippingInfo.IsCustomerTakeYourSelf = order.IsCustomerTakeYourSelf;
-            order.ShippingInfo.IsSameAsCustomerAddress = order.IsSameAsCustomerAddress;
         }
+
+        order.ShippingInfo.IsCustomerTakeYourSelf = order.IsCustomerTakeYourSelf;
+        order.ShippingInfo.IsSameAsCustomerAddress = order.IsSameAsCustomerAddress;
 
         HttpContext.Session.SaveCurrentOrder(order);
 
