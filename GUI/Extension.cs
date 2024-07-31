@@ -6,7 +6,7 @@ namespace GUI
     public static class Extension
     {
 
-        private static string ORDER_KEY = "temp_orders";
+        private const string ORDER_KEY = "TEMP_ORDERS";
         private const string CURRENT_ORDER = "CURRENT_ORDER";
 
         public static List<OrderDetail> GetTempOrders(this ISession session)
@@ -16,13 +16,13 @@ namespace GUI
             return JsonConvert.DeserializeObject<List<OrderDetail>>(json) ?? throw new NullReferenceException();
         }
 
-        public static IEnumerable<OrderDetail> SaveTempOrder(this ISession session, OrderDetail order)
+        public static List<OrderDetail> SaveTempOrder(this ISession session, OrderDetail order)
         {
             var orders = session.GetTempOrders();
             orders.Add(order);
             session.SetString(ORDER_KEY, JsonConvert.SerializeObject(orders));
-
-            return orders.OrderByDescending(e => e.TempOrderCreatedTime);
+            
+            return orders.OrderByDescending(e => e.TempOrderCreatedTime).ToList();
         }
 
         public static OrderDetail? GetOrderFromList(this ISession session, string id)

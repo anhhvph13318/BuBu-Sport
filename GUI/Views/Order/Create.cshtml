@@ -55,7 +55,7 @@
                 </h2>
                 <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
                     <div class="accordion-body" id="orderTempSaveContainer">
-                        
+                        @await Html.PartialAsync("_OrderTempListPartialView", ViewData["OrderTemps"] as List<OrderDetail>)
                     </div>
                 </div>
             </div>

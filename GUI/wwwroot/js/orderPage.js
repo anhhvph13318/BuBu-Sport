@@ -206,12 +206,39 @@ function clearOrder() {
 }
 
 function saveTempOrder() {
+    const customerInfo = {
+        name: $('#customerName').val(),
+        phoneNumber: $('#customerPhoneNumber').val(),
+        address: $('#customerAddress').val(),
+    };
+
+    const shippingInfo = {
+        name: $('#receiverName').val(),
+        phoneNumber: $('#receiverPhoneNumber').val(),
+        address: $('#receiverAddress').val()
+    }
+
+    const payload = {
+        isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
+        isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
+        status: $('#orderStatus').val(),
+        customerInfo,
+        shippingInfo
+    }
+
+
     fetch(ORDER_TEMP_SAVE_API, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
     })
     .then(res => res.json())
     .then(data => {
         $('#orderTempSaveContainer').html('');
         $('#orderTempSaveContainer').html(data.tempOrders);
     })
+    .then(_ => toastr.success("Lưu thành công!"))
+    .then(_ => clearOrder());
 }

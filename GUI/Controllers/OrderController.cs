@@ -20,6 +20,7 @@ public class OrderController : Controller
     private const string OrderShippingInfoPartialView = "_OrderShippingInfoPartialView";
     private const string OrderButtonActionPartialView = "_OrderButtonActionPartialView";
     private const string OrderListPartialView = "_OrderListPartialView";
+    private const string OrderTempListPartialView = "_OrderTempListPartialView";
 
     [HttpGet]
     public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)
@@ -31,7 +32,7 @@ public class OrderController : Controller
             JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
 
-        return View(response.Data);
+        return View(response!.Data);
     }
 
     [HttpGet]
@@ -45,7 +46,7 @@ public class OrderController : Controller
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
 
-        return View(response.Data);
+        return View(response!.Data);
     }
 
     [HttpGet]
@@ -92,25 +93,32 @@ public class OrderController : Controller
             JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
 
-        ViewData["OrderSaved"] = response.Data;
+        ViewData["OrderSaved"] = response!.Data;
+        ViewData["OrderTemps"] = HttpContext.Session.GetTempOrders();
 
         return View();
     }
 
     [HttpPost]
     [Route("save-to-session")]
-    public async Task<IActionResult> SaveOrder()
+    public async Task<IActionResult> SaveOrder([FromBody] Checkout checkout)
     {
         var order = HttpContext.Session.GetCurrentOrder();
+        if (order.Customer.Id == Guid.Empty)
+            order.Customer = checkout.CustomerInfo;
 
-        if (order.Items.Count == 0) return BadRequest();
+        if(!checkout.IsShippingAddressSameAsCustomerAddress)
+            order.ShippingInfo = checkout.ShippingInfo;
 
+        order.Id = Guid.NewGuid();
         order.TempOrderCreatedTime = DateTime.Now;
+        order.IsCustomerTakeYourSelf = checkout.IsCustomerTakeYourSelf;
+        order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
         var tempOrders = HttpContext.Session.SaveTempOrder(order);
 
         return Json(new
         {
-            TempOrders = await RenderViewAsync(OrderListPartialView, tempOrders)
+            TempOrders = await RenderViewAsync(OrderTempListPartialView, tempOrders)
         });
     }
 
@@ -300,7 +308,8 @@ public class OrderController : Controller
             Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
-            Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo)
+            Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, true)
         });
     }
 
