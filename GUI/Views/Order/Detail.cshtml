@@ -14,12 +14,12 @@ else
     <div class="container row">
         <div class="col-md-8">
             <h3>Danh sách sản phẩm</h3>
-            <hr/>
+            <hr />
             @foreach (var item in Model.Items)
             {
                 <div class="mb-3 row">
                     <div class="col-md-4">
-                        <img class="img-thumbnail" src="@item.ProductImage" alt="@item.ProductName"/>
+                        <img class="img-thumbnail" src="@item.ProductImage" alt="@item.ProductName" />
                     </div>
                     <div class="col-md-8">
                         <p>@item.ProductName</p>

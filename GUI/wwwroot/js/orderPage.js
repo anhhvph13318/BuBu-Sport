@@ -2,6 +2,7 @@ const productStorage = new ProductStorage();
 
 $('body').on('click', function () {
     $('.autocomplete-items').each(function() {
+    $('.autocomplete-items').each(function() {
         $(this).empty();
     })
 });
@@ -18,6 +19,7 @@ $('#search').on('input', async function(e) {
     const products = await productStorage.filter(value);
 
     for(let i = 0; i < products.length; i++) {
+    for(let i = 0; i < products.length; i++) {
         const item = document.createElement('a');
         item.setAttribute('class', 'text-decoration-none');
         const itemContent = `
@@ -26,7 +28,7 @@ $('#search').on('input', async function(e) {
                 <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].name}</p>
             </div>
         `;
-
+        
         item.onclick = function () {
             const { id, name, price, image } = products[i]
             handleItemSelect(id, name, price, image);

@@ -22,6 +22,11 @@
 .vs/DATN_SMARTHOUSE_DEV/v17/.suo
 .vs/DATN_SMARTHOUSE_DEV/v17/DocumentLayout.json
 .vs/DATN_ACV_DEV/v17/HierarchyCache.v1.txt
-/.vs
-GUI/bin
-GUI/obj
+.vs/
+GUI/bin/
+GUI/obj/
+/.vs/DATN_ACV_DEV/v17/.suo
+/.idea/.idea.DATN_ACV_DEV/.idea/vcs.xml
+/.idea/.idea.DATN_ACV_DEV/.idea/indexLayout.xml
+/.idea/.idea.DATN_ACV_DEV/.idea/encodings.xml
+/.idea/.idea.DATN_ACV_DEV/.idea/.name

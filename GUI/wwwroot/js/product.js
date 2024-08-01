@@ -16,7 +16,7 @@ class ProductStorage {
 
     async getProduct(id) {
         const res = await fetch(`${PRODUCT_SELECT_API}/${id}`, {
-
+            
         })
     }
 

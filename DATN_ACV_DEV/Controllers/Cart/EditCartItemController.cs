@@ -49,21 +49,28 @@ namespace DATN_ACV_DEV.Controllers
             {
                 if (_request.Quantity != null && _request.Quantity > 0)
                 {
-                    //var product = _context.TbProducts.Where(p => p.Id == cartDetail.ProductId).FirstOrDefault();
-                    //if (cartDetail.Quantity >= _request.Quantity)
-                    //{
-                    //    product.Quantity += (cartDetail.Quantity.Value - _request.Quantity.Value);
+					//var product = _context.TbProducts.Where(p => p.Id == cartDetail.ProductId).FirstOrDefault();
+					//if (cartDetail.Quantity >= _request.Quantity)
+					//{
+					//    product.Quantity += (cartDetail.Quantity.Value - _request.Quantity.Value);
 
-                    //}
-                    //if (cartDetail.Quantity < _request.Quantity)
-                    //{
-                    //    product.Quantity -= (_request.Quantity.Value - cartDetail.Quantity.Value);
+					//}
+					//if (cartDetail.Quantity < _request.Quantity)
+					//{
+					//    product.Quantity -= (_request.Quantity.Value - cartDetail.Quantity.Value);
 
-                    //}
-                    cartDetail.Quantity = _request.Quantity;
+					//}
+					if (_request.IsIncrement)
+					{
+						cartDetail.Quantity += _request.Quantity;
+					}
+					else
+					{
+						cartDetail.Quantity = _request.Quantity;
+					}
 
 
-                }
+				}
             }
             _context.SaveChanges();
             _res.Data = _response;
