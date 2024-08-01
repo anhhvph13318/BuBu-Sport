@@ -7,16 +7,16 @@ public partial class TbAddressDelivery
 {
     public Guid Id { get; set; }
 
-    public string ProvinceName { get; set; } = null!;
+    public string ProvinceName { get; set; } = string.Empty;
 
     public int ProviceId { get; set; }
 
-    public string DistrictName { get; set; } = null!;
+    public string DistrictName { get; set; } = string.Empty;
 
     public int DistrictId { get; set; }
 
-    public string WardName { get; set; } = null!;
-    public string WardCode { get; set; } = null!;
+    public string WardName { get; set; } = string.Empty;
+    public string WardCode { get; set; } = string.Empty;
 
     public int WardId { get; set; }
 
@@ -26,9 +26,9 @@ public partial class TbAddressDelivery
 
     public Guid? AccountId { get; set; }
 
-    public string? ReceiverName { get; set; }
+    public string ReceiverName { get; set; } = string.Empty;
 
-    public string? ReceiverPhone { get; set; }
+    public string ReceiverPhone { get; set; } = string.Empty;
 
     public virtual TbAccount? Account { get; set; } = null!;
 }

@@ -19,7 +19,13 @@ namespace GUI
         public static List<OrderDetail> SaveTempOrder(this ISession session, OrderDetail order)
         {
             var orders = session.GetTempOrders();
+            if(order.Id != Guid.Empty) {
+                var existOrder = orders.First(e => e.Id == order.Id);
+                orders.Remove(existOrder);
+            }
+            order.Id = Guid.NewGuid();
             orders.Add(order);
+
             session.SetString(ORDER_KEY, JsonConvert.SerializeObject(orders));
             
             return orders.OrderByDescending(e => e.TempOrderCreatedTime).ToList();

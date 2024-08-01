@@ -54,6 +54,7 @@ public class OrderController : Controller
     public async Task<IActionResult> ViewOrder([FromRoute] string id)
     {
         var order = HttpContext.Session.GetOrderFromList(id);
+        var isTempOrder = true;
         if(order is null)
         {
             using var httpClient = new HttpClient();
@@ -64,6 +65,7 @@ public class OrderController : Controller
                     await rawResponse.Content.ReadAsStringAsync());
              
             order = response!.Data;
+            isTempOrder = false;
         }
 
         order.ShippingInfo.IsCustomerTakeYourSelf = order.IsCustomerTakeYourSelf;
@@ -77,7 +79,7 @@ public class OrderController : Controller
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-            Buttons = await RenderViewAsync(OrderButtonActionPartialView, false),
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, isTempOrder),
             order.ShippingInfo.IsCustomerTakeYourSelf,
             order.Status
         });
@@ -109,9 +111,8 @@ public class OrderController : Controller
             order.Customer = checkout.CustomerInfo;
 
         if(!checkout.IsShippingAddressSameAsCustomerAddress)
-            order.ShippingInfo = checkout.ShippingInfo;
+            order.ShippingInfo = checkout.ShippingInfo;      
 
-        order.Id = Guid.NewGuid();
         order.TempOrderCreatedTime = DateTime.Now;
         order.IsCustomerTakeYourSelf = checkout.IsCustomerTakeYourSelf;
         order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
@@ -246,7 +247,6 @@ public class OrderController : Controller
             };
 
             HttpContext.Session.SaveCurrentOrder(order);
-
 
             return Json(new
             {

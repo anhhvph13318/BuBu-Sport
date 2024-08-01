@@ -150,7 +150,7 @@ function checkout() {
 
     const shippingInfo = {
         name: $('#receiverName').val(),
-        phoneNumber: $('#receiverPhoneNumber').val(),
+        phoneNumber: $('#receiverPhone').val(),
         address: $('#receiverAddress').val()
     }
 
@@ -176,7 +176,7 @@ function checkout() {
 function update() {
     const shippingInfo = {
         name: $('#receiverName').val(),
-        phoneNumber: $('#receiverPhoneNumber').val(),
+        phoneNumber: $('#receiverPhone').val(),
         address: $('#receiverAddress').val()
     }
 
@@ -215,7 +215,7 @@ function saveTempOrder() {
 
     const shippingInfo = {
         name: $('#receiverName').val(),
-        phoneNumber: $('#receiverPhoneNumber').val(),
+        phoneNumber: $('#receiverPhone').val(),
         address: $('#receiverAddress').val()
     }
 
