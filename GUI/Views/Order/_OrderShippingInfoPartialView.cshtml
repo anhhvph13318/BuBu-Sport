@@ -8,12 +8,16 @@
         <option value="1">Giao hàng</option>
     </select>
 </div>
-<div id="shippingLocationInfo" style="display: none">
+<div class="row">
+    <p class="mb-2" id="discount-amount">Địa chỉ: @Model.Address</p>
+</div>
+<div id="shippingLocationInfo" style="display: none;">
+    
     <div class="form-check mb-3">
         <input type="checkbox" class="form-check-input" onchange="isSameAsCustomerAddressChange()" checked="@Model.IsSameAsCustomerAddress" id="isSameAsCustomerAddress" />
         <label class="form-check-label ps-1">Giống với thông tin người dùng</label>
     </div>
-    <div style="display: none" id="shippingAddress">
+    <div style="display: none;" id="shippingAddress">
         <div class="mb-2">
             <label class="form-label">Họ tên người nhận</label>
             <input value="@Model.Name" id="receiverName" class="form-control" type="text" />

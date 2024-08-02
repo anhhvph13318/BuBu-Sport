@@ -8,5 +8,6 @@
         public decimal TotalTax { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal FinalAmount { get; set; }
+        public string ProductName { get; set; } = string.Empty;
     }
 }

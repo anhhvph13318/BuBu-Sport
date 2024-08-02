@@ -1,3 +1,4 @@
+using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using GUI.FileBase;
 using GUI.Models.DTOs.Order_DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace GUI.Controllers;
 
@@ -12,8 +14,15 @@ namespace GUI.Controllers;
 [Route("orders")]
 public class OrderController : Controller
 {
-    //private const string URI = "http://localhost:5059";
     private const string URI = "https://localhost:44383";
+    private const string CURRENT_ORDER = "CURRENT_ORDER";
+    private const string OrderItemListPartialView = "_OrderItemListPartialView";
+    private const string OrderCustomerInfoPartialView = "_OrderCustomerInfoPartialView";
+    private const string OrderPaymentInfoPartialView = "_OrderPaymentInfoPartialView";
+    private const string OrderShippingInfoPartialView = "_OrderShippingInfoPartialView";
+    private const string OrderButtonActionPartialView = "_OrderButtonActionPartialView";
+    private const string OrderListPartialView = "_OrderListPartialView";
+    private const string OrderTempListPartialView = "_OrderTempListPartialView";
 
     [HttpGet]
     public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)
@@ -48,7 +57,7 @@ public class OrderController : Controller
     {
         var order = HttpContext.Session.GetOrderFromList(id);
         var isTempOrder = true;
-        if(order is null)
+        if (order is null)
         {
             using var httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri(URI);
@@ -56,13 +65,14 @@ public class OrderController : Controller
             var response =
                 JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                     await rawResponse.Content.ReadAsStringAsync());
-             
+
             order = response!.Data;
             isTempOrder = false;
         }
 
         order.ShippingInfo.IsCustomerTakeYourSelf = order.IsCustomerTakeYourSelf;
         order.ShippingInfo.IsSameAsCustomerAddress = order.IsSameAsCustomerAddress;
+        order.PaymentInfo.ProductName = string.Join("\n", order.Items.Select(item => $"{item.ProductName} - {item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))} "));
 
         HttpContext.Session.SaveCurrentOrder(order);
 
@@ -103,8 +113,8 @@ public class OrderController : Controller
         if (order.Customer.Id == Guid.Empty)
             order.Customer = checkout.CustomerInfo;
 
-        if(!checkout.IsShippingAddressSameAsCustomerAddress)
-            order.ShippingInfo = checkout.ShippingInfo;      
+        if (!checkout.IsShippingAddressSameAsCustomerAddress)
+            order.ShippingInfo = checkout.ShippingInfo;
 
         order.TempOrderCreatedTime = DateTime.Now;
         order.IsCustomerTakeYourSelf = checkout.IsCustomerTakeYourSelf;
@@ -124,7 +134,7 @@ public class OrderController : Controller
         var order = HttpContext.Session.GetCurrentOrder();
 
         var existItem = order.Items.FirstOrDefault(e => e.Id == item.Id);
-        if(existItem is null)
+        if (existItem is null)
             order.Items.Add(item);
         else
             existItem.Quantity += 1;
@@ -212,7 +222,7 @@ public class OrderController : Controller
         if (order.Customer.Id == Guid.Empty)
             order.Customer = checkout.CustomerInfo;
 
-        if(!checkout.IsShippingAddressSameAsCustomerAddress)
+        if (!checkout.IsShippingAddressSameAsCustomerAddress)
             order.ShippingInfo = checkout.ShippingInfo;
 
         using var httpClient = new HttpClient();
@@ -250,7 +260,7 @@ public class OrderController : Controller
                 Buttons = await RenderViewAsync(OrderButtonActionPartialView, true)
             });
         }
-        
+
         return BadRequest();
     }
 
