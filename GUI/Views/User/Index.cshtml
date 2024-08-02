@@ -4,58 +4,62 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Nhân viên</h1>
+<div class="container">
+    <h3>Danh sách nhân viên</h3>
+    <hr />
+    <p>
+        <a asp-action="Create">Tạo mới</a>
+    </p>
+    <div>
+        <form asp-controller="User" asp-action="Index" method="get" class="d-flex">
+            <input type="text" name="s" class="form-control me-2 col-6" placeholder="Tìm kiếm" id="search-input" />
+            <input type="submit" class="btn btn-primary" value="Tìm kiếm" />
+        </form>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Model.FullName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Model.UserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Model.Position)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data.listUser)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Position)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { item.Id }) |
+                        @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
+                        @Html.ActionLink("Delete", "Delete", new { item.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<p>
-    <a asp-action="Create">Tạo mới</a>
-</p>
-<div>
-    <form asp-controller="User" asp-action="Index" method="get">
-        <p>
-            Tìm kiếm: <input type="text" name="s" />
-            <input type="submit" value="Tìm kiếm" />
-        </p>
-    </form>
 </div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Model.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model.Position)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Data.listUser) {
-        <tr>
-            <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Position)
-                </td>
-            <td>
-                    @Html.ActionLink("Edit", "Edit", new { item.Id }) |
-                @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
-                @Html.ActionLink("Delete", "Delete", new { item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+
