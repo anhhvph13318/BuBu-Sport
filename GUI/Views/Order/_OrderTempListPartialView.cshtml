@@ -1,0 +1,27 @@
+@using GUI.Models.DTOs.Order_DTO
+@using System.Globalization
+@model List<OrderDetail>
+
+<table class="table table-fixed table-fixed table-lock-height">
+    <thead>
+        <tr>
+            <th>Thời gian lưu</th>
+            <th>Khách hàng</th>
+            <th>Thành tiền</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.TempOrderCreatedTime.ToString("dd/MM/yyyy - HH:mm:ss")</td>
+                <td>@order.Customer.Name</td>
+                <td>@order.PaymentInfo.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                <td>
+                    <button class="btn btn-success" onclick="show('@order.Id')">Chi tiết</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

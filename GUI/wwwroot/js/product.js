@@ -19,4 +19,9 @@ class ProductStorage {
             
         })
     }
+
+    async getProductStock(id) {
+        const res = await fetch(PRODUCT_STOCK_API(id));
+        return await res.json();
+    }
 }

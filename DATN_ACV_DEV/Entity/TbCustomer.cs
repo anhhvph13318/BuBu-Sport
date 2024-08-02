@@ -7,9 +7,10 @@ public partial class TbCustomer
 {
     public Guid Id { get; set; }
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-    public string? Adress { get; set; }
+    public string Adress { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
 
     public int? Rank { get; set; }
 

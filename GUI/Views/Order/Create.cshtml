@@ -1,4 +1,6 @@
-﻿﻿@*
+﻿@using System.Globalization
+@using GUI.Models.DTOs.Order_DTO
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
@@ -6,50 +8,106 @@
     Layout = "_Layout";
 }
 
+<style>
+    .table-fixed thead > tr, .table-fixed tbody > tr {
+        display: flex;
+        justify-content: space-around;
+        flex: 0 0 auto;
+    }
+
+        .table-fixed thead > tr th, .table-fixed tbody > tr th, .table-fixed thead > tr td, .table-fixed tbody > tr td {
+            flex: 1;
+        }
+
+    .table-fixed tbody {
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .table-lock-height > tbody {
+        height: 200px;
+    }
+</style>
+<link href="~/lib/toastr/toastr.css" rel="stylesheet">
+
+
 <div class="container-fluid" id="order-container">
-    <nav class="d-flex">
-        <div class="nav nav-tabs" id="order-tab" role="tablist">
-            <button class="nav-link active" id="order-0-tab" data-bs-toggle="tab" data-bs-target="#order-0" type="button" role="tab" aria-controls="nav-order-0" aria-selected="true">Giỏ hàng 1</button>
-        </div>
-        <button class="btn btn-primary" id="newCartAddBtn">+</button>
-    </nav>
-    <div class="tab-content mb-2" id="order-tabContent">
-        <div class="tab-pane fade show active" id="order-0" role="tabpanel" aria-labelledby="order-0-tab" tabindex="0">
-            <div class="p-3 border mb-3">
-                <h5>Thông tin khách hàng</h5>
-                <div class="row">
-                    <div class="mb-2 col-4">
-                        <label>Tên</label>
-                        <input class="form-control" id="customerName-0" name="name" type="text" onchange="customerAreaInputChange(event, 0)">
-                    </div>
-                    <div class="mb-2 col-4">
-                        <label>Số điện thoại</label>
-                        <input class="form-control" id="customerPhoneNumber-0" name="phoneNumber" type="text" onchange="customerAreaInputChange(event, 0)">
-                    </div>
-                    <div class="mb-2 col-4">
-                        <label>Địa chỉ</label>
-                        <input class="form-control" id="customerAddress-0" name="address" type="text" onchange="customerAreaInputChange(event, 0)">
+    <div class="mb-2 p-3 border">
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                        Danh sách hoá đơn chờ xử lý
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                    <div class="accordion-body" id="orderPersistenceSaveContainer">
+                        @await Html.PartialAsync("_OrderListPartialView", ViewData["OrderSaved"] as List<OrderListItem>)
                     </div>
                 </div>
             </div>
-            <form autocomplete="off" class="w-100" onsubmit="return false"><div class="mb-3 autocomplete w-100"><input placeholder="Tên, mã sản phẩm..." id="search-0" class="form-control"><div class="autocomplete-items" id="autocomplete-list-0"></div></div></form>
-            <div id="table-area-0"><p class="text-center m-3" id="empty-order-0-message">Giỏ hàng trống</p></div>
-            <div id="checkout-area-2">
-                <div class="d-flex justify-content-end">
-                    <div class="me-3">
-                        <p>Khuyến mãi: <span id="discount-amount-0">0&nbsp;₫</span></p>
-                        <p>Tổng: <span id="total-amount-0">0&nbsp;₫</span></p>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                        Danh sách hoá đơn tạm
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+                    <div class="accordion-body" id="orderTempSaveContainer">
+                        @await Html.PartialAsync("_OrderTempListPartialView", ViewData["OrderTemps"] as List<OrderDetail>)
                     </div>
-                    <button class="btn btn-primary" onclick="checkout(0)">Thanh toán</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 p-3">
+            <div class="border p-3 h-100">
+                <form autocomplete="off" class="w-100" onsubmit="return false">
+                    <div class="mb-3 autocomplete w-100">
+                        <input placeholder="Tên, mã sản phẩm..." id="search" class="form-control">
+                        <div class="autocomplete-items" id="autocomplete-list"></div>
+                    </div>
+                </form>
+                <div id="orderItemContainer">
+                    @await Html.PartialAsync("_OrderItemListPartialView", Array.Empty<OrderItem>())
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 p-3">
+            <div class="p-3 border mb-3">
+                <h5>Thông tin khách hàng</h5>
+                <hr />
+                <div id="customerInfoContainer">
+                    @await Html.PartialAsync("_OrderCustomerInfoPartialView", new CustomerInfo())
+                </div>
+            </div>
+            <div class="p-3 border mb-3">
+                <h5>Thông tin giao hàng</h5>
+                <hr />
+                <div id="shippingInfoContainer">
+                    @await Html.PartialAsync("_OrderShippingInfoPartialView", new ShippingInfo())
+                </div>
+            </div>
+            <div id="checkout-area-2" class="p-3 border">
+                <h5>Thông tin hoá đơn</h5>
+                <hr />
+                <div id="orderPaymentInfoContainer">
+                    @await Html.PartialAsync("_OrderPaymentInfoPartialView", new PaymentInfo())
+                </div>
+                <hr />
+                <div class="row" id="orderButtonActionContainer">
+                    @await Html.PartialAsync("_OrderButtonActionPartialView", true)
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
 @section scripts {
-    <script src="~/js/order.js"></script>
+    <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>
-    <script src="~/js/orderStorage.js"></script>
     <script src="~/js/orderPage.js"></script>
 }

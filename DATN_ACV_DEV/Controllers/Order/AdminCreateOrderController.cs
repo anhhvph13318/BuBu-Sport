@@ -1,5 +1,5 @@
 ﻿using DATN_ACV_DEV.Entity;
-using Microsoft.AspNetCore.Http;
+using DATN_ACV_DEV.Model_DTO.Order_DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,20 +20,6 @@ namespace DATN_ACV_DEV.Controllers.Order
         [Route("create")]
         public async Task<IActionResult> Create(Order payload)
         {
-            var tempGroup = await _context.TbGroupCustomers.FirstOrDefaultAsync();
-            var customer = new TbCustomer
-            {
-                Id = Guid.NewGuid(),
-                Adress = payload.Customer.Address,
-                Name = string.IsNullOrEmpty(payload.Customer.Name) ? "Khách vãng lai" : payload.Customer.Name,
-                GroupCustomer = tempGroup!
-            };
-
-            if (!string.IsNullOrEmpty(payload.Customer.Id))
-            {
-                customer = await _context.TbCustomers.FirstOrDefaultAsync(e => e.Id == Guid.Parse(payload.Customer.Id));
-            }
-
             var items = payload.Items.Select(e => new TbOrderDetail
             {
                 Id = Guid.NewGuid(),
@@ -44,17 +30,47 @@ namespace DATN_ACV_DEV.Controllers.Order
             var order = new TbOrder
             {
                 Id = Guid.NewGuid(),
-                Customer = customer,
                 TbOrderDetails = items.ToList(),
-                Status = 7,
-                TotalAmount = payload.TotalAmount,
-                TotalAmountDiscount = payload.DiscountAmount,
+                Status = payload.Status,
+                TotalAmount = payload.Payment.TotalAmount,
+                TotalAmountDiscount = payload.Payment.TotalDiscount,
+                AmountShip = payload.Payment.ShippingFee,
+                IsCustomerTakeYourself = payload.IsCustomerTakeYourSelf,
+                IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress,
                 OrderCode = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss").Replace("-", ""),
                 CreateDate = DateTime.Now,
             };
 
+            if(payload.Customer.Id != Guid.Empty)
+                order.CustomerId = payload.Customer.Id;
+            else
+            {
+                var tempGroup = await _context.TbGroupCustomers.FirstOrDefaultAsync();
+                order.Customer = new TbCustomer
+                {
+                    Id = Guid.NewGuid(),
+                    Adress = payload.Customer.Address,
+                    Name = payload.Customer.Name,
+                    Phone = payload.Customer.PhoneNumber,
+                    GroupCustomer = tempGroup!
+                };
+            }
+
+            var hasShippingAddress = !payload.IsCustomerTakeYourSelf && !payload.IsShippingAddressSameAsCustomerAddress;
+
+            if(hasShippingAddress)
+            {
+                order.AddressDelivery = new TbAddressDelivery
+                {
+                    Id = Guid.NewGuid(),
+                    ProvinceName = payload.Shipping.Address,
+                    ReceiverName = payload.Shipping.Name,
+                    ReceiverPhone = payload.Shipping.PhoneNumber
+                };
+            }
+
             // re-update product stock
-            foreach (var item in payload.Items)
+            foreach(var item in payload.Items)
             {
                 var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
                     ?? throw new NullReferenceException();
@@ -65,11 +81,61 @@ namespace DATN_ACV_DEV.Controllers.Order
             await _context.TbOrders.AddAsync(order);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new { Success = true });
         }
 
+        [HttpPatch]
+        [Route("{id}")]
+        public async Task<IActionResult> Update(UpdateOrder payload)
+        {
+            var order = await _context.TbOrders
+                .Include(e => e.Customer)
+                .Include(e => e.AddressDelivery)
+                .FirstOrDefaultAsync();
+
+            if (order == null) return NotFound();
+
+            order.Status = payload.Status;
+
+            if(!order.IsCustomerTakeYourself)
+            {
+                if(payload.IsShippingAddressSameAsCustomerAddress)
+                {
+                    order.AddressDelivery = null; 
+                } else
+                {
+                    order.AddressDelivery = new TbAddressDelivery
+                    {
+                        ReceiverName = payload.Shipping.Name,
+                        ReceiverPhone = payload.Shipping.PhoneNumber,
+                        ProvinceName = payload.Shipping.Address
+                    };
+
+                    order.AmountShip = payload.Shipping.ShippingFee;
+                }
+            }
+
+            _context.TbOrders.Update(order);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Success = true });
+        }
+        
         public record OrderItem(string Id, int Quantity);
-        public record Customer(string Id, string Name, string PhoneNumber, string Address);
-        public record Order(Customer Customer, IEnumerable<OrderItem> Items, decimal TotalAmount, decimal DiscountAmount);
+        public record Order(CustomerInfo Customer,
+            IEnumerable<OrderItem> Items,
+            ShippingInfo Shipping,
+            PaymentInfo Payment,
+            int Status,
+            bool IsShippingAddressSameAsCustomerAddress,
+            bool IsCustomerTakeYourSelf);
+
+        public record UpdateOrder(
+            string Id,
+            int Status,
+            ShippingInfo Shipping,
+            PaymentInfo Payment,
+            bool IsShippingAddressSameAsCustomerAddress,
+            bool IsCustomerTakeYourSelf);
     }
 }

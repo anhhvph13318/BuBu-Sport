@@ -104,7 +104,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 Id = Guid.NewGuid(),
                 OrderCode = "ACV_" + DateTime.Now.Millisecond,
-                TotalAmount = _request.totalAmount,
+                TotalAmount = _request.totalAmount ?? 0,
                 Description = _request.description,
                 AccountId = _request.UserId,
                 PaymentMethodId = _request.paymentMethodId,
