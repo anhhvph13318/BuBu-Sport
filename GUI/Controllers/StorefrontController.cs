@@ -25,7 +25,7 @@ namespace GUI.Controllers
 			httpService = new();
 		}
 
-        [Route("/")]
+        [Route("/Home")]
 		public IActionResult Index()
 		{
 			return View();
