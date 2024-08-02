@@ -12,15 +12,8 @@ namespace GUI.Controllers;
 [Route("orders")]
 public class OrderController : Controller
 {
-    private const string URI = "http://localhost:5059";
-    private const string CURRENT_ORDER = "CURRENT_ORDER";
-    private const string OrderItemListPartialView = "_OrderItemListPartialView";
-    private const string OrderCustomerInfoPartialView = "_OrderCustomerInfoPartialView";
-    private const string OrderPaymentInfoPartialView = "_OrderPaymentInfoPartialView";
-    private const string OrderShippingInfoPartialView = "_OrderShippingInfoPartialView";
-    private const string OrderButtonActionPartialView = "_OrderButtonActionPartialView";
-    private const string OrderListPartialView = "_OrderListPartialView";
-    private const string OrderTempListPartialView = "_OrderTempListPartialView";
+    //private const string URI = "http://localhost:5059";
+    private const string URI = "https://localhost:44383";
 
     [HttpGet]
     public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)

@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 //const API_URL = "http://localhost:5059";
-const API_URL = "http://localhost:5059";
+const API_URL = "https://localhost:44383";
 const HOST_URL = "http://localhost:5011";
 
 const PRODUCT_FILTER_API = `${API_URL}/api/GetListProduct/Process`;

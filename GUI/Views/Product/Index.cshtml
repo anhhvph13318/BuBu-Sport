@@ -1,4 +1,4 @@
-﻿@model GUI.Models.DTOs.Product_DTO.Views.IndexOject
+﻿@model GUI.Models.DTOs.Product_DTO.Views.IndexObject
 
 @{
     ViewData["Title"] = "Index";
@@ -38,29 +38,33 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Data.LstProduct) {
-        <tr>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.PriceNet)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <th>
-                    @Html.DisplayNameFor(model => model.Model.Code)
-            </th>
-            <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-warning" })
-                    @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
-            </td>
-        </tr>
-}
+        @if (Model.Data is not null && Model.Data.LstProduct is not null && Model.Data.LstProduct.Any())
+        {
+            @foreach (var item in Model.Data.LstProduct)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PriceNet)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Model.Code)
+                    </th>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-warning" })
+                        @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>

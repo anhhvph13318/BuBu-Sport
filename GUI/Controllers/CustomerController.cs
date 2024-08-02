@@ -12,19 +12,19 @@ using GUI.Shared;
 using Newtonsoft.Json;
 using GUI.FileBase;
 using NuGet.Protocol;
-//using DATN_ACV_DEV.Entity;
+using DATN_ACV_DEV.Entity;
 
 namespace GUI.Controllers
 {
     public class CustomerController : ControllerSharedBase
     {
         private HttpService httpService;
-        //DBContext dBContext;
+        DBContext dBContext;
         public CustomerController(IOptions<CommonSettings> settings)
         {
             _settings = settings.Value;
             httpService = new();
-            //dBContext = new DBContext();
+            dBContext = new DBContext();
         }
         public async Task<ActionResult> Index(string s)
         {
@@ -106,8 +106,7 @@ namespace GUI.Controllers
             var model = result.Data;
             return View(model);
         }
-
-        [HttpDelete]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ConfirmDelete(Guid id)
         {

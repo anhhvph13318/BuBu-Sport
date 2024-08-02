@@ -9,7 +9,7 @@ namespace DATN_ACV_DEV.Model_DTO.Order_DTO
         public List<Guid>? voucherID { get; set; }
         public Guid? paymentMenthodID { get; set; }
         public Guid? AddressDeliveryId { get; set; }
-        public string TokenGHN { get; set; }
+        public string? TokenGHN { get; set; }
 
     }
     public class OrderProduct

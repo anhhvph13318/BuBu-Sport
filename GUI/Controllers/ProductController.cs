@@ -27,7 +27,7 @@ namespace GUI.Controllers
         public async Task<ActionResult> Index(string s)
         {
             var obj = new GetListProductRequest();
-            var model = new IndexOject();
+            var model = new IndexObject();
             obj.Name = string.IsNullOrEmpty(s) ? "" : s;
             var URL = _settings.APIAddress + "api/HomePage/Process";
             var param = JsonConvert.SerializeObject(obj);
@@ -37,7 +37,7 @@ namespace GUI.Controllers
             model.Data = result.Data;
 
             return View(model);
-        }
+        }   
 
         // GET: ProductController/Details/5
         public ActionResult Details(int id)
