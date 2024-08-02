@@ -106,7 +106,6 @@ namespace GUI.Controllers
             var model = result.Data;
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ConfirmDelete(Guid id)

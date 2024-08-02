@@ -49,15 +49,15 @@ namespace DATN_ACV_DEV.Controllers
             {
                 if (_request.Quantity != null && _request.Quantity > 0)
                 {
-                    //var product = _context.TbProducts.Where(p => p.Id == cartDetail.ProductId).FirstOrDefault();
-                    //if (cartDetail.Quantity >= _request.Quantity)
-                    //{
-                    //    product.Quantity += (cartDetail.Quantity.Value - _request.Quantity.Value);
+					//var product = _context.TbProducts.Where(p => p.Id == cartDetail.ProductId).FirstOrDefault();
+					//if (cartDetail.Quantity >= _request.Quantity)
+					//{
+					//    product.Quantity += (cartDetail.Quantity.Value - _request.Quantity.Value);
 
-                    //}
-                    //if (cartDetail.Quantity < _request.Quantity)
-                    //{
-                    //    product.Quantity -= (_request.Quantity.Value - cartDetail.Quantity.Value);
+					//}
+					//if (cartDetail.Quantity < _request.Quantity)
+					//{
+					//    product.Quantity -= (_request.Quantity.Value - cartDetail.Quantity.Value);
 
                     //}
                     if (_request.IsIncrement)
@@ -68,12 +68,11 @@ namespace DATN_ACV_DEV.Controllers
                     {
 						cartDetail.Quantity = _request.Quantity;
 					}
-
 				}
             }
             _context.SaveChanges();
-			_response.quantity = _request.Quantity ?? 0;
-			_response.price = cartDetail.Product.Price;
+			      _response.quantity = _request.Quantity ?? 0;
+			      _response.price = cartDetail.Product.Price;
             _res.Data = _response;
         }
 

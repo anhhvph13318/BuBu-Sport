@@ -104,7 +104,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 Id = Guid.NewGuid(),
                 OrderCode = "ACV_" + DateTime.Now.Millisecond,
-                TotalAmount = _request.totalAmount,
+                TotalAmount = _request.totalAmount ?? 0,
                 Description = _request.description,
                 AccountId = _request.UserId,
                 PaymentMethodId = _request.paymentMethodId,
@@ -235,6 +235,7 @@ namespace DATN_ACV_DEV.Controllers
             {
 				request.UserId = new Guid("65809962-D69A-4D1F-9C14-E4D28DA106C4");
 				_request = request;
+
                 //CheckAuthorization();
                 //PreValidation();
                 GenerateObjects();

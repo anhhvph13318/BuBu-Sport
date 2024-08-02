@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-@if (string.IsNullOrEmpty(Model.CustomerName))
+@if (string.IsNullOrEmpty(Model.Customer.Name))
 {
     <p class="text-danger text-center">Lỗi không tìm thấy</p>
 }
@@ -14,12 +14,12 @@ else
     <div class="container row">
         <div class="col-md-8">
             <h3>Danh sách sản phẩm</h3>
-            <hr/>
+            <hr />
             @foreach (var item in Model.Items)
             {
                 <div class="mb-3 row">
                     <div class="col-md-4">
-                        <img class="img-thumbnail" src="@item.ProductImage" alt="@item.ProductName"/>
+                        <img class="img-thumbnail" src="@item.ProductImage" alt="@item.ProductName" />
                     </div>
                     <div class="col-md-8">
                         <p>@item.ProductName</p>
@@ -34,20 +34,20 @@ else
                 <tbody>
                 <tr>
                     <td>Tên:</td>
-                    <td>@Model.CustomerName</td>
+                    <td>@Model.Customer.Name</td>
                 </tr>
                 <tr>
                     <td>Số điện thoại:</td>
-                    <td>@Model.PhoneNumber</td>
+                    <td>@Model.Customer.PhoneNumber</td>
                 </tr>
                 <tr>
                     <td>Địa chỉ giao hàng:</td>
-                    <td>@Model.ShippingAddress</td>
+                    <td>@Model.Customer.Address</td>
                 </tr>
                 <hr/>
                 <tr>
                     <td>Trạng thái:</td>
-                    <td>@Model.Status</td>
+                    <td>@Model.StatusText</td>
                 </tr>
                 <tr>
                     <td>Phương thức thanh toán: </td>
@@ -67,6 +67,30 @@ else
                 </tr>
                 </tbody>
             </table>
+            <div class="mb-3 mt-3">
+                @if(Model.Status == 0)
+                {
+                    <button class="btn btn-primary" onclick="confirmOrder()">Xác nhận</button>
+                } else
+                {
+                    <a class="btn btn-primary" asp-controller="Order" asp-action="Index">Trở về</a>
+                }
+            </div>
         </div>
     </div>
+}
+
+@section Scripts {
+    <script defer>
+        const confirmOrder = () => {
+            fetch(ORDER_CONFIRM_API('@Model.Id'), {
+                method: 'POST'
+            }).then(res => {
+                if (res.status == 204) {
+                    alert("Xác nhận thành công");
+                    window.location.href = "/orders";
+                }
+            });
+        }
+    </script>
 }

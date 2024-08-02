@@ -108,6 +108,8 @@ public partial class DBContext : DbContext
         {
             entity.ToTable("tb_AddressDelivery");
 
+            entity.Ignore(e => e.WardCode);
+
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.AccountId).HasColumnName("accountId");
             entity.Property(e => e.DistrictId).HasColumnName("districtId");
@@ -126,7 +128,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.WardId).HasColumnName("wardId");
             entity.Property(e => e.WardName).HasColumnName("wardName");
 
-            entity.HasOne(d => d.Account).WithMany(p => p.TbAddressDelivery)
+            entity.HasOne(d => d.Account).WithMany(p => p.TbAddressDeliveries)
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tb_AddressDelivery_tb_Account");
@@ -203,6 +205,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(250);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.YearOfBirth).HasColumnType("datetime");
+            entity.Property(e => e.Phone).HasColumnType("varchar(20)");
 
             entity.HasOne(d => d.GroupCustomer).WithMany(p => p.TbCustomers)
                 .HasForeignKey(d => d.GroupCustomerId)
@@ -376,6 +379,8 @@ public partial class DBContext : DbContext
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TotalAmountDiscount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.IsCustomerTakeYourself).HasColumnName("IsCustomerTakeYourself");
+            entity.Property(e => e.IsShippingAddressSameAsCustomerAddress).HasColumnName("IsShippingAddressSameAsCustomerAddress");
         });
 
         modelBuilder.Entity<TbOrderDetail>(entity =>

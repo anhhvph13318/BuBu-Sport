@@ -30,14 +30,33 @@ public class OrderDetailAdminController : ControllerBase
             .Select(e => new OrderDetail()
             {
                 Id = e.Id,
-                CustomerName = e.Customer.Name,
-                PhoneNumber = e.AddressDelivery.ReceiverPhone,
-                ShippingAddress = $"{e.AddressDelivery.WardName}, {e.AddressDelivery.DistrictName}, {e.AddressDelivery.ProvinceName}",
+                Customer = new CustomerInfo
+                {
+                    Id = e.Customer.Id,
+                    Name = e.Customer.Name,
+                    Address = e.Customer.Adress,
+                    PhoneNumber = e.Customer.Phone
+                },
+                ShippingInfo = e.AddressDelivery == null ? null : new ShippingInfo
+                {
+                    Name = e.AddressDelivery!.ReceiverName,
+                    PhoneNumber = e.AddressDelivery!.ReceiverPhone,
+                    Address = $"{e.AddressDelivery.WardName}, {e.AddressDelivery.DistrictName}, {e.AddressDelivery.ProvinceName}"
+                },
+                PaymentInfo = new PaymentInfo
+                {
+                    TotalDiscount = 0,
+                    ShippingFee = e.AmountShip ?? 0,
+                    TotalTax = e.TotalAmount == 0 ? 0 : e.TotalAmount * 10 / 100,
+                    TotalAmount = e.TotalAmount,
+                    Status = e.Status ?? 0
+                },
+                IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
+                IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
                 PaymentMethodName = "Chuyển khoản ngân hàng",
-                DiscountAmout = 0,
                 VoucherDiscountAmount = 0,
-                TotalAmount = e.TotalAmount ?? 0,
-                Status = Common.ConvertStatusOrder(e.Status ?? 1),
+                StatusText = Common.ConvertStatusOrder(e.Status ?? 0),
+                Status = e.Status ?? 0,
                 Items = e.TbOrderDetails.Select(d => new OrderItem()
                 {
                     Id = d.Id,
@@ -47,6 +66,9 @@ public class OrderDetailAdminController : ControllerBase
                     ProductName = d.Product.Name
                 })
             }).FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
+
+        if(order != null && order.ShippingInfo == null)
+            order.ShippingInfo = ShippingInfo.Default();
 
         return Ok(new BaseResponse<OrderDetail>()
         {
