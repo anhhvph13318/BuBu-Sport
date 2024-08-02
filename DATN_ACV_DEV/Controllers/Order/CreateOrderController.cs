@@ -273,7 +273,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 request.UserId = new Guid("b542880b-f661-456a-9add-265b05c1b2bb");
 
-                _request = request;
+				_request = request;
                 //CheckAuthorization();
                 //PreValidation();
                 GenerateObjects();

@@ -2200,7 +2200,7 @@ textarea.input {
 }
 
 .input-quant {
-    width: 35px;
+    width: 32px;
     height: 32px;
     padding: 0;
     text-align: center;
@@ -2216,7 +2216,12 @@ textarea.input {
 
 .change-quant {
     border: 1px solid #d6d6d6;
-    padding: 6px 8px;
+    padding: 6px;
     height: 32px;
     cursor: pointer;
+}
+
+.order-summary .order-col > div:first-child {
+    max-width: 150px;
+    overflow-wrap: break-word;
 }

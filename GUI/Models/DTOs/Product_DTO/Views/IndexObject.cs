@@ -2,7 +2,7 @@
 
 namespace GUI.Models.DTOs.Product_DTO.Views
 {
-    public class IndexOject
+    public class IndexObject
     {
         public GetListProductResponse Data { get; set; } = new();
         public ProductModel Model { get; set; } = new();

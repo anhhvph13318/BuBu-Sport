@@ -85,7 +85,7 @@ namespace DATN_ACV_DEV.Controllers
             try
             {
                 _request = request;
-                CheckAuthorization();
+                //CheckAuthorization();
                 PreValidation();
                 //GenerateObjects();
                 //PostValidation();

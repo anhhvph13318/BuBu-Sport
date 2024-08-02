@@ -59,20 +59,20 @@ namespace DATN_ACV_DEV.Controllers
 					//{
 					//    product.Quantity -= (_request.Quantity.Value - cartDetail.Quantity.Value);
 
-					//}
-					if (_request.IsIncrement)
-					{
+                    //}
+                    if (_request.IsIncrement)
+                    {
 						cartDetail.Quantity += _request.Quantity;
-					}
-					else
-					{
+                    }
+                    else
+                    {
 						cartDetail.Quantity = _request.Quantity;
 					}
-
-
 				}
             }
             _context.SaveChanges();
+			      _response.quantity = _request.Quantity ?? 0;
+			      _response.price = cartDetail.Product.Price;
             _res.Data = _response;
         }
 
@@ -111,7 +111,7 @@ namespace DATN_ACV_DEV.Controllers
             try
             {
                 _request = request;
-                CheckAuthorization();
+                //CheckAuthorization();
                 PreValidation();
                 //GenerateObjects();
                 //PostValidation();
