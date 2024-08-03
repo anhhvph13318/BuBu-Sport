@@ -246,7 +246,8 @@
 		let id = $(this).attr('data-itemId');
 
 		let price = $(`#item-${id}`).attr('data-price');
-		let quant = $(`#quant-${id}`).val();
+		let quant = parseFloat($(`#quant-${id}`).val()) + value;
+		$(`#quant-${id}`).val(quant);
 		$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
 
 			updateQuantity(value, id, true, el);
@@ -258,8 +259,9 @@
 		let id = $(this).attr('data-itemId');
 
 		let price = $(`#item-${id}`).attr('data-price');
-		let quant = $(`#quant-${id}`).val();
-		$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
+		let quant = parseFloat($(`#quant-${id}`).val()) + value;
+		$(`#quant-${id}`).val(quant);
+		$(`#sub-${id}`).text(parseFloat(price) * quant);
 
 		updateQuantity(value, id, true, el);
 		el.attr('data-value', value);
@@ -275,8 +277,8 @@
 				let subTotal = parseFloat(data.data.quantity) * parseFloat(data.data.price);
 				if (!incre) {
 					$(`#sub-${id}`).text(subTotal);
-					UpdatePrice();
                 }
+				UpdatePrice();
 			} else {
 				el.val(el.attr('data-value'));
             }
