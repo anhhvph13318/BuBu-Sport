@@ -1,9 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GUI.Models.DTOs.Order_DTO;
 
 [Serializable]
 public class OrderDetail
 {
     public Guid Id { get; set; }
+    public string Code { get; set; } = string.Empty;
     public CustomerInfo Customer { get; set; } = null!;
     public ShippingInfo ShippingInfo { get; set; } = null!;
     public PaymentInfo PaymentInfo { get; set; } = null!;
@@ -17,6 +20,7 @@ public class OrderDetail
     public decimal DiscountAmout { get; set; }
     public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
     public DateTime TempOrderCreatedTime { get; set; }
+    public bool IsDraft { get; set; }
 
     public void ReCalculatePaymentInfo()
     {
@@ -40,8 +44,11 @@ public class OrderItem
 public class CustomerInfo
 {
     public Guid Id { get; set; }
+    [Required(ErrorMessage = "Chưa nhập tên khách hàng")]
     public string Name { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Chưa nhập số điện thoại")]
     public string PhoneNumber { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Chưa nhập địa chỉ")]
     public string Address { get; set; } = string.Empty;
 }
 

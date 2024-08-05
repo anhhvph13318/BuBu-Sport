@@ -16,19 +16,37 @@ namespace GUI
             return JsonConvert.DeserializeObject<List<OrderDetail>>(json) ?? throw new NullReferenceException();
         }
 
-        public static List<OrderDetail> SaveTempOrder(this ISession session, OrderDetail order)
+        public static List<OrderDetail> SaveTempOrder(this ISession session, OrderDetail order, out bool alreadySave)
         {
             var orders = session.GetTempOrders();
-            if(order.Id != Guid.Empty) {
-                var existOrder = orders.First(e => e.Id == order.Id);
+            var existOrder = orders.FirstOrDefault(e => e.Id == order.Id);
+            alreadySave = false;
+            if (existOrder is not null)
+            {
+                alreadySave = true;
                 orders.Remove(existOrder);
             }
             order.Id = Guid.NewGuid();
             orders.Add(order);
 
             session.SetString(ORDER_KEY, JsonConvert.SerializeObject(orders));
-            
+
             return orders.OrderByDescending(e => e.TempOrderCreatedTime).ToList();
+        }
+
+        public static List<OrderDetail> RemoveTempOrder(this ISession session, string id, out bool alreadyRemove)
+        {
+            alreadyRemove = false;
+            var orders = session.GetTempOrders();
+            var order = orders.FirstOrDefault(e => e.Id == Guid.Parse(id));
+            if (order is not null)
+            {
+                orders.Remove(order);
+                session.SetString(ORDER_KEY, JsonConvert.SerializeObject(orders));
+                alreadyRemove = true;
+            }
+
+            return orders;
         }
 
         public static OrderDetail? GetOrderFromList(this ISession session, string id)
@@ -44,6 +62,8 @@ namespace GUI
             {
                 var order = new OrderDetail()
                 {
+                    Id = Guid.NewGuid(),
+                    Code = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
                     ShippingInfo = new ShippingInfo(),
                     PaymentInfo = new PaymentInfo(),
                     Customer = new CustomerInfo(),
@@ -54,7 +74,7 @@ namespace GUI
                 return order;
             }
 
-            return JsonConvert.DeserializeObject<OrderDetail>(json ?? throw new NullReferenceException()) ?? throw new NullReferenceException();
+            return JsonConvert.DeserializeObject<OrderDetail>(json) ?? throw new NullReferenceException();
         }
 
         public static void SaveCurrentOrder(this ISession session, OrderDetail order)
