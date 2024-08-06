@@ -104,7 +104,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 Id = Guid.NewGuid(),
                 OrderCode = "ACV_" + DateTime.Now.Millisecond,
-                TotalAmount = _request.totalAmount ?? 0,
+                TotalAmount = 0,
                 Description = _request.description,
                 AccountId = _request.UserId,
                 PaymentMethodId = _request.paymentMethodId,
@@ -140,6 +140,7 @@ namespace DATN_ACV_DEV.Controllers
 							quantity = item.Quantity.Value,
 							url = image != null ? image.Url : ""
 						};
+                        _order.TotalAmount += (model.Quantity * model.Price);
 						_listProduct.Add(product);
 					}
 				}
@@ -229,7 +230,7 @@ namespace DATN_ACV_DEV.Controllers
         }
         [HttpPost]
         [Route("Process")]
-        public BaseResponse<OrderResponse> Process(OrderRequest request)
+        public BaseResponse<OrderResponse> Process([FromBody]OrderRequest request)
         {
             try
             {

@@ -198,7 +198,13 @@
 		let city = $('#order-city').val();
 		let code = $('#order-code').val();
 		let note = $('#order-note').val();
-		if (name && phone && address && district && city && code) {
+		let ids = [];
+		let items = $('.order-item');
+		$.each(items, function (i, obj) {
+			let id = $(obj).attr('data-itemId');
+			ids.push(id);
+		});
+		if (name && phone && address && district && city && code && ids.length) {
 			$.post("/Buy", {
 				name: name,
 				phone: phone,
@@ -206,7 +212,8 @@
 				district: district,
 				city: city,
 				zipCode: code,
-				note: note
+				note: note, 
+				ids: ids
 			}, function (data) {
 				if (data.success) {
 					window.location.href = "/store";
@@ -297,4 +304,115 @@
 
 		$('.order-total').text(total);
 	}
+	const updateQuantityCart = function (quantity, id, incre, el) {
+		$.post("/ChangeQuantity", {
+			cartDetaiID: id,
+			quantity: quantity,
+			isIncrement: incre
+		}, function (data) {
+			if (data && data.success) {
+				let subTotal = parseFloat(data.data.quantity) * parseFloat(data.data.price);
+				if (!incre) {
+					$(`#sub-${id}`).text(subTotal);
+				}
+				updateCartTotal();
+			} else {
+				el.val(el.attr('data-value'));
+			}
+		});
+	}
+	$('.cart-input-quant').on('change', function () {
+		let el = $(this);
+		let value = $(this).val();
+		let id = $(this).parent().parent().attr('data-itemId');
+		if (isNaN(value)) {
+			$(this).val($(this).attr('data-value'));
+			return;
+		}
+
+		if (changeQuant) {
+			clearTimeout(changeQuant);
+		}
+		changeQuant = setTimeout(function () {
+			updateQuantity(value, id, false, el);
+			el.attr('data-value', value);
+
+		}, 500)
+	});
+
+	$('.cart-quant-down').on('click', function () {
+		let el = $(this);
+		let value = -1;
+		let id = $(this).attr('data-itemId');
+
+		let price = $(`#item-${id}`).attr('data-price');
+		let quant = parseFloat($(`#quant-${id}`).val()) + value;
+		$(`#quant-${id}`).val(quant);
+		$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
+
+		updateQuantityCart(value, id, true, el);
+		el.attr('data-value', value);
+	});
+	$('.cart-quant-up').on('click', function () {
+		let el = $(this);
+		let value = 1;
+		let id = $(this).attr('data-itemId');
+
+		let price = $(`#item-${id}`).attr('data-price');
+		let quant = parseFloat($(`#quant-${id}`).val()) + value;
+		$(`#quant-${id}`).val(quant);
+		$(`#sub-${id}`).text(parseFloat(price) * quant);
+
+		updateQuantityCart(value, id, true, el);
+		el.attr('data-value', value);
+	});
+
+	$('.chk-select-item').on("change", function () {
+		let id = $(this).parent().parent().attr('data-itemId');
+		updateCartTotal();
+	});
+
+	//const updateCartTotal = function (id) {
+	//	let sub = parseFloat($(`#sub-${id}`).text());
+	//	let total = parseFloat($('.cart-total').text());
+	//	if ($(`#check-${id}`).is(':checked')) {
+	//		total += sub;
+	//	} else {
+	//		total -= sub;
+	//	}
+	//	$('.cart-total').text(total);
+	//}
+
+	const updateCartTotal = function () {
+		let subTotals = $('.sub-total');
+		let total = 0;
+		$.each(subTotals, function (i, obj) {
+			let id = $(obj).parent().attr('data-itemId');
+			if ($(`#check-${id}`).is(':checked')) {
+				let number = parseFloat(obj.innerText);
+				if (number) {
+					total += number;
+				}
+			}
+		});
+
+		$('.cart-total').text(total);
+	}
+
+	$('#cart-submit').on('click', function (e) {
+		e.preventDefault();
+		let items = $('.cart-item');
+		let buyingItems = [];
+		$.each(items, function (i, obj) {
+			if ($(obj).find('.chk-select-item').is(':checked')) {
+				let id = $(obj).attr('data-itemId');
+				buyingItems.push(id);
+			}
+		});
+		$.post("/ConfirmCart", { ids : buyingItems}, (data) => {
+            if (data.success) {
+				location.href = "/Checkout";
+            }
+		});
+	});
 })(jQuery);
