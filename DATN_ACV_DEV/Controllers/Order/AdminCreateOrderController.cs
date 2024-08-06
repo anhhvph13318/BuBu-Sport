@@ -37,11 +37,12 @@ namespace DATN_ACV_DEV.Controllers.Order
                 AmountShip = payload.Payment.ShippingFee,
                 IsCustomerTakeYourself = payload.IsCustomerTakeYourSelf,
                 IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress,
-                OrderCode = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss").Replace("-", ""),
+                OrderCode = payload.Code,
                 CreateDate = DateTime.Now,
+                IsDraft = payload.IsDraft
             };
 
-            if(payload.Customer.Id != Guid.Empty)
+            if (payload.Customer.Id != Guid.Empty)
                 order.CustomerId = payload.Customer.Id;
             else
             {
@@ -58,7 +59,7 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             var hasShippingAddress = !payload.IsCustomerTakeYourSelf && !payload.IsShippingAddressSameAsCustomerAddress;
 
-            if(hasShippingAddress)
+            if (hasShippingAddress)
             {
                 order.AddressDelivery = new TbAddressDelivery
                 {
@@ -70,7 +71,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             }
 
             // re-update product stock
-            foreach(var item in payload.Items)
+            foreach (var item in payload.Items)
             {
                 var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
                     ?? throw new NullReferenceException();
@@ -97,12 +98,13 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             order.Status = payload.Status;
 
-            if(!order.IsCustomerTakeYourself)
+            if (!order.IsCustomerTakeYourself)
             {
-                if(payload.IsShippingAddressSameAsCustomerAddress)
+                if (payload.IsShippingAddressSameAsCustomerAddress)
                 {
-                    order.AddressDelivery = null; 
-                } else
+                    order.AddressDelivery = null;
+                }
+                else
                 {
                     order.AddressDelivery = new TbAddressDelivery
                     {
@@ -120,13 +122,29 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             return Ok(new { Success = true });
         }
-        
+
+        [HttpDelete]
+        [Route("/api/orders/draft/{id}")]
+        public async Task<IActionResult> Delete([FromRoute] string id)
+        {
+            var order = await _context.TbOrders.FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
+            if (order is not null)
+            {
+                _context.TbOrders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
+
+            return NoContent();
+        }
+
         public record OrderItem(string Id, int Quantity);
         public record Order(CustomerInfo Customer,
             IEnumerable<OrderItem> Items,
             ShippingInfo Shipping,
             PaymentInfo Payment,
+            string Code,
             int Status,
+            bool IsDraft,
             bool IsShippingAddressSameAsCustomerAddress,
             bool IsCustomerTakeYourSelf);
 
