@@ -6,6 +6,6 @@
         public ShippingInfo ShippingInfo { get; set; } = new ShippingInfo();
         public bool IsShippingAddressSameAsCustomerAddress { get; set; }
         public bool IsCustomerTakeYourSelf { get; set; }
-        public int Status { get; set; } 
+        public int Status { get; set; }
     }
 }

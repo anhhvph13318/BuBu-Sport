@@ -1,23 +1,24 @@
 ﻿@using System.Globalization
 @using GUI.Models.DTOs.Order_DTO
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 
 @{
     Layout = "_Layout";
 }
 
 <style>
-    .table-fixed thead > tr, .table-fixed tbody > tr {
+    .table-fixed thead>tr,
+    .table-fixed tbody>tr {
         display: flex;
         justify-content: space-around;
         flex: 0 0 auto;
     }
 
-        .table-fixed thead > tr th, .table-fixed tbody > tr th, .table-fixed thead > tr td, .table-fixed tbody > tr td {
-            flex: 1;
-        }
+    .table-fixed thead>tr th,
+    .table-fixed tbody>tr th,
+    .table-fixed thead>tr td,
+    .table-fixed tbody>tr td {
+        flex: 1;
+    }
 
     .table-fixed tbody {
         overflow-y: scroll;
@@ -25,7 +26,7 @@
         flex-direction: column;
     }
 
-    .table-lock-height > tbody {
+    .table-lock-height>tbody {
         height: 200px;
     }
 </style>
@@ -33,43 +34,55 @@
 
 
 <div class="container-fluid" id="order-container">
-    <div class="mb-2 p-3 border">
-        <div class="accordion" id="accordionPanelsStayOpenExample">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                        Danh sách hoá đơn chờ xử lý
-                    </button>
-                </h2>
-                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
-                    <div class="accordion-body" id="orderPersistenceSaveContainer">
-                        @await Html.PartialAsync("_OrderListPartialView", ViewData["OrderSaved"] as List<OrderListItem>)
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                        Danh sách hoá đơn tạm
-                    </button>
-                </h2>
-                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-                    <div class="accordion-body" id="orderTempSaveContainer">
-                        @await Html.PartialAsync("_OrderTempListPartialView", ViewData["OrderTemps"] as List<OrderDetail>)
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="row">
         <div class="col-md-8 p-3">
-            <div class="border p-3 h-100">
+            <div class="mb-2 p-3 border">
+                <div class="accordion" id="accordionPanelsStayOpenExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
+                                aria-controls="panelsStayOpen-collapseTwo">
+                                Danh sách hoá đơn mua hàng online
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+                            <div class="accordion-body" id="orderDB">
+                                @await Html.PartialAsync("_OrderListPartialView", ViewData["OrderLoadedFromDb"] as
+                                         List<OrderListItem>)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                                aria-controls="panelsStayOpen-collapseOne">
+                                Danh sách hoá đơn chờ xử lý
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                            <div class="accordion-body" id="orderTempSaveContainer">
+                                @await Html.PartialAsync("_OrderTempListPartialView", ViewData["OrderTemps"] as
+                                         List<OrderDetail>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border p-3 h-75">
                 <form autocomplete="off" class="w-100" onsubmit="return false">
                     <div class="mb-3 autocomplete w-100">
                         <input placeholder="Tên, mã sản phẩm..." id="search" class="form-control">
                         <div class="autocomplete-items" id="autocomplete-list"></div>
                     </div>
                 </form>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-secondary text-nowrap ms-3 me-2" onclick="saveTempOrder()"
+                        id="btnTempOrder">Lưu tạm</button>
+                    <button class="btn btn-danger text-nowrap me-2" onclick="clearOrder()">Xóa giỏ hàng</button>
+                </div>
+                <hr />
                 <div id="orderItemContainer">
                     @await Html.PartialAsync("_OrderItemListPartialView", Array.Empty<OrderItem>())
                 </div>

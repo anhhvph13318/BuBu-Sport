@@ -49,6 +49,7 @@ public partial class TbOrder
 
     public bool IsCustomerTakeYourself { get; set; }
     public bool IsShippingAddressSameAsCustomerAddress { get; set; }
+    public bool IsDraft { get; set; }
 
     public virtual ICollection<TbOrderDetail> TbOrderDetails { get; set; } = new List<TbOrderDetail>();
     public virtual TbCustomer Customer { get; set; } = null!;
