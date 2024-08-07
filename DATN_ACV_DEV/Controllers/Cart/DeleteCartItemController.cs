@@ -86,7 +86,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 _request = request;
                 //CheckAuthorization();
-                PreValidation();
+                //PreValidation();
                 //GenerateObjects();
                 //PostValidation();
                 AccessDatabase();
