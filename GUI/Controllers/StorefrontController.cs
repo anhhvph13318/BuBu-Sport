@@ -149,6 +149,12 @@ namespace GUI.Controllers
 		[HttpPost("/DeleteItem")]
 		public async Task<IActionResult> DeleteItem(Guid id)
 		{
+			List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
+			if (model != null)
+			{
+				model.RemoveAll(c => c.CartDetailID == id);
+			}
+			TempData["ConfirmedCartItems"] = JsonConvert.SerializeObject(model);
 			var req = new DeleteCartItemRequest();
 			req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 			req.Id = id;
@@ -209,6 +215,7 @@ namespace GUI.Controllers
 				var result = JsonConvert.DeserializeObject<BaseResponse<OrderResponse>>(res) ?? new();
 				if (result.Status == "200")
 				{
+					TempData.Remove("ConfirmedCartItems");
 					return Ok(new
 					{
 						success = true

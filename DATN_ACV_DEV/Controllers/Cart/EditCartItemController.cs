@@ -47,7 +47,7 @@ namespace DATN_ACV_DEV.Controllers
             var cartDetail = _context.TbCartDetails.Where(c => c.Id == _request.CartDetaiID).FirstOrDefault();
             if (cartDetail != null)
             {
-                if (_request.Quantity != null && _request.Quantity > 0)
+                if (_request.Quantity != null)
                 {
 					//var product = _context.TbProducts.Where(p => p.Id == cartDetail.ProductId).FirstOrDefault();
 					//if (cartDetail.Quantity >= _request.Quantity)
@@ -68,6 +68,10 @@ namespace DATN_ACV_DEV.Controllers
                     {
 						cartDetail.Quantity = _request.Quantity;
 					}
+                    if (cartDetail.Quantity <= 0)
+                    {
+                        throw new Exception("Invalid");
+                    }
 				}
             }
             _context.SaveChanges();

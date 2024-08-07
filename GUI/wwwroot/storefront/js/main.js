@@ -305,26 +305,38 @@
 		$('.order-total').text(total);
 	}
 	const updateQuantityCart = function (quantity, id, incre, el) {
-		$.post("/ChangeQuantity", {
-			cartDetaiID: id,
-			quantity: quantity,
-			isIncrement: incre
-		}, function (data) {
-			if (data && data.success) {
-				let subTotal = parseFloat(data.data.quantity) * parseFloat(data.data.price);
-				if (!incre) {
-					$(`#sub-${id}`).text(subTotal);
+		debugger;
+		if ((quantity > 0 && !incre) || incre) {
+			$.post("/ChangeQuantity", {
+				cartDetaiID: id,
+				quantity: quantity,
+				isIncrement: incre
+			}, function (data) {
+				debugger;
+				if (data && data.success) {
+					let subTotal = parseFloat(data.data.quantity) * parseFloat(data.data.price);
+					if (!incre) {
+						$(`#sub-${id}`).text(subTotal);
+					} else {
+						let price = $(`#item-${id}`).attr('data-price');
+						let quant = parseFloat($(`#quant-${id}`).val()) + quantity;
+						$(`#quant-${id}`).val(quant);
+						$(`#sub-${id}`).text(parseFloat(price) * quant);
+					}
+					el.attr('data-value', quantity);
+					updateCartTotal();
+				} else {
+					el.val(parseInt(el.attr('data-value')) < 1 ? 1 : el.attr('data-value'));
 				}
-				updateCartTotal();
-			} else {
-				el.val(el.attr('data-value'));
-			}
-		});
+			});
+		} else {
+			el.val(parseInt(el.attr('data-value')) < 1 ? 1 : el.attr('data-value'));
+		}
 	}
 	$('.cart-input-quant').on('change', function () {
-		let el = $(this);
 		let value = $(this).val();
 		let id = $(this).parent().parent().attr('data-itemId');
+		let el = $(this);
 		if (isNaN(value)) {
 			$(this).val($(this).attr('data-value'));
 			return;
@@ -341,30 +353,25 @@
 	});
 
 	$('.cart-quant-down').on('click', function () {
-		let el = $(this);
 		let value = -1;
 		let id = $(this).attr('data-itemId');
+		let el = $(`#quant-${id}`);
 
-		let price = $(`#item-${id}`).attr('data-price');
-		let quant = parseFloat($(`#quant-${id}`).val()) + value;
-		$(`#quant-${id}`).val(quant);
-		$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
+		//let price = $(`#item-${id}`).attr('data-price');
+		//let quant = parseFloat($(`#quant-${id}`).val()) + value;
+		//$(`#quant-${id}`).val(quant);
+		//$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
 
 		updateQuantityCart(value, id, true, el);
-		el.attr('data-value', value);
 	});
 	$('.cart-quant-up').on('click', function () {
-		let el = $(this);
 		let value = 1;
 		let id = $(this).attr('data-itemId');
+		let el = $(`#quant-${id}`);
 
-		let price = $(`#item-${id}`).attr('data-price');
-		let quant = parseFloat($(`#quant-${id}`).val()) + value;
-		$(`#quant-${id}`).val(quant);
-		$(`#sub-${id}`).text(parseFloat(price) * quant);
+
 
 		updateQuantityCart(value, id, true, el);
-		el.attr('data-value', value);
 	});
 
 	$('.chk-select-item').on("change", function () {
