@@ -2195,11 +2195,16 @@ textarea.input {
     cursor: pointer;
 }
 
-#order-submit{
-    cursor:pointer;
+.cart-details .cart-submit {
+    display: block;
+    margin-top: 30px;
 }
 
-.input-quant {
+.cart-submit {
+    cursor: pointer;
+}
+
+.item-quantity-modifier {
     width: 32px;
     height: 32px;
     padding: 0;
@@ -2209,12 +2214,13 @@ textarea.input {
     border: none;
     border-top: 1px solid #d6d6d6;
     border-bottom: 1px solid #d6d6d6;
-/*    -webkit-appearance: none;
+    /*    -webkit-appearance: none;
     margin: 0;
     -moz-appearance: textfield;*/
 }
 
 .change-quant {
+    display: inline-block;
     border: 1px solid #d6d6d6;
     padding: 6px;
     height: 32px;
@@ -2224,4 +2230,12 @@ textarea.input {
 .order-summary .order-col > div:first-child {
     max-width: 150px;
     overflow-wrap: break-word;
+}
+
+.item{
+    display:flex !important;
+}
+
+.item span {
+    margin: 5px 0 0 10px;
 }
