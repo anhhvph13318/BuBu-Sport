@@ -179,7 +179,7 @@
 
 	$('.add-to-cart-btn').on('click',function () {
 		$.post("/AddCart", { prId: $(this).attr('data-prId') }, function () {
-			window.location = "/checkout";
+			window.location = "/cart";
 		});
 	});
 
