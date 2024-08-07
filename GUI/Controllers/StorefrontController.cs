@@ -1,4 +1,4 @@
-﻿
+﻿using System.Web;
 using GUI.Models.Order_DTO;
 using GUI.Controllers.Shared;
 using GUI.FileBase;
@@ -46,6 +46,37 @@ namespace GUI.Controllers
 			return View(model);
 		}
 
+		[HttpPost("/ConfirmCart")]
+		public async Task<JsonResult> ConfirmCart(List<Guid> ids)
+		{
+			try
+			{
+				var req = new CartItemRequest();
+				req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+				var URL = _settings.APIAddress + "api/CartItem/Process";
+				var param = JsonConvert.SerializeObject(req);
+				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+				var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
+				if (result.Status == "200")
+				{
+					var data = result.Data.CartItem.Where(c => ids.Contains(c.CartDetailID));
+					TempData["ConfirmedCartItems"] = JsonConvert.SerializeObject(data);
+					TempData.Keep("ConfirmedCartItems");
+				}
+				return Json(new
+				{
+					success = true
+				});
+			}
+			catch (Exception)
+			{
+				return Json(new
+				{
+					success = false
+				});
+			}
+		}
+
 		[HttpPost("/AddCart")]
 		public async Task<IActionResult> AddToCart(Guid prId)
 		{
@@ -65,7 +96,38 @@ namespace GUI.Controllers
 		}
 
 		[Route("/Checkout")]
+		//public async Task<IActionResult> Checkout()
+		//{
+		//	var model = new List<CartDTO>();
+		//	var sum = 0m;
+		//	var req = new CartItemRequest();
+		//	req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+		//	var URL = _settings.APIAddress + "api/CartItem/Process";
+		//	var param = JsonConvert.SerializeObject(req);
+		//	var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+		//	var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
+		//	if (result.Status == "200")
+		//	{
+		//		model = result.Data.CartItem;
+		//		sum = model.Sum(c => c.Price * c.Quantity);
+		//	}
+		//	ViewBag.Sum = sum;
+		//	return View(model);
+		//}
 		public async Task<IActionResult> Checkout()
+		{
+			if (TempData["ConfirmedCartItems"] != null)
+			{
+				List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
+				TempData.Keep("ConfirmedCartItems");
+				ViewBag.Sum = model.Sum(c => c.Price * c.Quantity);
+				return View(model);
+			}
+			return RedirectToAction(nameof(Store));
+		}
+
+		[Route("/Cart")]
+		public async Task<IActionResult> Cart()
 		{
 			var model = new List<CartDTO>();
 			var sum = 0m;
@@ -105,7 +167,7 @@ namespace GUI.Controllers
 		public async Task<IActionResult> CreateOrder(CreateOrderObject obj)
 		{
 			Guid addrId;
-			List<Guid> cartDetails = new();
+			List<Guid> cartDetails = obj.ids;
 			var addressReq = new CreateAddessDeliveryRequest
 			{
 				receiverName = obj.name ?? "",
@@ -131,24 +193,6 @@ namespace GUI.Controllers
 			{
 				addrId = new Guid();
 			}
-			var reqItems = new CartItemRequest();
-			reqItems.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
-			URL = _settings.APIAddress + "api/CartItem/Process";
-			var paramItems = JsonConvert.SerializeObject(reqItems);
-			var resItems = await httpService.PostAsync(URL, paramItems, HttpMethod.Post, "application/json");
-			var resultItems = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(resItems) ?? new();
-			var sum = 0m;
-			try
-			{
-				sum = resultItems.Data.CartItem.Sum(c => c.Quantity * c.Price);
-            }
-			catch (Exception)
-			{
-			}
-			if (resultItems.Status == "200")
-			{
-				cartDetails = resultItems.Data.CartItem.Select(c => c.CartDetailID).ToList();
-			}
 			if (cartDetails != null && cartDetails.Any())
 			{
 				var req = new OrderRequest
@@ -157,12 +201,12 @@ namespace GUI.Controllers
 					description = obj.note ?? "",
 					addressDeliveryId = addrId,
 					paymentMethodId = new Guid(),
-					totalAmount = resultItems.Data.CartItem.Sum(c => c.Quantity * c.Price)
-				};
+					totalAmount = 0
+			};
 				URL = _settings.APIAddress + "api/ConfirmOrder/Process";
 				var param = JsonConvert.SerializeObject(req);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-				var result = JsonConvert.DeserializeObject<BaseResponse<OrderResponse>>(resItems) ?? new();
+				var result = JsonConvert.DeserializeObject<BaseResponse<OrderResponse>>(res) ?? new();
 				if (result.Status == "200")
 				{
 					return Ok(new
@@ -219,6 +263,7 @@ namespace GUI.Controllers
             public string? city { get; set; }
 			public string? zipCode { get; set; }
 			public string? note { get; set; }
+			public List<Guid> ids { get; set; } = new();
         }
 
         public class UpdateCartItem

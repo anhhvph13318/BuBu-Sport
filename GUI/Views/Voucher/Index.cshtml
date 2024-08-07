@@ -1,0 +1,37 @@
+@using GUI.Models.DTOs.Voucher_DTO
+@using System.Globalization
+@model IEnumerable<VoucherList>
+
+<div class="container">
+  <div class="mb-3 d-flex justify-content-end p-3">
+    <button class="btn btn-primary">Thêm mới</button>
+  </div>
+  <table class="table table-stripped">
+    <thead>
+      <tr>
+        <th>Tên voucher</th>
+        <th>Mã</th>
+        <th>Số tiền giảm</th>
+        <th>Thời gian hiệu lực</th>
+        <th>Trạng thái</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var voucher in Model)
+      {
+        <tr>
+          <td>@voucher.Name</td>
+          <td>@voucher.Code</td>
+          <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+          <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
+          <td>@voucher.Status</td>
+          <td>
+            <button class="btn btn-primary text-nowrap me-2">Chi tiết</button>
+            <button class="btn btn-danger">Xóa</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

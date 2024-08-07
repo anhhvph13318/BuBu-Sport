@@ -1,4 +1,3 @@
-using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using GUI.FileBase;
 using GUI.Models.DTOs.Order_DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +13,13 @@ namespace GUI.Controllers;
 [Route("orders")]
 public class OrderController : Controller
 {
+    // private const string URI = "http://localhost:5059";
     private const string URI = "https://localhost:44383";
-    private const string CURRENT_ORDER = "CURRENT_ORDER";
     private const string OrderItemListPartialView = "_OrderItemListPartialView";
     private const string OrderCustomerInfoPartialView = "_OrderCustomerInfoPartialView";
     private const string OrderPaymentInfoPartialView = "_OrderPaymentInfoPartialView";
     private const string OrderShippingInfoPartialView = "_OrderShippingInfoPartialView";
     private const string OrderButtonActionPartialView = "_OrderButtonActionPartialView";
-    private const string OrderListPartialView = "_OrderListPartialView";
     private const string OrderTempListPartialView = "_OrderTempListPartialView";
 
     [HttpGet]
@@ -99,7 +97,7 @@ public class OrderController : Controller
             JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
 
-        ViewData["OrderSaved"] = response!.Data;
+        ViewData["OrderLoadedFromDb"] = response!.Data;
         ViewData["OrderTemps"] = HttpContext.Session.GetTempOrders();
 
         return View();
@@ -116,14 +114,56 @@ public class OrderController : Controller
         if (!checkout.IsShippingAddressSameAsCustomerAddress)
             order.ShippingInfo = checkout.ShippingInfo;
 
+        order.IsDraft = true;
         order.TempOrderCreatedTime = DateTime.Now;
         order.IsCustomerTakeYourSelf = checkout.IsCustomerTakeYourSelf;
         order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
-        var tempOrders = HttpContext.Session.SaveTempOrder(order);
+        var tempOrders = HttpContext.Session.SaveTempOrder(order, out bool alreadySave);
+
+        // submit to database
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var payload = new
+        {
+            order.Customer,
+            order.Items,
+            checkout.IsCustomerTakeYourSelf,
+            checkout.IsShippingAddressSameAsCustomerAddress,
+            checkout.Status,
+            Shipping = order.ShippingInfo,
+            Payment = order.PaymentInfo
+        };
+        HttpResponseMessage rawResponse = alreadySave
+            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+            : await httpClient.PostAsJsonAsync("api/orders/create", payload);
+
+        if (rawResponse.IsSuccessStatusCode)
+        {
+            return Json(new
+            {
+                TempOrders = await RenderViewAsync(OrderTempListPartialView, tempOrders)
+            });
+        }
+        return BadRequest();
+
+
+    }
+
+    [HttpDelete]
+    [Route("draft/{id}/remove")]
+    public async Task<IActionResult> RemoveDraftOrder([FromRoute] string id)
+    {
+        var orders = HttpContext.Session.RemoveTempOrder(id, out bool alreadyRemove);
+        if (alreadyRemove)
+        {
+            using var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(URI);
+            await httpClient.DeleteAsync($"api/orders/draft/{id}");
+        }
 
         return Json(new
         {
-            TempOrders = await RenderViewAsync(OrderTempListPartialView, tempOrders)
+            TempOrders = await RenderViewAsync(OrderTempListPartialView, orders)
         });
     }
 
@@ -172,7 +212,7 @@ public class OrderController : Controller
 
     [HttpDelete]
     [Route("items/{id}")]
-    public async Task<IActionResult> RemoveItemFromORder([FromRoute] string id)
+    public async Task<IActionResult> RemoveItemFromOrder([FromRoute] string id)
     {
         var order = HttpContext.Session.GetCurrentOrder();
 

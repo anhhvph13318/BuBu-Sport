@@ -1,7 +1,7 @@
 const productStorage = new ProductStorage();
 
 $('body').on('click', function () {
-    $('.autocomplete-items').each(function() {
+    $('.autocomplete-items').each(function () {
         $(this).empty();
     })
 });
@@ -10,14 +10,14 @@ const clearSearchResult = () => {
     $('#autocomplete-list').empty();
 }
 
-$('#search').on('input', async function(e) {
+$('#search').on('input', async function (e) {
     clearSearchResult();
 
     const value = e.target.value;
 
     const products = await productStorage.filter(value);
 
-    for(let i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i++) {
         const item = document.createElement('a');
         item.setAttribute('class', 'text-decoration-none');
         const itemContent = `
@@ -37,32 +37,32 @@ $('#search').on('input', async function(e) {
     }
 })
 
-function isCustomerTakeYourSelfChange () {
-    if($('#shippingLocation').val() == "1") {
-        $('#shippingLocationInfo').css({'display': 'block'});
+function isCustomerTakeYourSelfChange() {
+    if ($('#shippingLocation').val() == "1") {
+        $('#shippingLocationInfo').css({ 'display': 'block' });
     } else {
-        $('#shippingLocationInfo').css({'display': 'none'});
+        $('#shippingLocationInfo').css({ 'display': 'none' });
     }
 }
 
-function checkCustomerHasBoughtSomething (e) {
+function checkCustomerHasBoughtSomething(e) {
     fetch(GET_BASIC_CUSTOMER_INFO(e.target.value))
-    .then(res => res.json())
-    .then(data => {
-        if(data.found) {
-            $('#customerInfoContainer').html('');
-            $('#customerInfoContainer').html(data.customer);
-        }
-    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.found) {
+                $('#customerInfoContainer').html('');
+                $('#customerInfoContainer').html(data.customer);
+            }
+        })
 }
 
 function isSameAsCustomerAddressChange() {
     const isChecked = $('#isSameAsCustomerAddress').is(':checked');
 
-    if(isChecked) {
-        $('#shippingAddress').css({'display': 'none'});
+    if (isChecked) {
+        $('#shippingAddress').css({ 'display': 'none' });
     } else {
-        $('#shippingAddress').css({'display': 'block'});
+        $('#shippingAddress').css({ 'display': 'block' });
     }
 }
 
@@ -76,32 +76,32 @@ function updateItemAndPaymentView(data) {
 
 function updateAllView(data) {
     $('#orderItemContainer').html('');
-        $('#customerInfoContainer').html('');
-        $('#shippingInfoContainer').html('');
-        $('#orderPaymentInfoContainer').html('');
-        $('#orderButtonActionContainer').html('');
-        // show new data
-        $('#orderItemContainer').html(data.items);
-        $('#customerInfoContainer').html(data.customer);
-        $('#shippingInfoContainer').html(data.shipping);
-        $('#orderPaymentInfoContainer').html(data.payment);
-        $('#orderButtonActionContainer').html(data.buttons);
+    $('#customerInfoContainer').html('');
+    $('#shippingInfoContainer').html('');
+    $('#orderPaymentInfoContainer').html('');
+    $('#orderButtonActionContainer').html('');
+    // show new data
+    $('#orderItemContainer').html(data.items);
+    $('#customerInfoContainer').html(data.customer);
+    $('#shippingInfoContainer').html(data.shipping);
+    $('#orderPaymentInfoContainer').html(data.payment);
+    $('#orderButtonActionContainer').html(data.buttons);
 }
 
 function show(id) {
     fetch(SHOW_ORDER_API(id))
-    .then(res => res.json())
-    .then(data => {
-        updateAllView(data);
-        $('#shippingLocation').val(data.isCustomerTakeYourSelf ? '0' : '1');
-        $('#orderStatus').val(data.status.toString());
-        $('#shippingLocation').trigger('change');
-        $('#orderStatus').trigger('change');
-        $('#isSameAsCustomerAddress').trigger('change');
-    });
+        .then(res => res.json())
+        .then(data => {
+            updateAllView(data);
+            $('#shippingLocation').val(data.isCustomerTakeYourSelf ? '0' : '1');
+            $('#orderStatus').val(data.status.toString());
+            $('#shippingLocation').trigger('change');
+            $('#orderStatus').trigger('change');
+            $('#isSameAsCustomerAddress').trigger('change');
+        });
 }
 
-function handleItemSelect (id, name, price, image) {
+function handleItemSelect(id, name, price, image) {
     clearSearchResult();
 
     fetch(ORDER_ADD_ITEM, {
@@ -117,31 +117,82 @@ function handleItemSelect (id, name, price, image) {
             price: price
         })
     })
-    .then(res => res.json())
-    .then(data => updateItemAndPaymentView(data));
+        .then(res => res.json())
+        .then(data => updateItemAndPaymentView(data));
 };
 
 function updateQuantity(event, id) {
     const value = parseInt(event.target.value);
 
-    if(value < 1) return;
+    if (value < 1) return;
 
     fetch(ORDER_UPDATE_ITEM_QUANTITY(id, value), {
         method: 'PATCH'
     })
-    .then(res => res.json())
-    .then(data => updateItemAndPaymentView(data));
+        .then(res => res.json())
+        .then(data => updateItemAndPaymentView(data));
 }
 
 function removeItem(id) {
     fetch(ORDER_REMOVE_ITEM(id), {
         method: 'DELETE'
     })
-    .then(res => res.json())
-    .then(data => updateItemAndPaymentView(data));
+        .then(res => res.json())
+        .then(data => updateItemAndPaymentView(data));
+}
+
+function verify() {
+    let isValid = true;
+    const displayErrorMessage = { 'display': 'block' };
+    const hideErrorMessage = { 'display': 'none' };
+
+    // validate item have in cart
+    const items = $('#orderItemContainer table tbody tr').length;
+    if (items === 0) {
+        alert("Giỏ hàng đang không có sản phẩm nào!");
+        return;
+    }
+
+    // validate customer info
+    const customerInfoField = {
+        '#customerName': '#order-customer-name',
+        '#customerPhoneNumber': '#order-customer-phone',
+        '#customerAddress': '#order-customer-address'
+    };
+
+    for (const [key, value] of Object.entries(customerInfoField)) {
+        if ($(key).val() === "") {
+            isValid = false;
+            $(value).css(displayErrorMessage);
+        } else {
+            $(value).css(hideErrorMessage);
+        }
+    }
+
+    // validate shipping info
+    if ($('#shippingLocation').val() == "1" && $('#isSameAsCustomerAddress').is(':checked') == false) {
+        const shippingField = {
+            '#receiverName': '#receiverNameError',
+            '#receiverPhone': '#receiverPhoneError',
+            '#receiverAddress': '#receiverAddressError'
+        }
+
+        for (const [key, value] of Object.entries(shippingField)) {
+            if ($(key).val() === "") {
+                isValid = false;
+                $(value).css(displayErrorMessage);
+            } else {
+                $(value).css(hideErrorMessage);
+            }
+        }
+    }
+
+    return isValid;
 }
 
 function checkout() {
+    if (!verify()) return;
+
     const customerInfo = {
         name: $('#customerName').val(),
         phoneNumber: $('#customerPhoneNumber').val(),
@@ -169,8 +220,8 @@ function checkout() {
         },
         body: JSON.stringify(payload)
     }).then(res => res.json())
-    .then(data => updateAllView(data))
-    .then(_ => toastr.success("Tạo thành công"));
+        .then(data => updateAllView(data))
+        .then(_ => toastr.success("Tạo thành công"));
 }
 
 function update() {
@@ -194,19 +245,21 @@ function update() {
         },
         body: JSON.stringify(payload)
     }).then(res => res.json())
-    .then(data => updateAllView(data))
-    .then(_ => toastr.success("Cập nhật thành công"));
+        .then(data => updateAllView(data))
+        .then(_ => toastr.success("Cập nhật thành công"));
 }
 
 function clearOrder() {
     fetch(ORDER_CLEAR_API, {
         method: 'DELETE'
     })
-    .then(res => res.json())
-    .then(data => updateAllView(data));
+        .then(res => res.json())
+        .then(data => updateAllView(data));
 }
 
 function saveTempOrder() {
+    if (!verify()) return;
+
     const customerInfo = {
         name: $('#customerName').val(),
         phoneNumber: $('#customerPhoneNumber').val(),
@@ -235,11 +288,25 @@ function saveTempOrder() {
         },
         body: JSON.stringify(payload)
     })
-    .then(res => res.json())
-    .then(data => {
-        $('#orderTempSaveContainer').html('');
-        $('#orderTempSaveContainer').html(data.tempOrders);
+        .then(res => res.json())
+        .then(data => {
+            $('#orderTempSaveContainer').html('');
+            $('#orderTempSaveContainer').html(data.tempOrders);
+        })
+        .then(_ => toastr.success("Lưu thành công!"))
+        .then(_ => clearOrder());
+}
+
+function removeDraft(id) {
+    const isRemove = confirm("Bạn có chắc muốn xóa?")
+    if (!isRemove) return;
+
+    fetch(REMOVE_ORDER_TEMP_API(id), {
+        method: 'DELETE'
     })
-    .then(_ => toastr.success("Lưu thành công!"))
-    .then(_ => clearOrder());
+        .then(res => res.json())
+        .then(data => {
+            $('#orderTempSaveContainer').html('');
+            $('#orderTempSaveContainer').html(data.tempOrders);
+        });
 }
