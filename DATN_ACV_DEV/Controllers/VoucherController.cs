@@ -48,6 +48,31 @@ namespace DATN_ACV_DEV.Controllers
             return Ok(new BaseResponse<GetListVoucherResponse> { Data = new GetListVoucherResponse { LstVoucher = vouchers, TotalCount = vouchers.Count } });
         }
 
+        [HttpGet]
+        [Route("search-by")]
+        public async Task<IActionResult> GetVoucherByCode([FromQuery] string code)
+        {
+            var voucher = await _context.TbVouchers.AsNoTracking()
+                .Select(e => new VoucherDTO
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Code = e.Code,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate,
+                    Quantity = e.Quantity,
+                    Unit = e.Unit,
+                    Discount = e.Discount,
+                    MaxDiscountAllow = e.MaxDiscountAllow,
+                    RequiredTotalAmount = e.RequiredTotalAmount
+                }).FirstOrDefaultAsync(e => e.Code == code.ToUpper());
+
+            if (voucher == null)
+                return NotFound();
+
+            return Ok(new BaseResponse<VoucherDTO> { Data = voucher });
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVoucherDetail([FromRoute] string id)
         {
@@ -91,21 +116,15 @@ namespace DATN_ACV_DEV.Controllers
                 return BadRequest(response);
             }
 
-            if (request.StartDate > request.EndDate)
-            {
-                response.Messages.Add(new Message
-                {
-                    Field = "EndDate",
-                    MessageText = "Ngày kết thúc không thể nhỏ hơn ngày bắt đầu"
-                });
-
-                return BadRequest(response);
-            }
+            var customer = await _context.TbCustomers
+                .AsNoTracking()
+                .Select(e => e.Id)
+                .ToListAsync();
 
             var voucher = new TbVoucher
             {
                 Id = Guid.NewGuid(),
-                Code = request.Code,
+                Code = request.Code.ToUpper(),
                 Name = request.Name,
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,
@@ -119,6 +138,15 @@ namespace DATN_ACV_DEV.Controllers
                 CreateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"),
                 CreateDate = DateTime.Now,
             };
+
+            if(voucher.Type == VoucherType.Evoucher)
+            {
+                voucher.TbCustomerVouchers = customer.Select(e => new TbCustomerVoucher
+                {
+                    CustomerId = e,
+                    IsUsed = false
+                }).ToList();
+            }
 
             await _context.AddAsync(voucher);
             await _context.SaveChangesAsync();
@@ -166,6 +194,55 @@ namespace DATN_ACV_DEV.Controllers
 
             response.Data = new EditVoucherResponse { ID = voucher.Id };
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("{code}/apply")]
+        public async Task<IActionResult> CanUserApplyVoucher(
+            [FromRoute] string code,
+            [FromQuery] string? target)
+        {
+            var voucher = await _context.TbVouchers.AsNoTracking()
+                .Where(e => e.StartDate >= DateTime.Now && e.EndDate <= DateTime.Now)
+                .Select(e => new VoucherDTO
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Code = e.Code,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate,
+                    Quantity = e.Quantity,
+                    Unit = e.Unit,
+                    Type = e.Type,
+                    Discount = e.Discount,
+                    MaxDiscountAllow = e.MaxDiscountAllow,
+                    RequiredTotalAmount = e.RequiredTotalAmount
+                })
+                .FirstOrDefaultAsync(e => e.Code == code.ToUpper());
+
+            if (voucher is null) return BadRequest();   // check voucher is valid
+
+            if (string.IsNullOrEmpty(target) && voucher.Type == VoucherType.Voucher)    //check voucher is evoucher or not
+                return Ok(voucher);
+
+            Guid.TryParse(target, out var customerId);
+            var customer = await _context.TbCustomers
+                .AsNoTracking()
+                .Include(e => e.TbCustomerVoucher)
+                .FirstOrDefaultAsync(e => e.Id == customerId || e.Phone == target);
+
+            if (voucher.Type == VoucherType.Voucher && customer is null) // return voucher if voucher is valid and customer didn't buy anything ever
+                return Ok(voucher);
+
+            if(customer is null) return BadRequest();
+
+            if(voucher.Type == VoucherType.Voucher && customer.Orders.Any(e => e.VoucherId == voucher.Id))
+                return BadRequest();
+
+            var evoucher = customer.TbCustomerVoucher.FirstOrDefault(e => e.VoucherId == voucher.Id);
+            if(evoucher is null || evoucher.IsUsed) return BadRequest();
+
+            return Ok(voucher);
         }
     }
 }

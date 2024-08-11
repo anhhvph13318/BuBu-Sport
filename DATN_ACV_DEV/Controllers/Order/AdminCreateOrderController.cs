@@ -39,7 +39,8 @@ namespace DATN_ACV_DEV.Controllers.Order
                 IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress,
                 OrderCode = payload.Code,
                 CreateDate = DateTime.Now,
-                IsDraft = payload.IsDraft
+                IsDraft = payload.IsDraft,
+                VoucherId = payload.Payment.VoucherId
             };
 
             if (payload.Customer.Id != Guid.Empty)

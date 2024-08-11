@@ -65,7 +65,7 @@ namespace DATN_ACV_DEV.Controllers
                 Quantity  = _request.Quantity,
                 StartDate = _request.StartDate,
                 EndDate = _request.EndDate,
-                Type = _request.Type,
+                //Type = _request.Type,
                 Unit = _request.Unit,
                 Status = _request.Status,
                 //Default

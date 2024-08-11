@@ -36,5 +36,6 @@ public partial class TbCustomer
 
     public virtual ICollection<TbAccount> TbAccounts { get; set; } = new List<TbAccount>();
 
-    public virtual TbCustomerVoucher? TbCustomerVoucher { get; set; }
+    public virtual IList<TbCustomerVoucher> TbCustomerVoucher { get; set; } = new List<TbCustomerVoucher>();
+    public virtual IList<TbOrder> Orders { get; set; } = new List<TbOrder>();
 }

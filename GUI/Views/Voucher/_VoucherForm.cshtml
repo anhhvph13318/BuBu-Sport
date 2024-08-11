@@ -22,6 +22,13 @@
             <span class="text-danger" asp-validation-for="Voucher.Quantity"></span>
         </div>
         <div class="mb-3">
+            <label>Loại voucher</label>
+            <select asp-for="Voucher.Type" class="form-select">
+                <option value="0">Voucher</option>
+                <option value="1">E-Voucher</option>
+            </select>
+        </div>
+        <div class="mb-3">
             <label>Hình thức giảm giá</label>
             <select asp-for="Voucher.Unit" class="form-select" onchange="voucherUnitChange(event)">
                 <option value="0">Giảm giá theo phần trăm</option>

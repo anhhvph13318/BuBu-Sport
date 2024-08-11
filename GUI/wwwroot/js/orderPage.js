@@ -310,3 +310,15 @@ function removeDraft(id) {
             $('#orderTempSaveContainer').html(data.tempOrders);
         });
 }
+
+function applyVoucher() {
+    const code = $('#voucherCode').val();
+    if (code === "") return;
+
+    fetch(APPLY_VOUCHER(code))
+        .then(res => res.json())
+        .then(data => {
+            $('#orderPaymentInfoContainer').html('');
+            $('#orderPaymentInfoContainer').html(data.payment);
+        }).catch(err => alert("Mã khuyến mãi không hợp lệ"));
+}

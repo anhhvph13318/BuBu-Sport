@@ -75,7 +75,7 @@ public partial class DBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=RATONLYNK;Initial Catalog=DATABASE_ACV_13_01_2024;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
+        => optionsBuilder.UseSqlServer("Server=127.0.0.1;Database=HousewareV2;UID=sa;PWD=M1ng@2002;Encrypt=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -224,8 +224,8 @@ public partial class DBContext : DbContext
             entity.Property(e => e.IsUsed).HasColumnName("IsUsed");
             entity.Property(e => e.VoucherId).HasColumnName("VoucherID");
 
-            entity.HasOne(d => d.Customer).WithOne(p => p.TbCustomerVoucher)
-                .HasForeignKey<TbCustomerVoucher>(d => d.CustomerId)
+            entity.HasOne(d => d.Customer).WithMany(p => p.TbCustomerVoucher)
+                .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tb_CustomerVoucher_tb_Customer");
 
@@ -380,6 +380,11 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.IsCustomerTakeYourself).HasColumnName("IsCustomerTakeYourself");
             entity.Property(e => e.IsShippingAddressSameAsCustomerAddress).HasColumnName("IsShippingAddressSameAsCustomerAddress");
+
+            entity.HasOne(e => e.Voucher)
+                .WithMany(e => e.Orders)
+                .HasForeignKey(e => e.VoucherId)
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<TbOrderDetail>(entity =>
@@ -606,7 +611,6 @@ public partial class DBContext : DbContext
             entity.Property(e => e.EndDate).HasColumnType("datetime");
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.Type).HasMaxLength(50);
             entity.Property(e => e.Unit).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });

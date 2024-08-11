@@ -2,6 +2,8 @@
 {
     public class PaymentInfo
     {
+        public Guid? VoucherId { get; set; }
+        public string VoucherCode { get; set; } = "";
         public int Status { get; set; }
         public decimal ShippingFee { get; set; }
         public decimal TotalAmount { get; set; }

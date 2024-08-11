@@ -1,5 +1,7 @@
+using Azure;
 using GUI.FileBase;
 using GUI.Models.DTOs.Order_DTO;
+using GUI.Models.DTOs.Voucher_DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -354,6 +356,36 @@ public class OrderController : Controller
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
             Buttons = await RenderViewAsync(OrderButtonActionPartialView, true)
+        });
+    }
+
+    [HttpPost]
+    [Route("apply-voucher")]
+    public async Task<IActionResult> ApplyCoupon([FromQuery] string code)
+    {
+        var order = HttpContext.Session.GetCurrentOrder();
+        var target = order.Customer.Id == Guid.Empty ? order.Customer.PhoneNumber : order.Customer.Id.ToString();
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var rawResponse = await httpClient.GetAsync($"/api/vouchers/{code}/apply?target={target}");
+        var response =
+            JsonConvert.DeserializeObject<BaseResponse<VoucherDTO>>(
+                await rawResponse.Content.ReadAsStringAsync());
+
+        if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK || response?.Data == null)
+            return BadRequest();
+
+        order.Voucher = response.Data;
+        order.PaymentInfo.VoucherId = order.Voucher.Id;
+        order.PaymentInfo.VoucherCode = order.Voucher.Code;
+
+        order.ReCalculatePaymentInfo();
+
+        HttpContext.Session.SaveCurrentOrder(order);
+
+        return Json(new
+        {
+            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
         });
     }
 

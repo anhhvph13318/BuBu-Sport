@@ -18,7 +18,7 @@ public partial class TbVoucher
 
     public DateTime EndDate { get; set; }
 
-    public string? Type { get; set; }
+    public VoucherType Type { get; set; }
 
     public VoucherUnit Unit { get; set; }
     public decimal MaxDiscountAllow { get; set; }
@@ -35,10 +35,17 @@ public partial class TbVoucher
     public DateTime CreateDate { get; set; }
 
     public virtual ICollection<TbCustomerVoucher> TbCustomerVouchers { get; set; } = new List<TbCustomerVoucher>();
+    public virtual ICollection<TbOrder> Orders { get; set; } = new List<TbOrder>();
 }
 
 public enum VoucherUnit
 {
     Percent,
     Money
+}
+
+public enum VoucherType : byte
+{
+    Voucher = 0,
+    Evoucher = 1
 }

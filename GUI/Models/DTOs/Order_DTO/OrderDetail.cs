@@ -1,4 +1,7 @@
+using DATN_ACV_DEV.Entity;
+using GUI.Models.DTOs.Voucher_DTO;
 using System.ComponentModel.DataAnnotations;
+using static DATN_ACV_DEV.Controllers.Order.AdminCreateOrderController;
 
 namespace GUI.Models.DTOs.Order_DTO;
 
@@ -10,6 +13,7 @@ public class OrderDetail
     public CustomerInfo Customer { get; set; } = null!;
     public ShippingInfo ShippingInfo { get; set; } = null!;
     public PaymentInfo PaymentInfo { get; set; } = null!;
+    public VoucherDTO Voucher { get; set; } = new VoucherDTO();
     public bool IsCustomerTakeYourSelf { get; set; } = true;
     public bool IsSameAsCustomerAddress { get; set; } = true;
     public string StatusText { get; set; } = string.Empty;
@@ -27,6 +31,23 @@ public class OrderDetail
         PaymentInfo.TotalAmount = Items.Sum(e => e.Quantity * e.Price);
         PaymentInfo.TotalTax = PaymentInfo.TotalAmount * 10 / 100;
         PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.TotalTax + PaymentInfo.ShippingFee - PaymentInfo.TotalDiscount;
+
+        if (Voucher.Id == Guid.Empty) return;
+
+        if (Voucher.Unit == VoucherUnit.Percent)
+        {
+            var discount = PaymentInfo.TotalAmount - (PaymentInfo.TotalAmount * Voucher.Discount / 100);
+            var finalDiscount = discount > Voucher.MaxDiscountAllow
+            ? Voucher.MaxDiscountAllow
+                : discount;
+            PaymentInfo.TotalDiscount += finalDiscount;
+            PaymentInfo.FinalAmount -= finalDiscount;
+        }
+        else
+        {
+            PaymentInfo.TotalDiscount += Voucher.Discount;
+            PaymentInfo.FinalAmount -= Voucher.Discount;
+        }
     }
 }
 

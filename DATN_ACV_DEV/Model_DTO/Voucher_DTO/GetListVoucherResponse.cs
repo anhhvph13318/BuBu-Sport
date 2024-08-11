@@ -21,7 +21,7 @@ namespace DATN_ACV_DEV.Model_DTO.Voucher_DTO
         public int? Quantity { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string? Type { get; set; }
+        public VoucherType Type { get; set; }
         public VoucherUnit Unit { get; set; }
         public decimal MaxDiscountAllow { get; set; }
         public decimal RequiredTotalAmount { get; set; }
