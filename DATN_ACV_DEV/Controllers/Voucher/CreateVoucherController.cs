@@ -68,8 +68,6 @@ namespace DATN_ACV_DEV.Controllers
                 Type = _request.Type,
                 Unit = _request.Unit,
                 Status = _request.Status,
-                ProductId = _request.ProductID,
-                CategoryId = _request.CategoryID,
                 //Default
                 CreateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"), // Tạm thời gán guid khởi tạo.
                 CreateDate = DateTime.Now, // Ngày hiện tại 
@@ -86,7 +84,7 @@ namespace DATN_ACV_DEV.Controllers
             Condition.ConditionVoucher.CreateVoucher_C03(_context, _request.EndDate, _apiCode, _conC03, _conC03Field);
             // phần trăm giảm giá không được quá 80% 
             // Unit chỉ có 2 option : % và vnd 
-            Condition.ConditionVoucher.CreateVoucher_C04(_context, _request.Unit, _apiCode, _conC04, _conC04Field);
+            //Condition.ConditionVoucher.CreateVoucher_C04(_context, _request.Unit, _apiCode, _conC04, _conC04Field);
             // Voucher chỉ áp dụng "1trong2" sản phẩm hoặc danh mục sản phẩm ( có thể áp dụng thêm cho cả nhóm khách hàng )
             Condition.ConditionVoucher.CreateVoucher_C06(_context, _request, _apiCode, _conC05, _conC05Field);
         }

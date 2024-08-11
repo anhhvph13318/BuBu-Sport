@@ -221,7 +221,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.CustomerId)
                 .ValueGeneratedNever()
                 .HasColumnName("CustomerID");
-            entity.Property(e => e.VoucherCode).HasMaxLength(50);
+            entity.Property(e => e.IsUsed).HasColumnName("IsUsed");
             entity.Property(e => e.VoucherId).HasColumnName("VoucherID");
 
             entity.HasOne(d => d.Customer).WithOne(p => p.TbCustomerVoucher)
@@ -601,12 +601,9 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("ID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.Code).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.GroupCustomerId).HasColumnName("GroupCustomerID");
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.Type).HasMaxLength(50);

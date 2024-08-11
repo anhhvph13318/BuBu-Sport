@@ -46,9 +46,9 @@ namespace DATN_ACV_DEV
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
-                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Unit))
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.product.Name))
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.category.Name));
+                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Unit));
+                //.ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.product.Name))
+                //.ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.category.Name));
             /*.ForMember(dest => dest.GroupCustomerName, opt => opt.MapFrom(src => src.groupCustomer.Name))*/
 
             CreateMap<TbCategory, CategoryDTO>()

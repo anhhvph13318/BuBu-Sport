@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DATN_ACV_DEV.Entity;
+﻿namespace DATN_ACV_DEV.Entity;
 
 public partial class TbVoucher
 {
@@ -23,7 +20,9 @@ public partial class TbVoucher
 
     public string? Type { get; set; }
 
-    public string? Unit { get; set; }
+    public VoucherUnit Unit { get; set; }
+    public decimal MaxDiscountAllow { get; set; }
+    public decimal RequiredTotalAmount { get; set; }
 
     public string? Status { get; set; }
 
@@ -35,11 +34,11 @@ public partial class TbVoucher
 
     public DateTime CreateDate { get; set; }
 
-    public Guid? ProductId { get; set; }
-
-    public Guid? CategoryId { get; set; }
-
-    public Guid? GroupCustomerId { get; set; }
-
     public virtual ICollection<TbCustomerVoucher> TbCustomerVouchers { get; set; } = new List<TbCustomerVoucher>();
+}
+
+public enum VoucherUnit
+{
+    Percent,
+    Money
 }

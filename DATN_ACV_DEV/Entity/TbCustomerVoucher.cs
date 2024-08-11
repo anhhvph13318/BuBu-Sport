@@ -9,7 +9,7 @@ public partial class TbCustomerVoucher
 
     public Guid VoucherId { get; set; }
 
-    public string? VoucherCode { get; set; }
+    public bool IsUsed { get; set; }
 
     public virtual TbCustomer Customer { get; set; } = null!;
 
