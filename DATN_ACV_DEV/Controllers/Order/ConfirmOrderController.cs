@@ -99,7 +99,7 @@ namespace DATN_ACV_DEV.Controllers
         {
             account = _context.TbAccounts.Where(a => a.Id == _request.UserId).FirstOrDefault();
             customer = _context.TbCustomers.Where(c => c.Id == account.CustomerId).FirstOrDefault();
-            _namePaymentMethod = _context.TbPaymentMethods.Where(c => c.Id == _request.paymentMethodId).Select(p => p.Name).FirstOrDefault();
+            //_namePaymentMethod = _context.TbPaymentMethods.Where(c => c.Id == _request.paymentMethodId).Select(p => p.Name).FirstOrDefault();
             _order = new TbOrder()
             {
                 Id = Guid.NewGuid(),

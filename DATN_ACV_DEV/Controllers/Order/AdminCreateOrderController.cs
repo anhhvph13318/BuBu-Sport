@@ -46,15 +46,15 @@ namespace DATN_ACV_DEV.Controllers.Order
                 order.CustomerId = payload.Customer.Id;
             else
             {
-                var tempGroup = await _context.TbGroupCustomers.FirstOrDefaultAsync();
-                order.Customer = new TbCustomer
-                {
-                    Id = Guid.NewGuid(),
-                    Adress = payload.Customer.Address,
-                    Name = payload.Customer.Name,
-                    Phone = payload.Customer.PhoneNumber,
-                    GroupCustomer = tempGroup!
-                };
+                //var tempGroup = await _context.TbGroupCustomers.FirstOrDefaultAsync();
+                //order.Customer = new TbCustomer
+                //{
+                //    Id = Guid.NewGuid(),
+                //    Adress = payload.Customer.Address,
+                //    Name = payload.Customer.Name,
+                //    Phone = payload.Customer.PhoneNumber,
+                //    GroupCustomer = tempGroup!
+                //};
             }
 
             var hasShippingAddress = !payload.IsCustomerTakeYourSelf && !payload.IsShippingAddressSameAsCustomerAddress;

@@ -9,7 +9,5 @@ public partial class TbOrder
     [NotMapped]
     public TbCustomer customer { get; set; }
     [NotMapped]
-    public TbPaymentMethod paymentMethod { get; set; }
-    [NotMapped]
     public List<TbOrderDetail> orderDetail { get; set; }
 }

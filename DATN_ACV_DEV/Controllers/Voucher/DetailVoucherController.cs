@@ -40,7 +40,7 @@ namespace DATN_ACV_DEV.Controllers
                 _Voucher = _context.TbVouchers.Where(p => p.Id == _request.ID && p.EndDate >= DateTime.Now).FirstOrDefault();
                 var product = _context.TbProducts.Where(p => p.Id == _Voucher.ProductId && p.IsDelete == false).FirstOrDefault();
                 var category = _context.TbCategories.Where(p => p.Id == _Voucher.CategoryId && p.IsDelete == false).FirstOrDefault();
-                var groupCustomerName = _context.TbGroupCustomers.Where(p => p.Id == _Voucher.CategoryId && p.IsDelete == false).FirstOrDefault();
+                //var groupCustomerName = _context.TbGroupCustomers.Where(p => p.Id == _Voucher.CategoryId && p.IsDelete == false).FirstOrDefault();
                 if (_Voucher != null)
                 {
                     _response.voucherDetail.Id = _Voucher.Id;
@@ -55,7 +55,7 @@ namespace DATN_ACV_DEV.Controllers
                     _response.voucherDetail.Unit = _Voucher.Unit;
                     _response.voucherDetail.ProductName = product != null ? product.Name : "";
                     _response.voucherDetail.CategoryName = category != null ? category.Name : "";
-                    _response.voucherDetail.GroupCustomerName = groupCustomerName != null ? groupCustomerName.Name : "";
+                    //_response.voucherDetail.GroupCustomerName = groupCustomerName != null ? groupCustomerName.Name : "";
                 }
             }
             catch (Exception)

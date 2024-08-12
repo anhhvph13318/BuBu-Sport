@@ -58,7 +58,7 @@ namespace DATN_ACV_DEV.Controllers.Customer
                 CreateDate = DateTime.Now,
                 //Default
                 CreateBy = _request.AdminId, // Tạm thời gán guid khởi tạo.
-                GroupCustomerId = _context.TbGroupCustomers.Where(c=>c.IsDelete == false).Select(c=>c.Id).FirstOrDefault(),
+
             };
         }
 

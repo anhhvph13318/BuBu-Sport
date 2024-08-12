@@ -29,13 +29,7 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbCustomer> TbCustomers { get; set; }
 
-    public virtual DbSet<TbCustomerVoucher> TbCustomerVouchers { get; set; }
 
-    public virtual DbSet<TbFuntion> TbFuntions { get; set; }
-
-    public virtual DbSet<TbFuntionForPermission> TbFuntionForPermissions { get; set; }
-
-    public virtual DbSet<TbGroupCustomer> TbGroupCustomers { get; set; }
 
     public virtual DbSet<TbImage> TbImages { get; set; }
 
@@ -49,11 +43,7 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbOrderDetail> TbOrderDetails { get; set; }
 
-    public virtual DbSet<TbPaymentMethod> TbPaymentMethods { get; set; }
 
-    public virtual DbSet<TbPermission> TbPermissions { get; set; }
-
-    public virtual DbSet<TbPolicy> TbPolicies { get; set; }
 
     public virtual DbSet<TbProduct> TbProducts { get; set; }
 
@@ -61,17 +51,15 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbProperty> TbProperties { get; set; }
 
-    public virtual DbSet<TbSupplier> TbSuppliers { get; set; }
+
 
     public virtual DbSet<TbUser> TbUsers { get; set; }
 
-    public virtual DbSet<TbUserFuntion> TbUserFuntions { get; set; }
 
-    public virtual DbSet<TbUserGroup> TbUserGroups { get; set; }
 
     public virtual DbSet<TbVoucher> TbVouchers { get; set; }
 
-    public virtual DbSet<TbWallet> TbWallets { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -206,80 +194,12 @@ public partial class DBContext : DbContext
             entity.Property(e => e.YearOfBirth).HasColumnType("datetime");
             entity.Property(e => e.Phone).HasColumnType("varchar(20)");
 
-            entity.HasOne(d => d.GroupCustomer).WithMany(p => p.TbCustomers)
-                .HasForeignKey(d => d.GroupCustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_Customer_tb_GroupCustomer");
+            
         });
 
-        modelBuilder.Entity<TbCustomerVoucher>(entity =>
-        {
-            entity.HasKey(e => e.CustomerId);
+        
 
-            entity.ToTable("tb_CustomerVoucher");
-
-            entity.Property(e => e.CustomerId)
-                .ValueGeneratedNever()
-                .HasColumnName("CustomerID");
-            entity.Property(e => e.VoucherCode).HasMaxLength(50);
-            entity.Property(e => e.VoucherId).HasColumnName("VoucherID");
-
-            entity.HasOne(d => d.Customer).WithOne(p => p.TbCustomerVoucher)
-                .HasForeignKey<TbCustomerVoucher>(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_CustomerVoucher_tb_Customer");
-
-            entity.HasOne(d => d.Voucher).WithMany(p => p.TbCustomerVouchers)
-                .HasForeignKey(d => d.VoucherId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_CustomerVoucher_tb_Voucher");
-        });
-
-        modelBuilder.Entity<TbFuntion>(entity =>
-        {
-            entity.ToTable("tb_Funtions");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.Code).HasMaxLength(50);
-        });
-
-        modelBuilder.Entity<TbFuntionForPermission>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK_FuntionForPermission");
-
-            entity.ToTable("tb_FuntionForPermission");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.FuntionId).HasColumnName("FuntionID");
-            entity.Property(e => e.PermissionId).HasColumnName("PermissionID");
-
-            entity.HasOne(d => d.Funtion).WithMany(p => p.TbFuntionForPermissions)
-                .HasForeignKey(d => d.FuntionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_FuntionForPermission_tb_Funtions");
-
-            entity.HasOne(d => d.Permission).WithMany(p => p.TbFuntionForPermissions)
-                .HasForeignKey(d => d.PermissionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_FuntionForPermission_tb_Permission");
-        });
-
-        modelBuilder.Entity<TbGroupCustomer>(entity =>
-        {
-            entity.ToTable("tb_GroupCustomer");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.IsDelete)
-                .IsRequired()
-                .HasDefaultValueSql("((1))");
-            entity.Property(e => e.Name).HasMaxLength(250);
-        });
+        
 
         modelBuilder.Entity<TbImage>(entity =>
         {
@@ -315,10 +235,6 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Unit).HasMaxLength(250);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Supplier).WithMany(p => p.TbInvoices)
-                .HasForeignKey(d => d.SupplierId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_Invoice_tb_Supplier");
         });
 
         modelBuilder.Entity<TbInvoiceDetail>(entity =>
@@ -403,50 +319,7 @@ public partial class DBContext : DbContext
                 .HasConstraintName("FK_tb_OrderDetail_tb_Produst");
         });
 
-        modelBuilder.Entity<TbPaymentMethod>(entity =>
-        {
-            entity.ToTable("tb_PaymentMethod");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.CardNumber).HasMaxLength(50);
-            entity.Property(e => e.InActive).HasDefaultValueSql("((1))");
-            entity.Property(e => e.Name).HasMaxLength(250);
-            entity.Property(e => e.Type).HasMaxLength(50);
-        });
-
-        modelBuilder.Entity<TbPermission>(entity =>
-        {
-            entity.ToTable("tb_Permission");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.Code).HasMaxLength(20);
-            entity.Property(e => e.CreateDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.IsDelete).HasDefaultValueSql("((1))");
-            entity.Property(e => e.Name).HasMaxLength(250);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<TbPolicy>(entity =>
-        {
-            entity.ToTable("tb_Policy");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.ImageId).HasColumnName("ImageID");
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
+        
         modelBuilder.Entity<TbProduct>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_tb_Produst");
@@ -484,27 +357,7 @@ public partial class DBContext : DbContext
                 .HasConstraintName("FK_tb_Produst_tb_Category");
         });
 
-        modelBuilder.Entity<TbPromotion>(entity =>
-        {
-            entity.ToTable("tb_Promotion");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.PolicyId).HasColumnName("PolicyID");
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.Type).HasMaxLength(50);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Policy).WithMany(p => p.TbPromotions)
-                .HasForeignKey(d => d.PolicyId)
-                .HasConstraintName("FK_tb_Promotion_tb_Policy");
-        });
+        
 
         modelBuilder.Entity<TbProperty>(entity =>
         {
@@ -518,28 +371,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<TbSupplier>(entity =>
-        {
-            entity.ToTable("tb_Supplier");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.CreateDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.InActive)
-                .IsRequired()
-                .HasDefaultValueSql("((1))");
-            entity.Property(e => e.IsDelete)
-                .IsRequired()
-                .HasDefaultValueSql("((1))");
-            entity.Property(e => e.Name).HasMaxLength(250);
-            entity.Property(e => e.PhoneNumber).HasMaxLength(50);
-            entity.Property(e => e.ProvideProducst).HasMaxLength(250);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
+        
         modelBuilder.Entity<TbUser>(entity =>
         {
             entity.ToTable("tb_User");
@@ -561,38 +393,10 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UserCode).HasMaxLength(20);
             entity.Property(e => e.UserName).HasMaxLength(250);
 
-            entity.HasOne(d => d.UserGroup).WithMany(p => p.TbUsers)
-                .HasForeignKey(d => d.UserGroupId)
-                .HasConstraintName("FK_tb_User_tb_UserGroup");
+            
         });
 
-        modelBuilder.Entity<TbUserFuntion>(entity =>
-        {
-            entity.ToTable("tb_UserFuntion");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.FuntionForPermissionId).HasColumnName("FuntionForPermissionID");
-            entity.Property(e => e.GroupUserId).HasColumnName("GroupUserID");
-
-            entity.HasOne(d => d.FuntionForPermission).WithMany(p => p.TbUserFuntions)
-                .HasForeignKey(d => d.FuntionForPermissionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_UserFuntion_tb_FuntionForPermission");
-        });
-
-        modelBuilder.Entity<TbUserGroup>(entity =>
-        {
-            entity.ToTable("tb_UserGroup");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Code).HasMaxLength(50);
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasMaxLength(255);
-            entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
+        
 
         modelBuilder.Entity<TbVoucher>(entity =>
         {
@@ -614,24 +418,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<TbWallet>(entity =>
-        {
-            entity.ToTable("tb_Wallet");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
-            entity.Property(e => e.Code).HasMaxLength(50);
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.Surplus).HasColumnType("decimal(18, 0)");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.TbWallets)
-                .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_Wallet_tb_Account");
-        });
+        
 
         OnModelCreatingPartial(modelBuilder);
     }
