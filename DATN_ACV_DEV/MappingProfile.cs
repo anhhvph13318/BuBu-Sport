@@ -58,15 +58,7 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status == 1 ? "Hoạt động" : "Ngưng hoạt động"))
                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Url));
 
-            CreateMap<TbPolicy, PolicyDTO>()
-               .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-               .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-               .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-               .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
-               .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
-               .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate))
-               .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Url));
+            
 
             CreateMap<TbCartDetail, CartDTO>()
                .ForMember(dest => dest.CartDetailID, opt => opt.MapFrom(src => src.Id))
@@ -76,11 +68,7 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.tbProduct.Price));
 
-            CreateMap<TbPaymentMethod, PaymentMethodDTO>()
-               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-               .ForMember(dest => dest.CartNumber, opt => opt.MapFrom(src => src.CardNumber))
-               .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type));
+            
 
             CreateMap<TbAddressDelivery, AddressDeliveryDTO>()
               .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
@@ -96,11 +84,7 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position));
-            CreateMap<TbGroupCustomer, GroupCustomerDTO>()
-             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-             .ForMember(dest => dest.MinPoint, opt => opt.MapFrom(src => src.MinPoint))
-             .ForMember(dest => dest.MaxPoint, opt => opt.MapFrom(src => src.MaxPoint));
+            
 
             CreateMap<TbCustomer, CustomerDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -118,12 +102,7 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                .ForMember(dest => dest.AccountCode, opt => opt.MapFrom(src => src.AccountCode));
 
-            CreateMap<TbSupplier, SupplierDTO>()
-               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-               .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-               .ForMember(dest => dest.Adress, opt => opt.MapFrom(src => src.Adress))
-               .ForMember(dest => dest.ProvideProducst, opt => opt.MapFrom(src => src.ProvideProducst));
+            
             CreateMap<TbInvoice, InvoiceDTO>()
                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
@@ -136,11 +115,7 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position));
-            CreateMap<TbGroupCustomer, GroupCustomerDTO>()
-             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-             .ForMember(dest => dest.MinPoint, opt => opt.MapFrom(src => src.MinPoint))
-             .ForMember(dest => dest.MaxPoint, opt => opt.MapFrom(src => src.MaxPoint));
+            
 
             CreateMap<TbCustomer, CustomerDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -158,15 +133,7 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                .ForMember(dest => dest.AccountCode, opt => opt.MapFrom(src => src.AccountCode));
 
-            CreateMap<TbSupplier, SupplierDTO>()
-               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-               .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-               .ForMember(dest => dest.Adress, opt => opt.MapFrom(src => src.Adress))
-               .ForMember(dest => dest.ProvideProducst, opt => opt.MapFrom(src => src.ProvideProducst));
-            //.ForMember(dest => dest.status, opt => opt.MapFrom(src => src.Status == true ? "Mặc định" : "không mặc định"))
-            //.ForMember(dest => dest.receiverName, opt => opt.MapFrom(src => src.ReceiverName))
-            //.ForMember(dest => dest.receiverphone, opt => opt.MapFrom(src => src.ReceiverPhone));
+            
 
 
             CreateMap<TbOrder, GetListOrderAdminDTO>()
@@ -178,7 +145,6 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.amountDiscount, opt => opt.MapFrom(src => src.TotalAmountDiscount))
                .ForMember(dest => dest.totalAmount, opt => opt.MapFrom(src => src.TotalAmount))
                .ForMember(dest => dest.nameCustomer, opt => opt.MapFrom(src => src.customer.Name))
-               .ForMember(dest => dest.paymentMethodName, opt => opt.MapFrom(src => src.paymentMethod.Name))
                .ForMember(dest => dest.products, opt => opt.MapFrom(src => string.Join(",", src.orderDetail.Select(x => x.Product.Name).ToList())));
 
             CreateMap<TbProperty, GetListPropertyDTO>()

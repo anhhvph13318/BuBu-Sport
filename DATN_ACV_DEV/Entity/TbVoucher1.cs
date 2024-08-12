@@ -10,7 +10,6 @@ public partial class TbVoucher
     public TbProduct product { get; set; }
     [NotMapped]
     public TbCategory category { get; set; }
-    [NotMapped]
-    public TbGroupCustomer groupCustomer { get; set; }
+    
 
 }

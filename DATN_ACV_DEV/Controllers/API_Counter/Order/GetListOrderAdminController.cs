@@ -53,12 +53,12 @@ namespace DATN_ACV_DEV.Controllers.API_Counter.Order
                                                   .OrderByDescending(d => d.CreateDate);
             _response.TotalCount = model.Count();
             var customer = _context.TbCustomers.Where(c => model.Select(s => s.CustomerId).Contains(c.Id)).Distinct();
-            var paymentMenthod = _context.TbPaymentMethods.Where(c => model.Select(s => s.PaymentMethodId).Contains(c.Id)).Distinct();
+            
             var orderDetails = _context.TbOrderDetails.Include(product => product.Product).Distinct();
             model.ToList().ForEach(c =>
             {
                 c.customer = customer.Where(a => a.Id == c.CustomerId).FirstOrDefault();
-                c.paymentMethod = paymentMenthod.Where(a => a.Id == c.PaymentMethodId).FirstOrDefault();
+                
                 c.orderDetail = orderDetails.Where(d => d.OrderId == c.Id).ToList();
             });
 
