@@ -44,8 +44,6 @@ public enum VoucherUnit
     Money
 }
 
-public enum VoucherType : byte
-{
-    Voucher = 0,
-    Evoucher = 1
+    public Guid? GroupCustomerId { get; set; }
+
 }

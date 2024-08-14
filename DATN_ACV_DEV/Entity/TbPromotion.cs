@@ -35,5 +35,4 @@ public partial class TbPromotion
 
     public DateTime? UpdateDate { get; set; }
 
-    public virtual TbPolicy? Policy { get; set; }
 }

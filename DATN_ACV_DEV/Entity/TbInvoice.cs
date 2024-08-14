@@ -28,7 +28,6 @@ public partial class TbInvoice
 
     public Guid SupplierId { get; set; }
 
-    public virtual TbSupplier Supplier { get; set; } = null!;
 
     public virtual TbInvoiceDetail? TbInvoiceDetail { get; set; }
 }

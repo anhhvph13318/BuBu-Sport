@@ -32,10 +32,9 @@ public partial class TbCustomer
 
     public Guid GroupCustomerId { get; set; }
 
-    public virtual TbGroupCustomer GroupCustomer { get; set; } = null!;
+
 
     public virtual ICollection<TbAccount> TbAccounts { get; set; } = new List<TbAccount>();
 
-    public virtual IList<TbCustomerVoucher> TbCustomerVoucher { get; set; } = new List<TbCustomerVoucher>();
-    public virtual IList<TbOrder> Orders { get; set; } = new List<TbOrder>();
+
 }

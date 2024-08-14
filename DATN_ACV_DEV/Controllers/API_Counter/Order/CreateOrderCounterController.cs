@@ -56,18 +56,18 @@ namespace DATN_ACV_DEV.Controllers.API_Counter.Order
 
         public void AccessDatabase()
         {
-            var paymentMethod = _context.TbPaymentMethods.Where(p => p.Id == _request.paymentMenthodID).FirstOrDefault();
-            _response.products = _listProduct;
-            _response.totalAmount = _totalAmount;
-            _response.totalAmountDiscount = _totalDiscount;
-            _response.voucherCode = _VoucherCode;
-            _response.cartDetailId = _request.cartDetailID;
-            _response.voucherId = _VoucherId;
-            if (paymentMethod != null)
-            {
-                _response.paymentMethod = paymentMethod.Name;
-            }
-            _res.Data = _response;
+            //var paymentMethod = _context.TbPaymentMethods.Where(p => p.Id == _request.paymentMenthodID).FirstOrDefault();
+            //_response.products = _listProduct;
+            //_response.totalAmount = _totalAmount;
+            //_response.totalAmountDiscount = _totalDiscount;
+            //_response.voucherCode = _VoucherCode;
+            //_response.cartDetailId = _request.cartDetailID;
+            //_response.voucherId = _VoucherId;
+            //if (paymentMethod != null)
+            //{
+            //    _response.paymentMethod = paymentMethod.Name;
+            //}
+            //_res.Data = _response;
         }
 
         public void CheckAuthorization()

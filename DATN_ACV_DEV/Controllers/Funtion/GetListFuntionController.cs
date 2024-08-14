@@ -51,14 +51,14 @@ namespace DATN_ACV_DEV.Controllers
         }
         public void GenerateObjects()
         {
-            var model = _context.TbFuntions.Where(c => c.IsDelete == false)
-                .Select(s => new GetListFuntionDTO
-                {
-                    id = s.Id,
-                    name = s.Name,
-                }).ToList();
-            _response.listFuntion = model;
-            _res.Data = _response;
+            //var model = _context.TbFuntions.Where(c => c.IsDelete == false)
+            //    .Select(s => new GetListFuntionDTO
+            //    {
+            //        id = s.Id,
+            //        name = s.Name,
+            //    }).ToList();
+            //_response.listFuntion = model;
+            //_res.Data = _response;
         }
 
         public void PreValidation()
