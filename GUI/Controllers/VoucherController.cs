@@ -1,5 +1,6 @@
 ﻿using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.FileBase;
+using DATN_ACV_DEV.Model_DTO.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -94,7 +95,7 @@ public class VoucherController : Controller
         }
 
         if (model.Voucher.Unit == VoucherUnit.Money)
-            model.Voucher.MaxDiscountAllow = model.Voucher.Discount;
+            model.Voucher.MaxDiscount = model.Voucher.Discount;
 
 
         using var httpClient = new HttpClient();

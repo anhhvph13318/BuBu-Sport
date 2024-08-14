@@ -23,6 +23,7 @@ public class OrderController : Controller
     private const string OrderShippingInfoPartialView = "_OrderShippingInfoPartialView";
     private const string OrderButtonActionPartialView = "_OrderButtonActionPartialView";
     private const string OrderTempListPartialView = "_OrderTempListPartialView";
+    private const string AvailableVoucherPartialView = "_AvailableVoucherPartialView";
 
     [HttpGet]
     public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)
@@ -35,6 +36,26 @@ public class OrderController : Controller
                 await rawResponse.Content.ReadAsStringAsync());
 
         return View(response!.Data);
+    }
+
+    [HttpGet]
+    [Route("vouchers")]
+    public async Task<IActionResult> GetAvailableVoucher([FromQuery] string? phone)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var rawResponse = string.IsNullOrEmpty(phone)
+            ? await httpClient.GetAsync($"/api/vouchers/available")
+            : await httpClient.GetAsync($"/api/vouchers/available?phoneNumber={phone}");
+
+        var response =
+            JsonConvert.DeserializeObject<BaseResponse<GetListVoucherResponse>>(
+                await rawResponse.Content.ReadAsStringAsync());
+
+        return Json(new
+        {
+            Vouchers = await RenderViewAsync(AvailableVoucherPartialView, response!.Data.LstVoucher)
+        });
     }
 
     [HttpGet]
@@ -247,12 +268,31 @@ public class OrderController : Controller
         var order = HttpContext.Session.GetCurrentOrder();
         order.Customer = response!.Data;
 
+        if(order.Customer.Id != Guid.Empty)
+        {
+            var voucher = await CheckCustomerCanUseVoucher(order.Voucher.Id.ToString(), order.Customer.PhoneNumber);
+
+            if (voucher is not null)
+            {
+                order.Voucher = voucher;
+                order.PaymentInfo.VoucherId = order.Voucher.Id;
+                order.PaymentInfo.VoucherCode = order.Voucher.Code;
+            } else
+            {
+                order.Voucher = new VoucherDTO();
+                order.PaymentInfo.VoucherId = order.Voucher.Id;
+                order.PaymentInfo.VoucherCode = order.Voucher.Code;
+            }
+        }
+
+        order.ReCalculatePaymentInfo();
         HttpContext.Session.SaveCurrentOrder(order);
 
         return Json(new
         {
             Found = order.Customer.Id != Guid.Empty,
-            Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer)
+            Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
+            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo)
         });
     }
 
@@ -273,11 +313,12 @@ public class OrderController : Controller
         {
             order.Customer,
             order.Items,
+            order.Code,
             checkout.IsCustomerTakeYourSelf,
             checkout.IsShippingAddressSameAsCustomerAddress,
             checkout.Status,
             Shipping = order.ShippingInfo,
-            Payment = order.PaymentInfo
+            Payment = order.PaymentInfo,
         };
         var rawResponse = await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
@@ -359,23 +400,19 @@ public class OrderController : Controller
         });
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("apply-voucher")]
-    public async Task<IActionResult> ApplyCoupon([FromQuery] string code)
+    public async Task<IActionResult> ApplyCoupon([FromQuery] string id)
     {
         var order = HttpContext.Session.GetCurrentOrder();
         var target = order.Customer.Id == Guid.Empty ? order.Customer.PhoneNumber : order.Customer.Id.ToString();
-        using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(URI);
-        var rawResponse = await httpClient.GetAsync($"/api/vouchers/{code}/apply?target={target}");
-        var response =
-            JsonConvert.DeserializeObject<BaseResponse<VoucherDTO>>(
-                await rawResponse.Content.ReadAsStringAsync());
 
-        if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK || response?.Data == null)
+        var voucher = await CheckCustomerCanUseVoucher(id, target);
+
+        if (voucher is null)
             return BadRequest();
 
-        order.Voucher = response.Data;
+        order.Voucher = voucher;
         order.PaymentInfo.VoucherId = order.Voucher.Id;
         order.PaymentInfo.VoucherCode = order.Voucher.Code;
 
@@ -387,6 +424,19 @@ public class OrderController : Controller
         {
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
         });
+    }
+
+    private static async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
+    {
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var rawResponse = await httpClient.PostAsync($"/api/vouchers/{id}/apply?target={target}", null);
+
+        if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            return null;
+
+        return JsonConvert.DeserializeObject<VoucherDTO>(
+                await rawResponse.Content.ReadAsStringAsync());
     }
 
     private async Task<string> RenderViewAsync(string viewName, object model)

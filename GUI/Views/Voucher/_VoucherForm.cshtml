@@ -8,7 +8,7 @@
         <input asp-for="Voucher.Id" hidden />
         <div class="mb-3">
             <label>Mã</label>
-            <input class="form-control" asp-for="Voucher.Code"/>
+            <input class="form-control" asp-for="Voucher.Code" onchange="normalize(event)"/>
             <span class="text-danger" asp-validation-for="Voucher.Code"></span>
         </div>
         <div class="mb-3">
@@ -20,13 +20,6 @@
             <label>Số lượng</label>
             <input class="form-control" type="number" asp-for="Voucher.Quantity" />
             <span class="text-danger" asp-validation-for="Voucher.Quantity"></span>
-        </div>
-        <div class="mb-3">
-            <label>Loại voucher</label>
-            <select asp-for="Voucher.Type" class="form-select">
-                <option value="0">Voucher</option>
-                <option value="1">E-Voucher</option>
-            </select>
         </div>
         <div class="mb-3">
             <label>Hình thức giảm giá</label>
@@ -42,14 +35,14 @@
         </div>
         <div class="mb-3" id="maxDiscount" style="display: @(Model.Voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent ? "block" : "none")">
             <label>Số tiền giảm tối đa</label>
-            <input asp-for="Voucher.MaxDiscountAllow" type="number" class="form-control" />
-            <span class="text-danger" asp-validation-for="Voucher.MaxDiscountAllow"></span>
+            <input asp-for="Voucher.MaxDiscount" type="number" class="form-control" />
+            <span class="text-danger" asp-validation-for="Voucher.MaxDiscount"></span>
         </div>
-        <div class="mb-3">
+        @* <div class="mb-3">
             <label>Số tiền tối thiểu để được áp dụng voucher</label>
             <input asp-for="Voucher.RequiredTotalAmount" type="number" class="form-control" />
             <span class="text-danger" asp-validation-for="Voucher.RequiredTotalAmount"></span>
-        </div>
+        </div> *@
         <div class="mb-3 row">
             <div class="col-6">
                 <label>Ngày bắt đầu</label>
@@ -60,6 +53,10 @@
                 <input asp-for="Voucher.EndDate" class="form-control datepicker" type="date" />
                 <span class="text-danger" asp-validation-for="Voucher.EndDate"></span>
             </div>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" asp-for="Voucher.Status"/>
+            <label class ="form-check-label">Khả dụng</label>
         </div>
         <hr />
         <div class="d-flex justify-content-end">

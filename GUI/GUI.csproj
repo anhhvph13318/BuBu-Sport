@@ -7,10 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Voucher\_AvailableVoucher.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Voucher\_AvailableVoucher.cshtml" />
     <_ContentIncludedByDefault Remove="wwwroot\css\product.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Order\_AvailableVoucherPartialView.cshtml" />
     <None Include="wwwroot\Image\logo-1.png" />
   </ItemGroup>
 
@@ -23,6 +29,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DATN_ACV_DEV\DATN_ACV_DEV.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Voucher\_AvailableVoucher.cshtml" />
   </ItemGroup>
 
 </Project>

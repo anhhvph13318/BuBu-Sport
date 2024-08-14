@@ -21,10 +21,10 @@ public partial class TbVoucher
     public VoucherType Type { get; set; }
 
     public VoucherUnit Unit { get; set; }
-    public decimal MaxDiscountAllow { get; set; }
-    public decimal RequiredTotalAmount { get; set; }
+    public decimal MaxDiscount { get; set; }
+    //public decimal RequiredTotalAmount { get; set; }
 
-    public string? Status { get; set; }
+    public Status Status { get; set; } = Status.Valid;
 
     public Guid? UpdateBy { get; set; }
 
@@ -33,8 +33,6 @@ public partial class TbVoucher
     public Guid CreateBy { get; set; }
 
     public DateTime CreateDate { get; set; }
-
-    public virtual ICollection<TbCustomerVoucher> TbCustomerVouchers { get; set; } = new List<TbCustomerVoucher>();
     public virtual ICollection<TbOrder> Orders { get; set; } = new List<TbOrder>();
 }
 
@@ -44,6 +42,13 @@ public enum VoucherUnit
     Money
 }
 
-    public Guid? GroupCustomerId { get; set; }
+public enum VoucherType
+{
+    Voucher = 0
+}
 
+public enum Status
+{
+    Closed = 1,
+    Valid = 2
 }

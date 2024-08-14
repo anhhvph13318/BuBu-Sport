@@ -31,6 +31,7 @@ namespace DATN_ACV_DEV.Controllers
                     && (!startDate.HasValue || e.StartDate >= startDate.Value)
                     && (!endDate.HasValue || e.EndDate <= endDate.Value)
                     && (!unit.HasValue || e.Unit == unit.Value))
+                .Where(e => e.Quantity > 0)
                 .Select(e => new VoucherDTO
                 {
                     Id = e.Id,
@@ -41,18 +42,24 @@ namespace DATN_ACV_DEV.Controllers
                     Quantity = e.Quantity,
                     Unit = e.Unit,
                     Discount = e.Discount,
-                    MaxDiscountAllow = e.MaxDiscountAllow,
-                    RequiredTotalAmount = e.RequiredTotalAmount
+                    MaxDiscount = e.MaxDiscount,
+                    Status = e.Status == Status.Valid,
+                    //RequiredTotalAmount = e.RequiredTotalAmount
                 }).ToListAsync();
 
             return Ok(new BaseResponse<GetListVoucherResponse> { Data = new GetListVoucherResponse { LstVoucher = vouchers, TotalCount = vouchers.Count } });
         }
 
         [HttpGet]
-        [Route("search-by")]
-        public async Task<IActionResult> GetVoucherByCode([FromQuery] string code)
+        [Route("available")]
+        public async Task<IActionResult> GetAvailableVoucher([FromQuery] string? phoneNumber)
         {
-            var voucher = await _context.TbVouchers.AsNoTracking()
+            var vouchers = await _context.TbVouchers.AsNoTracking()
+                .Include(e => e.Orders)
+                .Where(e => e.Status == Status.Valid)
+                .Where(e => e.StartDate <= DateTime.Now)
+                .Where(e => e.EndDate >= DateTime.Now)
+                .Where(e => e.Orders.Any() && (string.IsNullOrEmpty(phoneNumber) ||!e.Orders.Any(d => d.PhoneNumberCustomer == phoneNumber)))
                 .Select(e => new VoucherDTO
                 {
                     Id = e.Id,
@@ -63,14 +70,12 @@ namespace DATN_ACV_DEV.Controllers
                     Quantity = e.Quantity,
                     Unit = e.Unit,
                     Discount = e.Discount,
-                    MaxDiscountAllow = e.MaxDiscountAllow,
-                    RequiredTotalAmount = e.RequiredTotalAmount
-                }).FirstOrDefaultAsync(e => e.Code == code.ToUpper());
+                    MaxDiscount = e.MaxDiscount,
+                    Status = e.Status == Status.Valid,
+                    //RequiredTotalAmount = e.RequiredTotalAmount
+                }).ToListAsync();
 
-            if (voucher == null)
-                return NotFound();
-
-            return Ok(new BaseResponse<VoucherDTO> { Data = voucher });
+            return Ok(new BaseResponse<GetListVoucherResponse> { Data = new GetListVoucherResponse { LstVoucher = vouchers, TotalCount = vouchers.Count } });
         }
 
         [HttpGet("{id}")]
@@ -87,8 +92,9 @@ namespace DATN_ACV_DEV.Controllers
                     Quantity = e.Quantity,
                     Unit = e.Unit,
                     Discount = e.Discount,
-                    MaxDiscountAllow = e.MaxDiscountAllow,
-                    RequiredTotalAmount = e.RequiredTotalAmount
+                    MaxDiscount = e.MaxDiscount,
+                    Status = e.Status == Status.Valid,
+                    //RequiredTotalAmount = e.RequiredTotalAmount
                 }).FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
 
             if (voucher == null)
@@ -116,11 +122,6 @@ namespace DATN_ACV_DEV.Controllers
                 return BadRequest(response);
             }
 
-            var customer = await _context.TbCustomers
-                .AsNoTracking()
-                .Select(e => e.Id)
-                .ToListAsync();
-
             var voucher = new TbVoucher
             {
                 Id = Guid.NewGuid(),
@@ -130,23 +131,14 @@ namespace DATN_ACV_DEV.Controllers
                 EndDate = request.EndDate,
                 Quantity = request.Quantity,
                 Unit = request.Unit,
-                Status = "0",
                 Type = request.Type,
                 Discount = request.Discount,
-                MaxDiscountAllow = request.MaxDiscountAllow,
-                RequiredTotalAmount = request.RequiredTotalAmount,
+                MaxDiscount = request.MaxDiscount,
+                //RequiredTotalAmount = request.RequiredTotalAmount,
                 CreateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"),
                 CreateDate = DateTime.Now,
+                Status = request.Status ? Status.Valid : Status.Closed,
             };
-
-            if(voucher.Type == VoucherType.Evoucher)
-            {
-                voucher.TbCustomerVouchers = customer.Select(e => new TbCustomerVoucher
-                {
-                    CustomerId = e,
-                    IsUsed = false
-                }).ToList();
-            }
 
             await _context.AddAsync(voucher);
             await _context.SaveChangesAsync();
@@ -183,12 +175,14 @@ namespace DATN_ACV_DEV.Controllers
             voucher.Code = request.Code;
             voucher.Description = request.Description;
             voucher.Unit = request.Unit;
-            voucher.MaxDiscountAllow = request.MaxDiscountAllow;
+            voucher.MaxDiscount = request.MaxDiscount;
             voucher.Quantity = request.Quantity;
             voucher.Discount = request.Discount;
-            voucher.RequiredTotalAmount = request.RequiredTotalAmount;
+            //voucher.RequiredTotalAmount = request.RequiredTotalAmount;
             voucher.Name = request.Name;
             voucher.Description = request.Description;
+            voucher.MaxDiscount = request.MaxDiscount;
+            voucher.Status = request.Status ? Status.Valid : Status.Closed;
 
             await _context.SaveChangesAsync();
 
@@ -197,13 +191,15 @@ namespace DATN_ACV_DEV.Controllers
         }
 
         [HttpPost]
-        [Route("{code}/apply")]
+        [Route("{id}/apply")]
         public async Task<IActionResult> CanUserApplyVoucher(
-            [FromRoute] string code,
+            [FromRoute] string id,
             [FromQuery] string? target)
         {
             var voucher = await _context.TbVouchers.AsNoTracking()
-                .Where(e => e.StartDate >= DateTime.Now && e.EndDate <= DateTime.Now)
+                .Where(e => e.StartDate <= DateTime.Now && e.EndDate >= DateTime.Now)
+                .Where(e => e.Status == Status.Valid)
+                .Where(e => e.Quantity > 0)
                 .Select(e => new VoucherDTO
                 {
                     Id = e.Id,
@@ -215,32 +211,25 @@ namespace DATN_ACV_DEV.Controllers
                     Unit = e.Unit,
                     Type = e.Type,
                     Discount = e.Discount,
-                    MaxDiscountAllow = e.MaxDiscountAllow,
-                    RequiredTotalAmount = e.RequiredTotalAmount
+                    MaxDiscount = e.MaxDiscount,
+                    Status = e.Status == Status.Valid,
+                    //RequiredTotalAmount = e.RequiredTotalAmount
                 })
-                .FirstOrDefaultAsync(e => e.Code == code.ToUpper());
+                .FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
 
             if (voucher is null) return BadRequest();   // check voucher is valid
 
-            if (string.IsNullOrEmpty(target) && voucher.Type == VoucherType.Voucher)    //check voucher is evoucher or not
+            if (string.IsNullOrEmpty(target))
                 return Ok(voucher);
 
             Guid.TryParse(target, out var customerId);
             var customer = await _context.TbCustomers
                 .AsNoTracking()
-                .Include(e => e.TbCustomerVoucher)
+                .Include(e => e.Orders)
                 .FirstOrDefaultAsync(e => e.Id == customerId || e.Phone == target);
 
-            if (voucher.Type == VoucherType.Voucher && customer is null) // return voucher if voucher is valid and customer didn't buy anything ever
-                return Ok(voucher);
-
-            if(customer is null) return BadRequest();
-
-            if(voucher.Type == VoucherType.Voucher && customer.Orders.Any(e => e.VoucherId == voucher.Id))
+            if (customer is not null && customer.Orders.Any(e => e.VoucherId == voucher.Id))
                 return BadRequest();
-
-            var evoucher = customer.TbCustomerVoucher.FirstOrDefault(e => e.VoucherId == voucher.Id);
-            if(evoucher is null || evoucher.IsUsed) return BadRequest();
 
             return Ok(voucher);
         }

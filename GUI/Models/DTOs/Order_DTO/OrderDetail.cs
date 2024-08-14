@@ -30,22 +30,26 @@ public class OrderDetail
     {
         PaymentInfo.TotalAmount = Items.Sum(e => e.Quantity * e.Price);
         PaymentInfo.TotalTax = PaymentInfo.TotalAmount * 10 / 100;
-        PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.TotalTax + PaymentInfo.ShippingFee - PaymentInfo.TotalDiscount;
+        PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.TotalTax + PaymentInfo.ShippingFee;
 
-        if (Voucher.Id == Guid.Empty) return;
+        if (Voucher.Id == Guid.Empty)
+        {
+            PaymentInfo.TotalDiscount = 0;
+            return;
+        }
 
         if (Voucher.Unit == VoucherUnit.Percent)
         {
-            var discount = PaymentInfo.TotalAmount - (PaymentInfo.TotalAmount * Voucher.Discount / 100);
-            var finalDiscount = discount > Voucher.MaxDiscountAllow
-            ? Voucher.MaxDiscountAllow
+            var discount = PaymentInfo.TotalAmount * Voucher.Discount / 100;
+            var finalDiscount = discount > Voucher.MaxDiscount
+            ? Voucher.MaxDiscount
                 : discount;
-            PaymentInfo.TotalDiscount += finalDiscount;
+            PaymentInfo.TotalDiscount = finalDiscount;
             PaymentInfo.FinalAmount -= finalDiscount;
         }
         else
         {
-            PaymentInfo.TotalDiscount += Voucher.Discount;
+            PaymentInfo.TotalDiscount = Voucher.Discount;
             PaymentInfo.FinalAmount -= Voucher.Discount;
         }
     }

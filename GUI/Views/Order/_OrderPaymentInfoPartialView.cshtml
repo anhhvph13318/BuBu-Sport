@@ -18,10 +18,10 @@
 </div>
 <div class="row ps-2 pe-2 mb-2">
     <div class="col-md-8">
-        <input class="form-control" id="voucherCode" value="@Model.VoucherCode" placeholder="Mã khuyến mãi"/>
+        <input class="form-control" id="voucherCode" readonly value="@Model.VoucherCode" placeholder="Mã khuyến mãi"/>
     </div>
     <div class="col-md-4 d-flex justify-content-end">
-        <button class="btn btn-danger me-2" onclick="applyVoucher()">Áp dụng</button>
+        <button class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#voucherModal" onclick="showAvailableVoucher()">Áp dụng</button>
     </div>
 </div>
 <div class="row ps-2 pe-2">

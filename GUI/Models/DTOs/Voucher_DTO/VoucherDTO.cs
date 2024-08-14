@@ -18,8 +18,9 @@ namespace GUI.Models.DTOs.Voucher_DTO
         public DateTime EndDate { get; set; } = DateTime.Now.AddDays(1);
         public VoucherType Type { get; set; }
         public VoucherUnit Unit { get; set; }
+        public bool Status { get; set; }
         [Range(0, double.MaxValue, ErrorMessage = "Không thể nhập số âm")]
-        public decimal MaxDiscountAllow { get; set; }
+        public decimal MaxDiscount { get; set; }
         [Range(0, double.MaxValue, ErrorMessage = "Không thể nhập số âm")]
         public decimal RequiredTotalAmount { get; set; }
         public IList<Guid> Customers { get; set; } = new List<Guid>();

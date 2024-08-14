@@ -67,7 +67,7 @@ namespace DATN_ACV_DEV.Controllers
                 EndDate = _request.EndDate,
                 //Type = _request.Type,
                 Unit = _request.Unit,
-                Status = _request.Status,
+                //Status = _request.Status,
                 //Default
                 CreateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"), // Tạm thời gán guid khởi tạo.
                 CreateDate = DateTime.Now, // Ngày hiện tại 

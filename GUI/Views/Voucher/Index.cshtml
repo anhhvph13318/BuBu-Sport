@@ -13,7 +13,7 @@
         <th>Mã</th>
         <th>Số tiền giảm</th>
         <th>Thời gian hiệu lực</th>
-@*         <th>Trạng thái</th> *@
+        <th>Trạng thái</th>
         <th></th>
       </tr>
     </thead>
@@ -32,7 +32,15 @@
             <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
           }
           <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
-          @* <td>@voucher.Status</td> *@
+          <td>
+                        @if(voucher.Status)
+                        {
+                            <span>Hoạt động</span>
+                        } else
+                        {
+                            <span>Không hoạt động</span>
+                        }
+                    </td>
           <td>
             <a class="btn btn-primary text-nowrap me-2" asp-controller="Voucher" asp-action="Detail" asp-route-id="@voucher.Id">Chi tiết</a>
           </td>
