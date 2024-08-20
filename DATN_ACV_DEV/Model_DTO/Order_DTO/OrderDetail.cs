@@ -53,6 +53,7 @@ public class CustomerInfo
 
 public class PaymentInfo
 {
+    public Guid? VoucherId { get; set; }
     public int Status { get; set; }
     public decimal ShippingFee { get; set; }
     public decimal TotalAmount { get; set; }

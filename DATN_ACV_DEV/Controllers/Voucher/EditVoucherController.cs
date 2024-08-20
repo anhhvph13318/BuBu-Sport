@@ -59,21 +59,21 @@ namespace DATN_ACV_DEV.Controllers
                 _Voucher = _context.TbVouchers.Where(p => p.Id == _request.ID && p.EndDate >= DateTime.Now).FirstOrDefault();
                 if (_Voucher != null)
                 {
-                    _Voucher.Name = _request.Name ?? _Voucher.Name;
-                    _Voucher.Code = _request.Code ?? _Voucher.Code;
-                    _Voucher.Discount = _request.Discount ?? _Voucher.Discount;
-                    _Voucher.Description = _request.Description ?? _Voucher.Description;
-                    _Voucher.Quantity = _request.Quantity ?? _Voucher.Quantity;
-                    _Voucher.StartDate = _request.StartDate ?? _Voucher.StartDate;
-                    _Voucher.EndDate = _request.EndDate ?? _Voucher.EndDate;
-                    _Voucher.Type = _request.Type ?? _Voucher.Type;
-                    _Voucher.Unit = _request.Unit ?? _Voucher.Unit;
-                    _Voucher.Status = _request.Status ?? _Voucher.Status;
-                    _Voucher.ProductId = _request.ProductID ?? _Voucher.ProductId;
-                    _Voucher.CategoryId = _request.CategoryID ?? _Voucher.CategoryId;
-                    //Default
-                    _Voucher.UpdateBy = _request.AdminId ?? Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993");
-                    _Voucher.UpdateDate = DateTime.Now;
+                    //_Voucher.Name = _request.Name ?? _Voucher.Name;
+                    //_Voucher.Code = _request.Code ?? _Voucher.Code;
+                    //_Voucher.Discount = _request.Discount ?? _Voucher.Discount;
+                    //_Voucher.Description = _request.Description ?? _Voucher.Description;
+                    //_Voucher.Quantity = _request.Quantity ?? _Voucher.Quantity;
+                    //_Voucher.StartDate = _request.StartDate ?? _Voucher.StartDate;
+                    //_Voucher.EndDate = _request.EndDate ?? _Voucher.EndDate;
+                    //_Voucher.Type = _request.Type ?? _Voucher.Type;
+                    //_Voucher.Unit = _request.Unit
+                    //_Voucher.Status = _request.Status ?? _Voucher.Status;
+                    //_Voucher.ProductId = _request.ProductID ?? _Voucher.ProductId;
+                    //_Voucher.CategoryId = _request.CategoryID ?? _Voucher.CategoryId;
+                    ////Default
+                    //_Voucher.UpdateBy = _request.AdminId ?? Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993");
+                    //_Voucher.UpdateDate = DateTime.Now;
                 }
             }
             catch (Exception)
@@ -94,18 +94,18 @@ namespace DATN_ACV_DEV.Controllers
                 //Code không dài quá 10 ký tự
                 Condition.ConditionVoucher.CreateVoucher_C02(_context, _request.Code, _apiCode, _conC02, _conC02Field);
             }
-            if (_request.EndDate != null)
-            {
-                Condition.ConditionVoucher.CreateVoucher_C03(_context, _request.EndDate.Value, _apiCode, _conC03, _conC03Field);
-            }
-            // ngày kết thúc là ngày tương lai
+            //if (_request.EndDate != null)
+            //{
+            //    Condition.ConditionVoucher.CreateVoucher_C03(_context, _request.EndDate.Value, _apiCode, _conC03, _conC03Field);
+            //}
+            //// ngày kết thúc là ngày tương lai
 
-            // phần trăm giảm giá không được quá 80% 
-            // Unit chỉ có 2 option : % và vnd 
-            if (_request.Unit != null)
-            {
-                Condition.ConditionVoucher.CreateVoucher_C04(_context, _request.Unit, _apiCode, _conC04, _conC04Field);
-            }
+            //// phần trăm giảm giá không được quá 80% 
+            //// Unit chỉ có 2 option : % và vnd 
+            //if (_request.Unit != null)
+            //{
+            //    Condition.ConditionVoucher.CreateVoucher_C04(_context, _request.Unit, _apiCode, _conC04, _conC04Field);
+            //}
           
         }
         [HttpPost]

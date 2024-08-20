@@ -1,10 +1,10 @@
 @using GUI.Models.DTOs.Voucher_DTO
 @using System.Globalization
-@model IEnumerable<VoucherList>
+@model IEnumerable<VoucherDTO>
 
 <div class="container">
   <div class="mb-3 d-flex justify-content-end p-3">
-    <button class="btn btn-primary">Thêm mới</button>
+    <a class="btn btn-primary" href="vouchers/create">Thêm mới</a>
   </div>
   <table class="table table-stripped">
     <thead>
@@ -23,12 +23,26 @@
         <tr>
           <td>@voucher.Name</td>
           <td>@voucher.Code</td>
-          <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+          @if(voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent)
+          {
+            <td>@voucher.Discount %</td>
+          }
+          else
+          {
+            <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+          }
           <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
-          <td>@voucher.Status</td>
           <td>
-            <button class="btn btn-primary text-nowrap me-2">Chi tiết</button>
-            <button class="btn btn-danger">Xóa</button>
+                        @if(voucher.Status)
+                        {
+                            <span>Hoạt động</span>
+                        } else
+                        {
+                            <span>Không hoạt động</span>
+                        }
+                    </td>
+          <td>
+            <a class="btn btn-primary text-nowrap me-2" asp-controller="Voucher" asp-action="Detail" asp-route-id="@voucher.Id">Chi tiết</a>
           </td>
         </tr>
       }

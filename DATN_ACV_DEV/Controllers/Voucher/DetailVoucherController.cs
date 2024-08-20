@@ -35,34 +35,34 @@ namespace DATN_ACV_DEV.Controllers
         public void AccessDatabase()
         {
 
-            try
-            {
-                _Voucher = _context.TbVouchers.Where(p => p.Id == _request.ID && p.EndDate >= DateTime.Now).FirstOrDefault();
-                var product = _context.TbProducts.Where(p => p.Id == _Voucher.ProductId && p.IsDelete == false).FirstOrDefault();
-                var category = _context.TbCategories.Where(p => p.Id == _Voucher.CategoryId && p.IsDelete == false).FirstOrDefault();
-                //var groupCustomerName = _context.TbGroupCustomers.Where(p => p.Id == _Voucher.CategoryId && p.IsDelete == false).FirstOrDefault();
-                if (_Voucher != null)
-                {
-                    _response.voucherDetail.Id = _Voucher.Id;
-                    _response.voucherDetail.Name = _Voucher.Name;
-                    _response.voucherDetail.Code = _Voucher.Code;
-                    _response.voucherDetail.Discount = _Voucher.Discount;
-                    _response.voucherDetail.Description = _Voucher.Description;
-                    _response.voucherDetail.Quantity = _Voucher.Quantity;
-                    _response.voucherDetail.StartDate = _Voucher.StartDate;
-                    _response.voucherDetail.EndDate = _Voucher.EndDate;
-                    _response.voucherDetail.Type = _Voucher.Type;
-                    _response.voucherDetail.Unit = _Voucher.Unit;
-                    _response.voucherDetail.ProductName = product != null ? product.Name : "";
-                    _response.voucherDetail.CategoryName = category != null ? category.Name : "";
-                    //_response.voucherDetail.GroupCustomerName = groupCustomerName != null ? groupCustomerName.Name : "";
-                }
-            }
-            catch (Exception)
-            {
-                _res.Status = StatusCodes.Status400BadRequest.ToString();
-            }
-            _res.Data = _response;
+            //try
+            //{
+            //    _Voucher = _context.TbVouchers.Where(p => p.Id == _request.ID && p.EndDate >= DateTime.Now).FirstOrDefault();
+            //    var product = _context.TbProducts.Where(p => p.Id == _Voucher.ProductId && p.IsDelete == false).FirstOrDefault();
+            //    var category = _context.TbCategories.Where(p => p.Id == _Voucher.CategoryId && p.IsDelete == false).FirstOrDefault();
+            //    var groupCustomerName = _context.TbGroupCustomers.Where(p => p.Id == _Voucher.CategoryId && p.IsDelete == false).FirstOrDefault();
+            //    if (_Voucher != null)
+            //    {
+            //        _response.voucherDetail.Id = _Voucher.Id;
+            //        _response.voucherDetail.Name = _Voucher.Name;
+            //        _response.voucherDetail.Code = _Voucher.Code;
+            //        _response.voucherDetail.Discount = _Voucher.Discount;
+            //        _response.voucherDetail.Description = _Voucher.Description;
+            //        _response.voucherDetail.Quantity = _Voucher.Quantity;
+            //        _response.voucherDetail.StartDate = _Voucher.StartDate;
+            //        _response.voucherDetail.EndDate = _Voucher.EndDate;
+            //        _response.voucherDetail.Type = _Voucher.Type;
+            //        _response.voucherDetail.Unit = _Voucher.Unit;
+            //        _response.voucherDetail.ProductName = product != null ? product.Name : "";
+            //        _response.voucherDetail.CategoryName = category != null ? category.Name : "";
+            //        _response.voucherDetail.GroupCustomerName = groupCustomerName != null ? groupCustomerName.Name : "";
+            //    }
+            //}
+            //catch (Exception)
+            //{
+            //    _res.Status = StatusCodes.Status400BadRequest.ToString();
+            //}
+            //_res.Data = _response;
         }
 
         public void CheckAuthorization()

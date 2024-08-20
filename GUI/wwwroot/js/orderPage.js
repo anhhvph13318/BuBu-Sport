@@ -51,7 +51,9 @@ function checkCustomerHasBoughtSomething(e) {
         .then(data => {
             if (data.found) {
                 $('#customerInfoContainer').html('');
+                $('#orderPaymentInfoContainer').html('');
                 $('#customerInfoContainer').html(data.customer);
+                $('#orderPaymentInfoContainer').html(data.payment);
             }
         })
 }
@@ -309,4 +311,26 @@ function removeDraft(id) {
             $('#orderTempSaveContainer').html('');
             $('#orderTempSaveContainer').html(data.tempOrders);
         });
+}
+
+function showAvailableVoucher() {
+    const customerPhone = $('#customerPhoneNumber').val();
+
+    fetch(GET_AVAILABLE_VOUCHER(customerPhone))
+        .then(res => res.json())
+        .then(data => {
+            $('#voucher-list').html('');
+            $('#voucher-list').html(data.vouchers);
+        })
+}
+
+function applyVoucher(id) {
+    fetch(APPLY_VOUCHER(id))
+        .then(res => res.json())
+        .then(data => {
+            $('#orderPaymentInfoContainer').html('');
+            $('#orderPaymentInfoContainer').html(data.payment);
+            toastr.success("Áp dụng mã khuyến mãi thành công!");
+            $('#voucherModal').modal('hide');
+        }).catch(err => alert("Mã khuyến mãi không hợp lệ"));
 }

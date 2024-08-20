@@ -1,0 +1,17 @@
+﻿@using GUI.Models.DTOs.Voucher_DTO
+@model VoucherFormModel
+
+<div class="container">
+    <h3>Tạo voucher</h3>
+    <hr />
+    @await Html.PartialAsync("_VoucherForm", @Model)
+</div>
+
+@section Scripts {
+    <script src="~/js/voucher.js"></script>
+    <script>
+        function normalize(e) {
+            e.target.value = e.target.value.toUpperCase();
+        }
+    </script>
+}

@@ -142,22 +142,22 @@ namespace DATN_ACV_DEV.Utility
         public static CalculateVoucher CalculateDiscount(decimal? totalAmount, TbVoucher voucher)
         {
             CalculateVoucher model = new CalculateVoucher();
-            if (voucher.Type == Utility.VOUCHER_DISCOUNT)
-            {
-                if (voucher.Unit == "%")
-                {
-                    model.DiscountVoucher = (totalAmount * voucher.Discount) / 100;
-                }
-                if (voucher.Unit.ToUpper() == "VND")
-                {
-                    model.DiscountVoucher = voucher.Discount;
-                }
-            }
-            if (voucher.Type == Utility.VOUCHER_FREESHIP)
-            {
-                model.DiscountShipping = voucher.Discount;
+            //if (voucher.Type == Utility.VOUCHER_DISCOUNT)
+            //{
+            //    if (voucher.Unit == "%")
+            //    {
+            //        model.DiscountVoucher = (totalAmount * voucher.Discount) / 100;
+            //    }
+            //    if (voucher.Unit.ToUpper() == "VND")
+            //    {
+            //        model.DiscountVoucher = voucher.Discount;
+            //    }
+            //}
+            //if (voucher.Type == Utility.VOUCHER_FREESHIP)
+            //{
+            //    model.DiscountShipping = voucher.Discount;
 
-            }
+            //}
             return model;
         }
         public static GHNCreateOrderDTO CreateOderGHN(RequestCreateOrderGHN req)

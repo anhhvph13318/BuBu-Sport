@@ -39,23 +39,24 @@ namespace DATN_ACV_DEV.Controllers.Order
                 IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress,
                 OrderCode = payload.Code,
                 CreateDate = DateTime.Now,
-                IsDraft = payload.IsDraft
+                IsDraft = payload.IsDraft,
+                VoucherId = payload.Payment.VoucherId
             };
 
             if (payload.Customer.Id != Guid.Empty)
                 order.CustomerId = payload.Customer.Id;
             else
             {
-                //var tempGroup = await _context.TbGroupCustomers.FirstOrDefaultAsync();
-                //order.Customer = new TbCustomer
-                //{
-                //    Id = Guid.NewGuid(),
-                //    Adress = payload.Customer.Address,
-                //    Name = payload.Customer.Name,
-                //    Phone = payload.Customer.PhoneNumber,
-                //    GroupCustomer = tempGroup!
-                //};
+                order.Customer = new TbCustomer
+                {
+                    Id = Guid.NewGuid(),
+                    Adress = payload.Customer.Address,
+                    Name = payload.Customer.Name,
+                    Phone = payload.Customer.PhoneNumber,
+                };
             }
+
+            order.PhoneNumberCustomer = payload.Customer.PhoneNumber;
 
             var hasShippingAddress = !payload.IsCustomerTakeYourSelf && !payload.IsShippingAddressSameAsCustomerAddress;
 
@@ -68,6 +69,14 @@ namespace DATN_ACV_DEV.Controllers.Order
                     ReceiverName = payload.Shipping.Name,
                     ReceiverPhone = payload.Shipping.PhoneNumber
                 };
+            }
+
+            if(order.VoucherId is not null)
+            {
+                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == order.VoucherId) 
+                    ?? throw new NullReferenceException();
+
+                voucher.Quantity -= 1;
             }
 
             // re-update product stock
