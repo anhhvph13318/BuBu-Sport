@@ -108,6 +108,14 @@ public class VoucherController : Controller
         if(response.IsSuccessStatusCode)
             return RedirectToAction("Index");
 
+        if(response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            ModelState.AddModelError("Voucher.Code", "Mã voucher đã tồn tại");
+            return model.IsEditMode
+                ? View("Detail", model)
+                : View("Create", model);
+        }
+
         throw new HttpRequestException("Have error when call api");
     }
 }
