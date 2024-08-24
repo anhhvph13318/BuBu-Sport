@@ -155,22 +155,6 @@ function verify() {
         return;
     }
 
-    // validate customer info
-    const customerInfoField = {
-        '#customerName': '#order-customer-name',
-        '#customerPhoneNumber': '#order-customer-phone',
-        '#customerAddress': '#order-customer-address'
-    };
-
-    for (const [key, value] of Object.entries(customerInfoField)) {
-        if ($(key).val() === "") {
-            isValid = false;
-            $(value).css(displayErrorMessage);
-        } else {
-            $(value).css(hideErrorMessage);
-        }
-    }
-
     // validate shipping info
     if ($('#shippingLocation').val() == "1" && $('#isSameAsCustomerAddress').is(':checked') == false) {
         const shippingField = {

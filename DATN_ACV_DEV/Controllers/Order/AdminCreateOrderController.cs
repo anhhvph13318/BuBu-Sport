@@ -37,7 +37,7 @@ namespace DATN_ACV_DEV.Controllers.Order
                 AmountShip = payload.Payment.ShippingFee,
                 IsCustomerTakeYourself = payload.IsCustomerTakeYourSelf,
                 IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress,
-                OrderCode = payload.Code,
+                OrderCode = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
                 CreateDate = DateTime.Now,
                 IsDraft = payload.IsDraft,
                 VoucherId = payload.Payment.VoucherId
@@ -151,7 +151,6 @@ namespace DATN_ACV_DEV.Controllers.Order
             IEnumerable<OrderItem> Items,
             ShippingInfo Shipping,
             PaymentInfo Payment,
-            string Code,
             int Status,
             bool IsDraft,
             bool IsShippingAddressSameAsCustomerAddress,

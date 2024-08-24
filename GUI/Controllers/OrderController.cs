@@ -134,6 +134,9 @@ public class OrderController : Controller
         if (order.Customer.Id == Guid.Empty)
             order.Customer = checkout.CustomerInfo;
 
+        if (string.IsNullOrEmpty(checkout.CustomerInfo.Name))
+            order.Customer.Name = "Khách vãng lai";
+
         if (!checkout.IsShippingAddressSameAsCustomerAddress)
             order.ShippingInfo = checkout.ShippingInfo;
 
@@ -154,7 +157,7 @@ public class OrderController : Controller
             checkout.IsShippingAddressSameAsCustomerAddress,
             checkout.Status,
             Shipping = order.ShippingInfo,
-            Payment = order.PaymentInfo
+            Payment = order.PaymentInfo,
         };
         HttpResponseMessage rawResponse = alreadySave
             ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
