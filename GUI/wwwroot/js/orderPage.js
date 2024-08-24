@@ -1,5 +1,9 @@
 const productStorage = new ProductStorage();
 
+function backupQuantityValue(e) {
+    productStorage.OldQuantity = parseInt(e.target.value);
+}
+
 $('body').on('click', function () {
     $('.autocomplete-items').each(function () {
         $(this).empty();
@@ -90,6 +94,10 @@ function updateAllView(data) {
     $('#orderButtonActionContainer').html(data.buttons);
 }
 
+function showOutOfStockToastMessage() {
+    toastr.error("Có lỗi xảy ra! Số lượng sản phẩm không đủ")
+}
+
 function show(id) {
     fetch(SHOW_ORDER_API(id))
         .then(res => res.json())
@@ -122,7 +130,10 @@ function handleItemSelect(id, name, price, image) {
         })
     })
         .then(res => res.json())
-        .then(data => updateItemAndPaymentView(data));
+        .then(data => updateItemAndPaymentView(data))
+        .catch(_ => {
+            showOutOfStockToastMessage();
+        });
 };
 
 function updateQuantity(event, id) {
@@ -134,7 +145,11 @@ function updateQuantity(event, id) {
         method: 'PATCH'
     })
         .then(res => res.json())
-        .then(data => updateItemAndPaymentView(data));
+        .then(data => updateItemAndPaymentView(data))
+        .catch(_ => {
+            showOutOfStockToastMessage();
+            event.target.value = productStorage.OldQuantity;
+        });
 }
 
 function removeItem(id) {

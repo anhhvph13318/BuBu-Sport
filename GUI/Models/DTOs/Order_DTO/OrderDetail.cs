@@ -83,3 +83,6 @@ public class ShippingInfo
     public string Address { get; set; } = string.Empty;
     public decimal ShippingFee { get; set; }
 }
+
+[Serializable]
+public record Stock(Guid Id, int Quantity);

@@ -188,6 +188,9 @@ public class OrderController : Controller
     public async Task<IActionResult> AddItemToOrder([FromBody] OrderItem item)
     {
         var order = HttpContext.Session.GetCurrentOrder();
+        var stock = await GetProductStock(item.Id);
+        if (stock.Quantity < item.Quantity)
+            return BadRequest();
 
         var existItem = order.Items.FirstOrDefault(e => e.Id == item.Id);
         if (existItem is null)
@@ -209,6 +212,10 @@ public class OrderController : Controller
     [Route("items/{id}")]
     public async Task<IActionResult> UpdateItem([FromRoute] string id, [FromQuery] int quantity)
     {
+        var stock = await GetProductStock(Guid.Parse(id));
+        if (stock.Quantity < quantity)
+            return BadRequest();
+
         var order = HttpContext.Session.GetCurrentOrder();
         var existItem = order.Items.FirstOrDefault(e => e.Id == Guid.Parse(id));
         if (existItem is null)
@@ -289,93 +296,6 @@ public class OrderController : Controller
         });
     }
 
-    [HttpPost]
-    [Route("checkout")]
-    public async Task<IActionResult> Checkout([FromBody] Checkout checkout)
-    {
-        var order = HttpContext.Session.GetCurrentOrder();
-        if (order.Customer.Id == Guid.Empty)
-            order.Customer = checkout.CustomerInfo;
-
-        if (!checkout.IsShippingAddressSameAsCustomerAddress)
-            order.ShippingInfo = checkout.ShippingInfo;
-
-        using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(URI);
-        var payload = new
-        {
-            order.Customer,
-            order.Items,
-            order.Code,
-            checkout.IsCustomerTakeYourSelf,
-            checkout.IsShippingAddressSameAsCustomerAddress,
-            checkout.Status,
-            Shipping = order.ShippingInfo,
-            Payment = order.PaymentInfo,
-        };
-        var rawResponse = await httpClient.PostAsJsonAsync("api/orders/create", payload);
-
-        if (rawResponse.StatusCode == System.Net.HttpStatusCode.OK)
-        {
-            order = new OrderDetail
-            {
-                Customer = new CustomerInfo(),
-                ShippingInfo = new ShippingInfo(),
-                PaymentInfo = new PaymentInfo(),
-                Items = new List<OrderItem>()
-            };
-
-            HttpContext.Session.SaveCurrentOrder(order);
-
-            return Json(new
-            {
-                Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
-                Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
-                Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
-                Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-                Buttons = await RenderViewAsync(OrderButtonActionPartialView, true)
-            });
-        }
-
-        return BadRequest();
-    }
-
-    [HttpPatch]
-    [Route("update")]
-    public async Task<IActionResult> Update([FromBody] Checkout checkout)
-    {
-        var order = HttpContext.Session.GetCurrentOrder();
-
-        if (!checkout.IsShippingAddressSameAsCustomerAddress)
-            order.ShippingInfo = checkout.ShippingInfo;
-
-        using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(URI);
-        var payload = new
-        {
-            order.Id,
-            checkout.IsCustomerTakeYourSelf,
-            checkout.IsShippingAddressSameAsCustomerAddress,
-            checkout.Status,
-            Shipping = order.ShippingInfo,
-            Payment = order.PaymentInfo
-        };
-        var rawResponse = await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload);
-
-        if (rawResponse.StatusCode == System.Net.HttpStatusCode.OK)
-        {
-            return Json(new
-            {
-                Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
-                Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
-                Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
-                Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-                Buttons = await RenderViewAsync(OrderButtonActionPartialView, false)
-            });
-        }
-
-        return BadRequest();
-    }
 
     [HttpDelete]
     [Route("clear")]
@@ -471,4 +391,14 @@ public class OrderController : Controller
 
         return response!.Data;
     }
+
+    private static async Task<Stock> GetProductStock(Guid id)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var response = await httpClient.GetAsync($"api/products/{id}/stock");
+
+        return JsonConvert.DeserializeObject<Stock>(await response.Content.ReadAsStringAsync())!;
+    }
+    
 }

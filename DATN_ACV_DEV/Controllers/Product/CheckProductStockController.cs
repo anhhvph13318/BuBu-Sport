@@ -25,7 +25,7 @@ namespace DATN_ACV_DEV.Controllers.Product
                 .Select(e => new
                 {
                     e.Id,
-                    Stock = e.Quantity
+                    e.Quantity
                 })
                 .FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
 

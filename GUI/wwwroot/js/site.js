@@ -15,8 +15,6 @@ const SHOW_ORDER_API = (id) => `${HOST_URL}/orders/${id}/view`;
 const ORDER_ADD_ITEM = `${HOST_URL}/orders/add-item`;
 const ORDER_UPDATE_ITEM_QUANTITY = (id, quantity) => `${HOST_URL}/orders/items/${id}?quantity=${quantity}`;
 const ORDER_REMOVE_ITEM = (id) => `${HOST_URL}/orders/items/${id}`;
-const ORDER_CHECKOUT_API = `${HOST_URL}/orders/checkout`;
-const ORDER_UPDATE_API = `${HOST_URL}/orders/update`;
 const ORDER_CLEAR_API = `${HOST_URL}/orders/clear`;
 const ORDER_TEMP_SAVE_API = `${HOST_URL}/orders/save-to-session`;
 const REMOVE_ORDER_TEMP_API = (id) => `${HOST_URL}/orders/draft/${id}/remove`;
