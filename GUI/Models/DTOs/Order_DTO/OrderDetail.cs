@@ -1,7 +1,6 @@
 using DATN_ACV_DEV.Entity;
 using GUI.Models.DTOs.Voucher_DTO;
 using System.ComponentModel.DataAnnotations;
-using static DATN_ACV_DEV.Controllers.Order.AdminCreateOrderController;
 
 namespace GUI.Models.DTOs.Order_DTO;
 
@@ -19,13 +18,10 @@ public class OrderDetail
     public string StatusText { get; set; } = string.Empty;
     public int Status { get; set; }
     public string PaymentMethodName { get; set; } = string.Empty;
-    public decimal TotalAmount { get; set; }
-    public decimal VoucherDiscountAmount { get; set; }
-    public decimal DiscountAmout { get; set; }
     public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
     public DateTime TempOrderCreatedTime { get; set; }
     public bool IsDraft { get; set; }
-
+    public string OrderTypeName { get; set; } = string.Empty;
     public void ReCalculatePaymentInfo()
     {
         PaymentInfo.TotalAmount = Items.Sum(e => e.Quantity * e.Price);

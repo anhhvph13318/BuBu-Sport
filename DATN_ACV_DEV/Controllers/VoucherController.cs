@@ -39,7 +39,7 @@ namespace DATN_ACV_DEV.Controllers
                     Code = e.Code,
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
-                    Quantity = e.Quantity,
+                    Quantity = e.Quantity.Value,
                     Unit = e.Unit,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
@@ -56,10 +56,9 @@ namespace DATN_ACV_DEV.Controllers
         {
             var vouchers = await _context.TbVouchers.AsNoTracking()
                 .Include(e => e.Orders)
-                .Where(e => e.Status == Status.Valid)
+                .Where(e => e.Status == Status.Valid && (string.IsNullOrEmpty(phoneNumber) || !e.Orders.Any(d => d.PhoneNumberCustomer == phoneNumber)))
                 .Where(e => e.StartDate <= DateTime.Now)
                 .Where(e => e.EndDate >= DateTime.Now)
-                .Where(e => e.Orders.Any() && (string.IsNullOrEmpty(phoneNumber) ||!e.Orders.Any(d => d.PhoneNumberCustomer == phoneNumber)))
                 .Select(e => new VoucherDTO
                 {
                     Id = e.Id,
@@ -67,7 +66,7 @@ namespace DATN_ACV_DEV.Controllers
                     Code = e.Code,
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
-                    Quantity = e.Quantity,
+                    Quantity = e.Quantity.Value,
                     Unit = e.Unit,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
@@ -89,7 +88,7 @@ namespace DATN_ACV_DEV.Controllers
                     Code = e.Code,
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
-                    Quantity = e.Quantity,
+                    Quantity = e.Quantity.Value,
                     Unit = e.Unit,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
@@ -183,6 +182,8 @@ namespace DATN_ACV_DEV.Controllers
             voucher.Description = request.Description;
             voucher.MaxDiscount = request.MaxDiscount;
             voucher.Status = request.Status ? Status.Valid : Status.Closed;
+            voucher.EndDate = request.EndDate;
+            voucher.StartDate =request.StartDate;
 
             await _context.SaveChangesAsync();
 
@@ -207,7 +208,7 @@ namespace DATN_ACV_DEV.Controllers
                     Code = e.Code,
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
-                    Quantity = e.Quantity,
+                    Quantity = e.Quantity.Value,
                     Unit = e.Unit,
                     Type = e.Type,
                     Discount = e.Discount,

@@ -1,3 +1,5 @@
+using DATN_ACV_DEV.Model_DTO.Voucher_DTO;
+
 namespace DATN_ACV_DEV.Model_DTO.Order_DTO;
 
 public class OrderDetail
@@ -6,15 +8,16 @@ public class OrderDetail
     public CustomerInfo Customer { get; set; } = null!;
     public ShippingInfo? ShippingInfo { get; set; } = null!;
     public PaymentInfo PaymentInfo { get; set; } = null!;
+    public VoucherDTO Voucher { get; set; } = new VoucherDTO();
     public bool IsCustomerTakeYourSelf { get; set; } = true;
     public bool IsSameAsCustomerAddress { get; set; } = true;
     public string StatusText { get; set; }
     public int Status { get; set; }
     public string PaymentMethodName { get; set; }
-    public decimal TotalAmount { get; set; }
-    public decimal VoucherDiscountAmount { get; set; }
-    public decimal DiscountAmout { get; set; }
     public IEnumerable<OrderItem> Items { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string OrderTypeName { get; set; } = string.Empty;
+    public bool IsDraft { get; set; }
 }
 
 public class OrderItem
@@ -54,6 +57,7 @@ public class CustomerInfo
 public class PaymentInfo
 {
     public Guid? VoucherId { get; set; }
+    public string VoucherCode { get; set; } = string.Empty;
     public int Status { get; set; }
     public decimal ShippingFee { get; set; }
     public decimal TotalAmount { get; set; }

@@ -59,8 +59,6 @@ namespace DATN_ACV_DEV.Controllers
                 ProvinceName = _request.provinceName,
                 DistrictName = _request.districName,
                 WardName = _request.wardName,
-                ProviceId = _request.provinceId,
-                DistrictId = _request.districId,
                 Status = _request.status,
                 AccountId = new Guid("65809962-D69A-4D1F-9C14-E4D28DA106C4"),
                 ReceiverName = _request.receiverName,

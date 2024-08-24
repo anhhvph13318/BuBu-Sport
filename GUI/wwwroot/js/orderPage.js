@@ -95,6 +95,8 @@ function show(id) {
         .then(res => res.json())
         .then(data => {
             updateAllView(data);
+            $('#tempSaveButtonContainer').html('');
+            $('#tempSaveButtonContainer').html(data.tempSaveButton);
             $('#shippingLocation').val(data.isCustomerTakeYourSelf ? '0' : '1');
             $('#orderStatus').val(data.status.toString());
             $('#shippingLocation').trigger('change');
@@ -176,65 +178,6 @@ function verify() {
     return isValid;
 }
 
-function checkout() {
-    if (!verify()) return;
-
-    const customerInfo = {
-        name: $('#customerName').val(),
-        phoneNumber: $('#customerPhoneNumber').val(),
-        address: $('#customerAddress').val(),
-    };
-
-    const shippingInfo = {
-        name: $('#receiverName').val(),
-        phoneNumber: $('#receiverPhone').val(),
-        address: $('#receiverAddress').val()
-    }
-
-    const payload = {
-        isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
-        isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
-        status: $('#orderStatus').val(),
-        customerInfo,
-        shippingInfo
-    }
-
-    fetch(ORDER_CHECKOUT_API, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    }).then(res => res.json())
-        .then(data => updateAllView(data))
-        .then(_ => toastr.success("Tạo thành công"));
-}
-
-function update() {
-    const shippingInfo = {
-        name: $('#receiverName').val(),
-        phoneNumber: $('#receiverPhone').val(),
-        address: $('#receiverAddress').val()
-    }
-
-    const payload = {
-        isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
-        isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
-        status: $('#orderStatus').val(),
-        shippingInfo
-    }
-
-    fetch(ORDER_UPDATE_API, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    }).then(res => res.json())
-        .then(data => updateAllView(data))
-        .then(_ => toastr.success("Cập nhật thành công"));
-}
-
 function clearOrder() {
     fetch(ORDER_CLEAR_API, {
         method: 'DELETE'
@@ -243,7 +186,7 @@ function clearOrder() {
         .then(data => updateAllView(data));
 }
 
-function saveTempOrder() {
+function saveOrder(isDraft) {
     if (!verify()) return;
 
     const customerInfo = {
@@ -263,7 +206,8 @@ function saveTempOrder() {
         isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
         status: $('#orderStatus').val(),
         customerInfo,
-        shippingInfo
+        shippingInfo,
+        isDraft
     }
 
 
@@ -277,9 +221,9 @@ function saveTempOrder() {
         .then(res => res.json())
         .then(data => {
             $('#orderTempSaveContainer').html('');
-            $('#orderTempSaveContainer').html(data.tempOrders);
+            $('#orderTempSaveContainer').html(data.orders);
         })
-        .then(_ => toastr.success("Lưu thành công!"))
+        .then(_ => toastr.success("Thành công!"))
         .then(_ => clearOrder());
 }
 
@@ -293,7 +237,7 @@ function removeDraft(id) {
         .then(res => res.json())
         .then(data => {
             $('#orderTempSaveContainer').html('');
-            $('#orderTempSaveContainer').html(data.tempOrders);
+            $('#orderTempSaveContainer').html(data.orders);
         });
 }
 

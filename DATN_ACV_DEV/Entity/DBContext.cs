@@ -99,10 +99,8 @@ public partial class DBContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.DistrictId).HasColumnName("districtId");
             entity.Property(e => e.DistrictName).HasColumnName("districtName");
             entity.Property(e => e.IsDelete).HasColumnName("isDelete");
-            entity.Property(e => e.ProviceId).HasColumnName("proviceId");
             entity.Property(e => e.ProvinceName).HasColumnName("provinceName");
             entity.Property(e => e.ReceiverName)
                 .HasMaxLength(255)
@@ -112,7 +110,6 @@ public partial class DBContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("receiverPhone");
             entity.Property(e => e.Status).HasColumnName("status");
-            entity.Property(e => e.WardId).HasColumnName("wardId");
             entity.Property(e => e.WardName).HasColumnName("wardName");
 
             entity.HasOne(d => d.Account).WithMany(p => p.TbAddressDeliveries)
@@ -315,7 +312,7 @@ public partial class DBContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.TbOrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_tb_OrderDetail_tb_Order");
 
             entity.HasOne(d => d.Product).WithMany(p => p.TbOrderDetails)

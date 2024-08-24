@@ -18,7 +18,7 @@ namespace DATN_ACV_DEV.Model_DTO.Voucher_DTO
         public string Code { get; set; } = string.Empty;
         public int Discount { get; set; }
         public string? Description { get; set; }
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public VoucherType Type { get; set; } = VoucherType.Voucher;

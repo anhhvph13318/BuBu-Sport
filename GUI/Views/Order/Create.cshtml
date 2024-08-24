@@ -41,21 +41,6 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
-                                aria-controls="panelsStayOpen-collapseTwo">
-                                Danh sách hoá đơn mua hàng online
-                            </button>
-                        </h2>
-                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-                            <div class="accordion-body" id="orderDB">
-                                @await Html.PartialAsync("_OrderListPartialView", ViewData["OrderLoadedFromDb"] as
-                                         List<OrderListItem>)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                                 aria-controls="panelsStayOpen-collapseOne">
                                 Danh sách hoá đơn chờ xử lý
@@ -63,7 +48,7 @@
                         </h2>
                         <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
                             <div class="accordion-body" id="orderTempSaveContainer">
-                                @await Html.PartialAsync("_OrderTempListPartialView", ViewData["OrderTemps"] as
+                                @await Html.PartialAsync("_OrderListPartialView", ViewData["Orders"] as
                                          List<OrderDetail>)
                             </div>
                         </div>
@@ -78,8 +63,9 @@
                     </div>
                 </form>
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-secondary text-nowrap ms-3 me-2" onclick="saveTempOrder()"
-                        id="btnTempOrder">Lưu tạm</button>
+                    <div id="tempSaveButtonContainer" class="me-2">
+                        @await Html.PartialAsync("_TempSaveOrderButtonPartialView")
+                    </div>
                     <button class="btn btn-danger text-nowrap me-2" onclick="clearOrder()">Xóa giỏ hàng</button>
                 </div>
                 <hr />
