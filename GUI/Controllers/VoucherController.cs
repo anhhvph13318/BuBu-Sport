@@ -11,8 +11,8 @@ namespace GUI.Controllers;
 [Route("vouchers")]
 public class VoucherController : Controller
 {
-    private const string URI = "http://localhost:5059";
-    // private const string URI = "https://localhost:";
+    //private const string URI = "http://localhost:5059";
+    private const string URI = "https://localhost:44383";
 
     [HttpGet]
     public async Task<IActionResult> Index(

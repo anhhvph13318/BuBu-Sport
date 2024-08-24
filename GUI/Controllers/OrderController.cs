@@ -15,8 +15,8 @@ namespace GUI.Controllers;
 [Route("orders")]
 public class OrderController : Controller
 {
-    private const string URI = "http://localhost:5059";
-    //private const string URI = "https://localhost:44383";
+    //private const string URI = "http://localhost:5059";
+    private const string URI = "https://localhost:44383";
     private const string OrderItemListPartialView = "_OrderItemListPartialView";
     private const string OrderCustomerInfoPartialView = "_OrderCustomerInfoPartialView";
     private const string OrderPaymentInfoPartialView = "_OrderPaymentInfoPartialView";
