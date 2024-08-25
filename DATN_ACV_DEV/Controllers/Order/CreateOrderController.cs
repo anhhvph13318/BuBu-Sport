@@ -95,7 +95,6 @@ namespace DATN_ACV_DEV.Controllers
             {
                 service_type_id = Utility.Utility.SERVICE_TYPE_DEFAULT,
                 insurance_value = Convert.ToInt32(_listProduct.Sum(p => p.price)),
-                to_district_id = addressDelivery.DistrictId,
                 from_district_id = Utility.Utility.FORM_DISTRICT_ID_DEFAULT,
                 weight = _listProduct.Sum(c => c.weight ?? 2000),
                 //tạm thời fix cứng

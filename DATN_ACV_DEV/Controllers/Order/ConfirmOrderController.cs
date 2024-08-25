@@ -34,6 +34,7 @@ namespace DATN_ACV_DEV.Controllers
         private List<TbOrderDetail> _lstOrderDetail;
         private List<TbCartDetail> _listCartDetail;
         private List<string> _lstVoucherCode;
+        private bool AddCustomer = false;
         private decimal? _totalDiscount = 0;
         private string _conC01 = "C01";
         private string _conC02 = "C02";
@@ -61,21 +62,23 @@ namespace DATN_ACV_DEV.Controllers
 
         public void AccessDatabase()
         {
+            if (AddCustomer) _context.Add(customer); else _context.Update(customer);
             _context.Add(_order);
             _context.AddRange(_lstOrderDetail);
             _context.RemoveRange(_listCartDetail);
 
-            _response.id = _order.Id;
+
+			_response.id = _order.Id;
             _response.orderCode = _order.OrderCode;
             _response.voucherCode = string.Join(", ", _lstVoucherCode);
-            _response.accountCode = account.AccountCode;
-            _response.phoneNumber = account.PhoneNumber;
+            _response.accountCode = account?.AccountCode;
+            _response.phoneNumber = account?.PhoneNumber ?? _order.PhoneNumberCustomer;
             _response.amountShip = _order.AmountShip;
             _response.totalAmount = _order.TotalAmount;
             _response.totalAmountDiscount = _order.TotalAmountDiscount;
             _response.createdDate = _order.CreateDate;
             _response.PaymentMethodName = _namePaymentMethod;
-            _response.nameCustomer = customer.Name;
+            _response.nameCustomer = customer?.Name;
             _response.addressDelivery = _request.addressDelivery;
             _res.Data = _response;
             if (_request.voucherID != null)
@@ -97,21 +100,37 @@ namespace DATN_ACV_DEV.Controllers
 
         public void GenerateObjects()
         {
-            account = _context.TbAccounts.Where(a => a.Id == _request.UserId).FirstOrDefault();
-            customer = _context.TbCustomers.Where(c => c.Id == account.CustomerId).FirstOrDefault();
+            customer = _context.TbCustomers.Where(c => c.Id == _request.UserId).FirstOrDefault();
+            if (customer != null)
+            {
+                customer.Name = _request.name;
+                customer.Adress = _request.addressDelivery;
+            }
+            else
+            {
+                //var address = _context.TbAddressDeliveries.FirstOrDefault(c => c.Id == _request.addressDeliveryId);
+                customer = new TbCustomer { 
+                    Id = _request.UserId,
+                    Adress = _request.addressDelivery,
+                    GroupCustomerId = _request.UserId,
+                    Name = _request.name
+				};
+                AddCustomer = true;
+
+			}
             //_namePaymentMethod = _context.TbPaymentMethods.Where(c => c.Id == _request.paymentMethodId).Select(p => p.Name).FirstOrDefault();
             _order = new TbOrder()
             {
                 Id = Guid.NewGuid(),
                 OrderCode = "ACV_" + DateTime.Now.Millisecond,
-                TotalAmount = 0,
+                TotalAmount = _request.totalAmount ?? 0,
                 Description = _request.description,
                 AccountId = _request.UserId,
-                PaymentMethodId = _request.paymentMethodId,
-                VoucherCode = _request.voucherCode != null ? string.Join(",", _request.voucherCode) : null,
+                PaymentMethod = _request.paymentMethodId,
+                //VoucherCode = _request.voucherCode != null ? string.Join(",", _request.voucherCode) : null,
                 AmountShip = _request.amountShip,
-                CustomerId = customer.Id,
-                PhoneNumberCustomer = account.PhoneNumber,
+                CustomerId = customer == null ? null : customer.Id,
+                PhoneNumberCustomer = account != null ? account.PhoneNumber : _request.phoneNummber,
                 AddressDeliveryId = _request.addressDeliveryId,
                 OrderCounter = false,
                 //Defautl
@@ -234,7 +253,7 @@ namespace DATN_ACV_DEV.Controllers
         {
             try
             {
-				request.UserId = new Guid("65809962-D69A-4D1F-9C14-E4D28DA106C4");
+				//request.UserId = new Guid("65809962-D69A-4D1F-9C14-E4D28DA106C4");
 				_request = request;
 
                 //CheckAuthorization();

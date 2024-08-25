@@ -44,8 +44,8 @@ namespace DATN_ACV_DEV.FileBase
         private string _conC10Field = "Permission";
         private bool checkUserSupperAdmin = false;
 
-        [JsonIgnore]
         public Guid UserId { get; set; }
+        [JsonIgnore]
         public Guid? AdminId { get; set; }
         public bool LoginType { get; set; }
         public string? Token { get; set; }

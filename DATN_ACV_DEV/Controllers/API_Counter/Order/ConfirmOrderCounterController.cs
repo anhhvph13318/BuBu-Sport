@@ -95,8 +95,7 @@ namespace DATN_ACV_DEV.Controllers.API_Counter.Order
                 TotalAmountDiscount = _request.totalAmountDiscount,
                 Description = _request.description,
                 AccountId = _request.UserId,
-                PaymentMethodId = _request.paymentMethodId,
-                VoucherCode = _request.voucherCode,
+                PaymentMethod = _request.paymentMethodId,
                 AmountShip = 0,
                 OrderCounter = true,// hóa đơn bán tại quầy. true: bán tại quầy, false or null bán online
                 PhoneNumberCustomer = _request.phoneNumber,
