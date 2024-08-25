@@ -188,6 +188,18 @@
 		});
 	});
 
+	$('.buyNow').on('click', function () {
+		debugger;
+		let customerId = getCookie("user-id");
+		$.post("/BuyNow", { prId: $(this).attr('data-prId'), userId: customerId }, function (data) {
+			debugger;
+			if (!customerId) {
+				setCookie("user-id", data.userId, 90)
+			}
+			window.location = "/checkout";
+		});
+	});
+
 	$('.remove-item').on('click', function () {
 		let id = $(this).parent().parent().attr('data-itemId')
 		$.post("/DeleteItem", { id: id }, function () {

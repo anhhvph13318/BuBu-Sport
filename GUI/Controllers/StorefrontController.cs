@@ -109,7 +109,32 @@ namespace GUI.Controllers
 			return BadRequest();
 		}
 
-		[Route("/Checkout")]
+        [HttpPost("/BuyNow")]
+        public async Task<IActionResult> BuyNow(Guid prId, Guid userId)
+        {
+            if (userId == Guid.Empty)
+            {
+                userId = Guid.NewGuid();
+            }
+            var req = new AddToCartRequest();
+            //req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+            req.UserId = userId;
+            req.Quantity = 1;
+            req.ProductId = prId;
+			req.incre = false;
+            var URL = _settings.APIAddress + "api/AddToCart/Process";
+            var param = JsonConvert.SerializeObject(req);
+            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+            var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
+            if (result.Status == "200")
+            {
+                await ConfirmCart(new List<Guid> { result.Data.ItemId });
+                return Ok(new { userId });
+            }
+            return BadRequest();
+        }
+
+        [Route("/Checkout")]
 		//public async Task<IActionResult> Checkout()
 		//{
 		//	var model = new List<CartDTO>();

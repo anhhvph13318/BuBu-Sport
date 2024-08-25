@@ -55,7 +55,7 @@ namespace DATN_ACV_DEV.Controllers
             //_product = _context.TbProducts.Where(p => p.Id == _request.ProductId).FirstOrDefault();
             //_product.Quantity -= _request.Quantity;
             _context.SaveChanges();
-
+            _response.ItemId = _CartDetail.Id;
             _res.Data = _response;
         }
 
@@ -130,7 +130,7 @@ namespace DATN_ACV_DEV.Controllers
                 {
                     var LstproductID = _context.TbCartDetails.Where(c => c.CartId == checkExistCart.Id).ToList();
                     var Product = LstproductID.Where(c => c.ProductId == _request.ProductId).FirstOrDefault();
-                    if (Product != null)
+                    if (Product != null && _request.incre)
                     {
                         Product.Quantity += _request.Quantity;
                     }
