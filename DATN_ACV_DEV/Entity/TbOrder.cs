@@ -21,13 +21,11 @@ public partial class TbOrder
 
     public DateTime? UpdateDate { get; set; }
 
-    public string? VoucherCode { get; set; }
-
     public Guid? CustomerId { get; set; }
 
     public Guid? AccountId { get; set; }
 
-    public Guid? PaymentMethodId { get; set; }
+    public int? PaymentMethod { get; set; }
 
     public decimal? AmountShip { get; set; }
 

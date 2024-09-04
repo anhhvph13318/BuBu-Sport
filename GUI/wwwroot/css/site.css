@@ -68,3 +68,7 @@ input {
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
+
+.item span{
+    width: 75%;
+}

@@ -9,6 +9,6 @@ namespace DATN_ACV_DEV.Model_DTO.Order_DTO
         public string phoneNumber { get; set; }
         public decimal amountShip { get; set; } = 0;
         public string address { get; set; }
-        public Guid paymentMethodId { get; set; }
+        public int paymentMethodId { get; set; }
     }
 }

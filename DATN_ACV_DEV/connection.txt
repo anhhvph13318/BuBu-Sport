@@ -3,4 +3,4 @@ Scaffold-DbContext "Data Source=DESKTOP-I8QEIM8;Initial Catalog=DATABASE_ACV_13_
 
 VietAnh: Data Source=DESKTOP-I8QEIM8;Initial Catalog=DB;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
 
-Vu: Data Source=RATONLYNK;Initial Catalog=DATABASE_ACV_13_01_2024;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
+Vu: Data Source=RATONLYNK;Initial Catalog=DB_SmartHouse;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;

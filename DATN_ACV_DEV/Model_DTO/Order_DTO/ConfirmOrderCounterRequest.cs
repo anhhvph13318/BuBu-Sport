@@ -4,7 +4,7 @@ namespace DATN_ACV_DEV.Model_DTO.Order_DTO
 {
     public class ConfirmOrderCounterRequest : BaseRequest
     {
-        public Guid paymentMethodId { get; set; }
+        public int paymentMethodId { get; set; }
         public Guid? voucherID { get; set; }
         public string? voucherCode { get; set; }
         public string? description { get; set; }

@@ -904,6 +904,7 @@ textarea.input {
   background-color: #FFF;
   text-align: center;
   z-index: 20;
+  height: 200px
 }
 
 .product .product-body .product-category {
@@ -912,10 +913,12 @@ textarea.input {
   color: #8D99AE;
 }
 
-.product .product-body .product-name {
-  text-transform: uppercase;
-  font-size: 14px;
-}
+    .product .product-body .product-name {
+        text-transform: uppercase;
+        font-size: 14px;
+        overflow: hidden;
+        height: 30px;
+    }
 
 .product .product-body .product-name>a {
   font-weight: 700;
@@ -2238,4 +2241,16 @@ textarea.input {
 
 .item span {
     margin: 5px 0 0 10px;
+}
+
+.product .product-img > img {
+    height: 200px;
+    max-width: 100%;
+    width: auto;
+    display: flex;
+    margin: 0 auto;
+}
+
+.product .product-img {
+    height: 200px;
 }

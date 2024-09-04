@@ -77,7 +77,7 @@ namespace DATN_ACV_DEV.Controllers
                     TotalAmount = (product.Price * _request.quantity),
                     CreateDate = DateTime.Now,
                     Status = Utility.Utility.ORDER_STATUS_PREPARE_GOODS,
-                    PaymentMethodId = _request.paymentMethodId,
+                    PaymentMethod = _request.paymentMethodId,
                     OrderCounter = false,
                     PhoneNumberCustomer = _request.phoneNumber,
                     AddressCustomer = _request.address,
