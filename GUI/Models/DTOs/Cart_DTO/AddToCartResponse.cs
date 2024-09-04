@@ -3,10 +3,11 @@ namespace GUI.Models.DTOs.Cart_DTO
 {
     public class AddToCartResponse
     {
-        //public AddToCartResponse()
-        //{
-        //    ItemInCart = new List<TbCartDetail>();
-        //}
-        //public List<TbCartDetail> ItemInCart;
-    }
+		//public AddToCartResponse()
+		//{
+		//    ItemInCart = new List<TbCartDetail>();
+		//}
+		//public List<TbCartDetail> ItemInCart;
+		public Guid ItemId { get; set; }
+	}
 }

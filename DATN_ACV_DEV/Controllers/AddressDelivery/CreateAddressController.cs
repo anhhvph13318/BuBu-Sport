@@ -22,6 +22,7 @@ namespace DATN_ACV_DEV.Controllers
         private BaseResponse<CreateAddessDeliveryResponse> _res;
         private CreateAddessDeliveryResponse _response;
         private TbAddressDelivery _addressDelivery;
+        private bool AddUser = false;
         private string _apiCode = "CreateAddress";
         private string _conC01 = "C01";
         private string _conC02 = "C02";
@@ -53,6 +54,7 @@ namespace DATN_ACV_DEV.Controllers
 
         public void GenerateObjects()
         {
+            //var checkUser = _context.TbAccounts.FirstOrDefault(c => c.Id == _request.UserId);
             _addressDelivery = new TbAddressDelivery
             {
                 Id = Guid.NewGuid(),
@@ -60,7 +62,7 @@ namespace DATN_ACV_DEV.Controllers
                 DistrictName = _request.districName,
                 WardName = _request.wardName,
                 Status = _request.status,
-                AccountId = new Guid("65809962-D69A-4D1F-9C14-E4D28DA106C4"),
+                //AccountId = _request.UserId,
                 ReceiverName = _request.receiverName,
                 ReceiverPhone = _request.receiverPhone,
                 IsDelete = false,

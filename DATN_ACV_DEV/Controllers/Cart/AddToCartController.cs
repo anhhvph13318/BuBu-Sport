@@ -55,7 +55,7 @@ namespace DATN_ACV_DEV.Controllers
             //_product = _context.TbProducts.Where(p => p.Id == _request.ProductId).FirstOrDefault();
             //_product.Quantity -= _request.Quantity;
             _context.SaveChanges();
-
+            _response.ItemId = _CartDetail.Id;
             _res.Data = _response;
         }
 
@@ -122,30 +122,33 @@ namespace DATN_ACV_DEV.Controllers
                 {
                     AddCartCustomer();
                 }
+                checkExistCart = _context.TbCarts.Where(c => c.AccountId == _request.UserId).FirstOrDefault();
             }
-            try
+            else
             {
-                var LstproductID = _context.TbCartDetails.Where(c => c.CartId == checkExistCart.Id).ToList();
-                var Product = LstproductID.Where(c => c.ProductId == _request.ProductId).FirstOrDefault();
-                if (Product != null)
+                try
                 {
-                    Product.Quantity += _request.Quantity;
-                }
-                else
-                {
-                    _CartDetail = new TbCartDetail()
+                    var LstproductID = _context.TbCartDetails.Where(c => c.CartId == checkExistCart.Id).ToList();
+                    var Product = LstproductID.Where(c => c.ProductId == _request.ProductId).FirstOrDefault();
+                    if (Product != null && _request.incre)
                     {
-                        Id = Guid.NewGuid(),
-                        ProductId = _request.ProductId,
-                        Quantity = _request.Quantity,
-                        CartId = checkExistCart.Id,
-                    };
-                    checkProduct = true;
+                        Product.Quantity += _request.Quantity;
+                    }
+                    else
+                    {
+                        _CartDetail = new TbCartDetail()
+                        {
+                            Id = Guid.NewGuid(),
+                            ProductId = _request.ProductId,
+                            Quantity = _request.Quantity,
+                            CartId = checkExistCart.Id,
+                        };
+                        checkProduct = true;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
+                catch (Exception)
+                {
+                }
             }
         }
 
@@ -161,7 +164,7 @@ namespace DATN_ACV_DEV.Controllers
         }
         [HttpPost]
         [Route("Process")]
-        public BaseResponse<AddToCartResponse> Process(AddToCartRequest request)
+        public BaseResponse<AddToCartResponse> Process([FromBody]AddToCartRequest request)
         {
             try
             {

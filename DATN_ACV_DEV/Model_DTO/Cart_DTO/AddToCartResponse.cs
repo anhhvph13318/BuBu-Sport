@@ -9,5 +9,6 @@ namespace DATN_ACV_DEV.Model_DTO.Cart_DTO
         //    ItemInCart = new List<TbCartDetail>();
         //}
         //public List<TbCartDetail> ItemInCart;
+        public Guid ItemId { get; set; }
     }
 }
