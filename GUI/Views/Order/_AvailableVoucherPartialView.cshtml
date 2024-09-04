@@ -1,0 +1,36 @@
+﻿@using GUI.Models.DTOs.Voucher_DTO
+@using System.Globalization
+@model IEnumerable<VoucherDTO>
+
+<div class="container">
+    <table class="table table-stripped">
+        <thead>
+            <tr>
+                <th>Mã</th>
+                <th>Tên voucher</th>
+                <th>Số tiền giảm</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var voucher in Model)
+            {
+                <tr>
+                    <td>@voucher.Code</td>
+                    <td>@voucher.Name</td>
+                    @if (voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent)
+                    {
+                        <td>@voucher.Discount %</td>
+                    }
+                    else
+                    {
+                        <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                    }
+                    <td>
+                        <button class="btn btn-primary text-nowrap me-2" onclick="applyVoucher('@voucher.Id')">Áp dụng</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

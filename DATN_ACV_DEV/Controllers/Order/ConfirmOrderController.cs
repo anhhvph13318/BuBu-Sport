@@ -126,7 +126,7 @@ namespace DATN_ACV_DEV.Controllers
                 TotalAmount = _request.totalAmount ?? 0,
                 Description = _request.description,
                 AccountId = _request.UserId,
-                PaymentMethod = _request.paymentMethodId,
+                //PaymentMethodId = _request.paymentMethodId,
                 //VoucherCode = _request.voucherCode != null ? string.Join(",", _request.voucherCode) : null,
                 AmountShip = _request.amountShip,
                 CustomerId = customer == null ? null : customer.Id,

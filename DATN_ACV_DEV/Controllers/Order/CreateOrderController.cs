@@ -88,109 +88,110 @@ namespace DATN_ACV_DEV.Controllers
 
         public void GenerateObjects()
         {
-            account = _context.TbAccounts.Where(a => a.Id == _request.UserId).FirstOrDefault();
-            customer = _context.TbCustomers.Where(c => c.Id == account.CustomerId).FirstOrDefault();
-            addressDelivery = _context.TbAddressDeliveries.Where(a => a.Id == _request.AddressDeliveryId && a.IsDelete == false).FirstOrDefault();
-            GHNFeeRequest requesFee = new GHNFeeRequest()
-            {
-                service_type_id = Utility.Utility.SERVICE_TYPE_DEFAULT,
-                insurance_value = Convert.ToInt32(_listProduct.Sum(p => p.price)),
-                from_district_id = Utility.Utility.FORM_DISTRICT_ID_DEFAULT,
-                weight = _listProduct.Sum(c => c.weight ?? 2000),
-                //tạm thời fix cứng
-                lenght = 20,
-                width = 20,
-                height = 20,
-            };
-            #region comment
-            //_order = new TbOrder()
+            //account = _context.TbAccounts.Where(a => a.Id == _request.UserId).FirstOrDefault();
+            //customer = _context.TbCustomers.Where(c => c.Id == account.CustomerId).FirstOrDefault();
+            //addressDelivery = _context.TbAddressDeliveries.Where(a => a.Id == _request.AddressDeliveryId && a.IsDelete == false).FirstOrDefault();
+            //GHNFeeRequest requesFee = new GHNFeeRequest()
             //{
-            //    Id = Guid.NewGuid(),
-            //    OrderCode = "ACV_" + DateTime.Now.Millisecond,
-            //    TotalAmount = 0,
-            //    Description = _request.description,
-            //    AccountId = _request.UserId,
-            //    PaymentMethodId = _request.paymentMenthodID,
-            //    VoucherId = _request.voucherID != null ? string.Join(",", _request.voucherID) : null,
-            //    AmountShip = Common.GetFee(_request.TokenGHN, requesFee),
-            //    CustomerId = customer.Id,
-            //    //Defautl
-            //    CreateBy = _request.UserId,
-            //    CreateDate = DateTime.Now,
-            //    Status = Utility.Utility.ORDER_STATUS_PREPARE_GOODS
+            //    service_type_id = Utility.Utility.SERVICE_TYPE_DEFAULT,
+            //    insurance_value = Convert.ToInt32(_listProduct.Sum(p => p.price)),
+            //    to_district_id = addressDelivery.DistrictId,
+            //    from_district_id = Utility.Utility.FORM_DISTRICT_ID_DEFAULT,
+            //    weight = _listProduct.Sum(c => c.weight ?? 2000),
+            //    //tạm thời fix cứng
+            //    lenght = 20,
+            //    width = 20,
+            //    height = 20,
             //};
-            //foreach (var itemProduct in _listProduct)
+            //#region comment
+            ////_order = new TbOrder()
+            ////{
+            ////    Id = Guid.NewGuid(),
+            ////    OrderCode = "ACV_" + DateTime.Now.Millisecond,
+            ////    TotalAmount = 0,
+            ////    Description = _request.description,
+            ////    AccountId = _request.UserId,
+            ////    PaymentMethodId = _request.paymentMenthodID,
+            ////    VoucherId = _request.voucherID != null ? string.Join(",", _request.voucherID) : null,
+            ////    AmountShip = Common.GetFee(_request.TokenGHN, requesFee),
+            ////    CustomerId = customer.Id,
+            ////    //Defautl
+            ////    CreateBy = _request.UserId,
+            ////    CreateDate = DateTime.Now,
+            ////    Status = Utility.Utility.ORDER_STATUS_PREPARE_GOODS
+            ////};
+            ////foreach (var itemProduct in _listProduct)
+            ////{
+            ////    _orderDetail = new TbOrderDetail()
+            ////    {
+            ////        Id = Guid.NewGuid(),
+            ////        OrderId = _order.Id,
+            ////        ProductId = itemProduct.productId,
+            ////        Quantity = itemProduct.quantity
+            ////    };
+            ////    _lstOrderDetail.Add(_orderDetail);
+            ////    _response.products.Add(itemProduct);
+            ////    _order.TotalAmount += (itemProduct.price * itemProduct.quantity);
+            ////}
+            //#endregion
+            ////_amountShip = Common.GetFee(_request.TokenGHN, requesFee);
+            //if (_request.voucherID != null)
             //{
-            //    _orderDetail = new TbOrderDetail()
-            //    {
-            //        Id = Guid.NewGuid(),
-            //        OrderId = _order.Id,
-            //        ProductId = itemProduct.productId,
-            //        Quantity = itemProduct.quantity
-            //    };
-            //    _lstOrderDetail.Add(_orderDetail);
-            //    _response.products.Add(itemProduct);
-            //    _order.TotalAmount += (itemProduct.price * itemProduct.quantity);
+            //    _lstVoucher = _context.TbVouchers.Where(voucher => _request.voucherID.Contains(voucher.Id));
             //}
-            #endregion
-            //_amountShip = Common.GetFee(_request.TokenGHN, requesFee);
-            if (_request.voucherID != null)
-            {
-                _lstVoucher = _context.TbVouchers.Where(voucher => _request.voucherID.Contains(voucher.Id));
-            }
-            foreach (var product in _listProduct)
-            {
-                if (_request.voucherID != null)
-                {
-                    var voucherDiscount = _lstVoucher.ToList().Where(c => c.Type == Utility.Utility.VOUCHER_DISCOUNT).FirstOrDefault();
-                    if (voucherDiscount != null)
-                    {
+            //foreach (var product in _listProduct)
+            //{
+            //    if (_request.voucherID != null)
+            //    {
+            //        var voucherDiscount = _lstVoucher.ToList().Where(c => c.Type == Utility.Utility.VOUCHER_DISCOUNT).FirstOrDefault();
+            //        if (voucherDiscount != null)
+            //        {
 
-                        if (voucherDiscount.ProductId == product.productId)
-                        {
-                            var totalAmountPromotionApplyProduct = product.price * product.quantity;
-                            var amountDiscount = Common.CalculateDiscount(totalAmountPromotionApplyProduct, voucherDiscount);
-                            _totalAmount += (totalAmountPromotionApplyProduct - amountDiscount.DiscountVoucher);
-                            _totalDiscount += amountDiscount.DiscountVoucher;
-                            _lstVoucherCode.Add(voucherDiscount.Code);
-                            _lstVoucherId.Add(voucherDiscount.Id);
-                        }
-                        else if (voucherDiscount.CategoryId == product.categoryId)
-                        {
-                            var totalAmountPromotionApplyCategory = product.price * product.quantity;
-                            var amountDiscount = Common.CalculateDiscount(totalAmountPromotionApplyCategory, voucherDiscount);
-                            _totalAmount += (totalAmountPromotionApplyCategory - amountDiscount.DiscountVoucher);
-                            _totalDiscount = amountDiscount.DiscountVoucher;
-                            _lstVoucherCode.Add(voucherDiscount.Code);
-                            _lstVoucherId.Add(voucherDiscount.Id);
-                        }
-                        else
-                        {
-                            _totalAmount += (product.price * product.quantity);
-                        }
-                    }
-                    else
-                    {
-                        _totalAmount += (product.price * product.quantity);
-                    }
-                }
-                else
-                {
-                    _totalAmount += (product.price * product.quantity);
-                }
-            }
+            //            if (voucherDiscount.ProductId == product.productId)
+            //            {
+            //                var totalAmountPromotionApplyProduct = product.price * product.quantity;
+            //                var amountDiscount = Common.CalculateDiscount(totalAmountPromotionApplyProduct, voucherDiscount);
+            //                _totalAmount += (totalAmountPromotionApplyProduct - amountDiscount.DiscountVoucher);
+            //                _totalDiscount += amountDiscount.DiscountVoucher;
+            //                _lstVoucherCode.Add(voucherDiscount.Code);
+            //                _lstVoucherId.Add(voucherDiscount.Id);
+            //            }
+            //            else if (voucherDiscount.CategoryId == product.categoryId)
+            //            {
+            //                var totalAmountPromotionApplyCategory = product.price * product.quantity;
+            //                var amountDiscount = Common.CalculateDiscount(totalAmountPromotionApplyCategory, voucherDiscount);
+            //                _totalAmount += (totalAmountPromotionApplyCategory - amountDiscount.DiscountVoucher);
+            //                _totalDiscount = amountDiscount.DiscountVoucher;
+            //                _lstVoucherCode.Add(voucherDiscount.Code);
+            //                _lstVoucherId.Add(voucherDiscount.Id);
+            //            }
+            //            else
+            //            {
+            //                _totalAmount += (product.price * product.quantity);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            _totalAmount += (product.price * product.quantity);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        _totalAmount += (product.price * product.quantity);
+            //    }
+            //}
             // tính voucher free ship 
-            if (_request.voucherID != null)
-            {
-                var vouchership = _lstVoucher.Where(c => c.Type == Utility.Utility.VOUCHER_FREESHIP).FirstOrDefault();
-                if (vouchership != null)
-                {
-                    var amountDiscount = Common.CalculateDiscount(0, vouchership);
-                    //_amountShip -= amountDiscount.DiscountShipping;
-                    _lstVoucherCode.Add(vouchership.Code);
-                    _lstVoucherId.Add(vouchership.Id);
-                }
-            }
+            //if (_request.voucherID != null)
+            //{
+            //    var vouchership = _lstVoucher.Where(c => c.Type == Utility.Utility.VOUCHER_FREESHIP).FirstOrDefault();
+            //    if (vouchership != null)
+            //    {
+            //        var amountDiscount = Common.CalculateDiscount(0, vouchership);
+            //        //_amountShip -= amountDiscount.DiscountShipping;
+            //        _lstVoucherCode.Add(vouchership.Code);
+            //        _lstVoucherId.Add(vouchership.Id);
+            //    }
+            //}
 
 
 

@@ -20,12 +20,14 @@ public partial class TbOrder
     public Guid? CreateBy { get; set; }
 
     public DateTime? UpdateDate { get; set; }
-
+  
+    //public string? VoucherCode { get; set; }
+  
     public Guid? CustomerId { get; set; }
 
     public Guid? AccountId { get; set; }
 
-    public int? PaymentMethod { get; set; }
+    //public Guid? PaymentMethodId { get; set; }
 
     public decimal? AmountShip { get; set; }
 
@@ -48,6 +50,8 @@ public partial class TbOrder
     public bool IsCustomerTakeYourself { get; set; }
     public bool IsShippingAddressSameAsCustomerAddress { get; set; }
     public bool IsDraft { get; set; }
+    public Guid? VoucherId { get; set; }
+    public TbVoucher? Voucher { get; set; }
 
     public virtual ICollection<TbOrderDetail> TbOrderDetails { get; set; } = new List<TbOrderDetail>();
     public virtual TbCustomer Customer { get; set; } = null!;

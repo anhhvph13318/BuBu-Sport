@@ -59,10 +59,8 @@ namespace DATN_ACV_DEV.Controllers
             {
                 Id = Guid.NewGuid(),
                 ProvinceName = _request.provinceName,
-                //DistrictName = _request.districName,
-                //WardName = _request.wardName,
-                //ProviceId = _request.provinceId,
-                //DistrictId = _request.districId,
+                DistrictName = _request.districName,
+                WardName = _request.wardName,
                 Status = _request.status,
                 //AccountId = _request.UserId,
                 ReceiverName = _request.receiverName,

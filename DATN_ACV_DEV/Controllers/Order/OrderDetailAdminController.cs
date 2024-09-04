@@ -27,9 +27,12 @@ public class OrderDetailAdminController : ControllerBase
             .ThenInclude(e => e.Product)
             .ThenInclude(e => e.Image)
             .Include(e => e.AddressDelivery)
+            .Include(e => e.Voucher)
             .Select(e => new OrderDetail()
             {
                 Id = e.Id,
+                Code = e.OrderCode,
+                IsDraft = e.IsDraft,
                 Customer = new CustomerInfo
                 {
                     Id = e.Customer.Id,
@@ -45,26 +48,27 @@ public class OrderDetailAdminController : ControllerBase
                 },
                 PaymentInfo = new PaymentInfo
                 {
-                    TotalDiscount = 0,
+                    TotalDiscount = e.TotalAmountDiscount.Value,
                     ShippingFee = e.AmountShip ?? 0,
                     TotalTax = e.TotalAmount == 0 ? 0 : e.TotalAmount * 10 / 100,
                     TotalAmount = e.TotalAmount,
-                    Status = e.Status ?? 0
+                    Status = e.Status ?? 0,
+                    VoucherId = e.VoucherId,
+                    VoucherCode = e.Voucher.Code ?? string.Empty
                 },
                 IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
                 IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
                 PaymentMethodName = "Chuyển khoản ngân hàng",
-                VoucherDiscountAmount = 0,
                 StatusText = Common.ConvertStatusOrder(e.Status ?? 0),
                 Status = e.Status ?? 0,
                 Items = e.TbOrderDetails.Select(d => new OrderItem()
                 {
-                    Id = d.Id,
+                    Id = d.ProductId,
                     Price = d.Product.Price,
                     Quantity = d.Quantity,
                     ProductImage = d.Product.Image.Url,
                     ProductName = d.Product.Name
-                })
+                }),
             }).FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
 
         if(order != null && order.ShippingInfo == null)

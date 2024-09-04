@@ -7,5 +7,6 @@
         public bool IsShippingAddressSameAsCustomerAddress { get; set; }
         public bool IsCustomerTakeYourSelf { get; set; }
         public int Status { get; set; }
+        public bool IsDraft { get; set; }
     }
 }

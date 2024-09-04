@@ -77,40 +77,40 @@ namespace DATN_ACV_DEV.Controllers.API_Counter.Order
 
         public void GenerateObjects()
         {
-            foreach (var product in _listProduct)
-            {
-                if (_request.voucherCode != null)
-                {
-                    var voucher = _context.TbVouchers.Where(voucher => voucher.Code == _request.voucherCode).FirstOrDefault();
-                    if (voucher.ProductId == product.productId)
-                    {
-                        var totalAmountPromotionApplyProduct = product.price * product.quantity;
-                        var amountDiscount = Common.CalculateDiscount(totalAmountPromotionApplyProduct, voucher);
-                        _totalAmount += (totalAmountPromotionApplyProduct - amountDiscount.DiscountVoucher);
-                        _totalDiscount += amountDiscount.DiscountVoucher;
-                        _VoucherCode = voucher.Code;
-                        _VoucherId = voucher.Id;
-                    }
-                    else if (voucher.CategoryId == product.categoryId)
-                    {
-                        var totalAmountPromotionApplyCategory = product.price * product.quantity;
-                        var amountDiscount = Common.CalculateDiscount(totalAmountPromotionApplyCategory, voucher);
-                        _totalAmount += (totalAmountPromotionApplyCategory - amountDiscount.DiscountVoucher);
-                        _totalDiscount = amountDiscount.DiscountVoucher;
-                        _VoucherCode = voucher.Code;
-                        _VoucherId = voucher.Id;
-                    }
-                    else
-                    {
-                        _totalAmount += (product.price * product.quantity);
-                    }
+            //foreach (var product in _listProduct)
+            //{
+            //    if (_request.voucherCode != null)
+            //    {
+            //        var voucher = _context.TbVouchers.Where(voucher => voucher.Code == _request.voucherCode).FirstOrDefault();
+            //        if (voucher.ProductId == product.productId)
+            //        {
+            //            var totalAmountPromotionApplyProduct = product.price * product.quantity;
+            //            var amountDiscount = Common.CalculateDiscount(totalAmountPromotionApplyProduct, voucher);
+            //            _totalAmount += (totalAmountPromotionApplyProduct - amountDiscount.DiscountVoucher);
+            //            _totalDiscount += amountDiscount.DiscountVoucher;
+            //            _VoucherCode = voucher.Code;
+            //            _VoucherId = voucher.Id;
+            //        }
+            //        else if (voucher.CategoryId == product.categoryId)
+            //        {
+            //            var totalAmountPromotionApplyCategory = product.price * product.quantity;
+            //            var amountDiscount = Common.CalculateDiscount(totalAmountPromotionApplyCategory, voucher);
+            //            _totalAmount += (totalAmountPromotionApplyCategory - amountDiscount.DiscountVoucher);
+            //            _totalDiscount = amountDiscount.DiscountVoucher;
+            //            _VoucherCode = voucher.Code;
+            //            _VoucherId = voucher.Id;
+            //        }
+            //        else
+            //        {
+            //            _totalAmount += (product.price * product.quantity);
+            //        }
 
-                }
-                else
-                {
-                    _totalAmount += (product.price * product.quantity);
-                }
-            }
+            //    }
+            //    else
+            //    {
+            //        _totalAmount += (product.price * product.quantity);
+            //    }
+            //}
         }
 
         public void PreValidation()

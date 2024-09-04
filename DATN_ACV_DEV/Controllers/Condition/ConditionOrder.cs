@@ -68,41 +68,41 @@ namespace DATN_ACV_DEV.Controllers.Condition
         }
         public static void CreateOrder_C06(DBContext context, CreateOrderRequest request, string apiCode, string con03, string conCO3Field)
         {
-            ACV_Exception aCV_Exception;
-            var productId = context.TbCartDetails.Where(c => request.cartDetailID.Contains(c.Id)).Select(a => a.ProductId);
-            var product = context.TbProducts.Where(c => productId.Contains(c.Id));
-            var voucher = context.TbVouchers.Where(v => request.voucherID.Contains(v.Id) && v.Type == Utility.Utility.VOUCHER_DISCOUNT).FirstOrDefault();
-            if (voucher != null)
-            {
-                var checkVoucher = voucher.ProductId == null ? product.Select(s => s.CategoryId).Contains(voucher.CategoryId.Value) : product.Select(s => s.Id).Contains(voucher.ProductId.Value);
-                if (!checkVoucher)
-                {
-                    aCV_Exception = new ACV_Exception();
-                    //To-do: Lay thong message text tu message code
-                    aCV_Exception.Messages.Add(Message.CreateErrorMessage(apiCode, con03, Utility.Utility.VOUCHER_DONT_APPLY_PRODUCT + voucher.Code, conCO3Field));
-                    throw aCV_Exception;
-                }
+            //ACV_Exception aCV_Exception;
+            //var productId = context.TbCartDetails.Where(c => request.cartDetailID.Contains(c.Id)).Select(a => a.ProductId);
+            //var product = context.TbProducts.Where(c => productId.Contains(c.Id));
+            //var voucher = context.TbVouchers.Where(v => request.voucherID.Contains(v.Id) && v.Type == Utility.Utility.VOUCHER_DISCOUNT).FirstOrDefault();
+            //if (voucher != null)
+            //{
+            //    var checkVoucher = voucher.ProductId == null ? product.Select(s => s.CategoryId).Contains(voucher.CategoryId.Value) : product.Select(s => s.Id).Contains(voucher.ProductId.Value);
+            //    if (!checkVoucher)
+            //    {
+            //        aCV_Exception = new ACV_Exception();
+            //        //To-do: Lay thong message text tu message code
+            //        aCV_Exception.Messages.Add(Message.CreateErrorMessage(apiCode, con03, Utility.Utility.VOUCHER_DONT_APPLY_PRODUCT + voucher.Code, conCO3Field));
+            //        throw aCV_Exception;
+            //    }
 
-            }
+            //}
         }
         public static void CreateOrderCouter_C06(DBContext context, CreateOrderCounterRequest request, string apiCode, string con03, string conCO3Field)
         {
             ACV_Exception aCV_Exception;
             var productId = context.TbCartDetails.Where(c => request.cartDetailID.Contains(c.Id)).Select(a => a.ProductId);
             var product = context.TbProducts.Where(c => productId.Contains(c.Id));
-            var voucher = context.TbVouchers.Where(v => request.voucherCode.Contains(v.Code) && v.Type == Utility.Utility.VOUCHER_DISCOUNT).FirstOrDefault();
-            if (voucher != null)
-            {
-                var checkVoucher = voucher.ProductId == null ? product.Select(s => s.CategoryId).Contains(voucher.CategoryId.Value) : product.Select(s => s.Id).Contains(voucher.ProductId.Value);
-                if (!checkVoucher)
-                {
-                    aCV_Exception = new ACV_Exception();
-                    //To-do: Lay thong message text tu message code
-                    aCV_Exception.Messages.Add(Message.CreateErrorMessage(apiCode, con03, Utility.Utility.VOUCHER_DONT_APPLY_PRODUCT + voucher.Code, conCO3Field));
-                    throw aCV_Exception;
-                }
+            //var voucher = context.TbVouchers.Where(v => request.voucherCode.Contains(v.Code) && v.Type == Utility.Utility.VOUCHER_DISCOUNT).FirstOrDefault();
+            //if (voucher != null)
+            //{
+            //    var checkVoucher = voucher.ProductId == null ? product.Select(s => s.CategoryId).Contains(voucher.CategoryId.Value) : product.Select(s => s.Id).Contains(voucher.ProductId.Value);
+            //    if (!checkVoucher)
+            //    {
+            //        aCV_Exception = new ACV_Exception();
+            //        //To-do: Lay thong message text tu message code
+            //        aCV_Exception.Messages.Add(Message.CreateErrorMessage(apiCode, con03, Utility.Utility.VOUCHER_DONT_APPLY_PRODUCT + voucher.Code, conCO3Field));
+            //        throw aCV_Exception;
+            //    }
 
-            }
+            //}
         }
 
 
@@ -166,13 +166,13 @@ namespace DATN_ACV_DEV.Controllers.Condition
             var checkVoucherType = context.TbVouchers.Where(c => c.Code == request && c.EndDate > DateTime.Now && c.Quantity > 0).FirstOrDefault();
             if (checkVoucherType != null)
             {
-                if (checkVoucherType.Type != Utility.Utility.VOUCHER_DISCOUNT)
-                {
-                    aCV_Exception = new ACV_Exception();
-                    //To-do: Lay thong message text tu message code
-                    aCV_Exception.Messages.Add(Message.CreateErrorMessage(apiCode, con03, Utility.Utility.VOUCHER_DO_NOT_APPLY_ORDER, conCO3Field));
-                    throw aCV_Exception;
-                }
+                //if (checkVoucherType.Type != Utility.Utility.VOUCHER_DISCOUNT)
+                //{
+                //    aCV_Exception = new ACV_Exception();
+                //    //To-do: Lay thong message text tu message code
+                //    aCV_Exception.Messages.Add(Message.CreateErrorMessage(apiCode, con03, Utility.Utility.VOUCHER_DO_NOT_APPLY_ORDER, conCO3Field));
+                //    throw aCV_Exception;
+                //}
             }
             else
             {

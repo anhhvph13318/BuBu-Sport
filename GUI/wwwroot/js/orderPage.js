@@ -1,5 +1,9 @@
 const productStorage = new ProductStorage();
 
+function backupQuantityValue(e) {
+    productStorage.OldQuantity = parseInt(e.target.value);
+}
+
 $('body').on('click', function () {
     $('.autocomplete-items').each(function () {
         $(this).empty();
@@ -51,7 +55,9 @@ function checkCustomerHasBoughtSomething(e) {
         .then(data => {
             if (data.found) {
                 $('#customerInfoContainer').html('');
+                $('#orderPaymentInfoContainer').html('');
                 $('#customerInfoContainer').html(data.customer);
+                $('#orderPaymentInfoContainer').html(data.payment);
             }
         })
 }
@@ -88,11 +94,17 @@ function updateAllView(data) {
     $('#orderButtonActionContainer').html(data.buttons);
 }
 
+function showOutOfStockToastMessage() {
+    toastr.error("Có lỗi xảy ra! Số lượng sản phẩm không đủ")
+}
+
 function show(id) {
     fetch(SHOW_ORDER_API(id))
         .then(res => res.json())
         .then(data => {
             updateAllView(data);
+            $('#tempSaveButtonContainer').html('');
+            $('#tempSaveButtonContainer').html(data.tempSaveButton);
             $('#shippingLocation').val(data.isCustomerTakeYourSelf ? '0' : '1');
             $('#orderStatus').val(data.status.toString());
             $('#shippingLocation').trigger('change');
@@ -118,7 +130,10 @@ function handleItemSelect(id, name, price, image) {
         })
     })
         .then(res => res.json())
-        .then(data => updateItemAndPaymentView(data));
+        .then(data => updateItemAndPaymentView(data))
+        .catch(_ => {
+            showOutOfStockToastMessage();
+        });
 };
 
 function updateQuantity(event, id) {
@@ -130,7 +145,11 @@ function updateQuantity(event, id) {
         method: 'PATCH'
     })
         .then(res => res.json())
-        .then(data => updateItemAndPaymentView(data));
+        .then(data => updateItemAndPaymentView(data))
+        .catch(_ => {
+            showOutOfStockToastMessage();
+            event.target.value = productStorage.OldQuantity;
+        });
 }
 
 function removeItem(id) {
@@ -151,22 +170,6 @@ function verify() {
     if (items === 0) {
         alert("Giỏ hàng đang không có sản phẩm nào!");
         return;
-    }
-
-    // validate customer info
-    const customerInfoField = {
-        '#customerName': '#order-customer-name',
-        '#customerPhoneNumber': '#order-customer-phone',
-        '#customerAddress': '#order-customer-address'
-    };
-
-    for (const [key, value] of Object.entries(customerInfoField)) {
-        if ($(key).val() === "") {
-            isValid = false;
-            $(value).css(displayErrorMessage);
-        } else {
-            $(value).css(hideErrorMessage);
-        }
     }
 
     // validate shipping info
@@ -190,65 +193,6 @@ function verify() {
     return isValid;
 }
 
-function checkout() {
-    if (!verify()) return;
-
-    const customerInfo = {
-        name: $('#customerName').val(),
-        phoneNumber: $('#customerPhoneNumber').val(),
-        address: $('#customerAddress').val(),
-    };
-
-    const shippingInfo = {
-        name: $('#receiverName').val(),
-        phoneNumber: $('#receiverPhone').val(),
-        address: $('#receiverAddress').val()
-    }
-
-    const payload = {
-        isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
-        isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
-        status: $('#orderStatus').val(),
-        customerInfo,
-        shippingInfo
-    }
-
-    fetch(ORDER_CHECKOUT_API, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    }).then(res => res.json())
-        .then(data => updateAllView(data))
-        .then(_ => toastr.success("Tạo thành công"));
-}
-
-function update() {
-    const shippingInfo = {
-        name: $('#receiverName').val(),
-        phoneNumber: $('#receiverPhone').val(),
-        address: $('#receiverAddress').val()
-    }
-
-    const payload = {
-        isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
-        isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
-        status: $('#orderStatus').val(),
-        shippingInfo
-    }
-
-    fetch(ORDER_UPDATE_API, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    }).then(res => res.json())
-        .then(data => updateAllView(data))
-        .then(_ => toastr.success("Cập nhật thành công"));
-}
-
 function clearOrder() {
     fetch(ORDER_CLEAR_API, {
         method: 'DELETE'
@@ -257,7 +201,7 @@ function clearOrder() {
         .then(data => updateAllView(data));
 }
 
-function saveTempOrder() {
+function saveOrder(isDraft) {
     if (!verify()) return;
 
     const customerInfo = {
@@ -277,7 +221,8 @@ function saveTempOrder() {
         isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
         status: $('#orderStatus').val(),
         customerInfo,
-        shippingInfo
+        shippingInfo,
+        isDraft
     }
 
 
@@ -291,9 +236,9 @@ function saveTempOrder() {
         .then(res => res.json())
         .then(data => {
             $('#orderTempSaveContainer').html('');
-            $('#orderTempSaveContainer').html(data.tempOrders);
+            $('#orderTempSaveContainer').html(data.orders);
         })
-        .then(_ => toastr.success("Lưu thành công!"))
+        .then(_ => toastr.success("Thành công!"))
         .then(_ => clearOrder());
 }
 
@@ -307,6 +252,28 @@ function removeDraft(id) {
         .then(res => res.json())
         .then(data => {
             $('#orderTempSaveContainer').html('');
-            $('#orderTempSaveContainer').html(data.tempOrders);
+            $('#orderTempSaveContainer').html(data.orders);
         });
+}
+
+function showAvailableVoucher() {
+    const customerPhone = $('#customerPhoneNumber').val();
+
+    fetch(GET_AVAILABLE_VOUCHER(customerPhone))
+        .then(res => res.json())
+        .then(data => {
+            $('#voucher-list').html('');
+            $('#voucher-list').html(data.vouchers);
+        })
+}
+
+function applyVoucher(id) {
+    fetch(APPLY_VOUCHER(id))
+        .then(res => res.json())
+        .then(data => {
+            $('#orderPaymentInfoContainer').html('');
+            $('#orderPaymentInfoContainer').html(data.payment);
+            toastr.success("Áp dụng mã khuyến mãi thành công!");
+            $('#voucherModal').modal('hide');
+        }).catch(err => alert("Mã khuyến mãi không hợp lệ"));
 }

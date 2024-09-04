@@ -1,3 +1,5 @@
+using DATN_ACV_DEV.Entity;
+using GUI.Models.DTOs.Voucher_DTO;
 using System.ComponentModel.DataAnnotations;
 
 namespace GUI.Models.DTOs.Order_DTO;
@@ -10,23 +12,42 @@ public class OrderDetail
     public CustomerInfo Customer { get; set; } = null!;
     public ShippingInfo ShippingInfo { get; set; } = null!;
     public PaymentInfo PaymentInfo { get; set; } = null!;
+    public VoucherDTO Voucher { get; set; } = new VoucherDTO();
     public bool IsCustomerTakeYourSelf { get; set; } = true;
     public bool IsSameAsCustomerAddress { get; set; } = true;
     public string StatusText { get; set; } = string.Empty;
     public int Status { get; set; }
     public string PaymentMethodName { get; set; } = string.Empty;
-    public decimal TotalAmount { get; set; }
-    public decimal VoucherDiscountAmount { get; set; }
-    public decimal DiscountAmout { get; set; }
     public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
     public DateTime TempOrderCreatedTime { get; set; }
     public bool IsDraft { get; set; }
-
+    public string OrderTypeName { get; set; } = string.Empty;
     public void ReCalculatePaymentInfo()
     {
         PaymentInfo.TotalAmount = Items.Sum(e => e.Quantity * e.Price);
         PaymentInfo.TotalTax = PaymentInfo.TotalAmount * 10 / 100;
-        PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.TotalTax + PaymentInfo.ShippingFee - PaymentInfo.TotalDiscount;
+        PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.TotalTax + PaymentInfo.ShippingFee;
+
+        if (Voucher.Id == Guid.Empty)
+        {
+            PaymentInfo.TotalDiscount = 0;
+            return;
+        }
+
+        if (Voucher.Unit == VoucherUnit.Percent)
+        {
+            var discount = PaymentInfo.TotalAmount * Voucher.Discount / 100;
+            var finalDiscount = discount > Voucher.MaxDiscount
+            ? Voucher.MaxDiscount
+                : discount;
+            PaymentInfo.TotalDiscount = finalDiscount;
+            PaymentInfo.FinalAmount -= finalDiscount;
+        }
+        else
+        {
+            PaymentInfo.TotalDiscount = Voucher.Discount;
+            PaymentInfo.FinalAmount -= Voucher.Discount;
+        }
     }
 }
 
@@ -62,3 +83,6 @@ public class ShippingInfo
     public string Address { get; set; } = string.Empty;
     public decimal ShippingFee { get; set; }
 }
+
+[Serializable]
+public record Stock(Guid Id, int Quantity);

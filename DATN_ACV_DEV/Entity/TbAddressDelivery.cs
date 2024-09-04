@@ -8,6 +8,7 @@ public partial class TbAddressDelivery
     public Guid Id { get; set; }
 
     public string ProvinceName { get; set; } = string.Empty;
+
     public string DistrictName { get; set; } = string.Empty;
 
     public string WardName { get; set; } = null!;

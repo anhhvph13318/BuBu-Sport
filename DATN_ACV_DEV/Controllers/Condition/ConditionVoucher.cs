@@ -68,13 +68,13 @@ namespace DATN_ACV_DEV.Controllers.Condition
         {
             ACV_Exception aCV_Exception;
             // var voucher = context.TbVouchers.Where(c => c.Id == VoucherId).FirstOrDefault();
-            if (req.ProductID == null && req.CategoryID == null)
-            {
-                aCV_Exception = new ACV_Exception();
-                //To-do: Lay thong message text tu message code
-                aCV_Exception.Messages.Add(Message.CreateErrorMessage(apiCode, con03, Utility.Utility.VOUCHER_CAN_PRO_OR_CATE, conCO3Field));
-                throw aCV_Exception;
-            }
+            //if (req.ProductID == null && req.CategoryID == null)
+            //{
+            //    aCV_Exception = new ACV_Exception();
+            //    //To-do: Lay thong message text tu message code
+            //    aCV_Exception.Messages.Add(Message.CreateErrorMessage(apiCode, con03, Utility.Utility.VOUCHER_CAN_PRO_OR_CATE, conCO3Field));
+            //    throw aCV_Exception;
+            //}
         }
     }
 }

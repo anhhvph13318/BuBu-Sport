@@ -286,13 +286,18 @@ public partial class DBContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("OrderCodeGHN");
-            entity.Property(e => e.PaymentMethod).HasColumnName("PaymentMethod");
+            //entity.Property(e => e.PaymentMethodId).HasColumnName("PaymentMethodID");
             entity.Property(e => e.PhoneNumberCustomer).HasMaxLength(50);
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TotalAmountDiscount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.IsCustomerTakeYourself).HasColumnName("IsCustomerTakeYourself");
             entity.Property(e => e.IsShippingAddressSameAsCustomerAddress).HasColumnName("IsShippingAddressSameAsCustomerAddress");
+
+            entity.HasOne(e => e.Voucher)
+                .WithMany(e => e.Orders)
+                .HasForeignKey(e => e.VoucherId)
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<TbOrderDetail>(entity =>
@@ -307,7 +312,7 @@ public partial class DBContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.TbOrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_tb_OrderDetail_tb_Order");
 
             entity.HasOne(d => d.Product).WithMany(p => p.TbOrderDetails)
@@ -402,15 +407,11 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("ID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.Code).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.GroupCustomerId).HasColumnName("GroupCustomerID");
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.Type).HasMaxLength(50);
+            //entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.Unit).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
