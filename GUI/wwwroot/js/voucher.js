@@ -5,3 +5,7 @@
         $("#maxDiscount").css({ "display": "none" });
     }
 }
+
+function normalize(e) {
+    e.target.value = e.target.value.toUpperCase();
+}

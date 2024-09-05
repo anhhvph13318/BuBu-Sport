@@ -63,7 +63,7 @@ public partial class DBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-I8QEIM8;Initial Catalog=DB_SmartHouse_12_08;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
+        => optionsBuilder.UseSqlServer("Data Source=RATONLYNK;Initial Catalog=DB_SmartHouse;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -99,10 +99,8 @@ public partial class DBContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.DistrictId).HasColumnName("districtId");
             entity.Property(e => e.DistrictName).HasColumnName("districtName");
             entity.Property(e => e.IsDelete).HasColumnName("isDelete");
-            entity.Property(e => e.ProviceId).HasColumnName("proviceId");
             entity.Property(e => e.ProvinceName).HasColumnName("provinceName");
             entity.Property(e => e.ReceiverName)
                 .HasMaxLength(255)
@@ -112,7 +110,6 @@ public partial class DBContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("receiverPhone");
             entity.Property(e => e.Status).HasColumnName("status");
-            entity.Property(e => e.WardId).HasColumnName("wardId");
             entity.Property(e => e.WardName).HasColumnName("wardName");
 
             entity.HasOne(d => d.Account).WithMany(p => p.TbAddressDeliveries)
@@ -315,7 +312,7 @@ public partial class DBContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.TbOrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_tb_OrderDetail_tb_Order");
 
             entity.HasOne(d => d.Product).WithMany(p => p.TbOrderDetails)

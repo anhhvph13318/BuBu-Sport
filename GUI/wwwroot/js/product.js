@@ -1,4 +1,5 @@
 class ProductStorage {
+    OldQuantity = 0;
 
     async filter(input) {
         const res = await fetch(PRODUCT_FILTER_API, {
@@ -12,16 +13,5 @@ class ProductStorage {
         });
         const json = await res.json();
         return json.data.lstProduct;
-    }
-
-    async getProduct(id) {
-        const res = await fetch(`${PRODUCT_SELECT_API}/${id}`, {
-            
-        })
-    }
-
-    async getProductStock(id) {
-        const res = await fetch(PRODUCT_STOCK_API(id));
-        return await res.json();
     }
 }

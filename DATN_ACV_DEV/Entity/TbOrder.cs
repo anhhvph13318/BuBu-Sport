@@ -20,9 +20,9 @@ public partial class TbOrder
     public Guid? CreateBy { get; set; }
 
     public DateTime? UpdateDate { get; set; }
-
+  
     //public string? VoucherCode { get; set; }
-
+  
     public Guid? CustomerId { get; set; }
 
     public Guid? AccountId { get; set; }

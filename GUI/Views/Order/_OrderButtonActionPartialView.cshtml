@@ -1,17 +1,6 @@
 ﻿@model bool
 
-@if (Model)
-{
-    <div class="col-12">
-    <button class="btn btn-primary text-nowrap w-100" onclick="checkout()">Tạo</button>
+
+<div class="col-12">
+    <button class="btn btn-primary text-nowrap w-100" onclick="saveOrder(false)">Tạo</button>
 </div>
-}
-else
-{
-    <div class="col-md-4">
-    <button class="btn btn-primary text-nowrap w-100" onclick="update()">Lưu</button>
-</div>
-}
-@* <div class="col-md-4">
-<button class="btn btn-danger w-100" onclick="clearOrder()">Xoá</button>
-</div> *@

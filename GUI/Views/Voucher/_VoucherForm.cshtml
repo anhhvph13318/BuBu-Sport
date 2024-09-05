@@ -8,7 +8,7 @@
         <input asp-for="Voucher.Id" hidden />
         <div class="mb-3">
             <label>Mã</label>
-            <input class="form-control" asp-for="Voucher.Code" onchange="normalize(event)"/>
+            <input class="form-control" asp-for="Voucher.Code" type="text" onblur="normalize(event)"/>
             <span class="text-danger" asp-validation-for="Voucher.Code"></span>
         </div>
         <div class="mb-3">

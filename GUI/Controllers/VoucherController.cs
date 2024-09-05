@@ -11,8 +11,8 @@ namespace GUI.Controllers;
 [Route("vouchers")]
 public class VoucherController : Controller
 {
-    private const string URI = "http://localhost:5059";
-    // private const string URI = "https://localhost:";
+    //private const string URI = "http://localhost:5059";
+    private const string URI = "https://localhost:44383";
 
     [HttpGet]
     public async Task<IActionResult> Index(
@@ -107,6 +107,14 @@ public class VoucherController : Controller
 
         if(response.IsSuccessStatusCode)
             return RedirectToAction("Index");
+
+        if(response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            ModelState.AddModelError("Voucher.Code", "Mã voucher đã tồn tại");
+            return model.IsEditMode
+                ? View("Detail", model)
+                : View("Create", model);
+        }
 
         throw new HttpRequestException("Have error when call api");
     }

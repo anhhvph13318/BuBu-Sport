@@ -11,8 +11,10 @@ namespace DATN_ACV_DEV.Model_DTO.Order_DTO
         public decimal? amountShip { get; set; }
         public decimal? totalAmount { get; set; }
         public string? addressDelivery { get; set; }
+        public string? phoneNummber { get; set; }
+        public string? name { get; set; }
         public Guid addressDeliveryId { get; set; }
-        public Guid paymentMethodId { get; set; }
+        public int? paymentMethodId { get; set; }
         public List<Guid>? voucherID { get; set; }
         public List<string>? voucherCode { get; set; }
     }

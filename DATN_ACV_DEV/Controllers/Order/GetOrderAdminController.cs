@@ -1,4 +1,4 @@
-using DATN_ACV_DEV.Entity;
+﻿using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.FileBase;
 using DATN_ACV_DEV.Model_DTO.Order_DTO;
 using DATN_ACV_DEV.Utility;
@@ -55,45 +55,57 @@ public class GetOrderAdminController : ControllerBase
             .Include(e => e.Customer)
             .Where(e => e.Status != 7)
             .OrderByDescending(e => e.CreateDate)
-            .Select(e => new OrderListItem()
+            .Select(e => new OrderDetail()
             {
-                code = e.OrderCode,
-                totalAmount = e.TotalAmount,
-                id = e.Id,
-                nameCustomer = e.Customer!.Name,
-                status = Common.ConvertStatusOrder(e.Status ?? 0),
-                products = string.Join(", ", e.TbOrderDetails.Take(2).Select(e => e.Product.Name))
+                Id = e.Id,
+                Code = e.OrderCode!,
+                IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
+                IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
+                Status = e.Status.Value,
+                IsDraft = e.IsDraft,
+                OrderTypeName = GetOrderTypeName(e.OrderCode!),
+                Customer = new CustomerInfo
+                {
+                    Id = e.Id,
+                    Name = e.Customer.Name,
+                    Address = e.Customer.Adress,
+                    PhoneNumber = e.Customer.Phone
+                },
+                PaymentInfo = new PaymentInfo
+                {
+                    TotalDiscount = e.TotalAmountDiscount!.Value,
+                    TotalAmount = e.TotalAmount,
+                    VoucherId = e.VoucherId,
+                },
+                Items = e.TbOrderDetails.Select(e => new OrderItem()
+                {
+                    Id = e.Id,
+                    ProductImage = e.Product.Image.Url,
+                    Price = e.Product.Price,
+                    ProductName = e.Product.Name,
+                    Quantity = e.Quantity
+                }),
+                ShippingInfo = new ShippingInfo()
+                {
+                    Address = e.AddressDelivery.ProvinceName,
+                    PhoneNumber = e.AddressDelivery.ReceiverPhone,
+                    Name = e.AddressDelivery.ReceiverName
+                },
             }).ToListAsync();
 
-        return Ok(new BaseResponse<IEnumerable<OrderListItem>>()
+        return Ok(new BaseResponse<IEnumerable<OrderDetail>>()
         {
             Data = orders
         });
     }
 
-    [HttpGet]
-    [Route("/api/orders/draft")]
-    public async Task<IActionResult> GetDraftOrder()
+    private static string GetOrderTypeName(string code)
     {
-        var orders = await _context.TbOrders.AsNoTracking()
-            .Include(e => e.TbOrderDetails)
-            .ThenInclude(e => e.Product)
-            .Include(e => e.Customer)
-            .Where(e => e.IsDraft)
-            .OrderByDescending(e => e.CreateDate)
-            .Select(e => new OrderListItem()
-            {
-                code = e.OrderCode,
-                totalAmount = e.TotalAmount,
-                id = e.Id,
-                nameCustomer = e.Customer!.Name,
-                status = Common.ConvertStatusOrder(e.Status ?? 0),
-                products = string.Join(", ", e.TbOrderDetails.Take(2).Select(e => e.Product.Name))
-            }).ToListAsync();
-
-        return Ok(new BaseResponse<IEnumerable<OrderListItem>>()
-        {
-            Data = orders
-        });
+        if (code.StartsWith("OFF"))
+            return "Tại quầy";
+        else if (code.StartsWith("TEMP"))
+            return "Nháp";
+        else
+            return "Online";
     }
 }
