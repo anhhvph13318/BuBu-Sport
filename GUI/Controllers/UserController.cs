@@ -12,6 +12,7 @@ using GUI.Shared;
 using Newtonsoft.Json;
 using GUI.FileBase;
 using NuGet.Protocol;
+using Azure.Core;
 
 namespace GUI.Controllers
 {
@@ -66,7 +67,10 @@ namespace GUI.Controllers
         {
             try
             {
-                user.Password = "12345678";
+                Random random = new Random();
+                int randomNumber = random.Next(10, 100); // Tạo số ngẫu nhiên từ 10 đến 99
+                user.InActive = true;
+                user.UserCode = "user" + randomNumber.ToString();
                 var URL = _settings.APIAddress + "api/CreateUser/Process";
                 var param = JsonConvert.SerializeObject(user);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");

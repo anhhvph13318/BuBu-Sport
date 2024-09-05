@@ -8,6 +8,8 @@ using GUI.FileBase;
 using DATN_ACV_DEV.Model_DTO.Login;
 using GUI.Shared;
 using Newtonsoft.Json;
+using GUI.Models.DTOs.Login_DTO;
+using GUI.Model_DTO.User_DTO;
 
 namespace GUI.Controllers
 {
@@ -29,7 +31,7 @@ namespace GUI.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> LoginNow(LoginRequest request)
         {
             var URL = _settings.APIAddress + "api/Login/check-login";
             var param = JsonConvert.SerializeObject(request);
@@ -38,18 +40,50 @@ namespace GUI.Controllers
             if (result.Status == "200")
             {
                 var userId = result.Messages?.FirstOrDefault().MessageText;
-                HttpContext.Session.SetString("CurrentUserId",userId);
+                HttpContext.Session.SetString("CurrentUserId", userId);
+                TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 ViewBag.SweetAlertShowMessage = SweetAlertHelper.ShowMessage("Thông báo",
                     result.Messages?.FirstOrDefault().MessageText, SweetAlertMessageType.error);
-                return View();
-                
+                TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowError("Thất bại!", "Đăng nhập thất bại.");
+                return RedirectToAction("Login");
+
             }
-           
+
         }
+        [HttpPost]
+        public async Task<IActionResult> Register(CreateUserRequest request)
+        {
+            try
+            {
+                Random random = new Random();
+                int randomNumber = random.Next(10, 100); // Tạo số ngẫu nhiên từ 10 đến 99
+                request.InActive = true;
+                request.UserCode = "user" + randomNumber.ToString();
+                var URL = _settings.APIAddress + "api/CreateUser/Process";
+                var param = JsonConvert.SerializeObject(request);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<GetListUserResponse>>(res) ?? new();
+                if (result.Status == "200")
+                {
+                    return RedirectToAction("SignIn", "Login");
+                }
+                if (result.Status == "400")
+                {
+                    ModelState.AddModelError("UserName", result.Messages.FirstOrDefault().MessageText);
+                    return Empty;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
         [HttpPost]
         public  IActionResult ForgotPassWord(string Email)
         {

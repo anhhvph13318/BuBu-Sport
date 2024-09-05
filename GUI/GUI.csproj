@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Voucher\_AvailableVoucher.cshtml" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\login.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\product.css" />
   </ItemGroup>
 
