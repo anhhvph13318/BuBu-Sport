@@ -4,6 +4,7 @@ using DATN_ACV_DEV.FileBase;
 using DATN_ACV_DEV.Model_DTO.Account_DTO;
 using DATN_ACV_DEV.Model_DTO.Customer_DTO;
 using DATN_ACV_DEV.Model_DTO.Login;
+using DATN_ACV_DEV.Model_DTO.User_DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -77,7 +78,6 @@ namespace DATN_ACV_DEV.Controllers.Login;
             }
         
         }
-     
         [NonAction]
         public void CheckAuthorization()
         {
