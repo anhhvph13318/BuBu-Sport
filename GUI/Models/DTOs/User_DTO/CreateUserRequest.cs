@@ -15,7 +15,7 @@ namespace GUI.Model_DTO.User_DTO
         public string? Position { get; set; }
         public string UserCode { get; set; }
         [Required(ErrorMessage = "Chưa nhập tên")]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
         public bool InActive { get; set; } = false;
     }
 }
