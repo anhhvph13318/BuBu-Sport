@@ -69,12 +69,12 @@ namespace GUI.Controllers
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListUserResponse>>(res) ?? new();
                 if (result.Status == "200")
                 {
-                    return RedirectToAction("SignIn", "Login");
+                    return RedirectToAction("Login");
                 }
                 if (result.Status == "400")
                 {
                     ModelState.AddModelError("UserName", result.Messages.FirstOrDefault().MessageText);
-                    return Empty;
+                    return RedirectToAction("Login");
                 }
                 return RedirectToAction(nameof(Index));
             }
