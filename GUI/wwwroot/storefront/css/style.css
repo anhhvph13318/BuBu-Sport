@@ -469,15 +469,12 @@ textarea.input {
   position: relative;
 }
 
-.header-search form .input-select {
-  margin-right: -4px;
-  border-radius: 40px 0px 0px 40px;
-}
 
-.header-search form .input {
-  width: calc(100% - 260px);
-  margin-right: -4px;
-}
+    .header-search form .input {
+        width: calc(100% - 160px);
+        border-radius: 40px 0px 0px 40px;
+        margin-right: -4px;
+    }
 
 .header-search form .search-btn {
   height: 40px;
@@ -2253,4 +2250,8 @@ textarea.input {
 
 .product .product-img {
     height: 200px;
+}
+
+.payment-method>div:first-child, .shipping-method>div:first-child{
+    margin-bottom: 5px;
 }

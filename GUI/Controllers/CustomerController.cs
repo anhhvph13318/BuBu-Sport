@@ -1,7 +1,7 @@
 ﻿using GUI.Controllers.Shared;
 using GUI.Models.DTOs.Customer_DTO;
 using GUI.Models.DTOs.Customer_DTO.Views;
-using GUI.Shared.CommonSettings;
+using GUI.Shared.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;

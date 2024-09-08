@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Azure.Core;
+using System.Net;
 using System.Text;
 
 namespace GUI.Shared
@@ -39,5 +40,5 @@ namespace GUI.Shared
 
             return await response.Content.ReadAsStringAsync();
         }
-    }
+	}
 }

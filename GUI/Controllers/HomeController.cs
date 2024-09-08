@@ -3,7 +3,7 @@ using GUI.Controllers.Shared;
 using GUI.FileBase;
 using GUI.Models;
 using GUI.Shared;
-using GUI.Shared.CommonSettings;
+using GUI.Shared.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -21,7 +21,6 @@ namespace GUI.Controllers
             _settings = settings.Value;
             _logger = logger;
 			httpService = new();
-
 		}
 
 		public IActionResult Index()
