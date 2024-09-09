@@ -36,9 +36,9 @@
 					<div class="form-group">
 						<input id="order-city" class="input" type="text" name="city" placeholder="Thành phố">
 					</div>
-					<div class="form-group">
+					@* <div class="form-group">
 						<input id="order-code" class="input" type="text" name="zip-code" placeholder="ZIP Code">
-					</div>
+					</div> *@
 					@* <div class="form-group">
 						<div class="input-checkbox">
 							<input type="checkbox" id="create-account">
@@ -95,9 +95,9 @@
 				</div>
 				<!-- /Shiping Details --> *@
 				<!-- Order notes -->
-				<div class="order-notes">
+				@* <div class="order-notes">
 					<textarea id="order-note" class="input" placeholder="Order Notes"></textarea>
-				</div>
+				</div> *@
 				<!-- /Order notes -->
 			</div>
 
@@ -143,15 +143,47 @@
 						<div><strong class="order-total">@ViewBag.Sum</strong></div>
 					</div>
 				</div>
-				<div class="payment-method">
+				<div class="shipping-method">
+					<div class="order-col mb-2">
+						<div><strong>Phương thức giao hàng</strong></div>
+					</div>
 					<div class="input-radio">
-						<input type="radio" checked name="payment" id="payment-1">
+						<input type="radio" checked name="shipping" id="shipping-1" value="1">
+						<label for="shipping-1">
+							<span></span>
+							Giao hàng tận nơi
+						</label>
+					</div>
+					<div class="input-radio">
+						<input type="radio" name="shipping" id="shipping-2" value="2">
+						<label for="shipping-2">
+							<span></span>
+							Nhận tại cửa hàng
+						</label>
+					</div>
+				</div>
+				<div class="payment-method">
+					<div class="order-col mb-2">
+						<div><strong>Phương thức thanh toán</strong></div>
+					</div>
+					<div class="input-radio">
+						<input type="radio" checked name="payment" id="payment-1" value="1">
 						<label for="payment-1">
 							<span></span>
 							C.O.D.
 						</label>
 						<div class="caption">
 							<p>Thanh toán khi nhận hàng.</p>
+						</div>
+					</div>
+					<div class="input-radio">
+						<input type="radio" name="payment" id="payment-2" value="2">
+						<label for="payment-2">
+							<span></span>
+							Thanh toán qua VNPay
+						</label>
+						<div class="caption">
+							<p>Thẻ ngân hàng hoặc QR.</p>
 						</div>
 					</div>
 @* 					<div class="input-radio">

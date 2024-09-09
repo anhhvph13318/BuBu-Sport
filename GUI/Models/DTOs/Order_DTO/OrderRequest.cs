@@ -14,6 +14,7 @@ namespace GUI.Models.Order_DTO
 		public string? name { get; set; }
 		public Guid addressDeliveryId { get; set; }
         public int? paymentMethodId { get; set; }
+        public bool getAtStore { get; set; }
         public List<Guid>? voucherID { get; set; }
         public List<string>? voucherCode { get; set; }
     }

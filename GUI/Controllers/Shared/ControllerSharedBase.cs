@@ -1,4 +1,4 @@
-﻿using GUI.Shared.CommonSettings;
+﻿using GUI.Shared.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GUI.Controllers.Shared

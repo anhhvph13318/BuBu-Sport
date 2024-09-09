@@ -27,7 +27,8 @@ public partial class TbOrder
 
     public Guid? AccountId { get; set; }
 
-    //public Guid? PaymentMethodId { get; set; }
+    public int PaymentMethod { get; set; }
+    //public int PaymentStatus { get; set; }
 
     public decimal? AmountShip { get; set; }
 

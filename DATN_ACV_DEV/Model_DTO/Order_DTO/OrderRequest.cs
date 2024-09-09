@@ -17,5 +17,6 @@ namespace DATN_ACV_DEV.Model_DTO.Order_DTO
         public int? paymentMethodId { get; set; }
         public List<Guid>? voucherID { get; set; }
         public List<string>? voucherCode { get; set; }
+        public bool? getAtStore { get; set; }
     }
 }
