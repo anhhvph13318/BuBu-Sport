@@ -42,12 +42,12 @@ public enum VoucherUnit
     Money
 }
 
-public enum VoucherType
+public enum VoucherType : short
 {
     Voucher = 0
 }
 
-public enum Status
+public enum Status : short
 {
     Closed = 1,
     Valid = 2
