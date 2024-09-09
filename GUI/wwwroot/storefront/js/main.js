@@ -170,11 +170,11 @@
 	}
 
 	$(function () {
-		let path = window.location.pathname.slice(0, 6);
-		if (path == "/store") {
-			$("#nav-bar li").removeClass("active");
-			$("#store").addClass("active");
-		}
+		//let path = window.location.pathname.slice(0, 6);
+		//if (path == "/store") {
+		//	$("#nav-bar li").removeClass("active");
+		//	$("#store").addClass("active");
+		//}
 	});
 
 	$('.addCart').on('click', function () {
@@ -223,7 +223,11 @@
 			let id = $(obj).attr('data-itemId');
 			ids.push(id);
 		});
-		if (name && phone && address && district && city && code && ids.length) {
+
+		let pickupInStore = $('#shipping-2').is(":checked");
+		let COD = $('#payment-1').is(":checked");
+
+		if (pickupInStore || (name && phone && address && district && city && code && ids.length)) {
 			$.post("/Buy", {
 				name: name,
 				phone: phone,
@@ -232,10 +236,16 @@
 				city: city,
 				zipCode: code,
 				note: note, 
-				ids: ids
+				ids: ids,
+				getatstore: pickupInStore,
+				isVNP: !COD
 			}, function (data) {
 				if (data.success) {
-					window.location.href = "/store";
+					if (data.redirect) {
+						window.location.href = data.url;
+					} else {
+						window.location.href = "/success";
+					}
 				} else {
                     alert("FAILED");
 				}

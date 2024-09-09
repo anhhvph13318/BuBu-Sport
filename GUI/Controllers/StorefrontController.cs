@@ -7,26 +7,35 @@ using GUI.Models.DTOs.Cart_DTO;
 using GUI.Models.DTOs.Product_DTO;
 using GUI.Models.DTOs.Product_DTO.Views;
 using GUI.Shared;
-using GUI.Shared.CommonSettings;
+using GUI.Shared.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NuGet.Configuration;
 using System.Security.Policy;
+using GUI.Shared.VNPay;
 
 namespace GUI.Controllers
 {
 	public class StorefrontController : ControllerSharedBase
 	{
 		private HttpService httpService;
+		private VNPayService _VNPayService;
 		public StorefrontController(IOptions<CommonSettings> settings)
 		{
 			_settings = settings.Value;
 			httpService = new();
+			_VNPayService = new(settings);
 		}
 
         [Route("/Home")]
 		public IActionResult Index()
+		{
+			return View();
+		}
+
+		[Route("/Success")]
+		public IActionResult Success()
 		{
 			return View();
 		}
@@ -168,6 +177,8 @@ namespace GUI.Controllers
 		[Route("/Cart")]
 		public async Task<IActionResult> Cart()
 		{
+			var a = GetClientIP(HttpContext);
+
 			var userId = Guid.Empty;
 			try
 			{
@@ -241,9 +252,8 @@ namespace GUI.Controllers
 				provinceId = 1,
 				districId = 1,
 				wardName = obj.address ?? "",
-				wardCode = obj.zipCode ?? "",
-				districName = obj.address ?? "",
-				provinceName = obj.address ?? ""
+				districName = obj.district ?? "",
+				provinceName = obj.city ?? ""
 			};
 			//addressReq.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 			addressReq.UserId = userId;
@@ -288,12 +298,13 @@ namespace GUI.Controllers
 					cartDetailId = cartDetails,
 					description = obj.note ?? "",
 					addressDeliveryId = addrId,
-					paymentMethodId = 1,
+					paymentMethodId = obj.isVNP ? 2 : 1,
 					totalAmount = sum,
 					UserId = userId,
 					phoneNummber = obj.phone,
 					addressDelivery = obj.address,
 					name = obj.name,
+					getAtStore = obj.getatstore,
 				};
 				URL = _settings.APIAddress + "api/ConfirmOrder/Process";
 				var param = JsonConvert.SerializeObject(req);
@@ -302,10 +313,25 @@ namespace GUI.Controllers
 				if (result.Status == "200")
 				{
 					TempData.Remove("ConfirmedCartItems");
-					return Ok(new
+					if (obj.isVNP)
 					{
-						success = true
-					});
+						var ipAddr = GetClientIP(HttpContext);
+						var url = _VNPayService.SendRequest(ipAddr, result.Data.id.ToString(), sum);
+						return Ok(new
+						{
+							success = true,
+							redirect = true,
+							url = url
+						});
+					}
+					else
+					{
+						return Ok(new
+						{
+							success = true,
+							redirect = false,
+						});
+					}
 				}
 			}
 			return BadRequest(new
@@ -354,8 +380,9 @@ namespace GUI.Controllers
 			public string? address { get; set; }
             public string? district { get; set; }
             public string? city { get; set; }
-			public string? zipCode { get; set; }
 			public string? note { get; set; }
+			public bool getatstore { get; set; }
+			public bool isVNP { get; set; }
 			public List<Guid> ids { get; set; } = new();
         }
 
@@ -365,5 +392,10 @@ namespace GUI.Controllers
 			public int? quantity { get; set; }
 			public bool isIncrement { get; set; }
 		}
-    }
+
+		private static string GetClientIP(HttpContext httpContext)
+		{
+			return httpContext.Connection.RemoteIpAddress?.ToString();
+		}
+	}
 }

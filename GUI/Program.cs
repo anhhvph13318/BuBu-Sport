@@ -1,11 +1,11 @@
-using GUI.Shared.CommonSettings;
+using GUI.Shared.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
-//builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.Configure<CommonSettings>(builder.Configuration.GetSection("CommonSettings"));
 builder.Services.AddSession();
 

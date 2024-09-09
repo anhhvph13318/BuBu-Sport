@@ -1,6 +1,6 @@
 using GUI.Controllers.Shared;
 using GUI.Models;
-using GUI.Shared.CommonSettings;
+using GUI.Shared.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;

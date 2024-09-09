@@ -73,9 +73,9 @@ namespace DATN_ACV_DEV.Controllers
             _response.voucherCode = string.Join(", ", _lstVoucherCode);
             _response.accountCode = account?.AccountCode;
             _response.phoneNumber = account?.PhoneNumber ?? _order.PhoneNumberCustomer;
-            _response.amountShip = _order.AmountShip;
+            _response.amountShip = _order.AmountShip ?? 0m;
             _response.totalAmount = _order.TotalAmount;
-            _response.totalAmountDiscount = _order.TotalAmountDiscount;
+            _response.totalAmountDiscount = _order.TotalAmountDiscount ?? 0m;
             _response.createdDate = _order.CreateDate;
             _response.PaymentMethodName = _namePaymentMethod;
             _response.nameCustomer = customer?.Name;
@@ -100,7 +100,7 @@ namespace DATN_ACV_DEV.Controllers
 
         public void GenerateObjects()
         {
-            customer = _context.TbCustomers.Where(c => c.Id == _request.UserId).FirstOrDefault();
+            customer = _context.TbCustomers.FirstOrDefault(c => c.Id == _request.UserId);
             if (customer != null)
             {
                 customer.Name = _request.name;
@@ -123,16 +123,19 @@ namespace DATN_ACV_DEV.Controllers
             {
                 Id = Guid.NewGuid(),
                 OrderCode = "ACV_" + DateTime.Now.Millisecond,
-                TotalAmount = _request.totalAmount ?? 0,
-                Description = _request.description,
+                TotalAmount = _request.totalAmount ?? 0m,
+                TotalAmountDiscount = _request.totalAmountDiscount ?? 0m,
+				Description = _request.description,
                 AccountId = _request.UserId,
-                //PaymentMethodId = _request.paymentMethodId,
+                PaymentMethod = _request.paymentMethodId ?? 1,
                 //VoucherCode = _request.voucherCode != null ? string.Join(",", _request.voucherCode) : null,
-                AmountShip = _request.amountShip,
+                AmountShip = _request.amountShip ?? 0,
                 CustomerId = customer == null ? null : customer.Id,
                 PhoneNumberCustomer = account != null ? account.PhoneNumber : _request.phoneNummber,
                 AddressDeliveryId = _request.addressDeliveryId,
-                OrderCounter = false,
+                IsCustomerTakeYourself = _request.getAtStore == true,
+
+				OrderCounter = false,
                 //Defautl
                 CreateBy = _request.AdminId ?? _request.UserId,
                 CreateDate = DateTime.Now,
