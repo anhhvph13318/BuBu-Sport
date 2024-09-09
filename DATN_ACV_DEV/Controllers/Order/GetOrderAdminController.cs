@@ -62,6 +62,7 @@ public class GetOrderAdminController : ControllerBase
                 IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
                 IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
                 Status = e.Status.Value,
+                StatusText = Utility.Common.ConvertStatusOrder(e.Status.Value),
                 IsDraft = e.IsDraft,
                 OrderTypeName = GetOrderTypeName(e.OrderCode!),
                 Customer = new CustomerInfo

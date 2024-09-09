@@ -237,6 +237,8 @@ function saveOrder(isDraft) {
         .then(data => {
             $('#orderTempSaveContainer').html('');
             $('#orderTempSaveContainer').html(data.orders);
+            $('#orderButtonActionContainer').html('');
+            $('#orderButtonActionContainer').html(data.buttons);
         })
         .then(_ => toastr.success("Thành công!"))
         .then(_ => clearOrder());

@@ -1,3 +1,4 @@
+using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using GUI.FileBase;
 using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
@@ -88,7 +89,7 @@ public class OrderController : Controller
 
         order.ShippingInfo.IsCustomerTakeYourSelf = order.IsCustomerTakeYourSelf;
         order.ShippingInfo.IsSameAsCustomerAddress = order.IsSameAsCustomerAddress;
-        order.PaymentInfo.ProductName = string.Join("\n", order.Items.Select(item => $"{item.ProductName} - {item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))} "));
+        order.PaymentInfo.Products = order.Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
 
         HttpContext.Session.SaveCurrentOrder(order);
 
@@ -102,7 +103,7 @@ public class OrderController : Controller
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-            Buttons = await RenderViewAsync(OrderButtonActionPartialView, order.IsDraft),
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, true),
             TempSaveButton = tempOrderSaveButton,
             order.ShippingInfo.IsCustomerTakeYourSelf,
             order.Status
@@ -115,6 +116,7 @@ public class OrderController : Controller
     {
         var onlineOrders = await FetchOrderList();
 
+        HttpContext.Session.GetCurrentOrder(clearFirst: true);
         ViewData["Orders"] = onlineOrders;
 
         return View();
@@ -161,7 +163,11 @@ public class OrderController : Controller
         if(rawResponse.IsSuccessStatusCode)
         {
             var orders = await FetchOrderList();
-            return Json(new { Orders = await RenderViewAsync(OrderListPartialView, orders) });
+            return Json(new 
+            { 
+                Orders = await RenderViewAsync(OrderListPartialView, orders),
+                Buttons = await RenderViewAsync(OrderButtonActionPartialView, false)
+            });
         }
 
         return BadRequest();
@@ -309,7 +315,7 @@ public class OrderController : Controller
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-            Buttons = await RenderViewAsync(OrderButtonActionPartialView, true)
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, false)
         });
     }
 
@@ -389,7 +395,12 @@ public class OrderController : Controller
             JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderDetail>>>(
                 await rawResponse.Content.ReadAsStringAsync());
 
-        return response!.Data;
+        var data = response!.Data;
+
+        foreach (var order in data)
+            order.ReCalculatePaymentInfo();
+
+        return data;
     }
 
     private static async Task<Stock> GetProductStock(Guid id)
