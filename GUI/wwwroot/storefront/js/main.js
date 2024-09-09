@@ -227,7 +227,7 @@
 		let pickupInStore = $('#shipping-2').is(":checked");
 		let COD = $('#payment-1').is(":checked");
 
-		if (pickupInStore || (name && phone && address && district && city && code && ids.length)) {
+		if (pickupInStore || (name && phone && address && district && city && ids.length)) {
 			$.post("/Buy", {
 				name: name,
 				phone: phone,
