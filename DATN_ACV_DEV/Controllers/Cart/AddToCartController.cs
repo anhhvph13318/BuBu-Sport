@@ -130,9 +130,12 @@ namespace DATN_ACV_DEV.Controllers
                 {
                     var LstproductID = _context.TbCartDetails.Where(c => c.CartId == checkExistCart.Id).ToList();
                     var Product = LstproductID.Where(c => c.ProductId == _request.ProductId).FirstOrDefault();
-                    if (Product != null && _request.incre)
+                    if (Product != null)
                     {
-                        Product.Quantity += _request.Quantity;
+                        _CartDetail = Product;
+
+						if (_request.incre) Product.Quantity += _request.Quantity;
+                        else Product.Quantity = _request.Quantity;
                     }
                     else
                     {

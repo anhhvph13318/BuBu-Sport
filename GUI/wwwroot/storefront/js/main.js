@@ -321,7 +321,7 @@
 		});
 	}
 
-	const UpdatePrice = function () {
+	const UpdatePrice = function (shipping) {
 		let subTotals = $('.sub-total');
 		let total = 0;
 		$.each(subTotals ,function (i, obj) {
@@ -330,6 +330,10 @@
 				total += number;
             }
 		});
+
+        if (shipping) {
+			total += shipping;
+        }
 
 		$('.order-total').text(total);
 	}
@@ -398,8 +402,6 @@
 		let id = $(this).attr('data-itemId');
 		let el = $(`#quant-${id}`);
 
-
-
 		updateQuantityCart(value, id, true, el);
 	});
 
@@ -431,6 +433,12 @@
 				}
 			}
 		});
+
+        if (total > 0) {
+			$("#cart-submit").show();
+        } else {
+			$("#cart-submit").hide();
+        }
 
 		$('.cart-total').text(total);
 	}
@@ -473,4 +481,16 @@
 		}
 		return "";
 	}
+
+	$("input[type=radio][name=shipping]").on('change', function (e) {
+		let shippingFee = 0;
+		if ($(this).val() == 1) {
+			$(".billing-details").addClass("active");
+			shippingFee = 30000;
+        } else {
+			$(".billing-details").removeClass("active");
+        }
+		$("#shipping-fee").text(shippingFee);
+		UpdatePrice(shippingFee);
+	});
 })(jQuery);

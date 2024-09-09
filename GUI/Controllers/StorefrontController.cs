@@ -167,11 +167,15 @@ namespace GUI.Controllers
 			if (TempData["ConfirmedCartItems"] != null)
 			{
 				List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
-				TempData.Keep("ConfirmedCartItems");
-				ViewBag.Sum = model.Sum(c => c.Price * c.Quantity);
-				return View(model);
+				//TempData.Keep("ConfirmedCartItems");
+				var sum = model.Sum(c => c.Price * c.Quantity);
+				if (sum > 0)
+				{
+					ViewBag.Sum = sum;
+					return View(model);
+				}
 			}
-			return RedirectToAction(nameof(Store));
+			return RedirectToAction(nameof(Cart));
 		}
 
 		[Route("/Cart")]
@@ -188,7 +192,6 @@ namespace GUI.Controllers
 			{
 			}
 			var model = new List<CartDTO>();
-			var sum = 0m;
 			if (userId != Guid.Empty)
 			{
 				var req = new CartItemRequest();
@@ -201,10 +204,8 @@ namespace GUI.Controllers
 				if (result.Status == "200")
 				{
 					model = result.Data.CartItem;
-					sum = model.Sum(c => c.Price * c.Quantity);
 				}
 			}
-			ViewBag.Sum = sum;
 			return View(model);
 		}
 
@@ -292,6 +293,8 @@ namespace GUI.Controllers
 					{
 					}
 				}
+
+				sum += obj.getatstore ? 0 : 30000;
 
 				var req = new OrderRequest
 				{
