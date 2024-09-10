@@ -36,7 +36,12 @@ public partial class TbAccount
     public DateTime CreateDate { get; set; }
 
     [Column("CustomerID")]
-    public Guid CustomerId { get; set; }
+    public Guid? CustomerId { get; set; }
+
+    [Column("EmployeeID")]
+    public Guid? EmployeeId { get; set; }
+
+    public int? Role { get; set; }
 
     [InverseProperty("Account")]
     public virtual ICollection<TbAddressDelivery> TbAddressDeliveries { get; set; } = new List<TbAddressDelivery>();

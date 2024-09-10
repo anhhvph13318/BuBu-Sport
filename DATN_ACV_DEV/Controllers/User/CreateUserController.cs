@@ -1,7 +1,11 @@
 ﻿using Azure;
+using DATN_ACV_DEV.Controllers.Account;
+using DATN_ACV_DEV.Controllers.Customer;
 using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.FileBase;
+using DATN_ACV_DEV.Model_DTO.Account_DTO;
 using DATN_ACV_DEV.Model_DTO.Category_DTO;
+using DATN_ACV_DEV.Model_DTO.Customer_DTO;
 using DATN_ACV_DEV.Model_DTO.Image_DTO;
 using DATN_ACV_DEV.Model_DTO.User_DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +21,7 @@ namespace DATN_ACV_DEV.Controllers.User
         private CreateUserRequest _request;
         private BaseResponse<CreateUserResponse> _res;
         private CreateUserResponse _response;
+        private CreatedAccountRequest _Account = new CreatedAccountRequest();
         private string _apiCode = "CreateUser";
         private TbUser _User;
         public CreateUserController(DBContext context)
@@ -57,6 +62,15 @@ namespace DATN_ACV_DEV.Controllers.User
                 CreateDate = DateTime.Now,
                 CreateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"),
             };
+            #region Tạo mới 1 bản ghi account ngay khi thêm mới user
+            _Account.AccountCode = _User.Position == "1" ? "EMPLOYEE" : "MASTER";
+            _Account.Email = _User.Email;
+            _Account.Password = _User.Password;
+            _Account.PhoneNumber = _User.UserName;
+            _Account.EmployeeId = _User.Id;
+            _Account.Role = Convert.ToInt32(_request.Position);
+            var id = new CreateAccountController(_context).Process(_Account);
+            #endregion
         }
 
         public void PreValidation()
@@ -67,8 +81,8 @@ namespace DATN_ACV_DEV.Controllers.User
             }
         }
         [HttpPost]
-        [Route("Process")]
-        public BaseResponse<CreateUserResponse> Process(CreateUserRequest request)
+        [Route("create-User")]
+        public BaseResponse<CreateUserResponse> Process([FromBody]CreateUserRequest request)
         {
             try
             {

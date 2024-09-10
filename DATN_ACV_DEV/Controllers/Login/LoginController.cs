@@ -51,10 +51,24 @@ namespace DATN_ACV_DEV.Controllers.Login;
             {
                 var user = _context.TbUsers.FirstOrDefault(c =>
                     c.UserName.ToLower() == request.UserName && c.Password == request.Password);
-                if( user is not null) 
+                var account = user == null ? _context.TbAccounts.FirstOrDefault(c =>
+                    c.PhoneNumber.ToLower() == request.UserName && c.Password == request.Password) : null;
+            if ( user is not null || account is not null) 
                 {
+                    var id = (user != null ? user.Id.ToString() : account.Id.ToString());
+                    if (account != null)
+                    {
+                        var _response = new LoginResponse
+                        {
+                            Id = account.Id,
+                            UserName = account.PhoneNumber,
+                            Token = null,  // Giả sử có một hàm tạo token
+                            Role = account.Role  // Gán Role từ account
+                        };
+                        _res.Data = _response;
+                    }               
                     _res.Status = StatusCodes.Status200OK.ToString();
-                    _res.Messages= new List<Message>() { new Message() { MessageText = user.Id.ToString() } } ;
+                    _res.Messages= new List<Message>() { new Message() { MessageText = id} } ;
                     return _res;
                 }
                 else

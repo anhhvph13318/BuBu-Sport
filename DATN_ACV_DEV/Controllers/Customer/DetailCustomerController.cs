@@ -42,7 +42,7 @@ namespace DATN_ACV_DEV.Controllers.Customer
                     _response.Status = _Customer.Status;
                     _response.YearOfBirth = _Customer.YearOfBirth;
                     _response.Sex = _Customer.Sex;
-                    _response.Point = _Customer.Point;
+                    _response.Phone = _Customer.Phone;
                     _response.UpdateDate = _Customer.UpdateDate;
                     _response.UpdateBy = _Customer.UpdateBy;
                     _response.GroupCustomerId = _Customer.GroupCustomerId;

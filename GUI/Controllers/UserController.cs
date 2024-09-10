@@ -70,8 +70,8 @@ namespace GUI.Controllers
                 Random random = new Random();
                 int randomNumber = random.Next(10, 100); // Tạo số ngẫu nhiên từ 10 đến 99
                 user.InActive = true;
-                user.UserCode = "user" + randomNumber.ToString();
-                var URL = _settings.APIAddress + "api/CreateUser/Process";
+                user.UserCode = user.UserCode.ToLower();
+                var URL = _settings.APIAddress + "api/CreateUser/create-User";
                 var param = JsonConvert.SerializeObject(user);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListUserResponse>>(res) ?? new();
