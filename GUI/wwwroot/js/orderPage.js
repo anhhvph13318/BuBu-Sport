@@ -110,6 +110,10 @@ function show(id) {
             $('#shippingLocation').trigger('change');
             $('#orderStatus').trigger('change');
             $('#isSameAsCustomerAddress').trigger('change');
+
+            if (!data.isDraft) {
+                interactiveCartItemAndVoucherButton(true);
+            }
         });
 }
 
@@ -198,7 +202,12 @@ function clearOrder() {
         method: 'DELETE'
     })
         .then(res => res.json())
-        .then(data => updateAllView(data));
+        .then(data => {
+            updateAllView(data);
+            interactiveCartItemAndVoucherButton(false);
+            $('#tempSaveButtonContainer').html('');
+            $('#tempSaveButtonContainer').html(data.tempSaveButton);
+        });
 }
 
 function saveOrder(isDraft) {
@@ -239,6 +248,8 @@ function saveOrder(isDraft) {
             $('#orderTempSaveContainer').html(data.orders);
             $('#orderButtonActionContainer').html('');
             $('#orderButtonActionContainer').html(data.buttons);
+
+            interactiveCartItemAndVoucherButton(false);
         })
         .then(_ => toastr.success("Thành công!"))
         .then(_ => clearOrder());
@@ -278,4 +289,19 @@ function applyVoucher(id) {
             toastr.success("Áp dụng mã khuyến mãi thành công!");
             $('#voucherModal').modal('hide');
         }).catch(err => alert("Mã khuyến mãi không hợp lệ"));
+}
+
+function interactiveCartItemAndVoucherButton(disable) {
+    const disableAttribute = 'disabled'
+    if (disable) {
+        $('#applyVoucherBtn').attr(disableAttribute, true);
+        $('#search').attr(disableAttribute, true);
+        $('.order-item-quantity, .remove-item-btn').each(function () {
+            $(this).attr(disableAttribute, true)
+        })
+
+    } else {
+        $('#applyVoucherBtn').removeAttr(disableAttribute);
+        $('#search').removeAttr(disableAttribute);
+    }
 }

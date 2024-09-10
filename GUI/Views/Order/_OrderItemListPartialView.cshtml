@@ -29,10 +29,10 @@
                     <td>@item.ProductName</td>
                     <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                     <td>
-                        <input class="form-control" min="1" value="@item.Quantity" type="number" onfocus="backupQuantityValue(event)" onchange="updateQuantity(event, '@item.Id')" />
+                        <input class="form-control order-item-quantity" min="1" value="@item.Quantity" type="number" onfocus="backupQuantityValue(event)" onchange="updateQuantity(event, '@item.Id')" />
                     </td>
                     <td>
-                        <button class="btn btn-danger" onclick="removeItem('@item.Id')">Xoá</button>
+                        <button class="btn btn-danger remove-item-btn" onclick="removeItem('@item.Id')">Xoá</button>
                     </td>
             </tr>
             }

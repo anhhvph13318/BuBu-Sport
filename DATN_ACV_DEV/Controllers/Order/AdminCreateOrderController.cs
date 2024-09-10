@@ -111,7 +111,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             if (order == null) return NotFound();
 
             order.Status = payload.Status;
-
+            order.VoucherId = payload.Payment.VoucherId;
             
             // update order will be picked-up or delivery
             if (!order.IsCustomerTakeYourself)
