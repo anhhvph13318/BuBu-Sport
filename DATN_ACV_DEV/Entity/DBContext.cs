@@ -293,6 +293,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.IsCustomerTakeYourself).HasColumnName("IsCustomerTakeYourself");
             entity.Property(e => e.IsShippingAddressSameAsCustomerAddress).HasColumnName("IsShippingAddressSameAsCustomerAddress");
+            entity.Property(e => e.PaymentStatus).HasColumnName("PaymentStatus");
 
             entity.HasOne(e => e.Voucher)
                 .WithMany(e => e.Orders)
