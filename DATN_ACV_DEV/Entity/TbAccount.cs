@@ -23,7 +23,10 @@ public partial class TbAccount
 
     public DateTime CreateDate { get; set; }
 
-    public Guid CustomerId { get; set; }
+    public Guid? CustomerId { get; set; }
+    public Guid? EmployeeId { get; set; }
+
+    public int? Role { get; set; }
 
     public virtual TbCustomer Customer { get; set; } = null!;
 

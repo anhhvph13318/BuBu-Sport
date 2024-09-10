@@ -10,6 +10,7 @@ using GUI.Shared;
 using Newtonsoft.Json;
 using GUI.Models.DTOs.Login_DTO;
 using GUI.Model_DTO.User_DTO;
+using DATN_ACV_DEV.Model_DTO.Account_DTO;
 
 namespace GUI.Controllers
 {
@@ -39,10 +40,20 @@ namespace GUI.Controllers
             var result = JsonConvert.DeserializeObject<BaseResponse<LoginResponse>>(res) ?? new();
             if (result.Status == "200")
             {
-                var userId = result.Messages?.FirstOrDefault().MessageText;
-                HttpContext.Session.SetString("CurrentUserId", userId);
-                TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
-                return RedirectToAction("Index", "Home");
+                if(result.Data != null && result.Data.Role == 0 )
+                {
+                    var userId = result.Messages?.FirstOrDefault().MessageText;
+                    HttpContext.Session.SetString("CurrentUserId", userId);
+                    TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
+                    return RedirectToAction("Index", "Store");
+                }
+                else
+                {
+                    var userId = result.Messages?.FirstOrDefault().MessageText;
+                    HttpContext.Session.SetString("CurrentUserId", userId);
+                    TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
+                    return RedirectToAction("Index", "Home");
+                }
             }
             else
             {
@@ -55,15 +66,15 @@ namespace GUI.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Register(CreateUserRequest request)
+        public async Task<IActionResult> Register(CreatedAccountRequest request)
         {
             try
             {
                 Random random = new Random();
                 int randomNumber = random.Next(10, 100); // Tạo số ngẫu nhiên từ 10 đến 99
-                request.InActive = true;
-                request.UserCode = "user" + randomNumber.ToString();
-                var URL = _settings.APIAddress + "api/CreateUser/Process";
+                request.Role = 0;
+                request.Name = request.PhoneNumber;
+                var URL = _settings.APIAddress + "api/CreateAccount/Process";
                 var param = JsonConvert.SerializeObject(request);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListUserResponse>>(res) ?? new();

@@ -50,7 +50,8 @@ namespace DATN_ACV_DEV.Controllers.Account
             {
                 #region Tạo mới 1 bản ghi customer ngay khi khách hàng đăng ký
                 _requestCustomer.Name = _request.Name;
-                var id = new CreateCustomerController(_context).Process(_requestCustomer);
+                _requestCustomer.Phone = _request.PhoneNumber;
+                var id = _request.Role == 0 ? new CreateCustomerController(_context).Process(_requestCustomer) : null;
                 #endregion
                 _Account = new TbAccount()
                 {
@@ -61,7 +62,9 @@ namespace DATN_ACV_DEV.Controllers.Account
                     PhoneNumber = _request.PhoneNumber,
                     CreateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"),
                     CreateDate = DateTime.Now,
-                    CustomerId = id.Data.Id,
+                    CustomerId = id != null ? id.Data.Id : null,
+                    EmployeeId = _request.EmployeeId != null ? _request.EmployeeId : null,
+                    Role = _request.Role
                 };
             }
             else

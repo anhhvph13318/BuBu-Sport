@@ -52,7 +52,7 @@ namespace DATN_ACV_DEV.Controllers.Customer
                 Status = _request.Status,
                 YearOfBirth = _request.YearOfBirth,
                 Sex = _request.Sex,
-                Point = _request.Point,
+                Phone = _request.Phone,
                 UpdateDate = _request.UpdateDate,
                 UpdateBy = _request.UpdateBy,
                 CreateDate = DateTime.Now,
