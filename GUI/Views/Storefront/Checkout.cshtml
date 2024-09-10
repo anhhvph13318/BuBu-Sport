@@ -11,7 +11,7 @@
 
 			<div class="col-md-7">
 				<!-- Billing Details -->
-				<div class="billing-details">
+				<div class="billing-details active">
 					<div class="section-title">
 						<h3 class="title">Địa chỉ giao hàng</h3>
 					</div>
@@ -129,18 +129,18 @@
 @* 									<div>
 										<a class="change-quant quant-down" data-itemId="@item.CartDetailID">-</a><input class="input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" /><a class="change-quant quant-up" data-itemId="@item.CartDetailID">+</a>
 									</div> *@
-									<div class="sub-total" id="sub-@item.CartDetailID">@(item.Quantity * item.Price)</div>
+									<div class="sub-total" id="sub-@item.CartDetailID">@((int)(item.Quantity * item.Price))</div>
 								</div>
 							}
 						}
 					</div>
 					<div class="order-col">
-						<div>Shiping</div>
-						<div><strong>0</strong></div>
+						<div>Shipping</div>
+						<div><strong id="shipping-fee">30000</strong></div>
 					</div>
 					<div class="order-col">
 						<div><strong>TỔNG</strong></div>
-						<div><strong class="order-total">@ViewBag.Sum</strong></div>
+						<div><strong class="order-total">@((int)(ViewBag.Sum > 0 ? (ViewBag.Sum + 30000) : 0))</strong></div>
 					</div>
 				</div>
 				<div class="shipping-method">

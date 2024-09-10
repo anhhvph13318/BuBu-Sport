@@ -2,26 +2,26 @@
 @{
     Layout = "_LayoutStore";
 }
-<!-- SECTION -->
-<div class="section">
-    <!-- container -->
-    <div class="container">
-        <!-- row -->
-        <div class="row">
-            <!-- Order Details -->
-            <div class="cart-details">
-                <div class="section-title text-center">
-                    <h3 class="title">Giỏ của bạn</h3>
-                </div>
-                <div class="order-summary">
-                    <div class="order-col">
-                        <div><strong>Sản phẩm</strong></div>
-                        <div><strong>Giá</strong></div>
+@if (Model != null && Model.Any())
+{
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- Order Details -->
+                <div class="cart-details">
+                    <div class="section-title text-center">
+                        <h3 class="title">Giỏ của bạn</h3>
                     </div>
-                    <div class="order-products">
-                        @if (Model != null && Model.Any())
-                        {
-                            foreach (var item in Model)
+                    <div class="order-summary">
+                        <div class="order-col">
+                            <div><strong>Sản phẩm</strong></div>
+                            <div><strong>Giá</strong></div>
+                        </div>
+                        <div class="order-products">
+                            @foreach (var item in Model)
                             {
                                 <div class="order-col cart-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
                                     <div class="item">
@@ -40,14 +40,13 @@
                                     <div class="sub-total" id="sub-@item.CartDetailID">@(item.Quantity * item.Price)</div>
                                 </div>
                             }
-                        }
+                        </div>
+                        <div class="order-col">
+                            <div><strong>TỔNG TẠM TÍNH</strong></div>
+                            <div><strong class="cart-total">0</strong></div>
+                        </div>
                     </div>
-                    <div class="order-col">
-                        <div><strong>TỔNG TẠM TÍNH</strong></div>
-                        <div><strong class="cart-total">0</strong></div>
-                    </div>
-                </div>
-                @* 				<div class="payment-method">
+                    @* 				<div class="payment-method">
                 <div class="input-radio">
                 <input type="radio" checked name="payment" id="payment-1">
                 <label for="payment-1">
@@ -59,29 +58,62 @@
                 </div>
                 </div>
                 </div> *@
-                @if (ViewBag.Sum > 0)
-                {
-                    <a id="cart-submit" class="primary-btn cart-submit">Thanh toán</a>
-                }
+                    <a id="cart-submit" class="primary-btn cart-submit" style="display:none">Thanh toán</a>
+                </div>
+                <!-- /Order Details -->
             </div>
-            <!-- /Order Details -->
+            <!-- /row -->
         </div>
-        <!-- /row -->
+        <!-- /container -->
     </div>
-    <!-- /container -->
-</div>
-<!-- /SECTION -->
-<script src="~/storefront/js/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        let checkedItems = $(".chk-select-item:checked");
-        let sum = 0;
-        if (checkedItems.length > 0) {
-            $.each(checkedItems, function (i, obj) {
-                let id = $(obj).attr('id').replace('check-', '');
-                sum += parseInt($(`#sub-${id}`).text());
-            });
-            $('.cart-total').text(sum);
-        }
-    });
-</script>
+    <!-- /SECTION -->
+    <script src="~/storefront/js/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let checkedItems = $(".chk-select-item:checked");
+            let sum = 0;
+            if (checkedItems.length > 0) {
+                $.each(checkedItems, function (i, obj) {
+                    let id = $(obj).attr('id').replace('check-', '');
+                    sum += parseInt($(`#sub-${id}`).text());
+                });
+                $('.cart-total').text(sum);
+                $("#cart-submit").show();
+            }
+        });
+    </script>
+}
+else
+{
+    <!-- HOT DEAL SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="hot-deal">
+                        <ul class="hot-deal-countdown">
+                            <li>
+                                <div>
+                                    <h3>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-cart-x" viewBox="0 0 16 16">
+                                            <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793z" />
+                                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zm3.915 10L3.102 4h10.796l-1.313 7zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                        </svg>
+                                    </h3>
+                                </div>
+                            </li>
+                        </ul>
+                        <h2 class="text-uppercase">Giỏ của bạn đang trống</h2>
+                        <p>Hãy ủng hộ shop bằng cách mua hàng!</p>
+                        <a class="primary-btn cta-btn" href="Store">Quay lại cửa hàng</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /HOT DEAL SECTION -->
+}

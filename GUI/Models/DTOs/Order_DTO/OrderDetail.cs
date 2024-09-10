@@ -1,6 +1,9 @@
 using DATN_ACV_DEV.Entity;
+using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
 using System.ComponentModel.DataAnnotations;
+using static DATN_ACV_DEV.Controllers.Order.AdminCreateOrderController;
+using System.Globalization;
 
 namespace GUI.Models.DTOs.Order_DTO;
 
@@ -27,6 +30,7 @@ public class OrderDetail
         PaymentInfo.TotalAmount = Items.Sum(e => e.Quantity * e.Price);
         PaymentInfo.TotalTax = PaymentInfo.TotalAmount * 10 / 100;
         PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.TotalTax + PaymentInfo.ShippingFee;
+        PaymentInfo.Products = Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
 
         if (Voucher.Id == Guid.Empty)
         {

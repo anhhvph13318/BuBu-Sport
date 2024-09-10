@@ -47,6 +47,7 @@ public partial class TbOrder
     public string? PhoneNumberCustomer { get; set; }
 
     public string? AddressCustomer { get; set; }
+    public int PaymentStatus { get; set; }
 
     public bool IsCustomerTakeYourself { get; set; }
     public bool IsShippingAddressSameAsCustomerAddress { get; set; }
