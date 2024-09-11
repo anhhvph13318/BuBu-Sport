@@ -167,12 +167,14 @@
 		priceInputMax.addEventListener('change', function () {
 			updatePriceSlider($(this).parent(), this.value)
 		});
+		priceInputMax.value = maxInput;
     }
 
     if (priceInputMin) {
 		priceInputMin.addEventListener('change', function () {
 			updatePriceSlider($(this).parent(), this.value)
 		});
+		priceInputMin.value = minInput;
     }
 
 	function updatePriceSlider(elem , value) {
@@ -202,11 +204,9 @@
 			var value = values[handle];
 			handle ? priceInputMax.value = value : priceInputMin.value = value
 		});
+		priceSlider.noUiSlider.set([minInput, maxInput]);
 	}
-
-	priceInputMax.value = maxInput;
-	priceInputMin.value = minInput;
-	priceSlider.noUiSlider.set([minInput, maxInput]);
+	
 
 	$(function () {
 		//let path = window.location.pathname.slice(0, 6);
