@@ -53,6 +53,7 @@ public class GetOrderAdminController : ControllerBase
             .Include(e => e.TbOrderDetails)
             .ThenInclude(e => e.Product)
             .Include(e => e.Customer)
+            .Include(e => e.Voucher)
             .Where(e => e.Status != 7)
             .OrderByDescending(e => e.CreateDate)
             .Select(e => new OrderDetail()
@@ -62,6 +63,7 @@ public class GetOrderAdminController : ControllerBase
                 IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
                 IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
                 Status = e.Status.Value,
+                StatusText = Utility.Common.ConvertStatusOrder(e.Status.Value),
                 IsDraft = e.IsDraft,
                 OrderTypeName = GetOrderTypeName(e.OrderCode!),
                 Customer = new CustomerInfo
@@ -91,6 +93,17 @@ public class GetOrderAdminController : ControllerBase
                     PhoneNumber = e.AddressDelivery.ReceiverPhone,
                     Name = e.AddressDelivery.ReceiverName
                 },
+                Voucher = e.VoucherId == null 
+                    ? new Model_DTO.Voucher_DTO.VoucherDTO()
+                    : new Model_DTO.Voucher_DTO.VoucherDTO
+                    {
+                        Id = e.Voucher.Id,
+                        Code = e.Voucher.Code,
+                        MaxDiscount = e.Voucher.MaxDiscount,
+                        Discount = e.Voucher.Discount,
+                        Unit = e.Voucher.Unit,
+                        Type = e.Voucher.Type,
+                    }
             }).ToListAsync();
 
         return Ok(new BaseResponse<IEnumerable<OrderDetail>>()

@@ -13,6 +13,6 @@
         public string? PhoneNumber { get; set; }
         public string? Name { get; set; }
 
-        public Guid CustomerID { get; set; }
+        public Guid? CustomerID { get; set; }
     }
 }

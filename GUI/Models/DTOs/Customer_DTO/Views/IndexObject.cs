@@ -1,4 +1,6 @@
-﻿namespace GUI.Models.DTOs.Customer_DTO.Views
+﻿using GUI.Model_DTO.Customer_DTO;
+
+namespace GUI.Models.DTOs.Customer_DTO.Views
 {
     public class IndexObject
     {

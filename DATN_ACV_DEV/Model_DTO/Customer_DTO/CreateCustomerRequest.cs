@@ -17,7 +17,7 @@ namespace DATN_ACV_DEV.Model_DTO.Customer_DTO
 
         public int? Sex { get; set; }
 
-        public int? Point { get; set; }
+        public string? Phone { get; set; }
 
         public DateTime? UpdateDate { get; set; }
 

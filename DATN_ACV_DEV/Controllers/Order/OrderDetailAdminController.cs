@@ -56,6 +56,17 @@ public class OrderDetailAdminController : ControllerBase
                     VoucherId = e.VoucherId,
                     VoucherCode = e.Voucher.Code ?? string.Empty
                 },
+                Voucher = e.VoucherId == null
+                    ? new Model_DTO.Voucher_DTO.VoucherDTO()
+                    : new Model_DTO.Voucher_DTO.VoucherDTO
+                    {
+                        Id = e.Voucher.Id,
+                        Code = e.Voucher.Code,
+                        MaxDiscount = e.Voucher.MaxDiscount,
+                        Discount = e.Voucher.Discount,
+                        Unit = e.Voucher.Unit,
+                        Type = e.Voucher.Type,
+                    },
                 IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
                 IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
                 PaymentMethodName = "Chuyển khoản ngân hàng",
