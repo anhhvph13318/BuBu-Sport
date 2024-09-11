@@ -55,7 +55,7 @@
 					<div class="col-md-3">
 						<div class="header-logo">
 							<a href="Store" class="logo">
-								<img src="./Image/logo-1.png" alt="">
+								<img src="./Image/logo-1-transparent.png" alt="">
 							</a>
 						</div>
 					</div>
@@ -63,8 +63,8 @@
 					<!-- SEARCH BAR -->
 					<div class="col-md-6">
 						<div class="header-search">
-							<form>
-								<input class="input" placeholder="Tìm kiếm sản phẩm">
+							<form action="Store">
+								<input class="input" name="s" placeholder="Tìm kiếm sản phẩm" value="@(!string.IsNullOrEmpty(ViewBag.SearchString) ? ViewBag.SearchString : "")">
 								<button class="search-btn">Tìm kiếm</button>
 							</form>
 						</div>

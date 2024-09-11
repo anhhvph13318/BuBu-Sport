@@ -1,6 +1,34 @@
 (function($) {
 	"use strict"
 
+	function insertParam(key, value) {
+		key = encodeURIComponent(key);
+		value = encodeURIComponent(value);
+
+		// kvp looks like ['key1=value1', 'key2=value2', ...]
+		var kvp = document.location.search.substr(1).split('&');
+		let i = 0;
+
+		for (; i < kvp.length; i++) {
+			if (kvp[i].startsWith(key + '=')) {
+				let pair = kvp[i].split('=');
+				pair[1] = value;
+				kvp[i] = pair.join('=');
+				break;
+			}
+		}
+
+		if (i >= kvp.length) {
+			kvp[kvp.length] = [key, value].join('=');
+		}
+
+		// can return this or...
+		let params = kvp.join('&');
+
+		// reload page with new params
+		document.location.search = params;
+	}
+
 	// Mobile Nav toggle
 	$('.menu-toggle > a').on('click', function (e) {
 		e.preventDefault();
@@ -103,6 +131,13 @@
 	/////////////////////////////////////////
 
 	// Input number
+
+	let min = parseInt($("#price-min").attr("data-value"));
+	let minInput = parseInt($("#price-min").val());
+	let max = parseInt($("#price-max").attr("data-value"));
+	let maxInput = parseInt($("#price-max").val());
+	let step = (max - min) / 100;
+
 	$('.input-number').each(function() {
 		var $this = $(this),
 		$input = $this.find('input[type="number"]'),
@@ -110,15 +145,15 @@
 		down = $this.find('.qty-down');
 
 		down.on('click', function () {
-			var value = parseInt($input.val()) - 1;
-			value = value < 1 ? 1 : value;
+			var value = parseInt($input.val()) - step;
+			value = value < min ? min : value;
 			$input.val(value);
 			$input.change();
 			updatePriceSlider($this , value)
 		})
 
 		up.on('click', function () {
-			var value = parseInt($input.val()) + 1;
+			var value = parseInt($input.val()) + step;
 			$input.val(value);
 			$input.change();
 			updatePriceSlider($this , value)
@@ -126,7 +161,7 @@
 	});
 
 	var priceInputMax = document.getElementById('price-max'),
-			priceInputMin = document.getElementById('price-min');
+		priceInputMin = document.getElementById('price-min');
 
     if (priceInputMax) {
 		priceInputMax.addEventListener('change', function () {
@@ -154,12 +189,12 @@
 	var priceSlider = document.getElementById('price-slider');
 	if (priceSlider) {
 		noUiSlider.create(priceSlider, {
-			start: [1, 999],
+			start: [min, max],
 			connect: true,
-			step: 1,
+			step: step,
 			range: {
-				'min': 1,
-				'max': 999
+				'min': min,
+				'max': max
 			}
 		});
 
@@ -168,6 +203,10 @@
 			handle ? priceInputMax.value = value : priceInputMin.value = value
 		});
 	}
+
+	priceInputMax.value = maxInput;
+	priceInputMin.value = minInput;
+	priceSlider.noUiSlider.set([minInput, maxInput]);
 
 	$(function () {
 		//let path = window.location.pathname.slice(0, 6);
@@ -493,4 +532,16 @@
 		$("#shipping-fee").text(shippingFee);
 		UpdatePrice(shippingFee);
 	});
+
+	$("#page-display").on("change", function () {
+		insertParam("t", $(this).val());
+		insertParam("p", 0);
+	});
+
+	$(".pagination-btn").on("click", function (e) {
+		e.preventDefault();
+        if (!$(this).hasClass("active")) {
+			insertParam("p", $(this).attr("data-page"));
+        }
+	})
 })(jQuery);

@@ -2293,3 +2293,9 @@ textarea.input {
 .payment-method > div:first-child, .shipping-method > div:first-child {
     margin-bottom: 5px;
 }
+
+.form-submit-btn {
+    margin-top: 2rem;
+    width: 100%;
+    padding: 0.5rem;
+}
