@@ -114,6 +114,8 @@ function show(id) {
             if (!data.isDraft) {
                 interactiveCartItemAndVoucherButton(true);
             }
+
+            $('#btnReset').html('Bỏ chọn');
         });
 }
 
@@ -207,6 +209,7 @@ function clearOrder() {
             interactiveCartItemAndVoucherButton(false);
             $('#tempSaveButtonContainer').html('');
             $('#tempSaveButtonContainer').html(data.tempSaveButton);
+            $('#btnReset').html('Làm mới giỏ hàng');
         });
 }
 
@@ -248,6 +251,7 @@ function saveOrder(isDraft) {
             $('#orderTempSaveContainer').html(data.orders);
             $('#orderButtonActionContainer').html('');
             $('#orderButtonActionContainer').html(data.buttons);
+            $('#btnReset').html('Làm mới giỏ hàng');
 
             interactiveCartItemAndVoucherButton(false);
         })
