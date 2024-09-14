@@ -45,26 +45,45 @@ namespace DATN_ACV_DEV.Controllers
         public void AccessDatabase()
         {
             List<CartDTO> LstCartItem = new List<CartDTO>();
-            if (checkCart)
+            if (!checkCart)
             {
-                _context.Add(_Cart);
-                _context.SaveChanges();
-                _response.CartItem = LstCartItem;
-            }
-            else
-            {
-                if (_request.AdminId != null)
+                if (_request.AdminId == null && _request.id == null)
                 {
                     _Cart = _context.TbCarts.Where(c => c.CreateBy == _request.AdminId).FirstOrDefault();
+                    if (_Cart != null)
+                    {
+                        var Model = _context.TbCartDetails.Include(a => a.Product).Where(c => c.CartId == _Cart.Id).ToList();
+                        if (DateTime.Now > _Cart.EndDate)
+                        {
+                            Model.ForEach(c =>
+                            {
+                                c.Product.Quantity += c.Quantity.Value;
+                            });
+                            _context.RemoveRange(Model);
+                            checkTimeCart = true;
+                        }
+                        if (!checkTimeCart)
+                        {
+                            if (Model != null)
+                            {
+                                var product = _context.TbProducts.Where(c => Model.Select(a => a.ProductId).Contains(c.Id)).Distinct().ToList();
+                                var image = _context.TbImages.Where(i => product.Select(e => e.ImageId).Contains(i.Id)).Distinct().ToList();
+                                Model.ForEach(c =>
+                                {
+                                    c.tbProduct = product.Where(a => a.Id == c.ProductId).FirstOrDefault();
+                                    c.tbImage = image.Where(a => a.Id == c.tbProduct.ImageId).FirstOrDefault();
+                                });
+                            }
+                            LstCartItem = _mapper.Map<List<CartDTO>>(Model);
+                            _response.CartItem = LstCartItem;
+                        }
+                    }
+                    _Cart.EndDate = DateTime.Now.AddDays(5);
+                    _context.SaveChanges();
                 }
-                else
+                else if(_request.id.Any())
                 {
-                    _Cart = _context.TbCarts.Where(c => c.AccountId == _request.UserId).FirstOrDefault();
-                }
-
-                if (_Cart != null)
-                {
-                    var Model = _context.TbCartDetails.Include(a => a.Product).Where(c => c.CartId == _Cart.Id).ToList();
+                    var Model = _context.TbCartDetails.Include(a => a.Product).Where(c => _request.id.Contains(c.Id)).ToList();
                     if (DateTime.Now > _Cart.EndDate)
                     {
                         Model.ForEach(c =>
@@ -72,26 +91,21 @@ namespace DATN_ACV_DEV.Controllers
                             c.Product.Quantity += c.Quantity.Value;
                         });
                         _context.RemoveRange(Model);
-                        checkTimeCart = true;
                     }
-                    if (!checkTimeCart)
+                    if (Model != null)
                     {
-                        if (Model != null)
+                        var product = _context.TbProducts.Where(c => Model.Select(a => a.ProductId).Contains(c.Id)).Distinct().ToList();
+                        var image = _context.TbImages.Where(i => product.Select(e => e.ImageId).Contains(i.Id)).Distinct().ToList();
+                        Model.ForEach(c =>
                         {
-                            var product = _context.TbProducts.Where(c => Model.Select(a => a.ProductId).Contains(c.Id)).Distinct().ToList();
-                            var image = _context.TbImages.Where(i => product.Select(e => e.ImageId).Contains(i.Id)).Distinct().ToList();
-                            Model.ForEach(c =>
-                            {
-                                c.tbProduct = product.Where(a => a.Id == c.ProductId).FirstOrDefault();
-                                c.tbImage = image.Where(a => a.Id == c.tbProduct.ImageId).FirstOrDefault();
-                            });
-                        }
-                        LstCartItem = _mapper.Map<List<CartDTO>>(Model);
-                        _response.CartItem = LstCartItem;
+                            c.tbProduct = product.Where(a => a.Id == c.ProductId).FirstOrDefault();
+                            c.tbImage = image.Where(a => a.Id == c.tbProduct.ImageId).FirstOrDefault();
+                        });
                     }
+                    LstCartItem = _mapper.Map<List<CartDTO>>(Model);
+                    _response.CartItem = LstCartItem;
                 }
-                _Cart.EndDate = DateTime.Now.AddDays(5);
-                _context.SaveChanges();
+
             }
             _res.Data = _response;
         }

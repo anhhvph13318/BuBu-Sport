@@ -1,0 +1,86 @@
+﻿@using System.Globalization
+@model GUI.Models.DTOs.Order_DTO.OrderDetail
+@{
+    Layout = "_LayoutStore";
+}
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="hot-deal">
+                    <h2 class="text-uppercase">Tìm kiếm đơn hàng</h2>
+                    <div class="header-search">
+                        <form action="OrderChecking">
+                            <input class="input" name="s" placeholder="Nhập mã đơn hàng" value="@(!string.IsNullOrEmpty(ViewBag.OrderSearch) ? ViewBag.OrderSearch : "")">
+                            <button class="search-btn">Tìm kiếm</button>
+                        </form>
+                    </div>
+                </div>
+                @if (Model != null)
+                {
+                    <p class="orders-header">Đơn hàng</p>
+                    <p class="order-title">@Model.Id</p>
+                    <div class="order-info order-summary">
+                        <div class="order-col">
+                            <div>Sản phẩm</div>
+                            <div>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <p>@item.Quantity x @item.ProductName</p>
+                                    <p>@((item.Price * item.Quantity).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</p><br />
+                                }
+                            </div>
+                        </div>
+                        @if (Model.ShippingInfo != null && Model.ShippingInfo.ShippingFee > 0)
+                        {
+                            <div class="order-col">
+                                <div>Phí giao hàng</div>
+                                <div><p id="shipping-fee">Model.ShippingInfo.ShippingFee</p></div>
+                            </div>
+                        }
+                        <div class="order-col">
+                            <div>Tổng thanh toán</div>
+                            <div>
+                                <p>
+                                    @Model.PaymentInfo.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))
+                                </p>
+                            </div>
+                        </div>
+                        <div class="order-col">
+                            <div>Thông tin khách hàng</div>
+                            <div>
+                                <p>@Model.Customer.Name</p>
+                                <p>@Model.Customer.PhoneNumber</p>
+                                <p>@Model.Customer.Address</p>
+                            </div>
+                        </div>
+                        <div class="order-col">
+                            <div>Phương thức thanh toán</div>
+                            <div>
+                                <p>
+                                    @Model.PaymentMethodName
+                                </p>
+                            </div>
+                        </div>
+                        <div class="order-col">
+                            <div>Trạng thái</div>
+                            <div>
+                                <strong>
+                                    @Model.StatusText
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+                            <style>
+    .order-summary .order-col > div:last-child {
+        width: 300px;
+    }
+                            </style>

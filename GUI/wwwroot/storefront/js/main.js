@@ -279,11 +279,12 @@
 				getatstore: pickupInStore,
 				isVNP: !COD
 			}, function (data) {
+				debugger;
 				if (data.success) {
 					if (data.redirect) {
 						window.location.href = data.url;
 					} else {
-						window.location.href = "/success";
+						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
 					}
 				} else {
                     alert("FAILED");
@@ -534,8 +535,8 @@
 	});
 
 	$("#page-display").on("change", function () {
-		insertParam("t", $(this).val());
 		insertParam("p", 0);
+		insertParam("t", $(this).val());
 	});
 
 	$(".pagination-btn").on("click", function (e) {

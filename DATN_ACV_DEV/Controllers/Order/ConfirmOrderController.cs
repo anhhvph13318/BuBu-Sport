@@ -128,6 +128,7 @@ namespace DATN_ACV_DEV.Controllers
 				Description = _request.description,
                 AccountId = _request.UserId,
                 PaymentMethod = _request.paymentMethodId ?? 1,
+                PaymentStatus = (short)(_request.paymentMethodId == 2 ? 0 : 1),
                 //VoucherCode = _request.voucherCode != null ? string.Join(",", _request.voucherCode) : null,
                 AmountShip = _request.amountShip ?? 0,
                 CustomerId = customer == null ? null : customer.Id,
@@ -162,7 +163,7 @@ namespace DATN_ACV_DEV.Controllers
 							quantity = item.Quantity.Value,
 							url = image != null ? image.Url : ""
 						};
-                        _order.TotalAmount += (model.Quantity * model.Price);
+                        //_order.TotalAmount += (model.Quantity * model.Price);
 						_listProduct.Add(product);
 					}
 				}

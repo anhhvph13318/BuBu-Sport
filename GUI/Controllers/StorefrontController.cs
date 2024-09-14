@@ -14,6 +14,8 @@ using Newtonsoft.Json;
 using NuGet.Configuration;
 using System.Security.Policy;
 using GUI.Shared.VNPay;
+using System;
+using GUI.Models.DTOs.Order_DTO;
 
 namespace GUI.Controllers
 {
@@ -35,9 +37,23 @@ namespace GUI.Controllers
 		}
 
 		[Route("/Success")]
-		public IActionResult Success()
+		public IActionResult Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash)
 		{
-			return View();
+			ViewBag.OrderId = vnp_TxnRef;
+			if (vnp_TransactionStatus == "00" && !string.IsNullOrEmpty(vnp_SecureHash))
+			{
+				var request = new OrderStatusRequest
+				{
+					orderId = new Guid(vnp_TxnRef),
+					paymentMethod = 2,
+					paymentStatus = 1
+				};
+				var URL = _settings.APIAddress + "api/ConfirmPayment/Process";
+				var param = JsonConvert.SerializeObject(request);
+				httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+			}
+
+            return View();
 		}
 
 		[Route("/Store")]
@@ -59,6 +75,7 @@ namespace GUI.Controllers
 				var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
 				t = t == 0 ? 20 : t;
 				var totalPages = ((result.Data.TotalCount) / t) - 1;
+				totalPages = totalPages > 0 ? totalPages : 0;
 				p = p >= totalPages ? totalPages : p;
 				var topPageDisplay = 3;
 				var startPage = p > 0 ? p - 1 : p;
@@ -92,6 +109,32 @@ namespace GUI.Controllers
 			return View(model);
 		}
 
+		[Route("/OrderChecking")]
+		public async Task<IActionResult> OrderChecking(string s)
+		{
+			OrderDetail model = null;
+			ViewBag.OrderSearch = s;
+
+            if (!string.IsNullOrEmpty(s))
+			{
+				using var httpClient = new HttpClient();
+				httpClient.BaseAddress = new Uri(_settings.APIAddress);
+				var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{s}");
+				try
+				{
+					var response =
+								JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
+									await rawResponse.Content.ReadAsStringAsync());
+					model = response.Data;
+				}
+				catch (Exception)
+				{
+
+				}
+			}
+			return View(model);
+		}
+
 		[HttpPost("/ConfirmCart")]
 		public async Task<JsonResult> ConfirmCart(List<Guid> ids)
 		{
@@ -108,6 +151,7 @@ namespace GUI.Controllers
 				var req = new CartItemRequest();
 				//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 				req.UserId = userId;
+				req.id = ids;
 				var URL = _settings.APIAddress + "api/CartItem/Process";
 				var param = JsonConvert.SerializeObject(req);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
@@ -164,7 +208,7 @@ namespace GUI.Controllers
             }
             var req = new AddToCartRequest();
             //req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
-            req.UserId = userId;
+            req.UserId = Guid.Empty;
             req.Quantity = 1;
             req.ProductId = prId;
 			req.incre = false;
@@ -181,30 +225,12 @@ namespace GUI.Controllers
         }
 
         [Route("/Checkout")]
-		//public async Task<IActionResult> Checkout()
-		//{
-		//	var model = new List<CartDTO>();
-		//	var sum = 0m;
-		//	var req = new CartItemRequest();
-		//	req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
-		//	var URL = _settings.APIAddress + "api/CartItem/Process";
-		//	var param = JsonConvert.SerializeObject(req);
-		//	var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-		//	var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
-		//	if (result.Status == "200")
-		//	{
-		//		model = result.Data.CartItem;
-		//		sum = model.Sum(c => c.Price * c.Quantity);
-		//	}
-		//	ViewBag.Sum = sum;
-		//	return View(model);
-		//}
 		public async Task<IActionResult> Checkout()
 		{
 			if (TempData["ConfirmedCartItems"] != null)
 			{
+				TempData.Keep("ConfirmedCartItems");
 				List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
-				//TempData.Keep("ConfirmedCartItems");
 				var sum = model.Sum(c => c.Price * c.Quantity);
 				if (sum > 0)
 				{
@@ -307,10 +333,15 @@ namespace GUI.Controllers
 			{
 				addrId = new Guid();
 			}
-			if (cartDetails != null && cartDetails.Any())
+            
+            if (cartDetails != null && cartDetails.Any())
 			{
 				var sum = 0m;
-				if (userId != Guid.Empty)
+                if (TempData["ConfirmedCartItems"] != null)
+                {
+                    List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
+                    sum = model.Sum(c => c.Price * c.Quantity);
+                } else if (userId != Guid.Empty)
 				{
 					var reqItems = new CartItemRequest();
 					reqItems.UserId = userId;
@@ -370,6 +401,7 @@ namespace GUI.Controllers
 						{
 							success = true,
 							redirect = false,
+							orderId = result.Data.id,
 						});
 					}
 				}

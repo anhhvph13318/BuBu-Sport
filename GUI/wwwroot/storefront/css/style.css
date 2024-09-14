@@ -907,7 +907,6 @@ textarea.input {
         background-color: #FFF;
         text-align: center;
         z-index: 20;
-        height: 200px
     }
 
         .product .product-body .product-category {
@@ -944,7 +943,7 @@ textarea.input {
 
         .product .product-body .product-rating {
             position: relative;
-            margin: 15px 0px 10px;
+            margin: 15px 0px 0px;
             height: 20px;
         }
 
@@ -2266,7 +2265,7 @@ textarea.input {
 }
 
 .order-summary .order-col > div:first-child {
-    max-width: 150px;
+    max-width: 300px;
     overflow-wrap: break-word;
 }
 
@@ -2298,4 +2297,20 @@ textarea.input {
     margin-top: 2rem;
     width: 100%;
     padding: 0.5rem;
+}
+
+.order-info{
+    max-width: 50%;
+    margin: 15px auto;
+}
+
+.orders-header {
+    text-transform: uppercase;
+    font-size: 24px;
+    text-align: center;
+}
+
+.order-title {
+    font-size: 16px;
+    text-align: center;
 }
