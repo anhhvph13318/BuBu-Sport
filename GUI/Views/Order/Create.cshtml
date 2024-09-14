@@ -66,7 +66,7 @@
                     <div id="tempSaveButtonContainer" class="me-2">
                         @await Html.PartialAsync("_TempSaveOrderButtonPartialView")
                     </div>
-                    <button class="btn btn-danger text-nowrap me-2" onclick="clearOrder()">Xóa giỏ hàng</button>
+                    <button id="btnReset" class="btn btn-danger text-nowrap me-2" onclick="clearOrder()" type="button">Làm mới giỏ hàng</button>
                 </div>
                 <hr />
                 <div id="orderItemContainer">

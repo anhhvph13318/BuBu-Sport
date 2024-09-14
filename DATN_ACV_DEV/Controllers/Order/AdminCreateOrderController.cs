@@ -39,7 +39,6 @@ namespace DATN_ACV_DEV.Controllers.Order
                 IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress,
                 CreateDate = DateTime.Now,
                 IsDraft = payload.IsDraft,
-                VoucherId = payload.Payment.VoucherId
             };
 
             var orderCreatedTime = DateTime.Now.ToString("yyyyMMddHHmmssfff");
@@ -73,12 +72,13 @@ namespace DATN_ACV_DEV.Controllers.Order
                 };
             }
 
-            if(order.VoucherId is not null)
+            if(payload.Payment.VoucherId is not null && payload.Payment.VoucherId != Guid.Empty)
             {
-                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == order.VoucherId) 
+                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == payload.Payment.VoucherId) 
                     ?? throw new NullReferenceException();
 
                 voucher.Quantity -= 1;
+                order.VoucherId = payload.Payment.VoucherId;
             }
 
             // re-update product stock
@@ -111,7 +111,6 @@ namespace DATN_ACV_DEV.Controllers.Order
             if (order == null) return NotFound();
 
             order.Status = payload.Status;
-            order.VoucherId = payload.Payment.VoucherId;
             
             // update order will be picked-up or delivery
             if (!order.IsCustomerTakeYourself)
@@ -157,6 +156,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             order.TotalAmount = payload.Payment.TotalAmount;
             order.TotalAmountDiscount = payload.Payment.TotalDiscount;
             order.AmountShip = payload.Payment.ShippingFee;
+            order.IsCustomerTakeYourself = payload.IsCustomerTakeYourSelf;
+            order.IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress;
 
             // update shipping address 
             var hasShippingAddress = !payload.IsCustomerTakeYourSelf && !payload.IsShippingAddressSameAsCustomerAddress;
@@ -172,12 +173,13 @@ namespace DATN_ACV_DEV.Controllers.Order
             }
 
             // update voucher
-            if (order.VoucherId is not null)
+            if (payload.Payment.VoucherId is not null && order.VoucherId != Guid.Empty)
             {
-                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == order.VoucherId)
+                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == payload.Payment.VoucherId)
                     ?? throw new NullReferenceException();
 
                 voucher.Quantity -= 1;
+                order.VoucherId = payload.Payment.VoucherId;
             }
 
             // add and update item has added

@@ -2,6 +2,7 @@ using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using GUI.FileBase;
 using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
+using GUI.Shared.VNPay;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -344,6 +345,21 @@ public class OrderController : Controller
         return Json(new
         {
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+        });
+    }
+
+    [HttpGet]
+    [Route("payments/vnpay")]
+    public IActionResult GetVnpayCheckoutUrl([FromServices] VNPayService vnpay)
+    {
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
+        var order = HttpContext.Session.GetCurrentOrder();
+
+        var paymentUrl = vnpay.SendRequest(ip, order.Code, Convert.ToInt32(order.PaymentInfo.FinalAmount));
+
+        return Ok(new
+        {
+            Url = paymentUrl
         });
     }
 
