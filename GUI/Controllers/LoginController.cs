@@ -26,9 +26,9 @@ namespace GUI.Controllers
         }
 
         [Route("/SignIn")]
-        public IActionResult Login()
+        public IActionResult Login([FromQuery]int? action)
         {
-
+            ViewBag.Action = action;
             return View();
         }
         [HttpPost]
@@ -89,9 +89,9 @@ namespace GUI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
-                return View();
+                return RedirectToAction(nameof(Login));
             }
         }
 

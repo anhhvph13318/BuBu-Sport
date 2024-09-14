@@ -45,6 +45,7 @@
 				<ul class="header-links pull-right">
 					@* <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> *@
 					<li><a href="/SignIn"><i class="fa fa-user-o"></i> Đăng nhập</a></li>
+					<li><a href="/SignIn?action=2"><i class="fa fa-user-o"></i> Đăng ký</a></li>
 				</ul>
 			</div>
 		</div>
@@ -78,23 +79,23 @@
 					<div class="col-md-3 clearfix">
 						<div class="header-ctn">
 							<!-- Wishlist -->
-@* 							<div>
-								<a href="#">
-									<i class="fa fa-heart-o"></i>
-									<span>Your Wishlist</span>
-									<div class="qty">2</div>
+							<div>
+
+								<a href="/orderchecking" style="width:115px">
+									<i class="fa fa-file"></i>
+									<span>Tra cứu đơn hàng</span>
 								</a>
-							</div> *@
+							</div>
 							<!-- /Wishlist -->
 							<!-- Cart -->
 							<div class="dropdown">
 								<a href="/cart">
-								@* <a class="dropdown-toggle" href="/checkout" data-toggle="dropdown" aria-expanded="true"> *@
+									@* <a class="dropdown-toggle" href="/checkout" data-toggle="dropdown" aria-expanded="true"> *@
 									<i class="fa fa-shopping-cart"></i>
 									<span>Giỏ hàng</span>
 									@* <div class="qty">3</div> *@
 								</a>
-								<div class="cart-dropdown">
+								@* <div class="cart-dropdown">
 									<div class="cart-list">
 										<div class="product-widget">
 											<div class="product-img">
@@ -126,8 +127,9 @@
 										<a href="#">View Cart</a>
 										<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
 									</div>
-								</div>
+								</div> *@
 							</div>
+
 							<!-- /Cart -->
 							<!-- Menu Toogle -->
 							<div class="menu-toggle">

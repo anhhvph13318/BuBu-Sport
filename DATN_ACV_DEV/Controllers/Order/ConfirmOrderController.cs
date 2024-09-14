@@ -105,6 +105,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 customer.Name = _request.name;
                 customer.Adress = _request.addressDelivery;
+                customer.Phone = _request.phoneNummber;
             }
             else
             {
@@ -113,7 +114,8 @@ namespace DATN_ACV_DEV.Controllers
                     Id = _request.UserId,
                     Adress = _request.addressDelivery,
                     GroupCustomerId = _request.UserId,
-                    Name = _request.name
+                    Name = _request.name,
+                    Phone = _request.phoneNummber,
 				};
                 AddCustomer = true;
 
@@ -122,7 +124,7 @@ namespace DATN_ACV_DEV.Controllers
             _order = new TbOrder()
             {
                 Id = Guid.NewGuid(),
-                OrderCode = "ACV_" + DateTime.Now.Millisecond,
+                OrderCode = $"ON{DateTime.Now.ToString("yyyyMMddHHmmssfff")}",
                 TotalAmount = _request.totalAmount ?? 0m,
                 TotalAmountDiscount = _request.totalAmountDiscount ?? 0m,
 				Description = _request.description,

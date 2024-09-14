@@ -112,21 +112,22 @@ namespace GUI.Controllers
 		[Route("/OrderChecking")]
 		public async Task<IActionResult> OrderChecking(string s)
 		{
-			OrderDetail model = null;
+			List<OrderDetail> model = null;
 			ViewBag.OrderSearch = s;
 
             if (!string.IsNullOrEmpty(s))
 			{
 				using var httpClient = new HttpClient();
 				httpClient.BaseAddress = new Uri(_settings.APIAddress);
-				var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{s}");
+				var rawResponse = await httpClient.GetAsync($"/api/admin/orders/search/{s}");
 				try
 				{
 					var response =
-								JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
+								JsonConvert.DeserializeObject<BaseResponse<List<OrderDetail>>>(
 									await rawResponse.Content.ReadAsStringAsync());
 					model = response.Data;
-				}
+
+                }
 				catch (Exception)
 				{
 
