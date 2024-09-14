@@ -2,8 +2,10 @@
 using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.FileBase;
 using DATN_ACV_DEV.Model_DTO.HomePage;
+using DATN_ACV_DEV.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DATN_ACV_DEV.Controllers
 {
@@ -17,6 +19,7 @@ namespace DATN_ACV_DEV.Controllers
         private BaseResponse<HomePageResponse> _res;
         private HomePageResponse _response;
         private string _apiCode = "HomePage";
+        private Common _common;
         public HomePageController(DBContext context, IMapper mapper)
         {
             _context = context;
@@ -27,13 +30,15 @@ namespace DATN_ACV_DEV.Controllers
             };
             _response = new HomePageResponse();
             _mapper = mapper;
+            _common = new Common();
         }
 
         public void AccessDatabase()
         {
             List<HomePageModel> lstProduct = new List<HomePageModel>();
+            var sAscii = !string.IsNullOrEmpty(_request.Name) ? Common.RemoveSignInVietnameseString(_request.Name) : "";
             var Model = _context.TbProducts.Where(p => p.IsDelete == false
-                        && (!string.IsNullOrEmpty(_request.Name) ? p.Name.Contains(_request.Name) : true)
+                        && (!string.IsNullOrEmpty(_request.Name) ? (p.Name.Contains(_request.Name) || EF.Functions.Collate(p.Name, "Vietnamese_CI_AI").Contains(sAscii)) : true)
                         && (_request.CategoryID.HasValue ? p.CategoryId >= _request.CategoryID : true)
                         && (_request.PriceFrom.HasValue ? p.Price >= _request.PriceFrom : true)
                         && (_request.PriceTo.HasValue ? p.Price <= _request.PriceTo : true)
@@ -48,6 +53,8 @@ namespace DATN_ACV_DEV.Controllers
                 m.tb_Image = image.Where(c => c.Id == m.ImageId).FirstOrDefault();
             });
             _response.TotalCount = Model.Count();
+				_response.HighestPrice = _context.TbProducts.Where(p => p.IsDelete == false).Max(c => c.Price);
+				_response.LowestPrice = _context.TbProducts.Where(p => p.IsDelete == false).Min(c => c.Price); 
             var query = _mapper.Map<List<HomePageModel>>(Model);
             if (_request.Limit == null)
             {

@@ -41,17 +41,54 @@ namespace GUI.Controllers
 		}
 
 		[Route("/Store")]
-		public async Task<IActionResult> Store(string s)
+		public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max)
 		{
-			var obj = new GetListProductRequest();
 			var model = new IndexObject();
-			obj.Name = string.IsNullOrEmpty(s) ? "" : s;
-			var URL = _settings.APIAddress + "api/HomePage/Process";
-			var param = JsonConvert.SerializeObject(obj);
-			var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-			var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
+			try
+			{
+				var obj = new GetListProductRequest();
+				obj.Name = string.IsNullOrEmpty(s) ? "" : s;
+				obj.PriceFrom = min;
+				obj.PriceTo = max;
+				obj.Limit = t <= 0 ? null : t;
+				var offset = t * p;
+				obj.OffSet = offset < 0 ? 0 : offset;
+				var URL = _settings.APIAddress + "api/HomePage/Process";
+				var param = JsonConvert.SerializeObject(obj);
+				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+				var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
+				t = t == 0 ? 20 : t;
+				var totalPages = ((result.Data.TotalCount) / t) - 1;
+				p = p >= totalPages ? totalPages : p;
+				var topPageDisplay = 3;
+				var startPage = p > 0 ? p - 1 : p;
+				if (p > 0) {
+					if (totalPages - p < 3)
+					{
+                        topPageDisplay = totalPages;
+						startPage = totalPages - 3;
+					}
+					else
+					{
+						topPageDisplay = p + 2;
+					}
+				}
 
-			model.Data = result.Data;
+				ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
+				ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
+				ViewBag.PriceTo = max ?? result.Data.HighestPrice;
+				ViewBag.Take = t <= 0 ? 20 : t;
+				ViewBag.TakeOptions = new List<int>() { 10, 20, 50};
+				ViewBag.CurrentPage = p;
+				ViewBag.TopPage = topPageDisplay;
+				ViewBag.TotalPages = totalPages;
+				ViewBag.StartPage = startPage;
+
+                model.Data = result.Data;
+			}
+			catch (Exception)
+			{
+			}
 			return View(model);
 		}
 
