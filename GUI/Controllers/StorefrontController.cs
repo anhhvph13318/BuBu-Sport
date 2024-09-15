@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GUI.Controllers
 {
-	[Authorize]
+	[Authorize(Roles = "Guest")]
 	[AllowAnonymous]
 	public class StorefrontController : ControllerSharedBase
 	{
