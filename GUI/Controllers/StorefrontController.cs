@@ -19,15 +19,16 @@ using Microsoft.AspNetCore.Authorization;
 namespace GUI.Controllers
 {
 	[Authorize]
+	[AllowAnonymous]
 	public class StorefrontController : ControllerSharedBase
 	{
 		private HttpService httpService;
 		private VNPayService _VNPayService;
-		public StorefrontController(IOptions<CommonSettings> settings)
+		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService)
 		{
 			_settings = settings.Value;
 			httpService = new();
-			_VNPayService = new(settings);
+			_VNPayService = payService;
 		}
 
         [Route("/Home")]
