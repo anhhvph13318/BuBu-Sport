@@ -23,3 +23,8 @@ const APPLY_VOUCHER = (id) => `${HOST_URL}/orders/apply-voucher?id=${id}`;
 const GET_AVAILABLE_VOUCHER = (phone) => `${HOST_URL}/orders/vouchers?phone=${phone}`;
 
 const GET_BASIC_CUSTOMER_INFO = (phone) => `${HOST_URL}/orders/customers/${phone}`;
+
+const CHANGE_PAYMENT_METHOD = (method) => `${HOST_URL}/orders/payments?method=${method}`;
+const CHANGE_SHIPPING_METHOD = (method) => `${HOST_URL}/orders/shipping?method=${method}`;
+
+const GET_VNPAY_URL = `${HOST_URL}/orders/payments/vnpay`;

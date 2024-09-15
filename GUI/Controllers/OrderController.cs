@@ -1,5 +1,6 @@
-using DATN_ACV_DEV.Model_DTO.GHN_DTO;
+﻿using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using GUI.FileBase;
+using GUI.Hubs;
 using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
 using GUI.Shared.VNPay;
@@ -7,8 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Net.Http;
+using static DATN_ACV_DEV.Controllers.Order.AdminCreateOrderController;
 using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
 
 namespace GUI.Controllers;
@@ -104,7 +108,7 @@ public class OrderController : Controller
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-            Buttons = await RenderViewAsync(OrderButtonActionPartialView, true),
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, 1),
             IsDraft = order.IsDraft || order.Code.StartsWith("TEMP"),
             TempSaveButton = tempOrderSaveButton,
             order.ShippingInfo.IsCustomerTakeYourSelf,
@@ -133,7 +137,7 @@ public class OrderController : Controller
             order.Customer = checkout.CustomerInfo;
 
         if (string.IsNullOrEmpty(checkout.CustomerInfo.Name))
-            order.Customer.Name = "Kh�ch v�ng lai";
+            order.Customer.Name = "Khách vãng lai";
 
         if (!checkout.IsShippingAddressSameAsCustomerAddress)
             order.ShippingInfo = checkout.ShippingInfo;
@@ -142,6 +146,12 @@ public class OrderController : Controller
         order.TempOrderCreatedTime = DateTime.Now;
         order.IsCustomerTakeYourSelf = checkout.IsCustomerTakeYourSelf;
         order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
+        order.Status = checkout.Status;
+
+        if (order.IsCustomerTakeYourSelf)
+            order.Status = 7; // set status to complete
+        else
+            order.Status = 1; // set status to prepare
 
         // submit to database
         using var httpClient = new HttpClient();
@@ -154,7 +164,7 @@ public class OrderController : Controller
             checkout.IsCustomerTakeYourSelf,
             checkout.IsDraft,
             checkout.IsShippingAddressSameAsCustomerAddress,
-            checkout.Status,
+            order.Status,
             Shipping = order.ShippingInfo,
             Payment = order.PaymentInfo,
         };
@@ -168,7 +178,7 @@ public class OrderController : Controller
             return Json(new 
             { 
                 Orders = await RenderViewAsync(OrderListPartialView, orders),
-                Buttons = await RenderViewAsync(OrderButtonActionPartialView, false)
+                Buttons = await RenderViewAsync(OrderButtonActionPartialView, 0)
             });
         }
 
@@ -317,7 +327,7 @@ public class OrderController : Controller
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-            Buttons = await RenderViewAsync(OrderButtonActionPartialView, false),
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, 0),
             TempSaveButton = await RenderViewAsync(TempSaveOrderButtonPartialView, false)
         });
     }
@@ -348,20 +358,145 @@ public class OrderController : Controller
         });
     }
 
+    #region Online payment
+
     [HttpGet]
+    [Route("payments")]
+    public async Task<IActionResult> ChangePaymentMethod([FromQuery] int method)
+    {
+        return Ok(new
+        {
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, method)
+        });
+    }
+
+    [HttpPost]
     [Route("payments/vnpay")]
-    public IActionResult GetVnpayCheckoutUrl([FromServices] VNPayService vnpay)
+    public IActionResult GetVnpayCheckoutUrl([FromServices] VNPayService vnpay, [FromBody] Checkout checkout)
     {
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
         var order = HttpContext.Session.GetCurrentOrder();
 
-        var paymentUrl = vnpay.SendRequest(ip, order.Code, Convert.ToInt32(order.PaymentInfo.FinalAmount));
+        if (order.Customer.Id == Guid.Empty)
+            order.Customer = checkout.CustomerInfo;
+
+        if (string.IsNullOrEmpty(checkout.CustomerInfo.Name))
+            order.Customer.Name = "Khách vãng lai";
+
+        if (!checkout.IsShippingAddressSameAsCustomerAddress)
+            order.ShippingInfo = checkout.ShippingInfo;
+
+        order.IsDraft = checkout.IsDraft;
+        order.TempOrderCreatedTime = DateTime.Now;
+        order.IsCustomerTakeYourSelf = checkout.IsCustomerTakeYourSelf;
+        order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
+        order.Status = checkout.Status;
+
+        if (order.IsCustomerTakeYourSelf)
+            order.Status = 7; // set status to complete
+        else
+            order.Status = 1; // set status to prepare
+
+        order.PaymentMethod = 2;
+        order.PaymentStatus = 0; // set status payment to wait
+
+        HttpContext.Session.SaveCurrentOrder(order);
+
+        var paymentUrl = vnpay.SendRequest(ip, order.Code, Convert.ToInt32(order.PaymentInfo.FinalAmount * 100));
 
         return Ok(new
         {
             Url = paymentUrl
         });
     }
+
+    [HttpGet]
+    [Route("payments/vnpay/success")]
+    public async Task<IActionResult> OnlineCheckoutSuccess(
+        [FromServices] IHubContext<OrderHub> hub,
+        [FromQuery] string vnp_ResponseCode)
+    {
+        if (vnp_ResponseCode == "00")
+        {
+            var order = HttpContext.Session.GetCurrentOrder();
+
+            var payload = new
+            {
+                order.Id,
+                order.Customer,
+                order.Items,
+                order.IsCustomerTakeYourSelf,
+                order.IsDraft,
+                order.IsSameAsCustomerAddress,
+                order.Status,
+                Shipping = order.ShippingInfo,
+                Payment = order.PaymentInfo,
+                order.PaymentMethod
+            };
+
+            using var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(URI);
+
+            HttpResponseMessage rawResponse = order.Id != Guid.Empty
+            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+            : await httpClient.PostAsJsonAsync("api/orders/create", payload);
+
+            if (rawResponse.IsSuccessStatusCode)
+            {
+                var orders = await FetchOrderList();
+                order = HttpContext.Session.GetCurrentOrder(clearFirst: true);
+
+                var message = JsonConvert.SerializeObject(new
+                {
+                    Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
+                    Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
+                    Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+                    Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
+                    Buttons = await RenderViewAsync(OrderButtonActionPartialView, 0),
+                    TempSaveButton = await RenderViewAsync(TempSaveOrderButtonPartialView, false)
+                });
+
+                await hub.Clients.All.SendAsync("PaymentSuccess", message);
+
+                return View();
+            }
+        }
+
+        await hub.Clients.All.SendAsync("PaymentFail", "Thanh toán thất bại");
+
+
+        return Ok();
+    }
+
+    #endregion
+
+    #region Option Change
+
+    [HttpGet]
+    [Route("shipping")]
+    public async Task<IActionResult> ChangeShipping([FromQuery] int method)
+    {
+        var order = HttpContext.Session.GetCurrentOrder();
+        if(method == 0)
+        {
+            order.IsCustomerTakeYourSelf = true;
+            order.PaymentInfo.IsCustomerTakeYourSelf = true;
+        } else
+        {
+            order.IsCustomerTakeYourSelf = false;
+            order.PaymentInfo.IsCustomerTakeYourSelf = false;
+            order.Status = 1;
+        }
+        order.ReCalculatePaymentInfo();
+        HttpContext.Session.SaveCurrentOrder(order);
+
+        return Ok(new
+        {
+            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo)
+        });
+    }
+
+    #endregion
 
     private static async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
     {
