@@ -1,8 +1,20 @@
 using GUI.Hubs;
 using GUI.Shared.Common;
 using GUI.Shared.VNPay;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+        options.AccessDeniedPath = "/Forbidden/";
+    });
+
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -28,8 +40,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseSession();
-
 app.UseRouting();
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict
+});
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

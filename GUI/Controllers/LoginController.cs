@@ -11,6 +11,11 @@ using Newtonsoft.Json;
 using GUI.Models.DTOs.Login_DTO;
 using GUI.Model_DTO.User_DTO;
 using DATN_ACV_DEV.Model_DTO.Account_DTO;
+using Microsoft.AspNetCore.Identity;
+using DATN_ACV_DEV.Entity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace GUI.Controllers
 {
@@ -26,8 +31,10 @@ namespace GUI.Controllers
         }
 
         [Route("/SignIn")]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
+            if (HttpContext.User.Identity != null && HttpContext.User.Identity.IsAuthenticated)
+                await HttpContext.SignOutAsync();
 
             return View();
         }
@@ -40,20 +47,27 @@ namespace GUI.Controllers
             var result = JsonConvert.DeserializeObject<BaseResponse<LoginResponse>>(res) ?? new();
             if (result.Status == "200")
             {
-                if(result.Data != null && result.Data.Role == 0 )
+                
+                var userId = result.Messages!.First().MessageText;
+                
+                var role = result.Data.Role == 0 ? "Guest" : "Admin";
+                var claims = new List<Claim>
                 {
-                    var userId = result.Messages?.FirstOrDefault().MessageText;
-                    HttpContext.Session.SetString("CurrentUserId", userId);
-                    TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
-                    return RedirectToAction("Index", "Store");
-                }
-                else
-                {
-                    var userId = result.Messages?.FirstOrDefault().MessageText;
-                    HttpContext.Session.SetString("CurrentUserId", userId);
-                    TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
-                    return RedirectToAction("Index", "Home");
-                }
+                   new(ClaimTypes.NameIdentifier, userId),
+                   new(ClaimTypes.Role, role)
+                };
+                var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(
+                    scheme: CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal: new ClaimsPrincipal(claimIdentity));
+
+                HttpContext.Session.SetString("CurrentUserId", userId);
+                TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
+
+                return result.Data != null && result.Data.Role == 0
+                    ? RedirectToAction("Index", "Home")
+                    : RedirectToAction("Create", "Order");
             }
             else
             {

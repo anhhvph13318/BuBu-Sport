@@ -14,9 +14,11 @@ using Newtonsoft.Json;
 using NuGet.Configuration;
 using System.Security.Policy;
 using GUI.Shared.VNPay;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GUI.Controllers
 {
+	[Authorize]
 	public class StorefrontController : ControllerSharedBase
 	{
 		private HttpService httpService;

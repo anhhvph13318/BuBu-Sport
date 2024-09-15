@@ -4,6 +4,7 @@ using GUI.Hubs;
 using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
 using GUI.Shared.VNPay;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -19,6 +20,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("orders")]
+[Authorize(Roles = "Admin")]
 public class OrderController : Controller
 {
     private const string URI = "http://localhost:5059";

@@ -52,7 +52,7 @@ namespace DATN_ACV_DEV.Controllers.Login;
                 var user = _context.TbUsers.FirstOrDefault(c =>
                     c.UserName.ToLower() == request.UserName && c.Password == request.Password);
                 var account = user == null ? _context.TbAccounts.FirstOrDefault(c =>
-                    c.PhoneNumber.ToLower() == request.UserName && c.Password == request.Password) : null;
+                    c.PhoneNumber == request.UserName && c.Password == request.Password) : null;
             if ( user is not null || account is not null) 
                 {
                     var id = (user != null ? user.Id.ToString() : account.Id.ToString());
