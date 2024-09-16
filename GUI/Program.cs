@@ -2,6 +2,7 @@ using GUI.Hubs;
 using GUI.Shared.Common;
 using GUI.Shared.VNPay;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Routing.Patterns;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapFallbackToFile("/forbidden", "forbidden.html");
 
 app.MapHub<OrderHub>("/order-hub");
 

@@ -4,6 +4,7 @@ using GUI.FileBase;
 using GUI.Models;
 using GUI.Shared;
 using GUI.Shared.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -23,6 +24,7 @@ namespace GUI.Controllers
 			httpService = new();
 		}
 
+        [Authorize(Roles = "Admin")]
 		public IActionResult Index()
         {
             return View(_settings);
