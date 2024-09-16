@@ -20,6 +20,7 @@ const ORDER_TEMP_SAVE_API = `${HOST_URL}/orders/save-to-session`;
 const REMOVE_ORDER_TEMP_API = (id) => `${HOST_URL}/orders/draft/${id}/remove`;
 
 const APPLY_VOUCHER = (id) => `${HOST_URL}/orders/apply-voucher?id=${id}`;
+const CANCEL_APPLY_VOUCHER =  `${HOST_URL}/orders/cancel-apply-voucher`;
 const GET_AVAILABLE_VOUCHER = (phone) => `${HOST_URL}/orders/vouchers?phone=${phone}`;
 
 const GET_BASIC_CUSTOMER_INFO = (phone) => `${HOST_URL}/orders/customers/${phone}`;

@@ -1,5 +1,4 @@
-﻿using DATN_ACV_DEV.Model_DTO.GHN_DTO;
-using GUI.FileBase;
+﻿using GUI.FileBase;
 using GUI.Hubs;
 using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
@@ -12,8 +11,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Globalization;
-using System.Net.Http;
-using static DATN_ACV_DEV.Controllers.Order.AdminCreateOrderController;
 using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
 
 namespace GUI.Controllers;
@@ -334,6 +331,8 @@ public class OrderController : Controller
         });
     }
 
+    #region Voucher
+
     [HttpGet]
     [Route("apply-voucher")]
     public async Task<IActionResult> ApplyCoupon([FromQuery] string id)
@@ -359,6 +358,41 @@ public class OrderController : Controller
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
         });
     }
+
+    [HttpPost]
+    [Route("cancel-apply-voucher")]
+    public async Task<IActionResult> CancelCurrentAppliedVoucher()
+    {
+        var order = HttpContext.Session.GetCurrentOrder();
+
+        order.Voucher = new VoucherDTO();
+        order.PaymentInfo.VoucherId = Guid.Empty;
+        order.PaymentInfo.VoucherCode = string.Empty;
+
+        order.ReCalculatePaymentInfo();
+
+        HttpContext.Session.SaveCurrentOrder(order);
+
+        return Json(new
+        {
+            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+        });
+    }
+
+    private static async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
+    {
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var rawResponse = await httpClient.PostAsync($"/api/vouchers/{id}/apply?target={target}", null);
+
+        if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            return null;
+
+        return JsonConvert.DeserializeObject<VoucherDTO>(
+                await rawResponse.Content.ReadAsStringAsync());
+    }
+
+    #endregion
 
     #region Online payment
 
@@ -499,19 +533,6 @@ public class OrderController : Controller
     }
 
     #endregion
-
-    private static async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
-    {
-        using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(URI);
-        var rawResponse = await httpClient.PostAsync($"/api/vouchers/{id}/apply?target={target}", null);
-
-        if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
-            return null;
-
-        return JsonConvert.DeserializeObject<VoucherDTO>(
-                await rawResponse.Content.ReadAsStringAsync());
-    }
 
     private async Task<string> RenderViewAsync(string viewName, object? model)
     {

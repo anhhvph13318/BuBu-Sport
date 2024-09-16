@@ -415,6 +415,18 @@ function vnpayCheckout() {
         }).catch(err => console.log(err));
 }
 
+function cancelApplyVoucher() {
+    fetch(CANCEL_APPLY_VOUCHER, {
+        method: 'POST'
+    })
+        .then(res => res.json())
+        .then(data => {
+            $('#orderPaymentInfoContainer').html('');
+            $('#orderPaymentInfoContainer').html(data.payment);
+            toastr.success("Đã huỷ apply voucher");
+        })
+}
+
 // setup signalR
 const conection = new signalR.HubConnectionBuilder().withUrl("/order-hub").build();
 
