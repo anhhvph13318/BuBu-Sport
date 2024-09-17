@@ -61,7 +61,7 @@ namespace GUI.Shared.VNPay
         public string SendRequest(string ipAddr, string orderId, int total)
         {
             //Get Config Info
-            string vnp_Returnurl = _settings.vnp_Returnurl; //URL nhan ket qua tra ve 
+            string vnp_Returnurl = $"http://localhost:5011/orders/payments/vnpay/success"; //URL nhan ket qua tra ve 
             string vnp_Url = _settings.vnp_Url; //URL thanh toan cua VNPAY 
             string vnp_TmnCode = _settings.vnp_TmnCode; //Ma định danh merchant kết nối (Terminal Id)
             string vnp_HashSecret = _settings.vnp_HashSecret; //Secret Key

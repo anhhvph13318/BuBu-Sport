@@ -7,7 +7,7 @@
 <link href="~/css/login.css" rel="stylesheet" />
 
 <div  class="login-body">
-    <div class="container right-panel-active">
+    <div class="container @((ViewBag.Action != null && ViewBag.Action == 2) ? "right-panel-active" : "")">
         <!-- Sign Up -->
         <!-- Sign In -->
         <div class="container__form container--signin">
@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="container__form container--signup">
-            <div  class="former" >
+            <div class="former" >
                 <form asp-action="Register" enctype="multipart/form-data">
                     <div class="w-full">
                         @* <h2 class="form__title text-center branding-">SMART HOME</h2> *@
@@ -101,10 +101,10 @@
     </div>
 </div>
 <script>
-    function pageLoaded() {
-        const signInBtn = document.getElementById("signIn");
-        signInBtn.click();
-    }
+    // function pageLoaded() {
+    //     const signInBtn = document.getElementById("signIn");
+    //     signInBtn.click();
+    // }
     window.onload = pageLoaded;
 </script>
 @section scripts{

@@ -1,20 +1,17 @@
 ﻿using GUI.Controllers.Shared;
 using GUI.Models.DTOs.Product_DTO.Views;
 using GUI.Shared.Common;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.ComponentModel;
-using System.Net;
 using GUI.Shared;
 using Newtonsoft.Json;
 using GUI.FileBase;
-using NuGet.Protocol;
 using GUI.Models.DTOs.Product_DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GUI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductController : ControllerSharedBase
     {
         private HttpService httpService;
@@ -24,6 +21,7 @@ namespace GUI.Controllers
             httpService = new();
         }
         // GET: ProductController
+        [AllowAnonymous]
         public async Task<ActionResult> Index(string s)
         {
             var obj = new GetListProductRequest();
@@ -40,6 +38,7 @@ namespace GUI.Controllers
         }   
 
         // GET: ProductController/Details/5
+        
         public ActionResult Details(int id)
         {
             return View();

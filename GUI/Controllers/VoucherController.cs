@@ -2,6 +2,7 @@
 using DATN_ACV_DEV.FileBase;
 using DATN_ACV_DEV.Model_DTO.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -9,6 +10,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("vouchers")]
+[Authorize(Roles = "Admin")]
 public class VoucherController : Controller
 {
     private const string URI = "http://localhost:5059";

@@ -907,7 +907,6 @@ textarea.input {
         background-color: #FFF;
         text-align: center;
         z-index: 20;
-        height: 200px
     }
 
         .product .product-body .product-category {
@@ -944,7 +943,7 @@ textarea.input {
 
         .product .product-body .product-rating {
             position: relative;
-            margin: 15px 0px 10px;
+            margin: 15px 0px 0px;
             height: 20px;
         }
 
@@ -2266,7 +2265,7 @@ textarea.input {
 }
 
 .order-summary .order-col > div:first-child {
-    max-width: 150px;
+    max-width: 300px;
     overflow-wrap: break-word;
 }
 
@@ -2298,4 +2297,57 @@ textarea.input {
     margin-top: 2rem;
     width: 100%;
     padding: 0.5rem;
+}
+
+.order-info{
+    max-width: 50%;
+    margin: 15px auto;
+}
+
+.orders-header {
+    text-transform: uppercase;
+    font-size: 24px;
+    text-align: center;
+}
+
+.order-title {
+    font-size: 16px;
+    text-align: center;
+}
+
+.form-search .input {
+    width: calc(100% - 100px);
+    border-radius: 40px 0px 0px 40px;
+    margin-right: -4px;
+}
+
+.form-search .search-btn {
+    height: 40px;
+    width: 100px;
+    background: #3ba7c4;
+    color: #FFF;
+    font-weight: 700;
+    border: none;
+    border-radius: 0px 40px 40px 0px;
+}
+
+.input[disabled] {
+    background: #c2c9d6;
+    color: #111213;
+}
+
+#voucher-list .table th {
+    /*width: 10%*/
+}
+
+#voucher-list .container {
+    width: auto
+}
+
+#voucherModal {
+    top: 15%;
+}
+
+.btn-voucher-counter{
+    display:none !important;
 }
