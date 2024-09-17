@@ -37,11 +37,11 @@
                                     }
                                 </div>
                             </div>
-                            @if (order.ShippingInfo != null && order.ShippingInfo.ShippingFee > 0)
+                            @if (order.ShippingInfo != null && !order.ShippingInfo.IsCustomerTakeYourSelf)
                             {
                                 <div class="order-col">
                                     <div>Phí giao hàng</div>
-                                    <div><p id="shipping-fee">order.ShippingInfo.ShippingFee</p></div>
+                                    <div><p id="shipping-fee">30000</p></div>
                                 </div>
                             }
                             <div class="order-col">
