@@ -1,0 +1,38 @@
+﻿@using GUI.Models.DTOs
+@model CategoryDto
+
+<div class="modal-header">
+    <h1 class="modal-title fs-5" id="categoryModalLabel">@(Model.Id != Guid.Empty ? "Cập nhật" : "Thêm mới")</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto">
+    <div class="row">
+        <div class="col-6">
+            <div>
+                <label class="form-label">Tên</label>
+                <input id="categoryName" value="@Model.Name" class="form-control" />
+                <span class="text-danger" id="validate-message" style="display: none">Chưa nhập tên</span>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-check">
+                <label class="form-label">&nbsp;</label>
+                <div>
+                    <input id="categoryStatus" type="checkbox" class="form-check-input"
+                           checked="@Model.StatusFlag" />
+                    <label class="form-check-label ps-1">Hoạt động</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    @if(Model.Id == Guid.Empty)
+    {
+        <button type="button" class="btn btn-primary" onclick="createCategory()">Thêm mới</button>
+    } else
+    {
+        <button type="button" class="btn btn-primary" onclick="updateCategory('@Model.Id')">Cập nhật</button>
+    }
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+</div>

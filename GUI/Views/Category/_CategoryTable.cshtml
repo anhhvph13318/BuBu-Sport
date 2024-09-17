@@ -1,0 +1,24 @@
+﻿@using GUI.Models.DTOs
+@model IEnumerable<CategoryDto>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Tên</th>
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>@category.StatusText</td>
+                <td>
+                    <button class="btn btn-primary me-1" onclick="showDeatail('@category.Id')">Chi tiết</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

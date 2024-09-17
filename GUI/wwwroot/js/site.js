@@ -29,3 +29,7 @@ const CHANGE_PAYMENT_METHOD = (method) => `${HOST_URL}/orders/payments?method=${
 const CHANGE_SHIPPING_METHOD = (method) => `${HOST_URL}/orders/shipping?method=${method}`;
 
 const GET_VNPAY_URL = `${HOST_URL}/orders/payments/vnpay`;
+
+// category
+const CREATE_CATEGORY = `${HOST_URL}/categories`;
+const GET_CATEGORY_DETAIL = (id) => `${HOST_URL}/categories/${id}`;
