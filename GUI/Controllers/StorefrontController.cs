@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using NuGet.Configuration;
 using System.Security.Policy;
 using GUI.Shared.VNPay;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.Customer_DTO;
@@ -22,15 +23,17 @@ using DATN_ACV_DEV.Entity;
 
 namespace GUI.Controllers
 {
+	[Authorize(Roles = "Guest")]
+	[AllowAnonymous]
 	public class StorefrontController : ControllerSharedBase
 	{
 		private HttpService httpService;
 		private VNPayService _VNPayService;
-		public StorefrontController(IOptions<CommonSettings> settings)
+		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService)
 		{
 			_settings = settings.Value;
 			httpService = new();
-			_VNPayService = new(settings);
+			_VNPayService = payService;
 		}
 
         [Route("/Home")]

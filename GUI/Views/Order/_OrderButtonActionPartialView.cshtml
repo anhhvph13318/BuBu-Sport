@@ -1,6 +1,19 @@
-﻿@model bool
-
+﻿@model int
 
 <div class="col-12">
-    <button class="btn btn-primary text-nowrap w-100" onclick="saveOrder(false)">@(Model ? "Cập nhật" : "Tạo")</button>
+    @if (Model == 0)
+    {
+        <button class="btn btn-primary text-nowrap w-100" onclick="saveOrder(false)">Tạo</button>
+    }
+
+    @if(Model == 1)
+    {
+        <button class="btn btn-primary text-nowrap w-100" onclick="saveOrder(false)">Cập nhật</button>
+    }
+
+    @if(Model == 2)
+    {
+        <button class="btn btn-primary text-nowrap w-100" onclick="vnpayCheckout()">Thanh toán</button>
+    }
+
 </div>

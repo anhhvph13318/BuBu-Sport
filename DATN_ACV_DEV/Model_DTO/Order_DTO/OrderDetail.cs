@@ -18,7 +18,7 @@ public class OrderDetail
     public string Code { get; set; } = string.Empty;
     public string OrderTypeName { get; set; } = string.Empty;
     public bool IsDraft { get; set; }
-    public int A { get; set; }
+    public int PaymentMethod { get; set; }
 }
 
 public class OrderItem

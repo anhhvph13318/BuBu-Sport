@@ -2,21 +2,18 @@
 using GUI.Models.DTOs.Customer_DTO;
 using GUI.Models.DTOs.Customer_DTO.Views;
 using GUI.Shared.Common;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.ComponentModel;
-using System.Net;
 using GUI.Shared;
 using Newtonsoft.Json;
 using GUI.FileBase;
-using NuGet.Protocol;
 using DATN_ACV_DEV.Entity;
 using GUI.Model_DTO.Customer_DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GUI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CustomerController : ControllerSharedBase
     {
         private HttpService httpService;

@@ -97,7 +97,7 @@
                 </div>
                 <hr />
                 <div class="row" id="orderButtonActionContainer">
-                    @await Html.PartialAsync("_OrderButtonActionPartialView", false)
+                    @await Html.PartialAsync("_OrderButtonActionPartialView", 0)
                 </div>
             </div>
         </div>
@@ -121,6 +121,7 @@
 </div>
 
 @section scripts {
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>
     <script src="~/js/orderPage.js"></script>

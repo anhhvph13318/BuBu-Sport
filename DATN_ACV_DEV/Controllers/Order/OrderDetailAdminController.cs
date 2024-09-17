@@ -33,6 +33,7 @@ public class OrderDetailAdminController : ControllerBase
                 Id = e.Id,
                 Code = e.OrderCode,
                 IsDraft = e.IsDraft,
+                PaymentMethod = e.PaymentMethod,
                 Customer = new CustomerInfo
                 {
                     Id = e.Customer.Id,
@@ -44,7 +45,7 @@ public class OrderDetailAdminController : ControllerBase
                 {
                     Name = e.AddressDelivery!.ReceiverName,
                     PhoneNumber = e.AddressDelivery!.ReceiverPhone,
-                    Address = $"{e.AddressDelivery.WardName}, {e.AddressDelivery.DistrictName}, {e.AddressDelivery.ProvinceName}"
+                    Address = e.AddressDelivery.ProvinceName
                 },
                 PaymentInfo = new PaymentInfo
                 {

@@ -12,6 +12,15 @@
 
         public static IDictionary<int, string> NextOrderStepProcessing(int currentStep)
         {
+            if(currentStep == -1)
+            {
+                return new Dictionary<int, string>()
+                {
+                    { 1, "Chuẩn bị hàng" },
+                    { 2, "Đang giao hàng" }
+                };
+            }
+
             var steps = new Dictionary<int, string>()
             {
                 { currentStep, OrderStepProcessing[currentStep] }
