@@ -1,4 +1,5 @@
-﻿@model List<GUI.Models.DTOs.Cart_DTO.CartDTO>
+﻿@using System.Globalization
+@model List<GUI.Models.DTOs.Cart_DTO.CartDTO>
 @{
 	Layout = "_LayoutStore";
 }
@@ -129,18 +130,22 @@
 @* 									<div>
 										<a class="change-quant quant-down" data-itemId="@item.CartDetailID">-</a><input class="input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" /><a class="change-quant quant-up" data-itemId="@item.CartDetailID">+</a>
 									</div> *@
-									<div class="sub-total" id="sub-@item.CartDetailID">@((int)(item.Quantity * item.Price))</div>
+									<div class="sub-total" data-value="@((int)(item.Quantity * item.Price))" id="sub-@item.CartDetailID">@(((int)(item.Quantity * item.Price)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</div>
 								</div>
 							}
 						}
 					</div>
 					<div class="order-col">
-						<div>Shipping</div>
-						<div><strong id="shipping-fee">30000</strong></div>
+						<div>Phí giao hàng</div>
+						<div><strong id="shipping-fee">@(30000.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
+					</div>
+					<div class="order-col">
+						<div>Giảm giá</div>
+						<div><strong id="discount-value">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
 					</div>
 					<div class="order-col">
 						<div><strong>TỔNG</strong></div>
-						<div><strong class="order-total">@((int)(ViewBag.Sum > 0 ? (ViewBag.Sum + 30000) : 0))</strong></div>
+						<div><strong class="order-total">@(((int)(ViewBag.Sum > 0 ? (ViewBag.Sum + 30000) : 0)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
 					</div>
 				</div>
 				<div class="shipping-method">
@@ -207,6 +212,10 @@
 						</div>
 					</div> *@
 				</div>
+				<div class="form-search">
+					<input class="input" name="s" id="voucherCode" placeholder="Mã giảm giá" value="" disabled>
+					<button class="search-btn" id="voucher-btn" data-toggle="modal" data-target="#voucherModal">Áp dụng</button>
+				</div>
 				@if (ViewBag.Sum > 0)
 				{
 @* 					<div class="input-checkbox">
@@ -226,3 +235,20 @@
 	<!-- /container -->
 </div>
 <!-- /SECTION -->
+
+<div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<strong class="modal-title" id="voucherModalLabel">Danh sách voucher khả dụng</strong>
+				@* <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+			</div>
+		</div>
+	</div>
+</div>

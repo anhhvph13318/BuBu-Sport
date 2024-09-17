@@ -16,6 +16,9 @@ using System.Security.Policy;
 using GUI.Shared.VNPay;
 using System;
 using GUI.Models.DTOs.Order_DTO;
+using GUI.Models.Customer_DTO;
+using DATN_ACV_DEV.Model_DTO.Voucher_DTO;
+using DATN_ACV_DEV.Entity;
 
 namespace GUI.Controllers
 {
@@ -91,7 +94,39 @@ namespace GUI.Controllers
 					}
 				}
 
-				ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
+				var accountId = HttpContext.Session.GetString("CurrentUserId");
+				HttpContext.Session.Remove("CurrentUserId");
+				ViewBag.AccountId = accountId;
+				if (!string.IsNullOrEmpty(accountId))
+				{
+					try
+					{
+						var req = new AccountCustomerRequest { Id = Guid.Parse(accountId) };
+						var URLAcc = _settings.APIAddress + "api/AccountCustomer/Process";
+						var paramAcc = JsonConvert.SerializeObject(req);
+						var resAcc = await httpService.PostAsync(URLAcc, paramAcc, HttpMethod.Post, "application/json");
+						var resultAcc = JsonConvert.DeserializeObject<BaseResponse<AccountCustomerResponse>>(resAcc) ?? new();
+						if (resultAcc != null && resultAcc.Status == "200" && resultAcc.Data != null) {
+							if (!resultAcc.Data.IsCustomer)
+							{
+								return RedirectToAction("Index", "Home");
+							}
+							var CustomerData = resultAcc.Data.Customer;
+							if (CustomerData != null)
+							{
+								ViewBag.CustomerName = CustomerData.Name ?? CustomerData.Phone;
+								ViewBag.CustomerId = CustomerData.Id;
+								ViewBag.CustomerPhone = CustomerData.Phone;
+							}
+						}
+					}
+					catch (Exception)
+					{
+
+					}
+				}
+
+                ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
 				ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
 				ViewBag.PriceTo = max ?? result.Data.HighestPrice;
 				ViewBag.Take = t <= 0 ? 20 : t;
@@ -230,6 +265,7 @@ namespace GUI.Controllers
 		{
 			if (TempData["ConfirmedCartItems"] != null)
 			{
+				HttpContext.Session.SetString("SelectedVoucher","");
 				TempData.Keep("ConfirmedCartItems");
 				List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
 				var sum = model.Sum(c => c.Price * c.Quantity);
@@ -365,6 +401,22 @@ namespace GUI.Controllers
 
 				sum += obj.getatstore ? 0 : 30000;
 
+				var voucherString = HttpContext.Session.GetString("SelectedVoucher");
+				var discountAmount = 0m;
+				if (!string.IsNullOrEmpty(voucherString))
+				{
+					var voucher = JsonConvert.DeserializeObject<VoucherDTO>(voucherString);
+					if (voucher.Unit == VoucherUnit.Percent)
+					{
+						discountAmount = sum / 100 * voucher.Discount;
+						discountAmount = discountAmount <= voucher.MaxDiscount ? discountAmount : voucher.MaxDiscount;
+					}
+					else
+					{
+						discountAmount = voucher.Discount;
+					}
+				}
+
 				var req = new OrderRequest
 				{
 					cartDetailId = cartDetails,
@@ -377,6 +429,8 @@ namespace GUI.Controllers
 					addressDelivery = obj.address,
 					name = obj.name,
 					getAtStore = obj.getatstore,
+					amountShip = obj.getatstore ? 30000 : 0,
+					totalAmountDiscount = discountAmount
 				};
 				URL = _settings.APIAddress + "api/ConfirmOrder/Process";
 				var param = JsonConvert.SerializeObject(req);
@@ -444,6 +498,53 @@ namespace GUI.Controllers
 			{
 				success = false
 			});
+		}
+
+		[HttpPost("/LogOutStorefront")]
+		public IActionResult LogOut()
+		{
+			TempData.Clear();
+			HttpContext.Session.Remove("CurrentUserId");
+			return Ok();
+		}
+
+		[HttpPost("ApplyVoucher")]
+		public async Task<JsonResult> ApplyVoucher(Guid vId)
+		{
+			try
+			{
+				var req = new DetailVoucherRequest();
+				//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+				req.ID = vId;
+				var URL = _settings.APIAddress + "api/DetailVoucher/Process";
+				var param = JsonConvert.SerializeObject(req);
+				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+				var result = JsonConvert.DeserializeObject<BaseResponse<DetailVoucherResponse>>(res) ?? new();
+				if (result.Status == "200")
+				{
+					var detail = result.Data.voucherDetail;
+					HttpContext.Session.SetString("SelectedVoucher", JsonConvert.SerializeObject(detail));
+					return Json(new
+					{
+						success = true,
+						code = detail.Code,
+						discount = detail.Discount,
+						maxDiscount = detail.Unit == VoucherUnit.Percent ? detail.MaxDiscount : -1,
+					});
+					//return Ok(new { userId });
+				}
+				return Json(new
+				{
+					success = false,
+				});
+			}
+			catch (Exception)
+			{
+				return Json(new
+				{
+					success = false,
+				});
+			}
 		}
 
 		public class CreateOrderObject

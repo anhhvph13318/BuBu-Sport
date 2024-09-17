@@ -27,7 +27,8 @@
                         <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                     }
                     <td>
-                        <button class="btn btn-primary text-nowrap me-2" onclick="applyVoucher('@voucher.Id')">Áp dụng</button>
+                        <button class="btn btn-primary text-nowrap me-2 btn-voucher-counter" onclick="applyVoucher('@voucher.Id')">Áp dụng</button>
+                        <button class="btn btn-primary text-nowrap me-2 d-none btn-apply-voucher" data-id="@voucher.Id">Áp dụng</button>
                     </td>
                 </tr>
             }

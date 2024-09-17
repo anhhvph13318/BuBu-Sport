@@ -49,10 +49,10 @@ namespace DATN_ACV_DEV.Controllers
             {
                 if (_request.AdminId == null && _request.id == null)
                 {
-                    _Cart = _context.TbCarts.Where(c => c.CreateBy == _request.AdminId).FirstOrDefault();
+                    _Cart = _context.TbCarts.Where(c => c.AccountId == _request.UserId).FirstOrDefault();
                     if (_Cart != null)
                     {
-                        var Model = _context.TbCartDetails.Include(a => a.Product).Where(c => c.CartId == _Cart.Id).ToList();
+                        var Model = _context.TbCartDetails.Include(a => a.Product).Where(c => c.CartId == _Cart.Id && c.Product.Quantity > 0).ToList();
                         if (DateTime.Now > _Cart.EndDate)
                         {
                             Model.ForEach(c =>
@@ -77,8 +77,8 @@ namespace DATN_ACV_DEV.Controllers
                             LstCartItem = _mapper.Map<List<CartDTO>>(Model);
                             _response.CartItem = LstCartItem;
                         }
+                        _Cart.EndDate = DateTime.Now.AddDays(5);
                     }
-                    _Cart.EndDate = DateTime.Now.AddDays(5);
                     _context.SaveChanges();
                 }
                 else if(_request.id.Any())
