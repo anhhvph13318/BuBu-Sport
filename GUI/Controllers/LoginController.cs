@@ -68,7 +68,7 @@ namespace GUI.Controllers
                 TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
 
                 return result.Data != null && result.Data.Role == 0
-                    ? RedirectToAction("Index", "Home")
+                    ? RedirectToAction("Store", "Storefront")
                     : RedirectToAction("Create", "Order");
             }
             else

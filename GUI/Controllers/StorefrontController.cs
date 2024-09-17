@@ -99,7 +99,6 @@ namespace GUI.Controllers
 
 				var accountId = HttpContext.Session.GetString("CurrentUserId");
 				HttpContext.Session.Remove("CurrentUserId");
-				ViewBag.AccountId = accountId;
 				if (!string.IsNullOrEmpty(accountId))
 				{
 					try
@@ -117,6 +116,7 @@ namespace GUI.Controllers
 							var CustomerData = resultAcc.Data.Customer;
 							if (CustomerData != null)
 							{
+								ViewBag.AccountId = accountId;
 								ViewBag.CustomerName = CustomerData.Name ?? CustomerData.Phone;
 								ViewBag.CustomerId = CustomerData.Id;
 								ViewBag.CustomerPhone = CustomerData.Phone;
