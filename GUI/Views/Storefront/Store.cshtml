@@ -247,10 +247,10 @@
                                         @if (item.PriceNet != null)
                                         {
                                             <h4 class="product-price">
-                                                @(((decimal)item.PriceNet).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
-                                                <del class="product-old-price">
+                                                @(((decimal)item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                                @* <del class="product-old-price">
                                                     @(item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
-                                                </del>
+                                                </del> *@
                                             </h4>
                                         }
                                         else

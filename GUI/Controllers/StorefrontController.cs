@@ -415,7 +415,7 @@ namespace GUI.Controllers
 					}
 				}
 
-				sum += obj.getatstore ? 0 : 30000;
+				sum += 30000;
 
 				var voucherString = HttpContext.Session.GetString("SelectedVoucher");
 				var discountAmount = 0m;
@@ -446,8 +446,8 @@ namespace GUI.Controllers
 					phoneNummber = obj.phone,
 					addressDelivery = obj.address,
 					name = obj.name,
-					getAtStore = obj.getatstore,
-					amountShip = obj.getatstore ? 30000 : 0,
+					getAtStore = false,
+					amountShip = 30000,
 					totalAmountDiscount = discountAmount,
 					voucherID = new List<Guid> { voucherId }
 				};
@@ -461,7 +461,7 @@ namespace GUI.Controllers
 					if (obj.isVNP)
 					{
 						var ipAddr = GetClientIP(HttpContext);
-						var url = _VNPayService.SendRequest(ipAddr, result.Data.id.ToString(), sum);
+						var url = _VNPayService.SendRequest(ipAddr, result.Data.orderCode ?? result.Data.id.ToString(), sum);
 						return Ok(new
 						{
 							success = true,
@@ -475,7 +475,7 @@ namespace GUI.Controllers
 						{
 							success = true,
 							redirect = false,
-							orderId = result.Data.id,
+							orderId = result.Data.orderCode ?? result.Data.id.ToString(),
 						});
 					}
 				}
@@ -717,7 +717,6 @@ namespace GUI.Controllers
 			public string? address { get; set; }
             public string? district { get; set; }
             public string? city { get; set; }
-			public bool getatstore { get; set; }
 			public bool isVNP { get; set; }
 			public List<Guid> ids { get; set; } = new();
         }
