@@ -22,6 +22,10 @@
 					</ul>
 					<h2 class="text-uppercase">Mua hàng thành công</h2>
 					<p>Cảm ơn bạn đã ủng hộ shop!</p>
+					@if (!string.IsNullOrEmpty(ViewBag.OrderId))
+					{
+						<h4>Mã đơn hàng: @ViewBag.OrderId</h4>
+					}
 					<a class="primary-btn cta-btn" href="Store">Tiếp tục mua hàng</a>
 				</div>
 			</div>

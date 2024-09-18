@@ -7,16 +7,13 @@ namespace DATN_ACV_DEV.Model_DTO.AddressDelivery
     {
         [Required]
         public string provinceName { get; set; }
-        [Required]
-        public int provinceId { get; set; }
+        public int? provinceId { get; set; }
         [Required]
         public string districName { get; set; }
-        [Required]
-        public int districId { get; set; }
+        public int? districId { get; set; }
         [Required]
         public string wardName { get; set; }
-        [Required]
-        public string wardCode { get; set; }
+        public string? wardCode { get; set; }
         [Required]
         public bool status { get; set; }
 

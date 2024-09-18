@@ -16,6 +16,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
 	<!-- Bootstrap -->
+	@* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
 	<link type="text/css" rel="stylesheet" href="~/storefront/css/bootstrap.min.css" />
 
 	<!-- Slick -->
@@ -42,9 +43,14 @@
 					<li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
 					<li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
 				</ul> *@
-				<ul class="header-links pull-right">
+				<ul class="header-links pull-right anonymous">
 					@* <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> *@
 					<li><a href="/SignIn"><i class="fa fa-user-o"></i> Đăng nhập</a></li>
+					<li><a href="/SignIn?action=2"><i class="fa fa-user-o"></i> Đăng ký</a></li>
+				</ul>
+				<ul class="header-links pull-right signed" style="display:none">
+					<li><a href="/CustomerInfo"><i class="fa fa-user-o"></i> <span id="customer-name">Khách hàng</span></a></li>
+					<li><a id="sign-out" href=""><i class="fa fa-user-o"></i> Đăng xuất</a></li>
 				</ul>
 			</div>
 		</div>
@@ -78,23 +84,23 @@
 					<div class="col-md-3 clearfix">
 						<div class="header-ctn">
 							<!-- Wishlist -->
-@* 							<div>
-								<a href="#">
-									<i class="fa fa-heart-o"></i>
-									<span>Your Wishlist</span>
-									<div class="qty">2</div>
+							<div>
+
+								<a href="/orderchecking" style="width:115px">
+									<i class="fa fa-file"></i>
+									<span>Tra cứu đơn hàng</span>
 								</a>
-							</div> *@
+							</div>
 							<!-- /Wishlist -->
 							<!-- Cart -->
 							<div class="dropdown">
 								<a href="/cart">
-								@* <a class="dropdown-toggle" href="/checkout" data-toggle="dropdown" aria-expanded="true"> *@
+									@* <a class="dropdown-toggle" href="/checkout" data-toggle="dropdown" aria-expanded="true"> *@
 									<i class="fa fa-shopping-cart"></i>
 									<span>Giỏ hàng</span>
 									@* <div class="qty">3</div> *@
 								</a>
-								<div class="cart-dropdown">
+								@* <div class="cart-dropdown">
 									<div class="cart-list">
 										<div class="product-widget">
 											<div class="product-img">
@@ -126,8 +132,9 @@
 										<a href="#">View Cart</a>
 										<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
 									</div>
-								</div>
+								</div> *@
 							</div>
+
 							<!-- /Cart -->
 							<!-- Menu Toogle -->
 							<div class="menu-toggle">
@@ -284,6 +291,7 @@
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	<script src="~/storefront/js/jquery.min.js" asp-append-version="true"></script>
 	<script src="~/storefront/js/bootstrap.min.js" asp-append-version="true"></script>
+	@* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
 	<script src="~/storefront/js/slick.min.js" asp-append-version="true"></script>
 	<script src="~/storefront/js/nouislider.min.js" asp-append-version="true"></script>
 	<script src="~/storefront/js/jquery.zoom.min.js" asp-append-version="true"></script>
@@ -291,3 +299,45 @@
 	<script src="~/storefront/js/main.js" asp-append-version="true"></script>
 </body>
 </html>
+	<script>
+		function setCookie(cname, cvalue, exdays) {
+			const d = new Date();
+			d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+			let expires = "expires=" + d.toUTCString();
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		}
+
+		function getCookie(cname) {
+			let name = cname + "=";
+			let ca = document.cookie.split(';');
+			for (let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+
+
+	</script>
+	@if (!string.IsNullOrEmpty(ViewBag.AccountId))
+	{
+		<script>
+			let id = "@ViewBag.CustomerId";
+			let name = "@ViewBag.CustomerName"
+			let phone = "@ViewBag.CustomerPhone"
+			if (id) {
+				setCookie("user-id", id, 60);
+			}
+			setCookie("aId", "@ViewBag.AccountId", 60)
+			setCookie("cName", name, 60);
+			setCookie("cPhone", phone, 60);
+			$('#customer-name').text(name);
+			$(".anonymous").hide();
+			$(".signed").show();
+		</script>
+	}

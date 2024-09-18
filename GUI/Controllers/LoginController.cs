@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using GUI.Models.DTOs.Login_DTO;
 using GUI.Model_DTO.User_DTO;
 using DATN_ACV_DEV.Model_DTO.Account_DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using DATN_ACV_DEV.Entity;
 using System.Security.Claims;
@@ -31,11 +32,12 @@ namespace GUI.Controllers
         }
 
         [Route("/SignIn")]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login([FromQuery] int? action)
         {
             if (HttpContext.User.Identity != null && HttpContext.User.Identity.IsAuthenticated)
                 await HttpContext.SignOutAsync();
 
+            ViewBag.Action = action;
             return View();
         }
         [HttpPost]
@@ -66,7 +68,7 @@ namespace GUI.Controllers
                 TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
 
                 return result.Data != null && result.Data.Role == 0
-                    ? RedirectToAction("Index", "Home")
+                    ? RedirectToAction("Store", "Storefront")
                     : RedirectToAction("Create", "Order");
             }
             else
@@ -103,9 +105,9 @@ namespace GUI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
-                return View();
+                return RedirectToAction(nameof(Login));
             }
         }
 

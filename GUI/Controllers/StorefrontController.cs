@@ -15,6 +15,11 @@ using NuGet.Configuration;
 using System.Security.Policy;
 using GUI.Shared.VNPay;
 using Microsoft.AspNetCore.Authorization;
+using System;
+using GUI.Models.DTOs.Order_DTO;
+using GUI.Models.Customer_DTO;
+using DATN_ACV_DEV.Model_DTO.Voucher_DTO;
+using DATN_ACV_DEV.Entity;
 
 namespace GUI.Controllers
 {
@@ -38,9 +43,23 @@ namespace GUI.Controllers
 		}
 
 		[Route("/Success")]
-		public IActionResult Success()
+		public IActionResult Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash)
 		{
-			return View();
+			ViewBag.OrderId = vnp_TxnRef;
+			if (vnp_TransactionStatus == "00" && !string.IsNullOrEmpty(vnp_SecureHash))
+			{
+				var request = new OrderStatusRequest
+				{
+					orderId = new Guid(vnp_TxnRef),
+					paymentMethod = 2,
+					paymentStatus = 1
+				};
+				var URL = _settings.APIAddress + "api/ConfirmPayment/Process";
+				var param = JsonConvert.SerializeObject(request);
+				httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+			}
+
+            return View();
 		}
 
 		[Route("/Store")]
@@ -62,6 +81,7 @@ namespace GUI.Controllers
 				var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
 				t = t == 0 ? 20 : t;
 				var totalPages = ((result.Data.TotalCount) / t) - 1;
+				totalPages = totalPages > 0 ? totalPages : 0;
 				p = p >= totalPages ? totalPages : p;
 				var topPageDisplay = 3;
 				var startPage = p > 0 ? p - 1 : p;
@@ -77,7 +97,39 @@ namespace GUI.Controllers
 					}
 				}
 
-				ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
+				var accountId = HttpContext.Session.GetString("CurrentUserId");
+				HttpContext.Session.Remove("CurrentUserId");
+				if (!string.IsNullOrEmpty(accountId))
+				{
+					try
+					{
+						var req = new AccountCustomerRequest { Id = Guid.Parse(accountId) };
+						var URLAcc = _settings.APIAddress + "api/AccountCustomer/Process";
+						var paramAcc = JsonConvert.SerializeObject(req);
+						var resAcc = await httpService.PostAsync(URLAcc, paramAcc, HttpMethod.Post, "application/json");
+						var resultAcc = JsonConvert.DeserializeObject<BaseResponse<AccountCustomerResponse>>(resAcc) ?? new();
+						if (resultAcc != null && resultAcc.Status == "200" && resultAcc.Data != null) {
+							if (!resultAcc.Data.IsCustomer)
+							{
+								return RedirectToAction("Index", "Home");
+							}
+							var CustomerData = resultAcc.Data.Customer;
+							if (CustomerData != null)
+							{
+								ViewBag.AccountId = accountId;
+								ViewBag.CustomerName = CustomerData.Name ?? CustomerData.Phone;
+								ViewBag.CustomerId = CustomerData.Id;
+								ViewBag.CustomerPhone = CustomerData.Phone;
+							}
+						}
+					}
+					catch (Exception)
+					{
+
+					}
+				}
+
+                ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
 				ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
 				ViewBag.PriceTo = max ?? result.Data.HighestPrice;
 				ViewBag.Take = t <= 0 ? 20 : t;
@@ -91,6 +143,33 @@ namespace GUI.Controllers
 			}
 			catch (Exception)
 			{
+			}
+			return View(model);
+		}
+
+		[Route("/OrderChecking")]
+		public async Task<IActionResult> OrderChecking(string s)
+		{
+			List<OrderDetail> model = null;
+			ViewBag.OrderSearch = s;
+
+            if (!string.IsNullOrEmpty(s))
+			{
+				using var httpClient = new HttpClient();
+				httpClient.BaseAddress = new Uri(_settings.APIAddress);
+				var rawResponse = await httpClient.GetAsync($"/api/admin/orders/search/{s}");
+				try
+				{
+					var response =
+								JsonConvert.DeserializeObject<BaseResponse<List<OrderDetail>>>(
+									await rawResponse.Content.ReadAsStringAsync());
+					model = response.Data;
+
+                }
+				catch (Exception)
+				{
+
+				}
 			}
 			return View(model);
 		}
@@ -111,6 +190,7 @@ namespace GUI.Controllers
 				var req = new CartItemRequest();
 				//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 				req.UserId = userId;
+				req.id = ids;
 				var URL = _settings.APIAddress + "api/CartItem/Process";
 				var param = JsonConvert.SerializeObject(req);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
@@ -167,7 +247,7 @@ namespace GUI.Controllers
             }
             var req = new AddToCartRequest();
             //req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
-            req.UserId = userId;
+            req.UserId = Guid.Empty;
             req.Quantity = 1;
             req.ProductId = prId;
 			req.incre = false;
@@ -184,30 +264,13 @@ namespace GUI.Controllers
         }
 
         [Route("/Checkout")]
-		//public async Task<IActionResult> Checkout()
-		//{
-		//	var model = new List<CartDTO>();
-		//	var sum = 0m;
-		//	var req = new CartItemRequest();
-		//	req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
-		//	var URL = _settings.APIAddress + "api/CartItem/Process";
-		//	var param = JsonConvert.SerializeObject(req);
-		//	var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-		//	var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
-		//	if (result.Status == "200")
-		//	{
-		//		model = result.Data.CartItem;
-		//		sum = model.Sum(c => c.Price * c.Quantity);
-		//	}
-		//	ViewBag.Sum = sum;
-		//	return View(model);
-		//}
 		public async Task<IActionResult> Checkout()
 		{
 			if (TempData["ConfirmedCartItems"] != null)
 			{
+				HttpContext.Session.SetString("SelectedVoucher","");
+				TempData.Keep("ConfirmedCartItems");
 				List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
-				//TempData.Keep("ConfirmedCartItems");
 				var sum = model.Sum(c => c.Price * c.Quantity);
 				if (sum > 0)
 				{
@@ -310,10 +373,15 @@ namespace GUI.Controllers
 			{
 				addrId = new Guid();
 			}
-			if (cartDetails != null && cartDetails.Any())
+            
+            if (cartDetails != null && cartDetails.Any())
 			{
 				var sum = 0m;
-				if (userId != Guid.Empty)
+                if (TempData["ConfirmedCartItems"] != null)
+                {
+                    List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
+                    sum = model.Sum(c => c.Price * c.Quantity);
+                } else if (userId != Guid.Empty)
 				{
 					var reqItems = new CartItemRequest();
 					reqItems.UserId = userId;
@@ -336,6 +404,22 @@ namespace GUI.Controllers
 
 				sum += obj.getatstore ? 0 : 30000;
 
+				var voucherString = HttpContext.Session.GetString("SelectedVoucher");
+				var discountAmount = 0m;
+				if (!string.IsNullOrEmpty(voucherString))
+				{
+					var voucher = JsonConvert.DeserializeObject<VoucherDTO>(voucherString);
+					if (voucher.Unit == VoucherUnit.Percent)
+					{
+						discountAmount = sum / 100 * voucher.Discount;
+						discountAmount = discountAmount <= voucher.MaxDiscount ? discountAmount : voucher.MaxDiscount;
+					}
+					else
+					{
+						discountAmount = voucher.Discount;
+					}
+				}
+
 				var req = new OrderRequest
 				{
 					cartDetailId = cartDetails,
@@ -348,6 +432,8 @@ namespace GUI.Controllers
 					addressDelivery = obj.address,
 					name = obj.name,
 					getAtStore = obj.getatstore,
+					amountShip = obj.getatstore ? 30000 : 0,
+					totalAmountDiscount = discountAmount
 				};
 				URL = _settings.APIAddress + "api/ConfirmOrder/Process";
 				var param = JsonConvert.SerializeObject(req);
@@ -373,6 +459,7 @@ namespace GUI.Controllers
 						{
 							success = true,
 							redirect = false,
+							orderId = result.Data.id,
 						});
 					}
 				}
@@ -414,6 +501,53 @@ namespace GUI.Controllers
 			{
 				success = false
 			});
+		}
+
+		[HttpPost("/LogOutStorefront")]
+		public IActionResult LogOut()
+		{
+			TempData.Clear();
+			HttpContext.Session.Remove("CurrentUserId");
+			return Ok();
+		}
+
+		[HttpPost("ApplyVoucher")]
+		public async Task<JsonResult> ApplyVoucher(Guid vId)
+		{
+			try
+			{
+				var req = new DetailVoucherRequest();
+				//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+				req.ID = vId;
+				var URL = _settings.APIAddress + "api/DetailVoucher/Process";
+				var param = JsonConvert.SerializeObject(req);
+				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+				var result = JsonConvert.DeserializeObject<BaseResponse<DetailVoucherResponse>>(res) ?? new();
+				if (result.Status == "200")
+				{
+					var detail = result.Data.voucherDetail;
+					HttpContext.Session.SetString("SelectedVoucher", JsonConvert.SerializeObject(detail));
+					return Json(new
+					{
+						success = true,
+						code = detail.Code,
+						discount = detail.Discount,
+						maxDiscount = detail.Unit == VoucherUnit.Percent ? detail.MaxDiscount : -1,
+					});
+					//return Ok(new { userId });
+				}
+				return Json(new
+				{
+					success = false,
+				});
+			}
+			catch (Exception)
+			{
+				return Json(new
+				{
+					success = false,
+				});
+			}
 		}
 
 		public class CreateOrderObject
