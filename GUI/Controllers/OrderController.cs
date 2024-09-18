@@ -152,6 +152,9 @@ public class OrderController : Controller
         else
             order.Status = 1; // set status to prepare
 
+        order.PaymentInfo.ShippingFee = order.IsCustomerTakeYourSelf ? 0 : 30000;
+
+
         // submit to database
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);

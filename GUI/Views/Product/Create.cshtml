@@ -1,84 +1,75 @@
 ﻿@model GUI.Models.DTOs.Product_DTO.CreateProductRequest
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm sản phẩm";
 }
 
-<h1>Create</h1>
-
-<h4>CreateProductRequest</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">Tên sản phẩm</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Code" class="control-label">Mã sản phẩm</label>
-                <input asp-for="Code" class="form-control" />
-                <span asp-validation-for="Code" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label">Giá sản phẩm</label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label">Mô tả</label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PriceNet" class="control-label">Giá bán</label>
-                <input asp-for="PriceNet" class="form-control" />
-                <span asp-validation-for="PriceNet" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+<div class="container">
+    <h1>Thêm sản phẩm mới</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Tên sản phẩm</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Code" class="control-label">Mã sản phẩm</label>
+                    <input asp-for="Code" class="form-control" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label">Giá sản phẩm</label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Mô tả</label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PriceNet" class="control-label">Giá bán</label>
+                    <input asp-for="PriceNet" class="form-control" />
+                    <span asp-validation-for="PriceNet" class="text-danger"></span>
+                </div>
+                @* <div class="form-group">
                 <label asp-for="CategoryId" class="control-label">Danh mục</label>
                 <select class="form-select" aria-label="Default select example">
-                    @* @foreach (var item in )
-                    {
-                        if (Selected)
-                        {
-                            <option value="@Id" selected>@Name</option>
-                        }
-                        else
-                        {
-                            <option value="@Id">@Name</option>
-                        }
-                    } *@
-                    <option selected>Open this select menu</option>
-                    <option value="B542880B-F661-456A-9ADD-265B05C1B2BB">One</option>
-                    <option value="40B3DF22-93E8-4FD9-992E-2FEF21AD8F9F">Two</option>
+                <option selected>Open this select menu</option>
+                <option value="B542880B-F661-456A-9ADD-265B05C1B2BB">One</option>
+                <option value="40B3DF22-93E8-4FD9-992E-2FEF21AD8F9F">Two</option>
                 </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-            @* <div class="form-group">
+                </div> *@
+                @* <div class="form-group">
                 <label asp-for="UserCode" class="control-label">Mã Nhân Viên</label>
                 <input asp-for="UserCode" class="form-control" />
                 <span asp-validation-for="UserCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+                </div>
+                <div class="form-group">
                 <label asp-for="InActive" class="control-label">Hoạt động</label>
                 <input type="checkbox" asp-for="InActive" class="form-check-input" />
                 <span asp-validation-for="InActive" class="text-danger"></span>
-            </div> *@
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Thêm mới" class="btn btn-primary" />
-            </div>
-        </form>
+                </div> *@
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Thêm mới" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Quay lại</a>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Quay lại</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

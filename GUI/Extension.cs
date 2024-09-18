@@ -1,8 +1,28 @@
 ﻿using GUI.Models.DTOs.Order_DTO;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace GUI
 {
+    public class UserSession
+    {
+        private readonly IHttpContextAccessor _http;
+
+        public UserSession(IHttpContextAccessor http)
+        {
+            _http = http;
+        }
+
+        public Guid UserId
+        {
+            get
+            {
+                string id = _http.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception();
+                return Guid.Parse(id);
+            }
+        }
+    }
+
     public static class Extension
     {
         private const string CURRENT_ORDER = "CURRENT_ORDER";

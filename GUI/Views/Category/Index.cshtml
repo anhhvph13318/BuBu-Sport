@@ -1,0 +1,42 @@
+﻿@using GUI.Models.DTOs
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+@model IEnumerable<CategoryDto>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <input class="form-control" placeholder="Tên phân loại ..." id="categorySearch" />
+        </div>
+        <div class="col-6">
+            <button class="btn btn-primary ms-1 me-1" onclick="search()">Tìm kiếm</button>
+            <button class="btn btn-danger ms-1 me-1" onclick="reset()">Reset</button>
+        </div>
+    </div>
+    <hr />
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="clear()">Thêm mới</button>
+    </div>
+    <div id="categoryTable">
+        @await Html.PartialAsync("_CategoryTable", Model)
+    </div>
+</div>
+
+
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" id="modalContent">
+            @await Html.PartialAsync("_CategoryModal", new CategoryDto())
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/lib/toastr/toastr.min.js"></script>
+    <script src="~/js/category.js"></script>
+}
