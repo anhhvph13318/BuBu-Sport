@@ -4,83 +4,109 @@
     ViewData["Title"] = "Edit";
 }
 
-<h4>Sửa sản phẩm</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @* <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" disabled />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">Tên sản phẩm</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div> 
-            <div class="form-group">
-                <label asp-for="Code" class="control-label">Mã sản phẩm</label>
-                <input asp-for="Code" class="form-control" />
-                <span asp-validation-for="Code" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label">Giá sản phẩm</label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label">Mô tả</label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PriceNet" class="control-label">Giá bán</label>
-                <input asp-for="PriceNet" class="form-control" />
-                <span asp-validation-for="PriceNet" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label">Danh mục</label>
-                <select id="categorySelect" asp-for="CategoryId" class="form-select" aria-label="Default select example">
-                    <option  value="">Chọn danh mục</option>
-                    @foreach (var item in ViewBag.Categories)
-                    {
-                        if (Model.CategoryId == item.Id)
-                        {
-                            <option value="@item.Id" selected >@item.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@item.Id" >@item.Name</option>
+<div class="container mt-5">
+    <form asp-action="Edit" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm">
+        <h2 class="text-center mb-4">Chỉnh sửa sản phẩm</h2>
 
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <!-- Cột hiển thị thông tin sản phẩm -->
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                    <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Code" class="form-label">Mã sản phẩm</label>
+                    <input asp-for="Code" class="form-control" placeholder="Nhập mã sản phẩm" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Price" class="form-label">Giá sản phẩm</label>
+                    <input asp-for="Price" class="form-control" placeholder="Nhập giá sản phẩm" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Description" class="form-label">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control" placeholder="Nhập mô tả"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="PriceNet" class="form-label">Giá bán</label>
+                    <input asp-for="PriceNet" class="form-control" placeholder="Nhập giá bán" />
+                    <span asp-validation-for="PriceNet" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                    <select id="categorySelect" asp-for="CategoryId" class="form-select">
+                        <option value="">Chọn danh mục</option>
+                        @foreach (var item in ViewBag.Categories)
+                        {
+                            if (Model.CategoryId == item.Id)
+                            {
+                                <option value="@item.Id" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+
+                            }
                         }
-                    }
-                </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Nút Save và Quay trở lại -->
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Quay trở lại</a>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="spinner-border spinner-border-sm" id="spinner" role="status" aria-hidden="true" style="display:none;"></span>
+                        Save
+                    </button>
+                </div>
             </div>
-            @* <div class="form-group">
-                <label asp-for="Status" class="control-label">Hoạt động</label>
-                <input type="checkbox" asp-for="Status" class="form-check-input" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="UrlImage" class="control-label">Ảnh sản phẩm</label>
-                <input type="file" id="fileInput" class="form-control" accept="image/*" />
-                <img id="imagePreview" src="@Model.Image" alt="Image preview" style="display:none; max-width: 100%; height: auto;" />
-                <input type="hidden" asp-for="UrlImage" value="@Model.Image" id="urlImage" />
-                @* <span asp-validation-for="UrlImage" class="text-danger"></span> *@
+
+            <!-- Cột hiển thị ảnh sản phẩm -->
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <div>
+                    <div class="form-group">
+                        <label asp-for="UrlImage" class="form-label">Ảnh sản phẩm</label>
+                        <input type="file" id="fileInput" class="form-control" accept="image/*" onchange="previewImage();" />
+                        <img id="imagePreview" src="@Model.Image" alt="Image preview" style="display:none; max-width: 100%; height: auto;" class="mt-3 img-thumbnail" />
+                        <input type="hidden" asp-for="UrlImage" value="@Model.Image" id="urlImage" />
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>
+    // Hiển thị preview ảnh sau khi chọn file
+    function previewImage() {
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('imagePreview');
+        const urlImage = document.getElementById('urlImage');
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+</script>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>

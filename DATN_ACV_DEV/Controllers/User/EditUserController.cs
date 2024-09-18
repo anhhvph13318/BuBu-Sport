@@ -44,9 +44,9 @@ namespace DATN_ACV_DEV.Controllers.User
                 _User = _context.TbUsers.Where(p => p.Id == _request.ID).FirstOrDefault();
                 if (_User != null)
                 {
-                    //_User.UserName = _request.UserName;
+                    _User.UserName = _request.UserName;
                     _User.UserCode = _request.UserCode;
-                    //_User.Password = _request.Password;
+                    _User.Password = _request.Password;
                     _User.Email = _request.Email;
                     _User.FullName = _request.FullName;
                     _User.Position = _request.Position;
