@@ -160,7 +160,6 @@ public class OrderController : Controller
 
         order.PaymentInfo.ShippingFee = order.IsCustomerTakeYourSelf ? 0 : 30000;
 
-
         // submit to database
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
@@ -529,12 +528,15 @@ public class OrderController : Controller
         {
             order.IsCustomerTakeYourSelf = true;
             order.PaymentInfo.IsCustomerTakeYourSelf = true;
+            order.PaymentInfo.ShippingFee = 0;
         } else
         {
             order.IsCustomerTakeYourSelf = false;
             order.PaymentInfo.IsCustomerTakeYourSelf = false;
+            order.PaymentInfo.ShippingFee = 30000;
             order.Status = 1;
         }
+
         order.ReCalculatePaymentInfo();
         HttpContext.Session.SaveCurrentOrder(order);
 
