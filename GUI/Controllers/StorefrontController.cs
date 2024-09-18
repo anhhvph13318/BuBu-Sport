@@ -20,6 +20,15 @@ using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.Customer_DTO;
 using DATN_ACV_DEV.Model_DTO.Voucher_DTO;
 using DATN_ACV_DEV.Entity;
+using GUI.Models.DTOs.Customer_DTO.Views;
+using Microsoft.Identity.Client;
+using GUI.Models.DTOs.Customer_DTO;
+using System.Net;
+using DATN_ACV_DEV.Model_DTO.Customer_DTO;
+using AccountCustomerResponse = GUI.Models.Customer_DTO.AccountCustomerResponse;
+using AccountCustomerRequest = GUI.Models.Customer_DTO.AccountCustomerRequest;
+using EditCustomerResponse = GUI.Models.DTOs.Customer_DTO.EditCustomerResponse;
+using EditCustomerRequest = GUI.Models.DTOs.Customer_DTO.EditCustomerRequest;
 
 namespace GUI.Controllers
 {
@@ -65,7 +74,7 @@ namespace GUI.Controllers
 		[Route("/Store")]
 		public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max)
 		{
-			var model = new IndexObject();
+			var model = new Models.DTOs.Product_DTO.Views.IndexObject();
 			try
 			{
 				var obj = new GetListProductRequest();
@@ -97,6 +106,18 @@ namespace GUI.Controllers
 					}
 				}
 
+				ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
+				ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
+				ViewBag.PriceTo = max ?? result.Data.HighestPrice;
+				ViewBag.Take = t <= 0 ? 20 : t;
+				ViewBag.TakeOptions = new List<int>() { 10, 20, 50 };
+				ViewBag.CurrentPage = p;
+				ViewBag.TopPage = topPageDisplay;
+				ViewBag.TotalPages = totalPages;
+				ViewBag.StartPage = startPage;
+
+				model.Data = result.Data;
+
 				var accountId = HttpContext.Session.GetString("CurrentUserId");
 				HttpContext.Session.Remove("CurrentUserId");
 				if (!string.IsNullOrEmpty(accountId))
@@ -122,24 +143,16 @@ namespace GUI.Controllers
 								ViewBag.CustomerPhone = CustomerData.Phone;
 							}
 						}
+						else
+						{
+							return View(model);
+						}
 					}
 					catch (Exception)
 					{
 
 					}
 				}
-
-                ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
-				ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
-				ViewBag.PriceTo = max ?? result.Data.HighestPrice;
-				ViewBag.Take = t <= 0 ? 20 : t;
-				ViewBag.TakeOptions = new List<int>() { 10, 20, 50};
-				ViewBag.CurrentPage = p;
-				ViewBag.TopPage = topPageDisplay;
-				ViewBag.TotalPages = totalPages;
-				ViewBag.StartPage = startPage;
-
-                model.Data = result.Data;
 			}
 			catch (Exception)
 			{
@@ -157,7 +170,7 @@ namespace GUI.Controllers
 			{
 				using var httpClient = new HttpClient();
 				httpClient.BaseAddress = new Uri(_settings.APIAddress);
-				var rawResponse = await httpClient.GetAsync($"/api/admin/orders/search/{s}");
+				var rawResponse = await httpClient.GetAsync($"/api/storefront/orders/search/{s}");
 				try
 				{
 					var response =
@@ -550,6 +563,150 @@ namespace GUI.Controllers
 			}
 		}
 
+		[Route("Customer")]
+		public async Task<IActionResult> CustomerDetail() {
+			var model = new CustomerInfoModel();
+			try
+			{
+				var accountId = HttpContext.Request.Cookies["aId"];
+				var phoneNumber = HttpContext.Request.Cookies["cPhone"];
+				if (!string.IsNullOrEmpty(accountId))
+				{
+					var req = new AccountCustomerRequest { Id = Guid.Parse(accountId) };
+					var URLAcc = _settings.APIAddress + "api/AccountCustomer/Process";
+					var paramAcc = JsonConvert.SerializeObject(req);
+					var resAcc = await httpService.PostAsync(URLAcc, paramAcc, HttpMethod.Post, "application/json");
+					var resultAcc = JsonConvert.DeserializeObject<BaseResponse<AccountCustomerResponse>>(resAcc) ?? new();
+					if (resultAcc != null && resultAcc.Status == "200" && resultAcc.Data != null)
+					{
+						if (!resultAcc.Data.IsCustomer)
+						{
+							return RedirectToAction("Index", "Home");
+						}
+						var CustomerData = resultAcc.Data.Customer;
+						if (CustomerData != null)
+						{
+							TempData["OldPassword"] = CustomerData.Password;
+							var info = new PersonalInfo
+							{
+								Phone = CustomerData.Phone,
+								Name = CustomerData.Name,
+								Sex = CustomerData.Sex,
+								Dob = CustomerData.YearOfBirth,
+								Address = CustomerData.Adress,
+								Email = CustomerData.Email,
+							};
+							model.Info = info;
+						}
+					}
+
+					using var httpClient = new HttpClient();
+					httpClient.BaseAddress = new Uri(_settings.APIAddress);
+					var rawResponse = await httpClient.GetAsync($"/api/storefront/orders/search/{phoneNumber}");
+					try
+					{
+						var response =
+									JsonConvert.DeserializeObject<BaseResponse<List<OrderDetail>>>(
+										await rawResponse.Content.ReadAsStringAsync());
+						model.Orders = response.Data;
+
+					}
+					catch (Exception)
+					{
+
+					}
+				}
+				else
+				{
+					return RedirectToAction("Store");
+				}
+			}
+			catch (Exception)
+			{
+
+			}
+			return View("Customer", model);
+		}
+
+		[HttpPost("UpdateCustomerInfo")]
+		public async Task<JsonResult> UpdateCustomerInfo(string name, int sex, string address, string email)
+		{
+			try
+			{
+				var userId = HttpContext.Request.Cookies["user-id"];
+				if (!string.IsNullOrEmpty(userId))
+				{
+					var req = new EditCustomerRequest { Id = Guid.Parse(userId), Name = name, Sex = sex, Adress = address, Email = email };
+					var URLAcc = _settings.APIAddress + "api/EditCustomer/Process";
+					var paramAcc = JsonConvert.SerializeObject(req);
+					var resAcc = await httpService.PostAsync(URLAcc, paramAcc, HttpMethod.Post, "application/json");
+					var resultAcc = JsonConvert.DeserializeObject<BaseResponse<EditCustomerResponse>>(resAcc) ?? new();
+					if (resultAcc != null && resultAcc.Status == "200")
+					{
+						return Json(new
+						{
+							success = true,
+						});
+					}
+				}
+			}
+			catch (Exception)
+			{}
+			return Json(new
+			{
+				success = false
+			});
+		}
+
+		[HttpPost("UpdatePassword")]
+		public async Task<JsonResult> UpdatePassword(string oldPassword, string password)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(password))
+				{
+					throw new ArgumentNullException(nameof(oldPassword));
+				}
+				var oldPw = TempData["OldPassword"]?.ToString();
+				if (oldPassword != oldPw)
+				{
+					return Json(new
+					{
+						success = false,
+						wrong = true,
+					});
+				}
+				else
+				{
+					var userId = HttpContext.Request.Cookies["user-id"];
+					if (!string.IsNullOrEmpty(userId))
+					{
+						var req = new ChangePasswordRequest { Id = Guid.Parse(userId), Password = password };
+						var URLAcc = _settings.APIAddress + "api/ChangePassword/Process";
+						var paramAcc = JsonConvert.SerializeObject(req);
+						var resAcc = await httpService.PostAsync(URLAcc, paramAcc, HttpMethod.Post, "application/json");
+						var resultAcc = JsonConvert.DeserializeObject<BaseResponse<ChangePasswordResponse>>(resAcc) ?? new();
+						if (resultAcc != null && resultAcc.Status == "200")
+						{
+							TempData["OldPassword"] = password;
+							return Json(new
+							{
+								success = true,
+							});
+						}
+					}
+					throw new Exception();
+				}
+			}
+			catch (Exception)
+			{
+				return Json(new
+				{
+					success = false,
+					wrong = false,
+				});
+			}
+		}
 		public class CreateOrderObject
 		{
             public string? name { get; set; }

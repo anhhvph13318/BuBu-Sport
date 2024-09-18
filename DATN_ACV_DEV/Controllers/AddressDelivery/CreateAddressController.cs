@@ -54,17 +54,17 @@ namespace DATN_ACV_DEV.Controllers
 
         public void GenerateObjects()
         {
-            //var checkUser = _context.TbAccounts.FirstOrDefault(c => c.Id == _request.UserId);
+            var checkUser = _context.TbCustomers.FirstOrDefault(c => c.Id == _request.UserId);
             _addressDelivery = new TbAddressDelivery
             {
                 Id = Guid.NewGuid(),
-                ProvinceName = _request.provinceName,
+                ProvinceName = string.Join(", ", new List<string> { _request.provinceName, _request.districName, _request.wardName }),
                 DistrictName = _request.districName,
                 WardName = _request.wardName,
                 Status = _request.status,
                 //AccountId = _request.UserId,
-                ReceiverName = _request.receiverName,
-                ReceiverPhone = _request.receiverPhone,
+                ReceiverName = string.IsNullOrEmpty(_request.receiverName) ? checkUser?.Name ?? "" : _request.receiverName,
+                ReceiverPhone = string.IsNullOrEmpty(_request.receiverPhone) ? checkUser?.Phone ?? "" : _request.receiverPhone,
                 IsDelete = false,
             };
         }

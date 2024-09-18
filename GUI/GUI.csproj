@@ -36,4 +36,8 @@
     <UpToDateCheckInput Remove="Views\Voucher\_AvailableVoucher.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\Common\" />
+  </ItemGroup>
+
 </Project>
