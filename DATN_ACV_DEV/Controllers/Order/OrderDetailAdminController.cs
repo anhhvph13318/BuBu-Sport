@@ -70,7 +70,7 @@ public class OrderDetailAdminController : ControllerBase
                     },
                 IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
                 IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
-                PaymentMethodName = "Chuyển khoản ngân hàng",
+                PaymentMethodName = e.PaymentMethod == 2 ? "VNPay" : "Tiền mặt",
                 StatusText = Common.ConvertStatusOrder(e.Status ?? 0),
                 Status = e.Status ?? 0,
                 Items = e.TbOrderDetails.Select(d => new OrderItem()
