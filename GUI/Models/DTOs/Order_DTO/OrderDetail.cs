@@ -21,6 +21,8 @@ public class OrderDetail
     public string StatusText { get; set; } = string.Empty;
     public int Status { get; set; }
     public string PaymentMethodName { get; set; } = string.Empty;
+    public int PaymentMethod { get; set; }
+    public short PaymentStatus { get; set; }
     public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
     public DateTime TempOrderCreatedTime { get; set; }
     public bool IsDraft { get; set; }
@@ -28,8 +30,7 @@ public class OrderDetail
     public void ReCalculatePaymentInfo()
     {
         PaymentInfo.TotalAmount = Items.Sum(e => e.Quantity * e.Price);
-        PaymentInfo.TotalTax = PaymentInfo.TotalAmount * 10 / 100;
-        PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.TotalTax + PaymentInfo.ShippingFee;
+        PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.ShippingFee;
         PaymentInfo.Products = Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
 
         if (Voucher.Id == Guid.Empty)
@@ -85,8 +86,9 @@ public class ShippingInfo
     public string Name { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
-    public decimal ShippingFee { get; set; }
 }
 
 [Serializable]
 public record Stock(Guid Id, int Quantity);
+
+public record PaymentMethod(int Method, bool IsEdit);

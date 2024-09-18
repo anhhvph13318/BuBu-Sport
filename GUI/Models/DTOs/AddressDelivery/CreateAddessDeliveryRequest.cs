@@ -16,8 +16,6 @@ namespace GUI.Models.DTOs.Address
         [Required]
         public string wardName { get; set; }
         [Required]
-        public string wardCode { get; set; }
-        [Required]
         public bool status { get; set; }
 
         [Required]

@@ -1,5 +1,37 @@
-(function($) {
+﻿(function($) {
 	"use strict"
+
+	let discount = 0;
+	let maxDiscount = 0;
+	let shipping = 30000;
+
+	function insertParam(key, value) {
+		key = encodeURIComponent(key);
+		value = encodeURIComponent(value);
+
+		// kvp looks like ['key1=value1', 'key2=value2', ...]
+		var kvp = document.location.search.substr(1).split('&');
+		let i = 0;
+
+		for (; i < kvp.length; i++) {
+			if (kvp[i].startsWith(key + '=')) {
+				let pair = kvp[i].split('=');
+				pair[1] = value;
+				kvp[i] = pair.join('=');
+				break;
+			}
+		}
+
+		if (i >= kvp.length) {
+			kvp[kvp.length] = [key, value].join('=');
+		}
+
+		// can return this or...
+		let params = kvp.join('&');
+
+		// reload page with new params
+		document.location.search = params;
+	}
 
 	// Mobile Nav toggle
 	$('.menu-toggle > a').on('click', function (e) {
@@ -103,6 +135,13 @@
 	/////////////////////////////////////////
 
 	// Input number
+
+	let min = parseInt($("#price-min").attr("data-value"));
+	let minInput = parseInt($("#price-min").val());
+	let max = parseInt($("#price-max").attr("data-value"));
+	let maxInput = parseInt($("#price-max").val());
+	let step = (max - min) / 100;
+
 	$('.input-number').each(function() {
 		var $this = $(this),
 		$input = $this.find('input[type="number"]'),
@@ -110,15 +149,15 @@
 		down = $this.find('.qty-down');
 
 		down.on('click', function () {
-			var value = parseInt($input.val()) - 1;
-			value = value < 1 ? 1 : value;
+			var value = parseInt($input.val()) - step;
+			value = value < min ? min : value;
 			$input.val(value);
 			$input.change();
 			updatePriceSlider($this , value)
 		})
 
 		up.on('click', function () {
-			var value = parseInt($input.val()) + 1;
+			var value = parseInt($input.val()) + step;
 			$input.val(value);
 			$input.change();
 			updatePriceSlider($this , value)
@@ -126,18 +165,20 @@
 	});
 
 	var priceInputMax = document.getElementById('price-max'),
-			priceInputMin = document.getElementById('price-min');
+		priceInputMin = document.getElementById('price-min');
 
     if (priceInputMax) {
 		priceInputMax.addEventListener('change', function () {
 			updatePriceSlider($(this).parent(), this.value)
 		});
+		priceInputMax.value = maxInput;
     }
 
     if (priceInputMin) {
 		priceInputMin.addEventListener('change', function () {
 			updatePriceSlider($(this).parent(), this.value)
 		});
+		priceInputMin.value = minInput;
     }
 
 	function updatePriceSlider(elem , value) {
@@ -154,12 +195,12 @@
 	var priceSlider = document.getElementById('price-slider');
 	if (priceSlider) {
 		noUiSlider.create(priceSlider, {
-			start: [1, 999],
+			start: [min, max],
 			connect: true,
-			step: 1,
+			step: step,
 			range: {
-				'min': 1,
-				'max': 999
+				'min': min,
+				'max': max
 			}
 		});
 
@@ -167,7 +208,9 @@
 			var value = values[handle];
 			handle ? priceInputMax.value = value : priceInputMin.value = value
 		});
+		priceSlider.noUiSlider.set([minInput, maxInput]);
 	}
+	
 
 	$(function () {
 		//let path = window.location.pathname.slice(0, 6);
@@ -178,7 +221,6 @@
 	});
 
 	$('.addCart').on('click', function () {
-		debugger;
 		let customerId = getCookie("user-id");
 		$.post("/AddCart", { prId: $(this).attr('data-prId'), userId: customerId }, function (data) {
             if (!customerId) {
@@ -189,10 +231,8 @@
 	});
 
 	$('.buyNow').on('click', function () {
-		debugger;
 		let customerId = getCookie("user-id");
 		$.post("/BuyNow", { prId: $(this).attr('data-prId'), userId: customerId }, function (data) {
-			debugger;
 			if (!customerId) {
 				setCookie("user-id", data.userId, 90)
 			}
@@ -244,7 +284,7 @@
 					if (data.redirect) {
 						window.location.href = data.url;
 					} else {
-						window.location.href = "/success";
+						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
 					}
 				} else {
                     alert("FAILED");
@@ -271,7 +311,6 @@
         }
 		changeQuant = setTimeout(function () {
 			updateQuantity(value, id, false, el);
-			el.attr('data-value', value);
 			
 		}, 500)
 	});
@@ -286,8 +325,7 @@
 		$(`#quant-${id}`).val(quant);
 		$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
 
-			updateQuantity(value, id, true, el);
-			el.attr('data-value', value);
+		updateQuantity(value, id, true, el);
 	});
 	$('.quant-up').on('click', function () {
 		let el = $(this);
@@ -296,11 +334,11 @@
 
 		let price = $(`#item-${id}`).attr('data-price');
 		let quant = parseFloat($(`#quant-${id}`).val()) + value;
-		$(`#quant-${id}`).val(quant);
-		$(`#sub-${id}`).text(parseFloat(price) * quant);
 
-		updateQuantity(value, id, true, el);
-		el.attr('data-value', value);
+		if (updateQuantity(value, id, true, el)) {
+			$(`#quant-${id}`).val(quant);
+			$(`#sub-${id}`).text(parseFloat(price) * quant);
+        }
 	});
 
 	const updateQuantity = function (quantity, id, incre, el) {
@@ -315,17 +353,21 @@
 					$(`#sub-${id}`).text(subTotal);
                 }
 				UpdatePrice();
+				el.attr('data-value', value);
+				return true;
 			} else {
 				el.val(el.attr('data-value'));
+				return false;
             }
 		});
 	}
 
-	const UpdatePrice = function (shipping) {
+	const UpdatePrice = function () {
 		let subTotals = $('.sub-total');
 		let total = 0;
-		$.each(subTotals ,function (i, obj) {
-			let number = parseFloat(obj.innerText);
+		$.each(subTotals, function (i, obj) {
+			var el = obj.id;
+			let number = parseFloat($("#" + el).attr("data-value"));
             if (number) {
 				total += number;
             }
@@ -333,19 +375,30 @@
 
         if (shipping) {
 			total += shipping;
-        }
+		}
 
-		$('.order-total').text(total);
+		if (total > 0 && discount > 0) {
+			let discountAmount = 0;
+			if (maxDiscount > 0) {
+				discountAmount = total / 100 * discount;
+				discountAmount = discountAmount > maxDiscount ? maxDiscount : discountAmount;
+			} else {
+				discountAmount = discount;
+			}
+			let discountString = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(discountAmount);
+			$("#discount-value").text(discountString);
+			total -= discountAmount;
+		}
+		let totalString = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
+		$('.order-total').text(totalString);
 	}
 	const updateQuantityCart = function (quantity, id, incre, el) {
-		debugger;
 		if ((quantity > 0 && !incre) || incre) {
 			$.post("/ChangeQuantity", {
 				cartDetaiID: id,
 				quantity: quantity,
 				isIncrement: incre
 			}, function (data) {
-				debugger;
 				if (data && data.success) {
 					let subTotal = parseFloat(data.data.quantity) * parseFloat(data.data.price);
 					if (!incre) {
@@ -353,8 +406,9 @@
 					} else {
 						let price = $(`#item-${id}`).attr('data-price');
 						let quant = parseFloat($(`#quant-${id}`).val()) + quantity;
-						$(`#quant-${id}`).val(quant);
-						$(`#sub-${id}`).text(parseFloat(price) * quant);
+						quantity = quant < 1 ? 1 : quant;
+						$(`#quant-${id}`).val(quantity);
+						$(`#sub-${id}`).text(parseFloat(price) * quantity);
 					}
 					el.attr('data-value', quantity);
 					updateCartTotal();
@@ -366,7 +420,7 @@
 			el.val(parseInt(el.attr('data-value')) < 1 ? 1 : el.attr('data-value'));
 		}
 	}
-	$('.cart-input-quant').on('change', function () {
+	$('.cart-input-quant').on('keyup', function () {
 		let value = $(this).val();
 		let id = $(this).parent().parent().attr('data-itemId');
 		let el = $(this);
@@ -380,9 +434,8 @@
 		}
 		changeQuant = setTimeout(function () {
 			updateQuantity(value, id, false, el);
-			el.attr('data-value', value);
 
-		}, 500)
+		}, 350)
 	});
 
 	$('.cart-quant-down').on('click', function () {
@@ -434,6 +487,8 @@
 			}
 		});
 
+
+
         if (total > 0) {
 			$("#cart-submit").show();
         } else {
@@ -482,6 +537,10 @@
 		return "";
 	}
 
+	function eraseCookie(name) {
+		document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+	}
+
 	$("input[type=radio][name=shipping]").on('change', function (e) {
 		let shippingFee = 0;
 		if ($(this).val() == 1) {
@@ -489,8 +548,75 @@
 			shippingFee = 30000;
         } else {
 			$(".billing-details").removeClass("active");
-        }
-		$("#shipping-fee").text(shippingFee);
-		UpdatePrice(shippingFee);
+		}
+		var shippingString = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingFee);
+		$("#shipping-fee").text(shippingString);
+		shipping = shippingFee;
+		UpdatePrice();
 	});
+
+	$("#page-display").on("change", function () {
+		insertParam("p", 0);
+		insertParam("t", $(this).val());
+	});
+
+	$(".pagination-btn").on("click", function (e) {
+		e.preventDefault();
+        if (!$(this).hasClass("active")) {
+			insertParam("p", $(this).attr("data-page"));
+        }
+	})
+
+	let cName = getCookie("cName");
+	if (cName) {
+		$('#customer-name').text(cName);
+		$(".anonymous").hide();
+		$(".signed").show();
+	}
+
+	$('#sign-out').on("click", function (e) {
+		e.preventDefault();
+		eraseCookie("cName");
+		eraseCookie("cPhone");
+		eraseCookie("aId");
+		eraseCookie("user-id");
+		$.post("/LogOutStorefront", {}, () => {
+			window.location = "/store";
+		});
+	});
+
+	let voucherBtn = document.querySelector("#voucher-btn");
+    if (voucherBtn) {
+		voucherBtn.addEventListener("click", (e) => {
+			const customerPhone = getCookie('cPhone');
+			if (!customerPhone) {
+
+				alert("Bạn chưa đăng nhập. Hãy đăng nhập để sử dụng voucher");
+				e.stopPropagation();
+				return false;
+            }
+
+			fetch(GET_AVAILABLE_VOUCHER("customerPhone"))
+				.then(res => res.json())
+				.then(data => {
+					$('#voucher-list').html('');
+					$('#voucher-list').html(data.vouchers);
+				})
+				.then(() => {
+					$(".btn-apply-voucher").on("click", function (e) {
+						$.post("/ApplyVoucher", { vId: $(this).attr("data-id") }, (data) => {
+                            if (data.success) {
+								discount = data.discount;
+								maxDiscount = data.maxDiscount;
+								$("#voucherCode").val(data.code);
+								UpdatePrice();
+							}
+							$(".modal-footer button").click();
+						});
+					});
+				});
+			
+		});
+	}
+	
 })(jQuery);

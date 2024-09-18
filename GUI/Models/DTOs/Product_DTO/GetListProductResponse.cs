@@ -9,6 +9,8 @@
         }
         public List<ProductModel> LstProduct { get; set; }
         public int TotalCount { get; set; }
+        public decimal HighestPrice { get; set; }
+        public decimal LowestPrice { get; set; }
     }
     public class ProductModel
     {

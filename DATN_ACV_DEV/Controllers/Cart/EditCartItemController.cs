@@ -24,6 +24,7 @@ namespace DATN_ACV_DEV.Controllers
         private BaseResponse<EditCartResponse> _res;
         private EditCartResponse _response;
         private TbCart _Cart;
+        private TbCartDetail _CartDetail;
         private bool checkCart = false;
         private string _apiCode = "EditCartItem";
         private string _conC01 = "C01";
@@ -44,39 +45,10 @@ namespace DATN_ACV_DEV.Controllers
 
         public void AccessDatabase()
         {
-            var cartDetail = _context.TbCartDetails.Where(c => c.Id == _request.CartDetaiID).FirstOrDefault();
-            if (cartDetail != null)
-            {
-                if (_request.Quantity != null)
-                {
-					//var product = _context.TbProducts.Where(p => p.Id == cartDetail.ProductId).FirstOrDefault();
-					//if (cartDetail.Quantity >= _request.Quantity)
-					//{
-					//    product.Quantity += (cartDetail.Quantity.Value - _request.Quantity.Value);
-
-					//}
-					//if (cartDetail.Quantity < _request.Quantity)
-					//{
-					//    product.Quantity -= (_request.Quantity.Value - cartDetail.Quantity.Value);
-
-                    //}
-                    if (_request.IsIncrement)
-                    {
-						cartDetail.Quantity += _request.Quantity;
-                    }
-                    else
-                    {
-						cartDetail.Quantity = _request.Quantity;
-					}
-                    if (cartDetail.Quantity <= 0)
-                    {
-                        throw new Exception("Invalid");
-                    }
-				}
-            }
+            _context.Update(_CartDetail);
             _context.SaveChanges();
 			      _response.quantity = _request.Quantity ?? 0;
-			      _response.price = cartDetail.Product.Price;
+			      _response.price = _CartDetail.Product.Price;
             _res.Data = _response;
         }
 
@@ -95,8 +67,27 @@ namespace DATN_ACV_DEV.Controllers
 
         public void GenerateObjects()
         {
-            throw new NotImplementedException();
-        }
+			_CartDetail = _context.TbCartDetails.Where(c => c.Id == _request.CartDetaiID).FirstOrDefault();
+			if (_CartDetail != null)
+			{
+				if (_request.Quantity != null)
+				{
+					if (_request.IsIncrement)
+					{
+						_CartDetail.Quantity += _request.Quantity;
+					}
+					else
+					{
+						_CartDetail.Quantity = _request.Quantity;
+					}
+                    _request.Quantity = _CartDetail.Quantity;
+					if (_CartDetail.Quantity <= 0)
+					{
+						throw new Exception("Invalid");
+					}
+				}
+			}
+		}
 
         public void PreValidation()
         {
@@ -116,8 +107,8 @@ namespace DATN_ACV_DEV.Controllers
             {
                 _request = request;
                 //CheckAuthorization();
+                GenerateObjects();
                 PreValidation();
-                //GenerateObjects();
                 //PostValidation();
                 AccessDatabase();
             }

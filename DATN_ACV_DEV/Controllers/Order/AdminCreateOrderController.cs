@@ -20,6 +20,8 @@ namespace DATN_ACV_DEV.Controllers.Order
         [Route("create")]
         public async Task<IActionResult> Create(Order payload)
         {
+            var errors = new Dictionary<string, string>();
+
             var items = payload.Items.Select(e => new TbOrderDetail
             {
                 Id = Guid.NewGuid(),
@@ -39,7 +41,7 @@ namespace DATN_ACV_DEV.Controllers.Order
                 IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress,
                 CreateDate = DateTime.Now,
                 IsDraft = payload.IsDraft,
-                VoucherId = payload.Payment.VoucherId
+                PaymentMethod = payload.PaymentMethod,
             };
 
             var orderCreatedTime = DateTime.Now.ToString("yyyyMMddHHmmssfff");
@@ -73,12 +75,20 @@ namespace DATN_ACV_DEV.Controllers.Order
                 };
             }
 
-            if(order.VoucherId is not null)
+            
+
+            if(payload.Payment.VoucherId is not null && payload.Payment.VoucherId != Guid.Empty)
             {
-                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == order.VoucherId) 
+                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == payload.Payment.VoucherId)
                     ?? throw new NullReferenceException();
 
-                voucher.Quantity -= 1;
+                if (voucher.Quantity <= 0)
+                    errors.Add("Voucher", $"{voucher.Code} - Không hợp lệ");
+                else
+                {
+                    voucher.Quantity -= 1;
+                    order.VoucherId = payload.Payment.VoucherId;
+                }
             }
 
             // re-update product stock
@@ -87,13 +97,27 @@ namespace DATN_ACV_DEV.Controllers.Order
                 var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
                     ?? throw new NullReferenceException();
 
-                product.Quantity -= item.Quantity;
+                if (product.Quantity <= 0)
+                {
+                    errors.Add($"Product.{product.Id}", $"{product.Name} - Không đủ số lượng");
+                } else
+                {
+                    product.Quantity -= item.Quantity;
+                }
             }
 
-            await _context.TbOrders.AddAsync(order);
-            await _context.SaveChangesAsync();
+            if(errors.Count == 0)
+            {
+                await _context.TbOrders.AddAsync(order);
+                await _context.SaveChangesAsync();
 
-            return Ok(new { Success = true });
+                return Ok(new { Success = true });
+            }
+
+            return BadRequest(new
+            {
+                errors
+            });
         }
 
         [HttpPatch]
@@ -111,7 +135,6 @@ namespace DATN_ACV_DEV.Controllers.Order
             if (order == null) return NotFound();
 
             order.Status = payload.Status;
-            order.VoucherId = payload.Payment.VoucherId;
             
             // update order will be picked-up or delivery
             if (!order.IsCustomerTakeYourself)
@@ -157,6 +180,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             order.TotalAmount = payload.Payment.TotalAmount;
             order.TotalAmountDiscount = payload.Payment.TotalDiscount;
             order.AmountShip = payload.Payment.ShippingFee;
+            order.IsCustomerTakeYourself = payload.IsCustomerTakeYourSelf;
+            order.IsShippingAddressSameAsCustomerAddress = payload.IsShippingAddressSameAsCustomerAddress;
 
             // update shipping address 
             var hasShippingAddress = !payload.IsCustomerTakeYourSelf && !payload.IsShippingAddressSameAsCustomerAddress;
@@ -172,12 +197,13 @@ namespace DATN_ACV_DEV.Controllers.Order
             }
 
             // update voucher
-            if (order.VoucherId is not null)
+            if (payload.Payment.VoucherId is not null && order.VoucherId != Guid.Empty)
             {
-                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == order.VoucherId)
+                var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == payload.Payment.VoucherId)
                     ?? throw new NullReferenceException();
 
                 voucher.Quantity -= 1;
+                order.VoucherId = payload.Payment.VoucherId;
             }
 
             // add and update item has added
@@ -223,12 +249,22 @@ namespace DATN_ACV_DEV.Controllers.Order
         public async Task<IActionResult> Delete([FromRoute] string id)
         {
             var order = await _context.TbOrders
+                .Include(e => e.TbOrderDetails)
                 .FirstOrDefaultAsync(e => e.Id == Guid.Parse(id) && e.IsDraft);
-            if (order is not null)
+
+            if (order is null)
+                return BadRequest();
+
+            foreach (var item in order.TbOrderDetails)
             {
-                _context.TbOrders.Remove(order);
-                await _context.SaveChangesAsync();
+                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == item.ProductId)
+                    ?? throw new NullReferenceException();
+
+                product.Quantity += item.Quantity;
             }
+
+            _context.TbOrders.Remove(order);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -241,7 +277,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             int Status,
             bool IsDraft,
             bool IsShippingAddressSameAsCustomerAddress,
-            bool IsCustomerTakeYourSelf);
+            bool IsCustomerTakeYourSelf,
+            int PaymentMethod);
 
         public record UpdateOrder(
             string Id,
@@ -252,7 +289,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             PaymentInfo Payment,
             bool IsDraft,
             bool IsShippingAddressSameAsCustomerAddress,
-            bool IsCustomerTakeYourSelf) 
+            bool IsCustomerTakeYourSelf,
+            int PaymentMethod) 
             : Order(
                 Customer,
                 Items,
@@ -261,6 +299,7 @@ namespace DATN_ACV_DEV.Controllers.Order
                 Status,
                 IsDraft,
                 IsShippingAddressSameAsCustomerAddress,
-                IsCustomerTakeYourSelf);
+                IsCustomerTakeYourSelf,
+                PaymentMethod);
     }
 }

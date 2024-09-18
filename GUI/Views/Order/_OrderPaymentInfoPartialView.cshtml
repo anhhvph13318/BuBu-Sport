@@ -3,15 +3,18 @@
 
 @model PaymentInfo
 
-<div class=" ps-2 pe-2 mb-2 d-flex justify-content-between align-items-center">
-    <label class="text-nowrap me-2">Trạng thái:</label>
-    <select class="form-select w-50" value="@Model.Status" id="orderStatus">
-        @foreach(var opt in OrderUtil.OrderStepProcessing.Where(d => d.Key >= Model.Status))
-        {
-            <option value="@opt.Key">@opt.Value</option>
-        }
-    </select>
-</div>
+@if(!Model.IsCustomerTakeYourSelf)
+{
+    <div class=" ps-2 pe-2 mb-2 d-flex justify-content-between align-items-center">
+        <label class="text-nowrap me-2">Trạng thái:</label>
+        <select class="form-select w-50" value="@Model.Status" id="orderStatus">
+            @foreach (var opt in OrderUtil.NextOrderStepProcessing(Model.Status))
+            {
+                <option value="@opt.Key">@opt.Value</option>
+            }
+        </select>
+    </div>
+}
 <div class="row ps-2 pe-2">
     <p class="col-6">Sản phẩm:</p>
     <div class="text-end col-6">
@@ -26,21 +29,35 @@
         <input class="form-control" id="voucherCode" readonly value="@Model.VoucherCode" placeholder="Mã khuyến mãi"/>
     </div>
     <div class="col-md-4 d-flex justify-content-end">
-        <button id="applyVoucherBtn" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#voucherModal" onclick="showAvailableVoucher()">Áp dụng</button>
+        @if (Model.VoucherId == null || Model.VoucherId == Guid.Empty)
+        {
+            <button id="applyVoucherBtn" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#voucherModal" onclick="showAvailableVoucher()">Áp dụng</button>
+        } else
+        {
+            <button class="btn btn-danger me-2" onclick="cancelApplyVoucher()">Huỷ áp mã</button>
+        }
+    </div>
+</div>
+<div class="row ps-2 pe-2 mb-2">
+    <p class="col-6">Hình thức thanh toán:</p>
+    <div class="col-6">
+        <select class="form-select" id="paymentMethod" onchange="paymentMethodChange()">
+            <option value="0">Tiền mặt</option>
+            <option value="2">VNPAY</option>
+        </select>
     </div>
 </div>
 <div class="row ps-2 pe-2">
     <p class="col-6">Khuyến mãi:</p>
     <p class="text-end col-6" id="discount-amount">@Model.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
 </div>
-<div class="row ps-2 pe-2">
-    <p class="col-6">Thuế: </p>
-    <p id="discount-amount" class="text-end col-6">@Model.TotalTax.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
-</div>
-<div class="row ps-2 pe-2">
-    <p class="col-6">Phí giao hàng: </p>
-    <p id="discount-amount" class="text-end col-6">@Model.ShippingFee.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
-</div>
+@if(!Model.IsCustomerTakeYourSelf)
+{
+    <div class="row ps-2 pe-2">
+        <p class="col-6">Phí giao hàng: </p>
+        <p id="discount-amount" class="text-end col-6">@Model.ShippingFee.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
+    </div>
+}
 <div class="row ps-2 pe-2">
     <p class="col-6">Tạm tính: </p>
     <p id="total-amount" class="text-end col-6">@Model.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
