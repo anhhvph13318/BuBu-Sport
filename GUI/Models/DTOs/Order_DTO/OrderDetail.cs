@@ -30,11 +30,8 @@ public class OrderDetail
     public void ReCalculatePaymentInfo()
     {
         PaymentInfo.TotalAmount = Items.Sum(e => e.Quantity * e.Price);
-        PaymentInfo.FinalAmount = PaymentInfo.TotalAmount;
+        PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.ShippingFee;
         PaymentInfo.Products = Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
-
-        if (!IsCustomerTakeYourSelf)
-            PaymentInfo.FinalAmount += PaymentInfo.ShippingFee;
 
         if (Voucher.Id == Guid.Empty)
         {

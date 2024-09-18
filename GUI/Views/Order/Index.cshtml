@@ -53,7 +53,7 @@
                 <td>@order.code</td>
                 <td>@order.nameCustomer</td>
                 <td>@order.products</td>
-                    <td>@order.totalAmount?.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                    <td>@order.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                 <td>@order.status</td>
                 <td>
                     <a class="btn btn-link" asp-controller="Order" asp-action="Detail" asp-route-id="@order.id">Chi tiết</a>
