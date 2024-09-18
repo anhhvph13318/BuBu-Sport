@@ -41,7 +41,7 @@
 <div class="row ps-2 pe-2 mb-2">
     <p class="col-6">Hình thức thanh toán:</p>
     <div class="col-6">
-        <select class="form-select" id="paymentMethod" onchange="paymentMethodChange()">
+        <select class="form-select" id="paymentMethod" onchange="paymentMethodChange()" disabled="@(Model.Status > 0)">
             <option value="0">Tiền mặt</option>
             <option value="2">VNPAY</option>
         </select>
