@@ -10,60 +10,50 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DATN_ACV_DEV.Controllers.Customer
 {
-    [Route("api/EditCustomer")]
+    [Route("api/ChangePassword")]
     [ApiController]
-    public class EditCustomerController : ControllerBase, IBaseController<EditCustomerRequest, EditCustomerResponse>
+    public class ChangePasswordController : ControllerBase, IBaseController<ChangePasswordRequest, ChangePasswordResponse>
     {
         private readonly DBContext _context;
 
-        private EditCustomerRequest _request;
-        private BaseResponse<EditCustomerResponse> _res;
-        private EditCustomerResponse _response;
+        private ChangePasswordRequest _request;
+        private BaseResponse<ChangePasswordResponse> _res;
+        private ChangePasswordResponse _response;
         private TbCustomer _Customer;
-        private string _apiCode = "EditCustomer";
+        private TbAccount _Account;
+        private string _apiCode = "ChangePassword";
 
-        public EditCustomerController(DBContext context)
+        public ChangePasswordController(DBContext context)
         {
             _context = context;
-            _res = new BaseResponse<EditCustomerResponse>()
+            _res = new BaseResponse<ChangePasswordResponse>()
             {
                 Status = StatusCodes.Status200OK.ToString(),
                 Data = null
             };
-            _response = new EditCustomerResponse();
+            _response = new ChangePasswordResponse();
         }
         public void AccessDatabase()
         {
             _context.SaveChanges();
-            _response.Id = _Customer.Id;
+            _response.Id = _Account?.CustomerId ?? Guid.Empty;
             _res.Data = _response;
         }
 
         public void CheckAuthorization()
         {
-            _request.Authorization(_context, _apiCode);
+            //_request.Authorization(_context, _apiCode);
         }
 
         public void GenerateObjects()
         {
             try
             {
-                _Customer = _context.TbCustomers.Where(p => p.Id == _request.Id).FirstOrDefault();
-                if (_Customer != null)
+                _Account = _context.TbAccounts.FirstOrDefault(c => c.CustomerId == _request.Id);
+                if (_Account != null)
                 {
-                    _Customer.Name = _request.Name;
-                    _Customer.Adress = _request.Adress;
-                    _Customer.Sex = _request.Sex;
-                    _Customer.UpdateDate = DateTime.Now; // Ngày hiện tại 
-                }
-
-                if (!string.IsNullOrEmpty(_request.Email))
-                {
-                    var account = _context.TbAccounts.FirstOrDefault(c => c.CustomerId == _request.Id);
-                    if (account != null) { 
-                        account.Email = _request.Email;
-                    }
-                }
+                    _Account.Password = _request.Password;
+				}
             }
             catch (Exception)
             {
@@ -77,7 +67,7 @@ namespace DATN_ACV_DEV.Controllers.Customer
         }
         [HttpPost]
         [Route("Process")]
-        public BaseResponse<EditCustomerResponse> Process(EditCustomerRequest request)
+        public BaseResponse<ChangePasswordResponse> Process(ChangePasswordRequest request)
         {
             try
             {

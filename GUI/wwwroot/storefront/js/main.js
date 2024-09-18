@@ -5,6 +5,18 @@
 	let maxDiscount = 0;
 	let shipping = 30000;
 
+	function ValidateEmail(email) {
+		return String(email)
+		.toLowerCase()
+		.match(
+		  /(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*:(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)(?:,\s*(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*))*)?;\s*)/
+		);
+	}
+
+	function convertVND(value) {
+		return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+	}
+
 	function insertParam(key, value) {
 		key = encodeURIComponent(key);
 		value = encodeURIComponent(value);
@@ -183,10 +195,8 @@
 
 	function updatePriceSlider(elem , value) {
 		if ( elem.hasClass('price-min') ) {
-			console.log('min')
 			priceSlider.noUiSlider.set([value, null]);
 		} else if ( elem.hasClass('price-max')) {
-			console.log('max')
 			priceSlider.noUiSlider.set([null, value]);
 		}
 	}
@@ -323,7 +333,7 @@
 		let price = $(`#item-${id}`).attr('data-price');
 		let quant = parseFloat($(`#quant-${id}`).val()) + value;
 		$(`#quant-${id}`).val(quant);
-		$(`#sub-${id}`).text(parseFloat(price) * parseFloat(quant));
+		$(`#sub-${id}`).text(convertVND(parseFloat(price) * parseFloat(quant)));
 
 		updateQuantity(value, id, true, el);
 	});
@@ -337,7 +347,7 @@
 
 		if (updateQuantity(value, id, true, el)) {
 			$(`#quant-${id}`).val(quant);
-			$(`#sub-${id}`).text(parseFloat(price) * quant);
+			$(`#sub-${id}`).text(convertVND(parseFloat(price) * quant));
         }
 	});
 
@@ -385,11 +395,11 @@
 			} else {
 				discountAmount = discount;
 			}
-			let discountString = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(discountAmount);
+			let discountString = convertVND(discountAmount);
 			$("#discount-value").text(discountString);
 			total -= discountAmount;
 		}
-		let totalString = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
+		let totalString = convertVND(total);
 		$('.order-total').text(totalString);
 	}
 	const updateQuantityCart = function (quantity, id, incre, el) {
@@ -401,15 +411,15 @@
 			}, function (data) {
 				if (data && data.success) {
 					let subTotal = parseFloat(data.data.quantity) * parseFloat(data.data.price);
-					if (!incre) {
-						$(`#sub-${id}`).text(subTotal);
-					} else {
+					if (incre) {
 						let price = $(`#item-${id}`).attr('data-price');
 						let quant = parseFloat($(`#quant-${id}`).val()) + quantity;
 						quantity = quant < 1 ? 1 : quant;
 						$(`#quant-${id}`).val(quantity);
-						$(`#sub-${id}`).text(parseFloat(price) * quantity);
+						let val = parseFloat(price) * quantity;
 					}
+					$(`#sub-${id}`).text(convertVND(subTotal));
+					$(`#sub-${id}`).attr("data-value", subTotal);
 					el.attr('data-value', quantity);
 					updateCartTotal();
 				} else {
@@ -480,7 +490,8 @@
 		$.each(subTotals, function (i, obj) {
 			let id = $(obj).parent().attr('data-itemId');
 			if ($(`#check-${id}`).is(':checked')) {
-				let number = parseFloat(obj.innerText);
+				let val = parseFloat($("#sub-" + id).attr("data-value"));
+				let number = parseFloat(val);
 				if (number) {
 					total += number;
 				}
@@ -495,7 +506,7 @@
 			$("#cart-submit").hide();
         }
 
-		$('.cart-total').text(total);
+		$('.cart-total').text(convertVND(total));
 	}
 
 	$('#cart-submit').on('click', function (e) {
@@ -544,12 +555,12 @@
 	$("input[type=radio][name=shipping]").on('change', function (e) {
 		let shippingFee = 0;
 		if ($(this).val() == 1) {
-			$(".billing-details").addClass("active");
+			$(".shipping-details").addClass("active");
 			shippingFee = 30000;
         } else {
-			$(".billing-details").removeClass("active");
+			$(".shipping-details").removeClass("active");
 		}
-		var shippingString = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingFee);
+		var shippingString = convertVND(shippingFee);
 		$("#shipping-fee").text(shippingString);
 		shipping = shippingFee;
 		UpdatePrice();
@@ -596,7 +607,7 @@
 				return false;
             }
 
-			fetch(GET_AVAILABLE_VOUCHER("customerPhone"))
+			fetch(GET_AVAILABLE_VOUCHER(customerPhone))
 				.then(res => res.json())
 				.then(data => {
 					$('#voucher-list').html('');
@@ -618,5 +629,73 @@
 			
 		});
 	}
-	
+
+	$("#customer-submit").on("click", function () {
+		let name = $("#customer-fullname").val();
+		if (!name) {
+			alert("Bắt buộc phải nhập tên");
+			return false;
+		}
+		let address = $("#customer-address").val();
+		let email = $("#customer-email").val();
+		if (email && !ValidateEmail(email)) {
+			alert("Email không đúng định dạng");
+			return false;
+        }
+		let sex = null;
+		let selectedSex = $("input[type=radio][name=sex]:checked");
+        if (selectedSex && selectedSex.length > 0) {
+			sex = selectedSex.val();
+		}
+		$.post("/UpdateCustomerInfo", {
+			name,
+			address,
+			sex,
+			email
+		}, (data) => {
+			if (data.success) {
+				alert("Thành công");
+				setCookie("cName", name)
+				location.reload();
+            } else {
+				alert("Thất bại");
+            }
+		});
+	});
+
+	$("#password-submit").on("click", function () {
+		let oldPassword = $("#customer-oldpassword").val();
+		let password = $("#customer-newpassword").val();
+		let cfpassword = $("#customer-cfnewpassword").val();
+        if (password != cfpassword) {
+			alert("Mật khẩu và mật khẩu xác nhận không khớp");
+			return false;
+		}
+		if (password == oldPassword) {
+			alert("Mật khẩu cũ và mật khẩu mới không được giống nhau");
+			return false;
+		}
+		$.post("/UpdatePassword", {
+			oldPassword,
+			password,
+		}, (data) => {
+			if (data.success) {
+				
+				alert("Thành công! Vui lòng đăng nhập lại");
+				eraseCookie("cName");
+				eraseCookie("cPhone");
+				eraseCookie("aId");
+				eraseCookie("user-id");
+				$.post("/LogOutStorefront", {}, () => {
+					window.location = "/signin";
+				});
+			} else {
+				if (data.wrong) {
+					alert("Mật khẩu cũ chưa chính xác");
+				}
+				else { alert("Thất bại"); }
+			}
+		});
+	});
+
 })(jQuery);

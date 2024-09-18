@@ -1,0 +1,188 @@
+﻿@using System.Globalization
+@model GUI.Models.DTOs.Customer_DTO.Views.CustomerInfoModel
+@{
+	Layout = "_LayoutStore";
+}
+<!-- SECTION -->
+<div class="section">
+	<!-- container -->
+	<div class="container">
+		<!-- row -->
+		<div class="row">
+			<!-- Order Details -->
+			<div class="col-md-12 order-details">
+				<div class="col-md-5">
+					<ul class="section-customer-nav nav nav-tabs">
+						<li class="active">
+							<a data-toggle="tab" href="#info" aria-expanded="true">
+								Thông tin cá nhân
+							</a>
+						</li>
+						<hr style="margin: 0 0 15px 0" />
+						<li>
+							<a data-toggle="tab" href="#order" aria-expanded="true">
+								Lịch sử đơn hàng
+							</a>
+						</li>
+						<hr style="margin: 0 0 15px 0" />
+						<li>
+							<a data-toggle="tab" href="#password" aria-expanded="true">
+								Thay đổi mật khẩu
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-7 tab-content">
+					<!-- Billing Details -->
+					<div class="billing-details active tab-pane fade inz" id="info">
+						<div class="section-title">
+							<h3 class="title">Thông tin cá nhân</h3>
+						</div>
+						<div class="form-group">
+							<label for="customer-phone">Số điện thoại</label>
+							<input id="customer-phone" value="@Model.Info.Phone" class="input" type="tel" name="tel" placeholder="Số điện thoại" disabled>
+						</div>
+						<div class="form-group">
+							<label for="customer-fullname">Họ tên</label>
+							<input id="customer-fullname" value="@Model.Info.Name" class="input" type="text" name="name" placeholder="Họ tên">
+						</div>
+						<div class="form-group">
+							<label for="customer-sex">Giới tính</label>
+							<div id="customer-sex">
+								<input type="radio" name="sex" id="male" value="0" @(Model.Info.Sex == 0 ? "checked" : "")>
+								<label for="male">
+									<span></span>
+									Nam
+								</label>
+							</div>
+							<div id="customer-sex">
+								<input type="radio" name="sex" id="female" value="1" @(Model.Info.Sex == 1 ? "checked" : "")>
+								<label for="female">
+									<span></span>
+									Nữ
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="customer-address">Địa chỉ</label>
+							<input id="customer-address" value="@Model.Info.Address" class="input" type="text" name="address" placeholder="Địa chỉ">
+						</div>
+						<div class="form-group">
+							<label for="customer-email">Địa chỉ email</label>
+							<input id="customer-email" value="@Model.Info.Email" class="input" type="text" name="email" placeholder="Địa chỉ email">
+						</div>
+						<br />
+						<div class="form-group update-btn">
+							<a id="customer-submit" class="primary-btn customer-submit d-flex right" href="#">Cập nhật</a>
+						</div>
+					</div>
+
+					<div class="billing-details tab-pane fade" id="order">
+						<div class="section-title">
+							<h3 class="title" style="margin-bottom:30px">Danh sách đơn hàng</h3>
+							<div style="max-height: 500px; overflow:auto;">
+							@if (Model != null && Model.Orders != null && Model.Orders.Any())
+							{
+								foreach (var order in Model.Orders)
+								{
+									<div class="order-title">Đơn hàng <strong>@order.Code</strong></div>
+									<div class="order-info order-summary" style="max-width: 95%">
+										<div class="order-col">
+											<strong>Sản phẩm</strong>
+										</div>
+										@foreach (var item in order.Items)
+										{
+											<div class="order-col">
+												<div>@item.Quantity x @item.ProductName</div>
+												<div>@((item.Price * item.Quantity).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</div>
+											</div>
+										}
+										@if (order.ShippingInfo != null && !order.ShippingInfo.IsCustomerTakeYourSelf)
+										{
+											<div class="order-col">
+												<div>Phí giao hàng</div>
+												<div><p id="shipping-fee">30000</p></div>
+											</div>
+										}
+										@if (order.PaymentInfo.TotalDiscount > 0)
+										{
+											<div class="order-col">
+												<div>Giảm giá</div>
+												<div><p id="shipping-fee">@order.PaymentInfo.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p></div>
+											</div>
+										}
+										<div class="order-col">
+											<div>Tổng thanh toán</div>
+											<div>
+												<strong>
+													@((order.PaymentInfo.FinalAmount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+												</strong>
+											</div>
+										</div>
+										<div class="order-col">
+											<div>Thông tin khách hàng</div>
+											<div>
+												<p>@order.Customer.Name</p>
+												<p>@order.Customer.PhoneNumber</p>
+												<p>@order.Customer.Address</p>
+											</div>
+										</div>
+										<div class="order-col">
+											<div>Phương thức thanh toán</div>
+											<div>
+												<p>
+													@order.PaymentMethodName
+												</p>
+											</div>
+										</div>
+										<div class="order-col">
+											<div>Trạng thái</div>
+											<div>
+												<strong>
+													@order.StatusText
+												</strong>
+											</div>
+										</div>
+									</div>
+									<hr />
+								}
+							}
+							</div>
+						</div>
+					</div>
+
+					<div class="billing-details tab-pane fade" id="password">
+						<div class="section-title">
+							<h3 class="title">Thay đổi mật khẩu</h3>
+						</div>
+						<div class="form-group">
+							<label for="customer-oldpassword">Mật khẩu cũ</label>
+							<input id="customer-oldpassword" class="input" type="password" name="oldpassword" placeholder="Mật khẩu cũ">
+						</div>
+						<div class="form-group">
+							<label for="customer-newpassword">Mật khẩu mới</label>
+							<input id="customer-newpassword" class="input" type="password" name="newpassword" placeholder="Mật khẩu mới">
+						</div>
+						<div class="form-group">
+							<label for="customer-cfnewpassword">Xác nhận mật khẩu mới</label>
+							<input id="customer-cfnewpassword" class="input" type="password" name="cfnewpassword" placeholder="Xác nhận mật khẩu mới">
+						</div>
+						<br />
+						<div class="form-group update-btn">
+							<a id="password-submit" class="primary-btn customer-submit d-flex right" href="#">Cập nhật</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Order Details -->
+		</div>
+		<!-- /row -->
+	</div>
+	<!-- /container -->
+</div>
+<!-- /SECTION -->
+<style>
+	.order-summary .order-col > div:last-child{
+		width: 250px;
+	}
+</style>
