@@ -53,7 +53,7 @@ namespace DATN_ACV_DEV.Controllers
             try
             {
                 _Produst = _context.TbProducts.Where(p => p.Id == _request.ID && p.IsDelete == false).FirstOrDefault();
-                _Image = _context.TbImages.Where(c => c.ProductId == _Produst.Id && c.Type == "1").FirstOrDefault();
+                _Image = _context.TbImages.Where(c => c.ProductId == _Produst.Id).FirstOrDefault();
                 if (_Produst != null)
                 {
                     _Produst.Name = _request.Name != null ? _request.Name : _Produst.Name;
@@ -70,6 +70,15 @@ namespace DATN_ACV_DEV.Controllers
                 if (_Image != null)
                 {
                     _Image.Url = _request.UrlImage;
+                }
+                else
+                {
+                    _Image = new()
+                    {
+                        Url = _request.UrlImage,
+                        Type = "1",
+                        ProductId = _Produst.Id
+                    };
                 }
                 if (_request.PropertyID != null && _request.TypeEditProperty == "1")
                 {
