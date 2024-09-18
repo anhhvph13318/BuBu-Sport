@@ -63,10 +63,13 @@ namespace DATN_ACV_DEV.Controllers
                     _Produst.Description = _request.Description != null ? _request.Description : _Produst.Description ;
                     _Produst.PriceNet = _request.PriceNet != null ? _request.PriceNet : _Produst.PriceNet;
                     _Produst.ImageId = _request.ImageId != null ? _request.ImageId : _Produst.ImageId;
-                    _Image.Url = _request.UrlImage;
                     _Produst.CategoryId = (_request.CategoryId != null && _request.CategoryId != new Guid()) ? _request.CategoryId : _Produst.CategoryId;
                     _Produst.UpdateBy = _request.AdminId ?? Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993");//Guid của 1 tài khoản có trong DB
                     _Produst.UpdateDate = DateTime.Now; // Ngày hiện tại 
+                }
+                if (_Image != null)
+                {
+                    _Image.Url = _request.UrlImage.FirstOrDefault();
                 }
                 if (_request.PropertyID != null && _request.TypeEditProperty == "1")
                 {
