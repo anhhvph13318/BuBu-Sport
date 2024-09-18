@@ -48,7 +48,18 @@
                         @Html.DisplayFor(modelItem => item.UserName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Position)
+                        @if (item.Position == "1")
+                        {
+                            @:Nhân viên
+                        }
+                        else if (item.Position == "2")
+                        {
+                            @:Admin
+                        }
+                        else
+                        {
+                            @:Không xác định
+                        }
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { item.Id }) |
