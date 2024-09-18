@@ -18,10 +18,12 @@
         public decimal? PriceNet { get; set; }
 
         public string Image { get; set; }
+        public string? UrlImage { get; set; }
 
         public bool? Vat { get; set; }
 
         public string? Warranty { get; set; }
+        //public string? UrlImage { get; set; }
 
         public string? Color { get; set; }
 

@@ -51,6 +51,16 @@ namespace DATN_ACV_DEV.Controllers
 
         public void GenerateObjects()
         {
+            var check = _context.TbCategories.Any(c => c.Id == _request.CategoryId);
+            if (!check) {
+                _context.TbCategories.Add(new TbCategory
+                {
+                    CreateBy = _request.AdminId ?? Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"),
+                    CreateDate = DateTime.Now,
+                    Id = _request.CategoryId,
+                    Name = "Danh mục"
+                });
+            }
             _Produst = new TbProduct()
             {
                 Id = Guid.NewGuid(),
@@ -61,7 +71,7 @@ namespace DATN_ACV_DEV.Controllers
                 Status = _request.Status,
                 Description = _request.Description,
                 PriceNet = _request.PriceNet,
-                ImageId = _request.ImageId,
+                ImageId = null,
                 CategoryId = _request.CategoryId,
                 Vat = _request.Vat,
                 Warranty = _request.Warranty,
@@ -87,14 +97,11 @@ namespace DATN_ACV_DEV.Controllers
             if (_request.UrlImage != null)
             {
                 #region Lưu ảnh sản phẩm
-                foreach (var item in _request.UrlImage)
-                {
-                    _requestImage.Url = item;
+                    _requestImage.Url = _request.UrlImage;
                     _requestImage.Type = "1";
                     _requestImage.ProductId = _Produst.Id;
                     var id = new CreateImageController(_context).Process(_requestImage);
                     _Produst.ImageId = id.Data.ID;
-                }
                 #endregion
             }
         }

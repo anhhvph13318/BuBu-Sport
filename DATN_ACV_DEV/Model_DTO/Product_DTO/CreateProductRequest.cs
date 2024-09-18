@@ -25,7 +25,7 @@ namespace DATN_ACV_DEV.Model_DTO.Product_DTO
         public string? Material { get; set; }
 
         public Guid? ImageId { get; set; }
-        public List<string>? UrlImage { get; set; }
+        public string? UrlImage { get; set; }
         public string? TypeImage { get; set; }
         public Guid CategoryId { get; set; }
         public List<string>? OpenAttribute { get; set; }

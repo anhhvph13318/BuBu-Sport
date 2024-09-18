@@ -98,7 +98,7 @@ namespace GUI.Controllers
         {
             try
             {
-                var URL = _settings.APIAddress + "api/EditUser/Process";
+                var URL = _settings.APIAddress + "api/EditProduct/Process";
                 var param = JsonConvert.SerializeObject(user);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<DetailProductResponse>>(res) ?? new();
