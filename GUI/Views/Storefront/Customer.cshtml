@@ -122,9 +122,17 @@
 										<div class="order-col">
 											<div>Thông tin khách hàng</div>
 											<div>
-												<p>@order.Customer.Name</p>
-												<p>@order.Customer.PhoneNumber</p>
-												<p>@order.Customer.Address</p>
+												@if (order.ShippingInfo != null && !string.IsNullOrEmpty(order.ShippingInfo.Name))
+												{
+													<p>@order.ShippingInfo.Name</p>
+													<p>@order.ShippingInfo.PhoneNumber</p>
+													<p>@order.ShippingInfo.Address</p>
+												} else
+												{
+													<p>@order.Customer.Name</p>
+													<p>@order.Customer.PhoneNumber</p>
+													<p>@order.Customer.Address</p>
+												}
 											</div>
 										</div>
 										<div class="order-col">

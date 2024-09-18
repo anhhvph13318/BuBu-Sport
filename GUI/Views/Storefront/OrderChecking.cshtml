@@ -24,6 +24,7 @@
                     foreach (var order in Model)
                     {
                         <div class="order-title">Đơn hàng <strong>@order.Code</strong></div>
+                        <div class="order-title">@order.Id</div>
                         <div class="order-info order-summary">
                             <div class="order-col">
                                 <div>Sản phẩm</div>
@@ -62,9 +63,18 @@
                             <div class="order-col">
                                 <div>Thông tin khách hàng</div>
                                 <div>
-                                    <p>@order.Customer.Name</p>
-                                    <p>@order.Customer.PhoneNumber</p>
-                                    <p>@order.Customer.Address</p>
+                                    @if (order.ShippingInfo != null && !string.IsNullOrEmpty(order.ShippingInfo.Name))
+                                    {
+                                        <p>@order.ShippingInfo.Name</p>
+                                        <p>@order.ShippingInfo.PhoneNumber</p>
+                                        <p>@order.ShippingInfo.Address</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@order.Customer.Name</p>
+                                        <p>@order.Customer.PhoneNumber</p>
+                                        <p>@order.Customer.Address</p>
+                                    }
                                 </div>
                             </div>
                             <div class="order-col">

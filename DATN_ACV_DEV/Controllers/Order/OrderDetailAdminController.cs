@@ -113,7 +113,7 @@ public class OrderDetailAdminController : ControllerBase
                 Customer = new CustomerInfo
                 {
                     Id = e.Customer.Id,
-                    Name = e.Customer.Name,
+                    Name = e.Description ?? e.Customer.Name,
                     Address = e.Customer.Adress,
                     PhoneNumber = e.Customer.Phone
                 },
@@ -126,7 +126,7 @@ public class OrderDetailAdminController : ControllerBase
                 {
                     Name = e.AddressDelivery!.ReceiverName,
                     PhoneNumber = e.AddressDelivery!.ReceiverPhone,
-                    Address = $"{e.AddressDelivery.WardName}, {e.AddressDelivery.DistrictName}, {e.AddressDelivery.ProvinceName}"
+                    Address = $"{e.AddressDelivery.ProvinceName}"
                 },
                 PaymentInfo = new PaymentInfo
                 {
@@ -206,7 +206,7 @@ public class OrderDetailAdminController : ControllerBase
                 {
                     Name = e.AddressDelivery!.ReceiverName,
                     PhoneNumber = e.AddressDelivery!.ReceiverPhone,
-                    Address = $"{e.AddressDelivery.WardName}, {e.AddressDelivery.DistrictName}, {e.AddressDelivery.ProvinceName}"
+                    Address = $"{e.AddressDelivery.ProvinceName}"
                 },
                 PaymentInfo = new PaymentInfo
                 {
@@ -231,7 +231,7 @@ public class OrderDetailAdminController : ControllerBase
                     },
                 IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
                 IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
-                PaymentMethodName = "Chuyển khoản ngân hàng",
+                PaymentMethodName = e.PaymentMethod == 1 ? "Thanh toán khi nhận hàng" : "Thanh toán qua công VNPay",
                 StatusText = Common.ConvertStatusOrder(e.Status ?? 0),
                 Status = e.Status ?? 0,
                 Items = e.TbOrderDetails.Select(d => new OrderItem()
