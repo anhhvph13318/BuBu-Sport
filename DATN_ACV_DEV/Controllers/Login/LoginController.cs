@@ -66,8 +66,19 @@ namespace DATN_ACV_DEV.Controllers.Login;
                             Role = account.Role  // Gán Role từ account
                         };
                         _res.Data = _response;
-                    }               
-                    _res.Status = StatusCodes.Status200OK.ToString();
+                    }
+                if (user != null)
+                {
+                    var _response = new LoginResponse
+                    {
+                        Id = user.Id,
+                        UserName = user.UserName,
+                        Token = null,  // Giả sử có một hàm tạo token
+                        Role = Convert.ToInt32(user.Position)  // Gán Role từ account
+                    };
+                    _res.Data = _response;
+                }
+                _res.Status = StatusCodes.Status200OK.ToString();
                     _res.Messages= new List<Message>() { new Message() { MessageText = id} } ;
                     return _res;
                 }
