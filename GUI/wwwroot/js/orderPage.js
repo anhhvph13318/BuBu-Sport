@@ -55,8 +55,8 @@ $('#search').on('input', async function (e) {
         `;
 
         item.onclick = function () {
-            const { id, name, priceNet, image } = products[i]
-            handleItemSelect(id, name, priceNet, image);
+            const { id, name, price, image } = products[i]
+            handleItemSelect(id, name, price, image);
         };
 
         $(item).append(itemContent);
