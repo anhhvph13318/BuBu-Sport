@@ -8,17 +8,22 @@ using Newtonsoft.Json;
 using GUI.FileBase;
 using GUI.Models.DTOs.Product_DTO;
 using Microsoft.AspNetCore.Authorization;
+using GUI.Models.DTOs;
+using DATN_ACV_DEV.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace GUI.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class ProductController : ControllerSharedBase
     {
+        private readonly DBContext _context;
         private HttpService httpService;
-        public ProductController(IOptions<CommonSettings> settings)
+        public ProductController(IOptions<CommonSettings> settings, DBContext context)
         {
             _settings = settings.Value;
             httpService = new();
+            _context = context;
         }
         // GET: ProductController
         [AllowAnonymous]
@@ -45,11 +50,25 @@ namespace GUI.Controllers
         }
 
         // GET: ProductController/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            var categories = await FetchCategory();
+            ViewBag.Categories = categories;
             return View();
         }
-
+        private async Task<IEnumerable<CategoryDto>> FetchCategory()
+        {
+            return await _context.TbCategories.AsNoTracking()
+                .Select(e => new CategoryDto
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Status = (int)e.Status!,
+                    CreateDate = e.CreateDate
+                })
+                .OrderBy(e => e.CreateDate)
+                .ToListAsync();
+        }
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -82,6 +101,8 @@ namespace GUI.Controllers
         // GET: ProductController/Edit/5
         public async Task<ActionResult> Edit(Guid id)
         {
+            var categories = await FetchCategory();
+            ViewBag.Categories = categories;
             var URL = _settings.APIAddress + "api/DetailProduct/Process";
             var req = new DetailProductRequest() { ID = id };
             var param = JsonConvert.SerializeObject(req);
@@ -98,7 +119,7 @@ namespace GUI.Controllers
         {
             try
             {
-                var URL = _settings.APIAddress + "api/EditUser/Process";
+                var URL = _settings.APIAddress + "api/EditProduct/Process";
                 var param = JsonConvert.SerializeObject(user);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<DetailProductResponse>>(res) ?? new();

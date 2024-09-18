@@ -58,6 +58,7 @@ namespace DATN_ACV_DEV.Controllers
                     _response.Image = Image.FirstOrDefault();
                     //_response.CategoryName = _Product.Category.Name;
                     _response.PropertyID = PropertiesName;
+                    _response.CategoryId = _Product.CategoryId;
                 }
             }
             catch (Exception)

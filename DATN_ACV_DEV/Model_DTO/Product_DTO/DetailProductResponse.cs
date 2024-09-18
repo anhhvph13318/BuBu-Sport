@@ -5,6 +5,7 @@ namespace DATN_ACV_DEV.Model_DTO.Product_DTO
     public class DetailProductResponse 
     {
         public Guid Id { get; set; }
+        public Guid CategoryId { get; set; }
 
         public string Name { get; set; }
         public string Code { get; set; }
