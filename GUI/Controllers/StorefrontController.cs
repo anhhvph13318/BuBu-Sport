@@ -419,7 +419,7 @@ namespace GUI.Controllers
 
 				var voucherString = HttpContext.Session.GetString("SelectedVoucher");
 				var discountAmount = 0m;
-				var voucherId = Guid.Empty;
+				var vouchers = new List<Guid>();
 				if (!string.IsNullOrEmpty(voucherString))
 				{
 					var voucher = JsonConvert.DeserializeObject<VoucherDTO>(voucherString);
@@ -432,7 +432,7 @@ namespace GUI.Controllers
 					{
 						discountAmount = voucher.Discount;
 					}
-					voucherId = voucher.Id;
+                    vouchers.Add(voucher.Id);
 				}
 
 				var req = new OrderRequest
@@ -449,8 +449,8 @@ namespace GUI.Controllers
 					getAtStore = false,
 					amountShip = 30000,
 					totalAmountDiscount = discountAmount,
-					voucherID = new List<Guid> { voucherId }
-				};
+					voucherID = vouchers
+                };
 				URL = _settings.APIAddress + "api/ConfirmOrder/Process";
 				var param = JsonConvert.SerializeObject(req);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");

@@ -142,9 +142,17 @@
 													@order.PaymentMethodName
 												</p>
 											</div>
-										</div>
+											</div>
+											<div class="order-col">
+												<div>Trạng thái thanh toán</div>
+												<div>
+													<strong>
+														@order.PaymentInfo.PaymentStatus
+													</strong>
+												</div>
+											</div>
 										<div class="order-col">
-											<div>Trạng thái</div>
+											<div>Trạng thái đơn hàng</div>
 											<div>
 												<strong>
 													@order.StatusText
