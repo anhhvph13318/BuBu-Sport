@@ -442,6 +442,17 @@ function cancelApplyVoucher() {
         })
 }
 
+function validatePhone(e) {
+    const regex = /[0-9]{10}/
+    const value = e.value;
+
+        // Check if the current value matches the regex
+        if (!regex.test(value)) {
+            // If not, remove the last character
+            e.value = value.slice(0, -1);
+        }
+}
+
 // setup signalR
 const conection = new signalR.HubConnectionBuilder().withUrl("/order-hub").build();
 

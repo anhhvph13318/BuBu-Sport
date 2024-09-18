@@ -54,11 +54,16 @@ namespace DATN_ACV_DEV.Controllers
         [Route("available")]
         public async Task<IActionResult> GetAvailableVoucher([FromQuery] string? phoneNumber)
         {
-            var vouchers = await _context.TbVouchers.AsNoTracking()
+            var a = await _context.TbVouchers.AsNoTracking()
+                .Include(e => e.Orders).ToListAsync();
+
+
+			var vouchers = await _context.TbVouchers.AsNoTracking()
                 .Include(e => e.Orders)
                 .Where(e => e.Status == Status.Valid && (string.IsNullOrEmpty(phoneNumber) || !e.Orders.Any(d => d.PhoneNumberCustomer == phoneNumber)))
                 .Where(e => e.StartDate <= DateTime.Now)
                 .Where(e => e.EndDate >= DateTime.Now)
+                .Where(e => e.Quantity > 0)
                 .Select(e => new VoucherDTO
                 {
                     Id = e.Id,

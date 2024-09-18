@@ -27,6 +27,14 @@ public class OrderDetail
     public DateTime TempOrderCreatedTime { get; set; }
     public bool IsDraft { get; set; }
     public string OrderTypeName { get; set; } = string.Empty;
+    public bool AllowRemove()
+    {
+        if (IsDraft) return true;
+
+        if (Code.StartsWith("OFF")) return false;
+
+        return true;
+    }
     public void ReCalculatePaymentInfo()
     {
         PaymentInfo.TotalAmount = Items.Sum(e => e.Quantity * e.Price);

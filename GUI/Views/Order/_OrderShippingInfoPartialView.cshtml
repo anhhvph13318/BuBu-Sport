@@ -24,7 +24,7 @@
         </div>
         <div class="mb-2">
             <label class="form-label">Số điện thoại</label>
-            <input value="@Model.PhoneNumber" id="receiverPhone" class="form-control" type="text" />
+            <input value="@Model.PhoneNumber" id="receiverPhone" class="form-control" type="text" oninput="validatePhone(this)" maxlength="10" />
             <p class="text-danger" style="display: none" id="receiverPhoneError">Trường này là bắt buộc</p>
         </div>
         <div class="mb-2">

@@ -110,7 +110,7 @@ namespace GUI.Controllers
 				ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
 				ViewBag.PriceTo = max ?? result.Data.HighestPrice;
 				ViewBag.Take = t <= 0 ? 20 : t;
-				ViewBag.TakeOptions = new List<int>() { 10, 20, 50 };
+				ViewBag.TakeOptions = new List<int>() { 15, 30, 45, 60 };
 				ViewBag.CurrentPage = p;
 				ViewBag.TopPage = topPageDisplay;
 				ViewBag.TotalPages = totalPages;
@@ -419,6 +419,7 @@ namespace GUI.Controllers
 
 				var voucherString = HttpContext.Session.GetString("SelectedVoucher");
 				var discountAmount = 0m;
+				var voucherId = Guid.Empty;
 				if (!string.IsNullOrEmpty(voucherString))
 				{
 					var voucher = JsonConvert.DeserializeObject<VoucherDTO>(voucherString);
@@ -431,12 +432,13 @@ namespace GUI.Controllers
 					{
 						discountAmount = voucher.Discount;
 					}
+					voucherId = voucher.Id;
 				}
 
 				var req = new OrderRequest
 				{
 					cartDetailId = cartDetails,
-					description = obj.note ?? "",
+					description = "",
 					addressDeliveryId = addrId,
 					paymentMethodId = obj.isVNP ? 2 : 1,
 					totalAmount = sum,
@@ -446,7 +448,8 @@ namespace GUI.Controllers
 					name = obj.name,
 					getAtStore = obj.getatstore,
 					amountShip = obj.getatstore ? 30000 : 0,
-					totalAmountDiscount = discountAmount
+					totalAmountDiscount = discountAmount,
+					voucherID = new List<Guid> { voucherId }
 				};
 				URL = _settings.APIAddress + "api/ConfirmOrder/Process";
 				var param = JsonConvert.SerializeObject(req);
@@ -563,7 +566,7 @@ namespace GUI.Controllers
 			}
 		}
 
-		[Route("Customer")]
+		[Route("CustomerInfo")]
 		public async Task<IActionResult> CustomerDetail() {
 			var model = new CustomerInfoModel();
 			try
@@ -714,7 +717,6 @@ namespace GUI.Controllers
 			public string? address { get; set; }
             public string? district { get; set; }
             public string? city { get; set; }
-			public string? note { get; set; }
 			public bool getatstore { get; set; }
 			public bool isVNP { get; set; }
 			public List<Guid> ids { get; set; } = new();

@@ -34,7 +34,7 @@
         public const string ORDER_DURING_THE_RETURN_PERIOD_TEXT = "Trong thời gian đổi trả";
         public const int ORDER_STATUS_DONE = 7;// giao thành công.
         public const string ORDER_STATUS_DONE_TEXT = "Hoàn thành đơn hàng";
-        public const int LimitDefault = 20;
+        public const int LimitDefault = 15;
         public const string Status_Category_Active = "Đang hoạt động";
         public const string Status_Category_No_Active = "Đang hoạt động";
 

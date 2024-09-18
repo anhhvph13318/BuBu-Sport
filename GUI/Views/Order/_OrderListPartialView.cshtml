@@ -30,8 +30,7 @@ else
                     <td>@order.StatusText</td>
                     <td class="d-flex justify-content-between">
                         <button class="btn btn-success" onclick="show('@order.Id')">Chi tiết</button>
-
-                        @if (order.IsDraft || !(order.Code.StartsWith("ON") || order.Code.StartsWith("TEMP")))
+                        @if(order.AllowRemove())
                         {
                             <button class="btn btn-danger" onclick="removeDraft('@order.Id')">Xóa</button>
                         }

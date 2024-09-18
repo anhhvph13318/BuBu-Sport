@@ -67,7 +67,6 @@ namespace DATN_ACV_DEV.Controllers
             _context.AddRange(_lstOrderDetail);
             _context.RemoveRange(_listCartDetail);
 
-
 			_response.id = _order.Id;
             _response.orderCode = _order.OrderCode;
             _response.voucherCode = string.Join(", ", _lstVoucherCode);
@@ -84,7 +83,7 @@ namespace DATN_ACV_DEV.Controllers
             if (_request.voucherID != null)
             {
                 var listVoucher = _context.TbVouchers.Where(v => _request.voucherID.Contains(v.Id));
-                foreach (var voucher in listVoucher)
+                foreach (var voucher in listVoucher)    
                 {
                     voucher.Quantity -= 1;
                 }
@@ -121,22 +120,23 @@ namespace DATN_ACV_DEV.Controllers
                 OrderCode = $"ON{DateTime.Now.ToString("yyyyMMddHHmmssfff")}",
                 TotalAmount = _request.totalAmount ?? 0m,
                 TotalAmountDiscount = _request.totalAmountDiscount ?? 0m,
-				Description = _request.description,
+				Description = _request.name,
                 AccountId = _request.UserId,
                 PaymentMethod = _request.paymentMethodId ?? 1,
                 PaymentStatus = (short)(_request.paymentMethodId == 2 ? 0 : 1),
                 //VoucherCode = _request.voucherCode != null ? string.Join(",", _request.voucherCode) : null,
                 AmountShip = _request.amountShip ?? 0,
                 CustomerId = customer == null ? null : customer.Id,
-                PhoneNumberCustomer = account != null ? account.PhoneNumber : _request.phoneNummber,
+                PhoneNumberCustomer = customer != null ? customer.Phone : _request.phoneNummber,
                 AddressDeliveryId = _request.addressDeliveryId,
                 IsCustomerTakeYourself = _request.getAtStore == true,
+                VoucherId = _request?.voucherID?.FirstOrDefault(),
 
 				OrderCounter = false,
                 //Defautl
-                CreateBy = _request.AdminId ?? _request.UserId,
+                CreateBy = _request?.AdminId ?? _request.UserId,
                 CreateDate = DateTime.Now,
-                Status = Utility.Utility.ORDER_STATUS_PREPARE_GOODS
+                Status = Utility.Utility.ORDER_STATUS_WAIT_CONFIRM
             };
 			if (_request.cartDetailId != null)
 			{

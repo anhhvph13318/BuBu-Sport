@@ -13,6 +13,14 @@
 		);
 	}
 
+	function ValidatePhone(phone) {
+		return String(phone)
+			.toLowerCase()
+			.match(
+				/^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/
+			);
+	}
+
 	function convertVND(value) {
 		return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 	}
@@ -265,29 +273,44 @@
 		let address = $('#order-address').val();
 		let district = $('#order-district').val();
 		let city = $('#order-city').val();
-		let code = $('#order-code').val();
-		let note = $('#order-note').val();
 		let ids = [];
 		let items = $('.order-item');
 		$.each(items, function (i, obj) {
 			let id = $(obj).attr('data-itemId');
 			ids.push(id);
 		});
-
-		let pickupInStore = $('#shipping-2').is(":checked");
+		
 		let COD = $('#payment-1').is(":checked");
 
-		if (pickupInStore || (name && phone && address && district && city && ids.length)) {
+        if (!name) {
+			alert("Tên không được để trống");
+			return false;
+		}
+
+		if (!phone) {
+			alert("Số điện thoại không được để trống");
+			return false;
+		}
+
+        if (!ValidatePhone(phone)) {
+			alert("Số điện thoại không hợp lệ");
+			return false;
+        }
+
+		if (!address || !district || !city) {
+			alert("Địa chỉ không được để trống");
+			return false;
+        }
+
+		if (ids.length) {
 			$.post("/Buy", {
 				name: name,
 				phone: phone,
 				address: address,
 				district: district,
 				city: city,
-				zipCode: code,
-				note: note, 
 				ids: ids,
-				getatstore: pickupInStore,
+				getatstore: false,
 				isVNP: !COD
 			}, function (data) {
 				if (data.success) {
@@ -297,11 +320,11 @@
 						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
 					}
 				} else {
-                    alert("FAILED");
+					alert("Đã có lỗi xảy ra");
 				}
 			});
 		} else {
-            alert("fill all fields");
+            alert("Đã có lỗi xảy ra");
 			return false;
 		}
 	});
