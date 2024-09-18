@@ -26,19 +26,19 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Model.Name)
+                    Tên sản phẩm
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Model.PriceNet)
+                    Số lượng
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Model.Price)
+                    Giá bán
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Model.Description)
+                    Mô tả
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Model.Code)
+                    Mã sản phẩm
                 </th>
             </tr>
         </thead>
@@ -52,7 +52,7 @@
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.PriceNet)
+                            @Html.DisplayFor(modelItem => item.Quantity)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Price)
@@ -60,13 +60,13 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Description)
                         </td>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Model.Code)
-                        </th>
                         <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-warning" })
+                            @Html.DisplayFor(modelItem => item.Code)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Sửa", "Edit", new { id = item.Id }, new { @class = "btn btn-warning" })
                             @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                            @Html.ActionLink("Xóa", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
                         </td>
                     </tr>
                 }

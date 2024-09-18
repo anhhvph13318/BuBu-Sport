@@ -43,14 +43,12 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="CategoryId" class="control-label">Danh mục</label>
-                    <select asp-for="CategoryId" class="form-select" aria-label="Default select example">
-                        <option selected></option>
-                        <option value="CE6A2231-32EB-46B5-897D-1D3ACECD58DD">Máy giặt</option>
-                        <option value="B542880B-F661-456A-9ADD-265B05C1B2BB">Bếp từ</option>
-                        <option value="40B3DF22-93E8-4FD9-992E-2FEF21AD8F9F">Nồi cơm điện</option>
-                        <option value="B1D7660D-4D38-4594-933A-AB30B0AF6591">Nồi chiên</option>
-                        <option value="ABA63282-2ABC-416D-820D-CF60B39C487E">Lò vi sóng</option>
-                        <option value="4306D97C-8A9E-4A67-8B57-EAF59EA22B0F">Tủ lạnh</option>
+                    <select id="categorySelect" asp-for="CategoryId" class="form-select" aria-label="Default select example">
+                        <option selected value="">Chọn danh mục</option>
+                        @foreach (var item in ViewBag.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
                     </select>
                     <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
@@ -83,30 +81,7 @@
         <a asp-action="Index">Quay lại</a>
     </div>
 </div>
-<script>
-    document.getElementById('fileInput').addEventListener('change', function (event) {
-        var file = event.target.files[0];
-        if (file) {
-            // Tạo URL tạm thời cho ảnh
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var img = document.getElementById('imagePreview');
-                img.src = e.target.result;
-                img.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-
-            // Cập nhật giá trị của trường ẩn
-            var urlImageInput = document.getElementById('urlImage');
-            urlImageInput.value = file.name; // Hoặc đường dẫn tạm thời nếu bạn gửi file lên server và nhận URL
-            console.log(urlImageInput.value)
-        } else {
-            // Nếu không có file nào được chọn, ẩn ảnh và xóa giá trị
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('urlImage').value = '';
-        }
-    });
-</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
