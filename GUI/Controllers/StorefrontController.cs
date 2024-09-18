@@ -55,11 +55,13 @@ namespace GUI.Controllers
 		public IActionResult Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash)
 		{
 			ViewBag.OrderId = vnp_TxnRef;
+			var isGuid = Guid.TryParse(vnp_TxnRef, out var code);
 			if (vnp_TransactionStatus == "00" && !string.IsNullOrEmpty(vnp_SecureHash))
 			{
 				var request = new OrderStatusRequest
 				{
-					orderId = new Guid(vnp_TxnRef),
+					orderId = isGuid ? new Guid(vnp_TxnRef) : Guid.Empty,
+					orderCode = isGuid ? "" : vnp_TxnRef,
 					paymentMethod = 2,
 					paymentStatus = 1
 				};

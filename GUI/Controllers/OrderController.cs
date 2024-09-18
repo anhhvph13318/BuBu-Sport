@@ -416,7 +416,7 @@ public class OrderController : Controller
 
     [HttpPost]
     [Route("payments/vnpay")]
-    public IActionResult GetVnpayCheckoutUrl([FromServices] VNPayService vnpay, [FromBody] Checkout checkout)
+    public async Task<IActionResult> GetVnpayCheckoutUrl([FromServices] VNPayService vnpay, [FromBody] Checkout checkout)
     {
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
         var order = HttpContext.Session.GetCurrentOrder();
@@ -447,15 +447,45 @@ public class OrderController : Controller
         order.PaymentMethod = 2;
         order.PaymentStatus = 0; // set status payment to wait
 
-        HttpContext.Session.SaveCurrentOrder(order);
+		var payload = new
+		{
+			order.Id,
+			order.Customer,
+			order.Items,
+			order.IsCustomerTakeYourSelf,
+			order.IsDraft,
+			order.IsSameAsCustomerAddress,
+			order.Status,
+			Shipping = order.ShippingInfo,
+			Payment = order.PaymentInfo,
+			order.PaymentMethod
+		};
+
+		using var httpClient = new HttpClient();
+		httpClient.BaseAddress = new Uri(URI);
+
+		HttpResponseMessage rawResponse = order.Id != Guid.Empty
+		? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+		: await httpClient.PostAsJsonAsync("api/orders/create", payload);
+
+		HttpContext.Session.SaveCurrentOrder(order);
 
         var paymentUrl = vnpay.SendRequest(ip, order.Code, Convert.ToInt32(order.PaymentInfo.FinalAmount * 100));
-
-        return Ok(new
+		if (rawResponse.IsSuccessStatusCode)
+		{
+			return Ok(new
         {
             Url = paymentUrl
         });
-    }
+        }
+        else
+        {
+            return Ok(new
+            {
+				Url = "http://localhost:5011/orders/create"
+			});
+        }
+	}
 
     [HttpGet]
     [Route("payments/vnpay/success")]
@@ -467,29 +497,29 @@ public class OrderController : Controller
         {
             var order = HttpContext.Session.GetCurrentOrder();
 
-            var payload = new
-            {
-                order.Id,
-                order.Customer,
-                order.Items,
-                order.IsCustomerTakeYourSelf,
-                order.IsDraft,
-                order.IsSameAsCustomerAddress,
-                order.Status,
-                Shipping = order.ShippingInfo,
-                Payment = order.PaymentInfo,
-                order.PaymentMethod
-            };
+            //var payload = new
+            //{
+            //    order.Id,
+            //    order.Customer,
+            //    order.Items,
+            //    order.IsCustomerTakeYourSelf,
+            //    order.IsDraft,
+            //    order.IsSameAsCustomerAddress,
+            //    order.Status,
+            //    Shipping = order.ShippingInfo,
+            //    Payment = order.PaymentInfo,
+            //    order.PaymentMethod
+            //};
 
-            using var httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri(URI);
+            //using var httpClient = new HttpClient();
+            //httpClient.BaseAddress = new Uri(URI);
 
-            HttpResponseMessage rawResponse = order.Id != Guid.Empty
-            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
-            : await httpClient.PostAsJsonAsync("api/orders/create", payload);
+            //HttpResponseMessage rawResponse = order.Id != Guid.Empty
+            //? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+            //: await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
-            if (rawResponse.IsSuccessStatusCode)
-            {
+            //if (rawResponse.IsSuccessStatusCode)
+            //{
                 var orders = await FetchOrderList();
                 order = HttpContext.Session.GetCurrentOrder(clearFirst: true);
 
@@ -506,7 +536,7 @@ public class OrderController : Controller
                 await hub.Clients.All.SendAsync("PaymentSuccess", message);
 
                 return View();
-            }
+            //}
         }
 
         await hub.Clients.All.SendAsync("PaymentFail", "Thanh toán thất bại");
