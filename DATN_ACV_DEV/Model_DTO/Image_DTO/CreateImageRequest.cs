@@ -8,6 +8,7 @@ namespace DATN_ACV_DEV.Model_DTO.Image_DTO
         public string Type { get; set; }
         public Guid? ProductId { get; set; }
         public bool? InAcitve { get; set; } 
-
+        public string PublicId { get; set; }
+        public IFormFile File { get; set; }
     }
 }

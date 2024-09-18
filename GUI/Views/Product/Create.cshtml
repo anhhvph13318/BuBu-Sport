@@ -16,11 +16,11 @@
                     <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+@*                 <div class="form-group">
                     <label asp-for="Code" class="control-label">Mã sản phẩm</label>
                     <input asp-for="Code" class="form-control" />
                     <span asp-validation-for="Code" class="text-danger"></span>
-                </div>
+                </div> *@
                 <div class="form-group">
                     <label asp-for="Price" class="control-label">Giá sản phẩm</label>
                     <input asp-for="Price" class="form-control" />
@@ -36,15 +36,24 @@
                     <input asp-for="PriceNet" class="form-control" />
                     <span asp-validation-for="PriceNet" class="text-danger"></span>
                 </div>
-                @* <div class="form-group">
-                <label asp-for="CategoryId" class="control-label">Danh mục</label>
-                <select class="form-select" aria-label="Default select example">
-                <option selected>Open this select menu</option>
-                <option value="B542880B-F661-456A-9ADD-265B05C1B2BB">One</option>
-                <option value="40B3DF22-93E8-4FD9-992E-2FEF21AD8F9F">Two</option>
-                </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-                </div> *@
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label">Danh mục</label>
+                    <select asp-for="CategoryId" class="form-select" aria-label="Default select example">
+                        <option selected></option>
+                        <option value="CE6A2231-32EB-46B5-897D-1D3ACECD58DD">Máy giặt</option>
+                        <option value="B542880B-F661-456A-9ADD-265B05C1B2BB">Bếp từ</option>
+                        <option value="40B3DF22-93E8-4FD9-992E-2FEF21AD8F9F">Nồi cơm điện</option>
+                        <option value="B1D7660D-4D38-4594-933A-AB30B0AF6591">Nồi chiên</option>
+                        <option value="ABA63282-2ABC-416D-820D-CF60B39C487E">Lò vi sóng</option>
+                        <option value="4306D97C-8A9E-4A67-8B57-EAF59EA22B0F">Tủ lạnh</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UrlImage" class="control-label">Ảnh sản phẩm</label>
+                    <input type="file" asp-for="UrlImage" class="form-control" accept="image/*" />
+                    <span asp-validation-for="UrlImage" class="text-danger"></span>
+                </div>
                 @* <div class="form-group">
                 <label asp-for="UserCode" class="control-label">Mã Nhân Viên</label>
                 <input asp-for="UserCode" class="form-control" />
@@ -67,7 +76,13 @@
         <a asp-action="Index">Quay lại</a>
     </div>
 </div>
-
+<script>
+    document.querySelector('input[type="file"]').addEventListener('change', function (event) {
+        var fileName = event.target.files[0] ? event.target.files[0].name : 'No file selected';
+        console.log('Selected file:', fileName);
+        // Bạn có thể cập nhật một trường khác hoặc làm gì đó với tên file ở đây
+    });
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
