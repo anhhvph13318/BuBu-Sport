@@ -29,6 +29,7 @@ using AccountCustomerResponse = GUI.Models.Customer_DTO.AccountCustomerResponse;
 using AccountCustomerRequest = GUI.Models.Customer_DTO.AccountCustomerRequest;
 using EditCustomerResponse = GUI.Models.DTOs.Customer_DTO.EditCustomerResponse;
 using EditCustomerRequest = GUI.Models.DTOs.Customer_DTO.EditCustomerRequest;
+using Azure.Core;
 
 namespace GUI.Controllers
 {
@@ -446,7 +447,7 @@ namespace GUI.Controllers
 					totalAmount = sum,
 					UserId = userId,
 					phoneNummber = obj.phone,
-					addressDelivery = obj.address,
+					addressDelivery = string.Join(", ", new List<string> { obj.address, obj.district, obj.city }),
 					name = obj.name,
 					getAtStore = false,
 					amountShip = 30000,
