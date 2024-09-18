@@ -80,7 +80,7 @@ namespace DATN_ACV_DEV.Controllers
         public void GenerateObjects()
         {
 			ACV_Exception ACV_Exception;
-            _order = _context.TbOrders.FirstOrDefault(c => c.Id == _request.orderId);
+            _order = _context.TbOrders.FirstOrDefault(c => (_request.orderId != Guid.Empty && c.Id == _request.orderId) || (_request.orderId == Guid.Empty && _request.orderCode == c.OrderCode));
 			if (_order == null) {
 				ACV_Exception = new ACV_Exception();
 				ACV_Exception.Messages.Add(Message.CreateErrorMessage(_apiCode, _conC01, "Đơn hàng có mã :" + _request.orderId + Utility.Utility.ORDER_NOTFOUND, _conC01Field));
