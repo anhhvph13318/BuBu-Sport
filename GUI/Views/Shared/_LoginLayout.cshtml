@@ -25,5 +25,12 @@
     <script src="~/js/Login.js" asp-append-version="true"></script>
     <script src="~/js/sweetalert.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @if (TempData["SweetAlertMessage"] != null)
+    {
+        <script>
+            @Html.Raw(TempData["SweetAlertMessage"])
+        </script>
+    }
+
 </body>
 </html>
