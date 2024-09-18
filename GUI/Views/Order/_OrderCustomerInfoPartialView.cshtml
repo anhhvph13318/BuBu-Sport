@@ -9,7 +9,7 @@
 <div class="mb-2">
     <label>Số điện thoại</label>
     <input class="form-control" onblur="checkCustomerHasBoughtSomething(event)" value="@Model.PhoneNumber"
-        id="customerPhoneNumber" type="text" />
+           id="customerPhoneNumber" type="text" oninput="validatePhone(this)" maxlength="10" />
     <p class="text-danger" style="display:none" id="order-customer-phone">Trường này là bắt buộc</p>
 </div>
 <div class="mb-2">
