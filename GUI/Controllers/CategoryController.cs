@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using DATN_ACV_DEV.Entity;
 using GUI.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -11,6 +12,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("categories")]
+[Authorize(Roles = "Admin")]
 public class CategoryController : Controller
 {
     private readonly DBContext _context;

@@ -26,7 +26,7 @@ namespace GUI.Controllers
             _context = context;
         }
         // GET: ProductController
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult> Index(string s)
         {
             var obj = new GetListProductRequest();

@@ -79,6 +79,7 @@ namespace DATN_ACV_DEV.Controllers
                         Type = "1",
                         ProductId = _Produst.Id
                     };
+                    _context.Add(_Image);
                 }
                 if (_request.PropertyID != null && _request.TypeEditProperty == "1")
                 {

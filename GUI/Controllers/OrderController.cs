@@ -17,7 +17,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("orders")]
-//[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class OrderController : Controller
 {
     private const string URI = "http://localhost:5059";
