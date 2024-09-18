@@ -112,7 +112,11 @@ namespace DATN_ACV_DEV.Controllers
 				};
                 AddCustomer = true;
 
-			}
+            }
+            else if (customer.Adress == null)
+            {
+                customer.Adress = _request.addressDelivery;
+            }
             //_namePaymentMethod = _context.TbPaymentMethods.Where(c => c.Id == _request.paymentMethodId).Select(p => p.Name).FirstOrDefault();
 
             var voucherId = _request?.voucherID?.Any() == true ? _request?.voucherID?.First() : null;
