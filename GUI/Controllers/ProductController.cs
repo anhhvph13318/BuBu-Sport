@@ -53,15 +53,17 @@ namespace GUI.Controllers
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CreateProductRequest user)
+        public async Task<ActionResult> Create(CreateProductRequest product)
         {
             try
             {
-                user.Status = 1;
-                user.CategoryId = Guid.Parse("B542880B-F661-456A-9ADD-265B05C1B2BB");
-                user.TypeImage = "1";
+                Random random = new Random();
+                string randomTwoDigits = random.Next(10, 100).ToString(); // Sinh ngẫu nhiên 2 số bất kỳ từ 10 đến 99
+                product.Code = "SP" + randomTwoDigits;
+                product.Status = 1;
+                product.TypeImage = "1";
                 var URL = _settings.APIAddress + "api/CreateProduct/Process";
-                var param = JsonConvert.SerializeObject(user);
+                var param = JsonConvert.SerializeObject(product);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
                 if (result.Status == "400")

@@ -17,7 +17,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("orders")]
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 public class OrderController : Controller
 {
     private const string URI = "http://localhost:5059";
@@ -74,6 +74,9 @@ public class OrderController : Controller
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
+
+        var order = response!.Data;
+        order.ReCalculatePaymentInfo();
 
         return View(response!.Data);
     }
@@ -147,13 +150,15 @@ public class OrderController : Controller
         order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
         order.Status = checkout.Status;
 
-        if (order.IsCustomerTakeYourSelf)
-            order.Status = 7; // set status to complete
-        else
-            order.Status = 1; // set status to prepare
+        if(order.Id == Guid.Empty)
+        {
+            if (order.IsCustomerTakeYourSelf)
+                order.Status = 7; // set status to complete
+            else
+                order.Status = 1; // set status to prepare
+        }
 
         order.PaymentInfo.ShippingFee = order.IsCustomerTakeYourSelf ? 0 : 30000;
-
 
         // submit to database
         using var httpClient = new HttpClient();
@@ -431,10 +436,13 @@ public class OrderController : Controller
         order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
         order.Status = checkout.Status;
 
-        if (order.IsCustomerTakeYourSelf)
-            order.Status = 7; // set status to complete
-        else
-            order.Status = 1; // set status to prepare
+        if (order.Id == Guid.Empty)
+        {
+            if (order.IsCustomerTakeYourSelf)
+                order.Status = 7; // set status to complete
+            else
+                order.Status = 1; // set status to prepare
+        }
 
         order.PaymentMethod = 2;
         order.PaymentStatus = 0; // set status payment to wait
@@ -520,12 +528,15 @@ public class OrderController : Controller
         {
             order.IsCustomerTakeYourSelf = true;
             order.PaymentInfo.IsCustomerTakeYourSelf = true;
+            order.PaymentInfo.ShippingFee = 0;
         } else
         {
             order.IsCustomerTakeYourSelf = false;
             order.PaymentInfo.IsCustomerTakeYourSelf = false;
+            order.PaymentInfo.ShippingFee = 30000;
             order.Status = 1;
         }
+
         order.ReCalculatePaymentInfo();
         HttpContext.Session.SaveCurrentOrder(order);
 

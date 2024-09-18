@@ -10,6 +10,7 @@ namespace DATN_ACV_DEV.Model_DTO.Product_DTO
         public decimal Price { get; set; }
 
         public int? Status { get; set; }
+        public int Quantity { get; set; }
 
         public string? Description { get; set; }
 

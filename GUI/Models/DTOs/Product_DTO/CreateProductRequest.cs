@@ -20,9 +20,10 @@
         public string? Color { get; set; }
 
         public string? Material { get; set; }
+        public int Quantity {  get; set; }
 
         public Guid? ImageId { get; set; }
-        public List<string>? UrlImage { get; set; }
+        public IFormFile UrlImage { get; set; }
         public string? TypeImage { get; set; }
         public Guid CategoryId { get; set; }
         public List<string>? OpenAttribute { get; set; }

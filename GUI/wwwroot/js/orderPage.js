@@ -224,7 +224,7 @@ function verify() {
     // validate shipping info
     if($('#isSameAsCustomerAddress').is(':checked') == false) {
         for (const [key, value] of Object.entries(shippingField)) {
-            if ($(key).val() === "") {
+            if ($(key).val().trim() === "") {
                 isValid = false;
                 $(value).css(displayErrorMessage);
             } else {
@@ -233,7 +233,7 @@ function verify() {
         }
     } else {
         for (const [key, value] of Object.entries(customerInfoField)) {
-            if ($(key).val() === "") {
+            if ($(key).val().trim() === "") {
                 isValid = false;
                 $(value).css(displayErrorMessage);
             } else {
@@ -348,11 +348,26 @@ function interactiveCartItemAndVoucherButton(disable) {
         $('#search').attr(disableAttribute, true);
         $('.order-item-quantity, .remove-item-btn').each(function () {
             $(this).attr(disableAttribute, true)
-        })
-        saveOrder
+        });
+        $('#customerName').attr(disableAttribute, true);
+        $('#customerPhoneNumber').attr(disableAttribute, true);
+        $('#customerAddress').attr(disableAttribute, true);
+        $('#shippingLocation').attr(disableAttribute, true);
+        $('#isSameAsCustomerAddress').attr(disableAttribute, true);
+        $('#receiverName').attr(disableAttribute, true);
+        $('#receiverPhone').attr(disableAttribute, true);
+        $('#receiverAddress').attr(disableAttribute, true);
     } else {
         $('#applyVoucherBtn').removeAttr(disableAttribute);
         $('#search').removeAttr(disableAttribute);
+        $('#customerName').removeAttr(disableAttribute);
+        $('#customerPhoneNumber').removeAttr(disableAttribute);
+        $('#customerAddress').removeAttr(disableAttribute);
+        $('#shippingLocation').removeAttr(disableAttribute);
+        $('#isSameAsCustomerAddress').removeAttr(disableAttribute);
+        $('#receiverName').removeAttr(disableAttribute);
+        $('#receiverPhone').removeAttr(disableAttribute);
+        $('#receiverAddress').removeAttr(disableAttribute);
     }
 }
 
@@ -425,6 +440,17 @@ function cancelApplyVoucher() {
             $('#orderPaymentInfoContainer').html(data.payment);
             toastr.success("Đã huỷ apply voucher");
         })
+}
+
+function validatePhone(e) {
+    const regex = /[0-9]{10}/
+    const value = e.value;
+
+        // Check if the current value matches the regex
+        if (!regex.test(value)) {
+            // If not, remove the last character
+            e.value = value.slice(0, -1);
+        }
 }
 
 // setup signalR
