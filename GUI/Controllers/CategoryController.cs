@@ -83,7 +83,7 @@ public class CategoryController : Controller
         var category = await _context.TbCategories.FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
         if(category is null) return BadRequest();
 
-        if(category.Name == request.Name) return BadRequest();
+        if(category.Name == request.Name && Guid.Parse(id) != category.Id) return BadRequest();
 
         category.Name = request.Name;
         category.Status = (int)request.Status;
