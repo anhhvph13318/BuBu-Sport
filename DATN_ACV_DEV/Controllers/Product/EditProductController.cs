@@ -69,7 +69,7 @@ namespace DATN_ACV_DEV.Controllers
                 }
                 if (_Image != null)
                 {
-                    _Image.Url = _request.UrlImage.FirstOrDefault();
+                    _Image.Url = _request.UrlImage;
                 }
                 if (_request.PropertyID != null && _request.TypeEditProperty == "1")
                 {
