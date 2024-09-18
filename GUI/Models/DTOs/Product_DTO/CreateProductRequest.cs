@@ -20,6 +20,7 @@
         public string? Color { get; set; }
 
         public string? Material { get; set; }
+        public int Quantity {  get; set; }
 
         public Guid? ImageId { get; set; }
         public IFormFile UrlImage { get; set; }
