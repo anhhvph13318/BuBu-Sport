@@ -242,7 +242,7 @@ public class OrderDetailAdminController : ControllerBase
                     ProductImage = d.Product.Image.Url,
                     ProductName = d.Product.Name
                 }),
-            }).Where(e => (isGuid && e.Id == id) || (!isGuid && e.Customer.PhoneNumber == s)).ToListAsync();
+            }).Where(e => (isGuid && e.Id == id) || (!isGuid && e.Customer.PhoneNumber == s) || (e.Code == s)).ToListAsync();
 
 
         return Ok(new BaseResponse<List<OrderDetail>>()
