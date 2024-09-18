@@ -5,6 +5,7 @@
         public bool IsCustomerTakeYourSelf { get; set; } = true;
         public Guid? VoucherId { get; set; }
         public string VoucherCode { get; set; } = "";
+        public string PaymentStatus { get; set; } = string.Empty;
         public int Status { get; set; } = -1;
         public decimal ShippingFee { get; set; } = 30000;
         public decimal TotalAmount { get; set; }

@@ -2391,3 +2391,7 @@ textarea.input {
     display: flex;
     justify-content: end;
 }
+
+#order-submit{
+    cursor: pointer;
+}

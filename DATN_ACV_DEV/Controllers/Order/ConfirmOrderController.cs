@@ -114,6 +114,9 @@ namespace DATN_ACV_DEV.Controllers
 
 			}
             //_namePaymentMethod = _context.TbPaymentMethods.Where(c => c.Id == _request.paymentMethodId).Select(p => p.Name).FirstOrDefault();
+
+            var voucherId = _request?.voucherID?.Any() == true ? _request?.voucherID?.First() : null;
+
             _order = new TbOrder()
             {
                 Id = Guid.NewGuid(),
@@ -130,7 +133,7 @@ namespace DATN_ACV_DEV.Controllers
                 PhoneNumberCustomer = customer != null ? customer.Phone : _request.phoneNummber,
                 AddressDeliveryId = _request.addressDeliveryId,
                 IsCustomerTakeYourself = _request.getAtStore == true,
-                VoucherId = _request?.voucherID?.FirstOrDefault(),
+                VoucherId = voucherId,
 
 				OrderCounter = false,
                 //Defautl

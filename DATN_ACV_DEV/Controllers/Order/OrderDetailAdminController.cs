@@ -216,7 +216,8 @@ public class OrderDetailAdminController : ControllerBase
                     TotalAmount = e.TotalAmount,
                     Status = e.Status ?? 0,
                     VoucherId = e.VoucherId,
-                    VoucherCode = e.Voucher.Code ?? string.Empty
+                    VoucherCode = e.Voucher.Code ?? string.Empty,
+                    PaymentStatus = (e.PaymentMethod == 2 && e.PaymentStatus == 1) || e.Status == Utility.Utility.ORDER_STATUS_DONE ? "Đã thanh toán" : "Chưa thanh toán"
                 },
                 Voucher = e.VoucherId == null
                     ? new Model_DTO.Voucher_DTO.VoucherDTO()
@@ -242,7 +243,7 @@ public class OrderDetailAdminController : ControllerBase
                     ProductImage = d.Product.Image.Url,
                     ProductName = d.Product.Name
                 }),
-            }).Where(e => (isGuid && e.Id == id) || (!isGuid && e.Customer.PhoneNumber == s) || (e.Code == s)).ToListAsync();
+            }).Where(e => !e.IsDraft && (isGuid && e.Id == id) || (!isGuid && e.Customer.PhoneNumber == s) || (e.Code == s)).ToListAsync();
 
 
         return Ok(new BaseResponse<List<OrderDetail>>()
