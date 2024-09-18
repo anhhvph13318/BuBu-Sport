@@ -244,21 +244,9 @@
                                     <div class="product-body">
                                         <p class="product-category">@item.CategoryName</p> 
                                         <h3 class="product-name"><a href="#">@item.Name</a></h3>
-                                        @if (item.PriceNet != null)
-                                        {
-                                            <h4 class="product-price">
-                                                @(((decimal)item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
-                                                @* <del class="product-old-price">
-                                                    @(item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
-                                                </del> *@
-                                            </h4>
-                                        }
-                                        else
-                                        {
                                             <h4 class="product-price">
                                                 @(item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
                                             </h4>
-                                        }
                                         <div class="product-rating">
                                             @* <i class="fa fa-star"></i>
                                     <i class="fa fa-star"></i>

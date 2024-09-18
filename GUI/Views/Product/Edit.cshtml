@@ -65,6 +65,13 @@
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div> *@
             <div class="form-group">
+                <label asp-for="UrlImage" class="control-label">Ảnh sản phẩm</label>
+                <input type="file" id="fileInput" class="form-control" accept="image/*" />
+                <img id="imagePreview" src="@Model.Image" alt="Image preview" style="display:none; max-width: 100%; height: auto;" />
+                <input type="hidden" asp-for="UrlImage" value="@Model.Image" id="urlImage" />
+                @* <span asp-validation-for="UrlImage" class="text-danger"></span> *@
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -75,6 +82,51 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    (function ($) {
+
+        $('#fileInput').on("change", function (e) {
+            let file = e.target.files[0];
+            let form = new FormData();
+
+            form.append("api_key", "284335524597493");
+            form.append("upload_preset", "vanh2204");
+            form.append("public_id", @DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            form.append("file", file);
+
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "https://api.cloudinary.com/v1_1/dnvuz3evz/image/upload?Vanh1",
+                "method": "POST",
+                "processData": false,
+                "contentType": false,
+                "mimeType": "multipart/form-data",
+                "data": form
+            };
+
+            $.ajax(settings).done(function (response) {
+                let data = JSON.parse(response);
+                console.log(data);
+                if (data) {
+                    let url = data.secure_url ?? data.url
+                    console.log(url);
+                    if (url) {
+                        $("#imagePreview").attr("src", url);
+                        $("#imagePreview").show();
+                        $('#urlImage').val(url);
+                    } else {
+                        $("#imagePreview").hide();
+                    }
+                }
+            });
+        });
+
+        let a = $("#imagePreview").attr("src");
+        if (a) {
+            $("#imagePreview").show();
+        }
+
+    })(jQuery);
+</script>

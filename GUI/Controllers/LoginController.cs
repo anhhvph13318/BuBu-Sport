@@ -65,7 +65,7 @@ namespace GUI.Controllers
                     principal: new ClaimsPrincipal(claimIdentity));
 
                 HttpContext.Session.SetString("CurrentUserId", userId);
-                TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
+                //TempData["SweetAlertMessage"] = Alert.SweetAlertHelper.ShowSuccess("Thành công!", "Đăng nhập thành công.");
 
                 return result.Data != null && result.Data.Role == 0
                     ? RedirectToAction("Store", "Storefront")
