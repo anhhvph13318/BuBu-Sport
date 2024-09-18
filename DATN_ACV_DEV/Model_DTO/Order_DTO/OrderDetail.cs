@@ -19,6 +19,7 @@ public class OrderDetail
     public string OrderTypeName { get; set; } = string.Empty;
     public bool IsDraft { get; set; }
     public int PaymentMethod { get; set; }
+    public DateTime? Created { get; set; }
 }
 
 public class OrderItem
@@ -64,5 +65,5 @@ public class PaymentInfo
     public decimal TotalAmount { get; set; }
     public decimal TotalTax { get; set; }
     public decimal TotalDiscount { get; set; }
-    public decimal FinalAmount => TotalAmount + ShippingFee + TotalTax - TotalDiscount;
+    public decimal FinalAmount => TotalAmount + ShippingFee - TotalDiscount;
 }

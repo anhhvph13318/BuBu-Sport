@@ -55,8 +55,9 @@ namespace DATN_ACV_DEV.Controllers.Customer
                                 Adress = _Customer.Adress,
                                 Password = _Account.Password,
                                 Phone = _Customer.Phone,
-                                Sex = _Customer.Sex ?? 1,
+                                Sex = _Customer.Sex,
                                 YearOfBirth = _Customer.YearOfBirth,
+                                Email = _Account.Email,
                             };
                             _response.Customer = data;
                         }

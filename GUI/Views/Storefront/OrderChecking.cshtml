@@ -23,7 +23,7 @@
                     <p class="orders-header">Đơn hàng</p>
                     foreach (var order in Model)
                     {
-                        <p class="order-title">@order.Id</p>
+                        <div class="order-title">Đơn hàng <strong>@order.Code</strong></div>
                         <div class="order-info order-summary">
                             <div class="order-col">
                                 <div>Sản phẩm</div>
@@ -44,11 +44,18 @@
                                     <div><p id="shipping-fee">30000</p></div>
                                 </div>
                             }
+                            @if (order.PaymentInfo.TotalDiscount > 0)
+                            {
+                                <div class="order-col">
+                                    <div>Giảm giá</div>
+                                    <div><p id="shipping-fee">@order.PaymentInfo.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p></div>
+                                </div>
+                            }
                             <div class="order-col">
                                 <div>Tổng thanh toán</div>
                                 <div>
                                     <p>
-                                        @order.PaymentInfo.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))
+                                        @((order.PaymentInfo.FinalAmount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
                                     </p>
                                 </div>
                             </div>

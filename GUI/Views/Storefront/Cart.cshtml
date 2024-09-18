@@ -1,4 +1,5 @@
-﻿@model List<GUI.Models.DTOs.Cart_DTO.CartDTO>
+﻿@using System.Globalization
+@model List<GUI.Models.DTOs.Cart_DTO.CartDTO>
 @{
     Layout = "_LayoutStore";
 }
@@ -37,13 +38,13 @@
                                     <div>
                                         <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a><input class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" /><a class="change-quant cart-quant-up" data-itemId="@item.CartDetailID">+</a>
                                     </div>
-                                    <div class="sub-total" id="sub-@item.CartDetailID">@(item.Quantity * item.Price)</div>
+                                    <div class="sub-total" id="sub-@item.CartDetailID" data-value="@(item.Quantity * item.Price)">@((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</div>
                                 </div>
                             }
                         </div>
                         <div class="order-col">
                             <div><strong>TỔNG TẠM TÍNH</strong></div>
-                            <div><strong class="cart-total">0</strong></div>
+                            <div><strong class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
                         </div>
                     </div>
                     @* 				<div class="payment-method">

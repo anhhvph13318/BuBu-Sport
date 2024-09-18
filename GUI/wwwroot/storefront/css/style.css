@@ -2351,3 +2351,43 @@ textarea.input {
 .btn-voucher-counter{
     display:none !important;
 }
+
+.section-customer-nav li {
+    float:none;
+}
+
+.section-customer-nav li {
+    float: none;
+}
+
+.section-customer-nav li:last-child::after {
+    display:none;
+}
+
+    .section-customer-nav li a:after {
+        content: "";
+        display: block;
+        width: 0%;
+        height: 2px;
+        background-color: #3ba7c4;
+        -webkit-transition: 0.2s all;
+        transition: 0.2s all;
+    }
+
+.section-customer-nav li.active a {
+    color: #3ba7c4;
+    border: none !important;
+}
+
+    .section-customer-nav li a:hover:after, .section-customer-nav li a:focus:after, .section-customer-nav li.active a:after {
+        width: 100%;
+    }
+
+.section-customer-nav {
+    margin: 10% 0;
+}
+
+.update-btn {
+    display: flex;
+    justify-content: end;
+}
