@@ -1,10 +1,13 @@
+using DATN_ACV_DEV.Entity;
+using GUI;
 using GUI.Hubs;
 using GUI.Shared.Common;
 using GUI.Shared.VNPay;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Routing.Patterns;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -26,7 +29,10 @@ builder.Services.Configure<CommonSettings>(builder.Configuration.GetSection("Com
 builder.Services.AddSession();
 builder.Services.AddSignalR();
 
+builder.Services.AddScoped<DBContext>();
+
 builder.Services.AddTransient<VNPayService>();
+builder.Services.AddScoped<UserSession>();
 
 var app = builder.Build();
 

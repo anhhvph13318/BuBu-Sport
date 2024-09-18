@@ -33,6 +33,8 @@ public class GetOrderAdminController : ControllerBase
             {
                 code = e.OrderCode,
                 totalAmount = e.TotalAmount,
+                amountDiscount = e.TotalAmountDiscount,
+                amountShip = e.AmountShip,
                 id = e.Id,
                 nameCustomer = e.Customer.Name,
                 status = Common.ConvertStatusOrder(e.Status ?? 0),
@@ -78,6 +80,7 @@ public class GetOrderAdminController : ControllerBase
                     TotalDiscount = e.TotalAmountDiscount!.Value,
                     TotalAmount = e.TotalAmount,
                     VoucherId = e.VoucherId,
+                    ShippingFee = e.AmountShip ?? 0
                 },
                 Items = e.TbOrderDetails.Select(e => new OrderItem()
                 {

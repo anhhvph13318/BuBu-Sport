@@ -8,10 +8,12 @@ public class OrderListItem
     public string status { get; set; }
     public string? nameCustomer { get; set; }
     public string paymentMethodName { get; set; }
-    public decimal? amountShip { get; set; }
-    public decimal? amountDiscount { get; set; }
-    public decimal? totalAmount { get; set; }
+    public decimal amountShip { get; set; }
+    public decimal amountDiscount { get; set; }
+    public decimal totalAmount { get; set; }
     public string? products { get; set; }
     public string? ReasionCancel { get; set; }
     public List<string>? ImageForCancelOrder { get; set; }
+
+    public decimal FinalAmount => totalAmount - amountDiscount + amountShip;
 }
