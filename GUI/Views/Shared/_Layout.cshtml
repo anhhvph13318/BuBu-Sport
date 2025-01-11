@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 
     <style>
+        .sidebar-header .logo {
+            width: 100%; /* Hoặc một giá trị cụ thể như "150px" */
+            max-height: 80px; /* Đảm bảo chiều cao hợp lý */
+            object-fit: contain; /* Giữ tỷ lệ hình ảnh */
+        }
         body {
             display: flex;
             min-height: 100vh;
@@ -49,7 +54,7 @@
         .nav-link {
             color: #495057;
         }
-
+        
         .container {
             flex-grow: 1;
             padding: 2rem;
@@ -62,14 +67,19 @@
             border-top: 1px solid #dee2e6;
             text-align: center;
         }
+
+        a.nav-link {
+            width: 200px
+        }
     </style>
 </head>
 <body>
 <div class="d-flex">
         <div class="sidebar bg-light border-end">
             <div class="sidebar-header d-flex align-items-center p-3">
-                <img src="~/Image/logo-1.png" alt="SmartHouse Logo" class="logo" />
-                <h5>SmartHouse</h5>
+                <a href="/store">
+                    <img src="~/Image/logo-1.png" alt="SmartHouse Logo" class="logo" />
+                </a>
             </div>
             <nav class="nav flex-column p-3">
 @*                 <a class="nav-link" href="/customer">

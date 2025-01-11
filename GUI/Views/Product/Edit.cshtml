@@ -79,7 +79,11 @@
                     <div class="form-group">
                         <label asp-for="UrlImage" class="form-label">Ảnh sản phẩm</label>
                         <input type="file" id="fileInput" class="form-control" accept="image/*" onchange="previewImage();" />
-                        <img id="imagePreview" src="@Model.Image" alt="Image preview" style="display:none; max-width: 100%; height: auto;" class="mt-3 img-thumbnail" />
+                        <img id="imagePreview"
+                             src="@Model.Image"
+                             alt="Image preview"
+                             style="display:none; width: 250px; height: 250px; object-fit: cover;"
+                             class="mt-3 img-thumbnail" />
                         <input type="hidden" asp-for="UrlImage" value="@Model.Image" id="urlImage" />
                     </div>
                 </div>

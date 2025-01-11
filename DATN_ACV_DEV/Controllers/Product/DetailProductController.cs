@@ -40,7 +40,7 @@ namespace DATN_ACV_DEV.Controllers
                 _Product = _context.TbProducts.Where(p => p.Id == _request.ID && p.IsDelete == false).FirstOrDefault();
                 var PrivateAtrtibute = _context.TbProperties.Where(c => c.ProductId == _request.ID).ToList();
                 var PropertiesName = _context.TbProperties.Where(a => PrivateAtrtibute.Select(x => x.Id).Contains(a.Id) && a.Active != false).Select(n => n.Id).ToList();
-                var Image = _context.TbImages.Where(i => i.ProductId == _Product.Id).Select(c=>c.Url).ToList();
+                var Image = _context.TbImages.Where(i => i.Id == _Product.ImageId).Select(c=>c.Url).ToList();
                 if (_Product != null)
                 {
                     _response.Id = _Product.Id;
