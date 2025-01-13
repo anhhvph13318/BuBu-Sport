@@ -23,8 +23,15 @@
 						<input class="input" type="text" name="last-name" placeholder="Last Name">
 					</div> *@
 					<div class="form-group">
-						<input id="order-phone" class="input" type="tel" name="tel" placeholder="Số điện thoại">
-					</div>
+						<input id="order-phone"
+							   class="input"
+							   type="tel"
+							   name="tel"
+							   placeholder="Số điện thoại"
+							   maxlength="10"
+							   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+							   required />
+					</div> @* VANH *@
 @* 					<div class="form-group">
 						<input class="input" type="email" name="email" placeholder="Email">
 					</div> *@
