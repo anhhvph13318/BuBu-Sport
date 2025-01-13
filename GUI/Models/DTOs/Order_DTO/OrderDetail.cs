@@ -25,6 +25,7 @@ public class OrderDetail
     public short PaymentStatus { get; set; }
     public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
     public DateTime TempOrderCreatedTime { get; set; }
+    public DateTime Created { get; set; } //VANH
     public bool IsDraft { get; set; }
     public string OrderTypeName { get; set; } = string.Empty;
     public bool AllowRemove()
