@@ -37,7 +37,7 @@ namespace DATN_ACV_DEV.Controllers
         {
             List<HomePageModel> lstProduct = new List<HomePageModel>();
             var sAscii = !string.IsNullOrEmpty(_request.Name) ? Common.RemoveSignInVietnameseString(_request.Name) : "";
-            var Model = _context.TbProducts.Where(p => p.IsDelete == false && p.Quantity > 0
+            var Model = _context.TbProducts.Where(p => p.IsDelete == false
                         && (!string.IsNullOrEmpty(_request.Name) ? (p.Name.Contains(_request.Name) || EF.Functions.Collate(p.Name, "Vietnamese_CI_AI").Contains(sAscii)) : true)
                         && (_request.CategoryID.HasValue ? p.CategoryId >= _request.CategoryID : true)
                         && (_request.PriceFrom.HasValue ? p.Price >= _request.PriceFrom : true)
