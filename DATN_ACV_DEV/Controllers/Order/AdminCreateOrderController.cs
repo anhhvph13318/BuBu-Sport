@@ -2,6 +2,7 @@
 using DATN_ACV_DEV.Model_DTO.Order_DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DATN_ACV_DEV.Controllers.Order
 {
@@ -126,6 +127,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             [FromRoute] string id,
             [FromBody] UpdateOrder payload)
         {
+            var errors = new Dictionary<string, string>();
             var order = await _context.TbOrders
                 .Include(e => e.Customer)
                 .Include(e => e.AddressDelivery)
@@ -237,7 +239,24 @@ namespace DATN_ACV_DEV.Controllers.Order
 
                 order.TbOrderDetails.Remove(item);
             }
+            // re-update product stock
+            if (payload.Status == 1) // VANH
+            {
+                foreach (var item in payload.Items)
+                {
+                    var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
+                        ?? throw new NullReferenceException();
 
+                    if (product.Quantity <= 0)
+                    {
+                        errors.Add($"Product.{product.Id}", $"{product.Name} - Không đủ số lượng");
+                    }
+                    else
+                    {
+                        product.Quantity -= item.Quantity;
+                    }
+                }
+            }
             _context.TbOrders.Update(order);
             await _context.SaveChangesAsync();
 
