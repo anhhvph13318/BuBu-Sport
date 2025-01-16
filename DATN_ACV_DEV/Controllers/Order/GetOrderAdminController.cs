@@ -85,7 +85,7 @@ public class GetOrderAdminController : ControllerBase
                 Items = e.TbOrderDetails.Select(e => new OrderItem()
                 {
                     Id = e.Id,
-                    ProductImage = e.Product.Image.Url,
+                    
                     Price = e.Product.Price,
                     ProductName = e.Product.Name,
                     Quantity = e.Quantity
