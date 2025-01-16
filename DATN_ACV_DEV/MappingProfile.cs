@@ -102,7 +102,6 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                .ForMember(dest => dest.AccountCode, opt => opt.MapFrom(src => src.AccountCode));
 
-            
             CreateMap<TbUser, UserDTO>()
                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))

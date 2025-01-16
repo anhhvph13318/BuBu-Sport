@@ -43,8 +43,6 @@ public partial class TbProduct
 
     public string? Code { get; set; }
 
-    public int? Weight { get; set; }
-
     public int? Size { get; set; }
 
     public virtual TbCategory Category { get; set; } = null!;
