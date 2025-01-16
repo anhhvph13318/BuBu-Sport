@@ -25,7 +25,7 @@ public class OrderDetailAdminController : ControllerBase
             .Include(e => e.Customer)
             .Include(e => e.TbOrderDetails)
             .ThenInclude(e => e.Product)
-            
+            .ThenInclude(e => e.Image)
             .Include(e => e.AddressDelivery)
             .Include(e => e.Voucher)
             .Select(e => new OrderDetail()
@@ -78,7 +78,7 @@ public class OrderDetailAdminController : ControllerBase
                     Id = d.ProductId,
                     Price = d.Product.Price,
                     Quantity = d.Quantity,
-                    
+                    ProductImage = d.Product.Image.Url,
                     ProductName = d.Product.Name
                 }),
                 Created = e.CreateDate,
@@ -103,7 +103,7 @@ public class OrderDetailAdminController : ControllerBase
             .Include(e => e.Customer)
             .Include(e => e.TbOrderDetails)
             .ThenInclude(e => e.Product)
-            
+            .ThenInclude(e => e.Image)
             .Include(e => e.AddressDelivery)
             .Include(e => e.Voucher)
             .Select(e => new OrderDetail()
@@ -160,7 +160,7 @@ public class OrderDetailAdminController : ControllerBase
                     Id = d.ProductId,
                     Price = d.Product.Price,
                     Quantity = d.Quantity,
-                    
+                    ProductImage = d.Product.Image.Url,
                     ProductName = d.Product.Name
                 }),
                 Created = e.CreateDate
@@ -183,7 +183,7 @@ public class OrderDetailAdminController : ControllerBase
             .Include(e => e.Customer)
             .Include(e => e.TbOrderDetails)
             .ThenInclude(e => e.Product)
-            
+            .ThenInclude(e => e.Image)
             .Include(e => e.AddressDelivery)
             .Include(e => e.Voucher)
             .Select(e => new OrderDetail()
@@ -241,7 +241,7 @@ public class OrderDetailAdminController : ControllerBase
                     Id = d.ProductId,
                     Price = d.Product.Price,
                     Quantity = d.Quantity,
-                    
+                    ProductImage = d.Product.Image.Url,
                     ProductName = d.Product.Name
                 }),
                 Created = e.CreateDate //VANH
