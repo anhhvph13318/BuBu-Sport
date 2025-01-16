@@ -43,19 +43,11 @@ public partial class TbProduct
 
     public string? Code { get; set; }
 
-    public int? Weight { get; set; }
-
-    public int? Length { get; set; }
-
-    public int? Width { get; set; }
-
-    public int? Height { get; set; }
+    public int? Size { get; set; }
 
     public virtual TbCategory Category { get; set; } = null!;
 
     public virtual ICollection<TbCartDetail> TbCartDetails { get; set; } = new List<TbCartDetail>();
-
-    public virtual ICollection<TbInvoiceDetail> TbInvoiceDetails { get; set; } = new List<TbInvoiceDetail>();
 
     public virtual ICollection<TbOrderDetail> TbOrderDetails { get; set; } = new List<TbOrderDetail>();
     public virtual TbImage Image { get; set; }

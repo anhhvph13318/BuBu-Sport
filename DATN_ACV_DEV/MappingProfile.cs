@@ -102,12 +102,6 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                .ForMember(dest => dest.AccountCode, opt => opt.MapFrom(src => src.AccountCode));
 
-            
-            CreateMap<TbInvoice, InvoiceDTO>()
-               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
-               .ForMember(dest => dest.InputDate, opt => opt.MapFrom(src => src.InputDate));
-
             CreateMap<TbUser, UserDTO>()
                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
