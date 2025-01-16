@@ -33,10 +33,6 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbImage> TbImages { get; set; }
 
-    public virtual DbSet<TbInvoice> TbInvoices { get; set; }
-
-    public virtual DbSet<TbInvoiceDetail> TbInvoiceDetails { get; set; }
-
     public virtual DbSet<TbMaterial> TbMaterials { get; set; }
 
     public virtual DbSet<TbOrder> TbOrders { get; set; }
@@ -47,7 +43,6 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbProduct> TbProducts { get; set; }
 
-    public virtual DbSet<TbPromotion> TbPromotions { get; set; }
 
     public virtual DbSet<TbProperty> TbProperties { get; set; }
 
@@ -422,5 +417,5 @@ public partial class DBContext : DbContext
         OnModelCreatingPartial(modelBuilder);
     }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-}
+
+    
