@@ -43,7 +43,6 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbProduct> TbProducts { get; set; }
 
-    public virtual DbSet<TbPromotion> TbPromotions { get; set; }
 
     public virtual DbSet<TbProperty> TbProperties { get; set; }
 
@@ -365,10 +364,13 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
-        
+
 
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+
+
+
