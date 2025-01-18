@@ -11,7 +11,7 @@ public partial class TbAddressDelivery
 
     public string DistrictName { get; set; } = string.Empty;
 
-    public string WardName { get; set; } = null!;
+    public string WardName { get; set; } = string.Empty;
 
     public bool? Status { get; set; }
 

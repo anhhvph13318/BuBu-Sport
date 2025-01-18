@@ -81,6 +81,7 @@ public class OrderDetailAdminController : ControllerBase
                     ProductImage = d.Product.Image.Url,
                     ProductName = d.Product.Name
                 }),
+                Created = e.CreateDate,
             }).FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
 
         if(order != null && order.ShippingInfo == null)
@@ -243,6 +244,7 @@ public class OrderDetailAdminController : ControllerBase
                     ProductImage = d.Product.Image.Url,
                     ProductName = d.Product.Name
                 }),
+                Created = e.CreateDate //VANH
             }).Where(e => !e.IsDraft && (isGuid && e.Id == id) || (!isGuid && e.Customer.PhoneNumber == s) || (e.Code == s)).ToListAsync();
 
 

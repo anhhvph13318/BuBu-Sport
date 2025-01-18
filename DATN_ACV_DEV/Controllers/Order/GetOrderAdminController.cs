@@ -106,7 +106,8 @@ public class GetOrderAdminController : ControllerBase
                         Discount = e.Voucher.Discount,
                         Unit = e.Voucher.Unit,
                         Type = e.Voucher.Type,
-                    }
+                    },
+                Created = e.CreateDate //VANH
             }).ToListAsync();
 
         return Ok(new BaseResponse<IEnumerable<OrderDetail>>()
