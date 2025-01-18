@@ -415,7 +415,7 @@ public partial class DBContext : DbContext
             //entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.Unit).HasMaxLength(50).HasConversion<VoucherConversation>();
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
+        });//
 
         
 
