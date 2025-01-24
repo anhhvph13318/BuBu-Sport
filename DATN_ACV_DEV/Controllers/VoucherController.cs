@@ -231,10 +231,10 @@ namespace DATN_ACV_DEV.Controllers
             Guid.TryParse(target, out var customerId);
             var customer = await _context.TbCustomers
                 .AsNoTracking()
-                .Include(e => e.Orders)
+                .Include(e => e.TbOrders)
                 .FirstOrDefaultAsync(e => e.Id == customerId || e.Phone == target);
 
-            if (customer is not null && customer.Orders.Any(e => e.VoucherId == voucher.Id))
+            if (customer is not null && customer.TbOrders.Any(e => e.VoucherId == voucher.Id))
                 return BadRequest();
 
             return Ok(voucher);

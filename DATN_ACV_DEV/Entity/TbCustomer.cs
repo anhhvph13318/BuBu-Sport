@@ -7,10 +7,11 @@ public partial class TbCustomer
 {
     public Guid Id { get; set; }
 
-    public string? Name { get; set; } = string.Empty;
+    public string? Name { get; set; }
 
-    public string? Adress { get; set; } = string.Empty;
-    public string? Phone { get; set; } = string.Empty;
+    public string? Adress { get; set; }
+
+    public string? Phone { get; set; }
 
     public int? Rank { get; set; }
 
@@ -34,5 +35,5 @@ public partial class TbCustomer
 
     public virtual ICollection<TbAccount> TbAccounts { get; set; } = new List<TbAccount>();
 
-    public virtual ICollection<TbOrder> Orders { get; set; } = new List<TbOrder>();
+    public virtual ICollection<TbOrder> TbOrders { get; set; } = new List<TbOrder>();
 }

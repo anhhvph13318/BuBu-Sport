@@ -15,6 +15,7 @@ namespace DATN_ACV_DEV.Model_DTO.Product_DTO
         public string? Description { get; set; }
 
         public decimal? PriceNet { get; set; }
+        public string Brand     { get; set; }
 
         public bool? Vat { get; set; }
 

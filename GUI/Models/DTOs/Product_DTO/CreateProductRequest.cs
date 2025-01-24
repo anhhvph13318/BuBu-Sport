@@ -12,6 +12,7 @@
         public string? Description { get; set; }
 
         public decimal? PriceNet { get; set; }
+        public string Brand { get; set; }
 
         public bool? Vat { get; set; }
 

@@ -20,6 +20,8 @@ public partial class TbVoucher
 
     public VoucherType Type { get; set; }
 
+   
+
     public VoucherUnit Unit { get; set; }
     public decimal MaxDiscount { get; set; }
     //public decimal RequiredTotalAmount { get; set; }

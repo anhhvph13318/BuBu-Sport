@@ -10,7 +10,7 @@ public partial class DBContext : DbContext
     {
     }
 
-    public DBContext(DbContextOptions<DBContext> options)///
+    public DBContext(DbContextOptions<DBContext> options)
         : base(options)
     {
     }
@@ -29,37 +29,24 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbCustomer> TbCustomers { get; set; }
 
-
-
     public virtual DbSet<TbImage> TbImages { get; set; }
 
-    public virtual DbSet<TbMaterial> TbMaterials { get; set; }
 
     public virtual DbSet<TbOrder> TbOrders { get; set; }
 
     public virtual DbSet<TbOrderDetail> TbOrderDetails { get; set; }
 
-
-
     public virtual DbSet<TbProduct> TbProducts { get; set; }
-
 
     public virtual DbSet<TbProperty> TbProperties { get; set; }
 
-
-
     public virtual DbSet<TbUser> TbUsers { get; set; }
-
-
 
     public virtual DbSet<TbVoucher> TbVouchers { get; set; }
 
-
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-I8QEIM8;Initial Catalog=DB_BuBu_16_01;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
-
+        => optionsBuilder.UseSqlServer("Data Source=TW4NENH\\TUANANH;Initial Catalog=DB_BUBU_25_1;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Latin1_General_CI_AS");
@@ -186,12 +173,12 @@ public partial class DBContext : DbContext
             entity.Property(e => e.YearOfBirth).HasColumnType("datetime");
             entity.Property(e => e.Phone).HasColumnType("varchar(20)");
 
-            
+
         });
 
-        
 
-        
+
+
 
         modelBuilder.Entity<TbImage>(entity =>
         {
@@ -216,7 +203,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("ID");
-            entity.Property(e => e.Status).HasMaxLength(50);
+            
         });
 
         modelBuilder.Entity<TbOrder>(entity =>
@@ -273,7 +260,7 @@ public partial class DBContext : DbContext
                 .HasConstraintName("FK_tb_OrderDetail_tb_Produst");
         });
 
-        
+
         modelBuilder.Entity<TbProduct>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_tb_Produst");
@@ -307,7 +294,7 @@ public partial class DBContext : DbContext
                 .HasConstraintName("FK_tb_Produst_tb_Category");
         });
 
-        
+
 
         modelBuilder.Entity<TbProperty>(entity =>
         {
@@ -321,7 +308,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
-        
+
         modelBuilder.Entity<TbUser>(entity =>
         {
             entity.ToTable("tb_User");
@@ -343,10 +330,10 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UserCode).HasMaxLength(20);
             entity.Property(e => e.UserName).HasMaxLength(250);
 
-            
+
         });
 
-        
+
 
         modelBuilder.Entity<TbVoucher>(entity =>
         {
@@ -371,6 +358,3 @@ public partial class DBContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
-
-
-

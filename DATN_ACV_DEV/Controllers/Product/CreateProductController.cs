@@ -69,6 +69,7 @@ namespace DATN_ACV_DEV.Controllers
                 Price = _request.Price,
                 Quantity = _request.Quantity,
                 Status = _request.Status,
+                Brand = _request.Brand,
                 Description = _request.Description,
                 PriceNet = _request.PriceNet,
                 ImageId = null,
