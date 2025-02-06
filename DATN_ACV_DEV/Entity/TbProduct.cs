@@ -44,11 +44,13 @@ public partial class TbProduct
     public string? Code { get; set; }
 
     public int? Size { get; set; }
-
+    public string Brand { get; set; }
     public virtual TbCategory Category { get; set; } = null!;
+
+    public virtual TbImage? Image { get; set; }
 
     public virtual ICollection<TbCartDetail> TbCartDetails { get; set; } = new List<TbCartDetail>();
 
     public virtual ICollection<TbOrderDetail> TbOrderDetails { get; set; } = new List<TbOrderDetail>();
-    public virtual TbImage Image { get; set; }
+    public virtual ICollection<TbProductDetail> ProductDetails { get; set; }
 }
