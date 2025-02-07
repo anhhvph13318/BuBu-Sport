@@ -112,7 +112,7 @@ namespace GUI.Controllers
                 return View(product);
             }
         }
- 
+
 
         // GET: ProductController/Edit/5
         public async Task<ActionResult> Edit(Guid id)

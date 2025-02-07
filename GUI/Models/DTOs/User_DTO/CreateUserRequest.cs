@@ -11,12 +11,8 @@ namespace GUI.Model_DTO.User_DTO
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]
         [Required(ErrorMessage = "Chưa nhập email")]
         public string Email { get; set; }
-        [Required(ErrorMessage = "Chưa nhập mật khẩu")]
-
         public string Password { get; set; }
         public string? Position { get; set; }
-        [Required(ErrorMessage = "Chưa nhập mã nhân viên")]
-
         public string UserCode { get; set; }
         [Required(ErrorMessage = "Chưa nhập tên")]
         public string? FullName { get; set; }
