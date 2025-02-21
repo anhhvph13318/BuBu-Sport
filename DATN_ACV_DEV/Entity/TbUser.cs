@@ -30,5 +30,5 @@ public partial class TbUser
     public Guid CreateBy { get; set; }
 
     public Guid? UserGroupId { get; set; }
-
+    public virtual ICollection<TbAccount> TbAccounts { get; set; } = new List<TbAccount>();
 }

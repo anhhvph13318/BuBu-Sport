@@ -4,11 +4,11 @@
     ViewData["Title"] = "Edit";
 }
 
-<h4>Sửa nhân viên</h4>
+<h4>Sửa tài khoản người dùng</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" id="editForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="UserName" class="control-label">Tên đăng nhập</label>
@@ -28,7 +28,6 @@
             <div class="form-group">
                 <label for="Position">Vị trí</label>
                 <select asp-for="Position" class="form-select">
-                    <option value="">Chọn vị trí</option>
                     <option value="1">Nhân viên</option>
                     <option value="2">Admin</option>
                 </select>
@@ -50,7 +49,7 @@
                 <span asp-validation-for="InActive" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" id="submitButton" />
             </div>
         </form>
     </div>
@@ -62,4 +61,12 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById("submitButton").addEventListener("click", function(event) {
+            event.preventDefault();
+            if (confirm("Bạn có chắc chắn muốn sửa thông tin này không?")) {
+                document.getElementById("editForm").submit();
+            }
+        });
+    </script>
 }

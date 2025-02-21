@@ -29,9 +29,8 @@ public partial class TbAccount
 
     public int? Role { get; set; }
 
-    public virtual TbCustomer Customer { get; set; } = null!;
-
-
+    public virtual TbCustomer? Customer { get; set; }
+    public virtual TbUser? User { get; set; }
 
     public virtual ICollection<TbAddressDelivery> TbAddressDeliveries { get; set; } = new List<TbAddressDelivery>();
 }

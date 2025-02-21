@@ -1,8 +1,13 @@
 
-Scaffold-DbContext "Data Source=DESKTOP-I8QEIM8;Initial Catalog=DATABASE_ACV_13_01_2024;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entity -Tables "tb_Account","tb_Cart","tb_CartDetail","tb_Category","tb_Customer","tb_CustomerVoucher","tb_FuntionForPermission","tb_Funtions","tb_GroupCustomer","tb_Image","tb_Invoice","tb_InvoiceDetail","tb_Order","tb_OrderDetail","tb_PaymentMethod","tb_Permission","tb_Policy","tb_Products","tb_Promotion","tb_Properties","tb_Supplier","tb_User","tb_UserFuntion","tb_Voucher","tb_Wallet","tb_Color","tb_Material","tb_AddressDelivery","tb_UserGroup" -Context DBContext -Force
+Scaffold-DbContext "Data Source=TW4NENH\TUANANH;Initial Catalog=DB_BuBu_16_01;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entity -Tables "tb_Account","tb_Cart","tb_CartDetail","tb_Category","tb_Customer","tb_CustomerVoucher","tb_FuntionForPermission","tb_Funtions","tb_GroupCustomer","tb_Image","tb_Invoice","tb_InvoiceDetail","tb_Order","tb_OrderDetail","tb_PaymentMethod","tb_Permission","tb_Policy","tb_Products","tb_Promotion","tb_Properties","tb_Supplier","tb_User","tb_UserFuntion","tb_Voucher","tb_Wallet","tb_Color","tb_Material","tb_AddressDelivery","tb_UserGroup" -Context DBContext -Force -Verbose
 
 VietAnh: Data Source=DESKTOP-I8QEIM8;Initial Catalog=DB;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
 
 Vu: Data Source=RATONLYNK;Initial Catalog=DB_SmartHouse;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
 
 Quan: Data Source=Admin-PC\\SQLEXPRESS;Initial Catalog=DB_SmartHouse_12_08;Integrated Security=True;Trust Server Certificate=True
+
+
+
+
+Scaffold-DbContext "Data Source=TW4NENH\TUANANH;Initial Catalog=DB_BuBu_16_01;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entity -Tables "tb_Account","tb_AddressDelivery","tb_Cart","tb_CartDetail","tb_Category","tb_Color","tb_Customer","tb_Image","tb_Material","tb_Order","tb_OrderDetail","tb_Products","tb_Properties","tb_PropertiesDetail","tb_User","tb_Voucher" -Context DBContext -Force
