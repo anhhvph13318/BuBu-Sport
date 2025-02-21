@@ -9,6 +9,7 @@ using DATN_ACV_DEV.Model_DTO.Product_DTO;
 using DATN_ACV_DEV.Model_DTO.Property_DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace DATN_ACV_DEV.Controllers
 {
@@ -61,6 +62,7 @@ namespace DATN_ACV_DEV.Controllers
                     Name = "Danh mục"
                 });
             }
+            
             _Produst = new TbProduct()
             {
                 Id = Guid.NewGuid(),
@@ -69,6 +71,7 @@ namespace DATN_ACV_DEV.Controllers
                 Price = _request.Price,
                 Quantity = _request.Quantity,
                 Status = _request.Status,
+                Brand = _request.Brand,
                 Description = _request.Description,
                 PriceNet = _request.PriceNet,
                 ImageId = null,
@@ -108,10 +111,36 @@ namespace DATN_ACV_DEV.Controllers
 
         public void PreValidation()
         {
-            // Code không được trùng nhau
-            // Bắt buộc chọn sản sản phẩm
-            // Bắt buộc chọn danh mục sản phẩm
-            throw new NotImplementedException();
+            var errors = new List<string>();
+            if( string.IsNullOrWhiteSpace(_request.Name) )
+            {
+                errors.Add("Tên sản phẩm không được để trống");
+            }    
+            if(_request.Price < 0)
+            {
+                errors.Add("Giá sản phẩm không được < 0");
+            }    
+            if(_request.PriceNet < 0)
+            {
+                errors.Add("Giá bán không được < 0 ");
+
+            }   
+            if(string.IsNullOrWhiteSpace(_request.Brand))
+            {
+                errors.Add("Không được để trống thương hiệu");
+            }
+            if(_request.Quantity < 0)
+            {
+                errors.Add("Số lượng không được < 0");
+            }    
+            if(_request.CategoryId == Guid.Empty)
+            {
+                errors.Add("Bạn chưa chọn danh mục");
+            }    
+            if(errors.Count > 0 )
+            {
+                throw new ValidationException(string.Join("; ", errors));
+            }    
         }
         [HttpPost]
         [Route("Process")]
@@ -121,7 +150,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 _request = request;
                 //CheckAuthorization();
-                //PreValidation();
+                PreValidation();
                 GenerateObjects();
                 //PostValidation();
                 AccessDatabase();
@@ -130,6 +159,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 _res.Status = StatusCodes.Status400BadRequest.ToString();
                 _res.Messages = ex.Messages;
+
             }
             catch (System.Exception ex)
             {
