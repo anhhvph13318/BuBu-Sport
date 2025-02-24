@@ -84,7 +84,7 @@ public class VoucherController : Controller
         var validPeriod = model.Voucher.EndDate < model.Voucher.StartDate;
         var validStartDate = model.Voucher.StartDate < DateTime.Now;
         var validDiscount = model.Voucher.Unit == VoucherUnit.Percent && model.Voucher.Discount > 80;
-        if (!TryValidateModel(model.Voucher) || validPeriod || validDiscount || validStartDate)
+        if (!ModelState.IsValid || validPeriod || validDiscount || validStartDate)
         {
             if(validPeriod)
                 ModelState.AddModelError("Voucher.EndDate", "Ngày kết thúc không thể nhỏ hơn ngày bắt đầu");
