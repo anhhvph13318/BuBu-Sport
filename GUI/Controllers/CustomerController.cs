@@ -1,18 +1,17 @@
 ﻿using GUI.Controllers.Shared;
-using GUI.Models.DTOs.Customer_DTO;
-using GUI.Models.DTOs.Customer_DTO.Views;
+using GUI.Models.DTOs;
 using GUI.Shared.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using GUI.Shared;
-using Newtonsoft.Json;
-using GUI.FileBase;
 using DATN_ACV_DEV.Entity;
-using GUI.Model_DTO.Customer_DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace GUI.Controllers
 {
+    [Controller]
+    [Route("customers")]
     [Authorize(Roles = "Admin")]
     public class CustomerController : ControllerSharedBase
     {
@@ -24,102 +23,29 @@ namespace GUI.Controllers
             httpService = new();
             dBContext = new DBContext();
         }
-        public async Task<ActionResult> Index(string s)
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var obj = new GetListCustomerRequest();
-            var model = new IndexObject();
-            obj.Name = string.IsNullOrEmpty(s) ? "" : s;
-            var URL = _settings.APIAddress + "api/GetListCustomer/Process";
-            var param = JsonConvert.SerializeObject(obj);
-            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-            var result = JsonConvert.DeserializeObject<BaseResponse<GetListCustomerResponse>>(res) ?? new();
-
-            model.Data = result.Data;
-
-            return View(model);
-        }
-
-        public async Task<ActionResult> Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Create(CreateCustomerRequest obj)
-        {
-            try
-            {
-                var URL = _settings.APIAddress + "api/CreateCustomer/Process";
-                var param = JsonConvert.SerializeObject(obj);
-                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-                var result = JsonConvert.DeserializeObject<BaseResponse<GetListCustomerResponse>>(res) ?? new();
-                if (result.Status == "400")
+            int pageSize = 10;
+            var customers = await dBContext.TbCustomers
+                .Select(c => new CustomerDTO
                 {
-                    ModelState.AddModelError("UserName", result.Messages.FirstOrDefault().MessageText);
-                    return Empty;
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            var URL = _settings.APIAddress + "api/DetailCustomer/Process";
-            var req = new DetailCustomerRequest() { Id = id };
-            var param = JsonConvert.SerializeObject(req);
-            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-            var result = JsonConvert.DeserializeObject<BaseResponse<DetailCustomerResponse>>(res) ?? new();
-            var model = result.Data;
-            return View(model);
+                    Id = c.Id,
+                    Name = c.Name,
+                    Phone = c.Phone,
+                    Address = c.Adress,
+                    Status = c.Status,
+                    Point = c.Point
+                })
+                .ToListAsync();
+
+            int totalRecords = customers.Count();
+            var paginatedCustomers = customers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            ViewBag.CurrentPage = page;
+
+            return View(paginatedCustomers);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(EditCustomerRequest user)
-        {
-            try
-            {
-                var URL = _settings.APIAddress + "api/EditCustomer/Process";
-                var param = JsonConvert.SerializeObject(user);
-                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-                var result = JsonConvert.DeserializeObject<BaseResponse<DetailCustomerResponse>>(res) ?? new();
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public async Task<ActionResult> Delete(Guid id)
-        {
-            var URL = _settings.APIAddress + "api/DetailCustomer/Process";
-            var req = new DetailCustomerRequest() { Id = id };
-            var param = JsonConvert.SerializeObject(req);
-            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-            var result = JsonConvert.DeserializeObject<BaseResponse<DetailCustomerResponse>>(res) ?? new();
-            var model = result.Data;
-            return View(model);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ConfirmDelete(Guid id)
-        {
-            try
-            {
-                var URL = _settings.APIAddress + "api/DeleteCustomer/Process";
-                var req = new DetailCustomerRequest() { Id = id };
-                var param = JsonConvert.SerializeObject(req);
-                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

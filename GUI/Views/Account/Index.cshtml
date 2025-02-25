@@ -1,0 +1,98 @@
+﻿@model IEnumerable<AccountDTO>
+
+@{
+    ViewData["Title"] = "Quản lý tài khoản";
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    string phoneNumber = ViewBag.PhoneNumber;
+}
+
+<div class="container">
+    <h2 class="mt-3">Quản lý tài khoản</h2>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input id="searchPhone" class="form-control" placeholder="Nhập số điện thoại..." value="@phoneNumber">
+        </div>
+        <div class="col-md-6">
+            <button class="btn btn-primary" onclick="searchAccount()">Tìm kiếm</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Reset</a>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Mã tài khoản</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Vai trò</th>
+                @*<th>Trạng thái</th>
+                <th>Hành động</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model)
+            {
+                <tr>
+                    <td>@account.AccountCode</td>
+                    <td>@account.Email</td>
+                    <td>@account.PhoneNumber</td>
+                    @if (account.Role == "Nhân viên")
+                    {
+                        <td>Nhân viên</td>
+                    }
+                    else
+                    {
+                        <td>Khách hàng</td>
+                    }
+                    @*<td>@(account.Status.GetValueOrDefault() ? "Hoạt động" : "Bị khóa")</td>
+                    <td>
+                        <form asp-action="LockAccount" asp-route-id="@account.Id" method="post">
+                            <button type="submit" class="btn btn-danger">
+                                @(account.Status.GetValueOrDefault() ? "Khóa tài khoản" : "Mở khóa")
+                            </button>
+                        </form>
+                    </td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" href="?page=1">&lt;&lt;</a>
+            </li>
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" href="?page=@(currentPage - 1)">&lt;</a>
+            </li>
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" href="?page=@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" href="?page=@(currentPage + 1)">&gt;</a>
+            </li>
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" href="?page=@totalPages">&gt;&gt;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+@section scripts {
+    <script>
+        function searchAccount() {
+            let phone = document.getElementById("searchPhone").value;
+            window.location.href = `@Url.Action("Index")?phoneNumber=${phone}`;
+        }
+
+        function navigatePage(page) {
+            let phone = document.getElementById("searchPhone").value;
+            window.location.href = `@Url.Action("Index")?phoneNumber=${phone}&page=${page}`;
+        }
+    </script>
+}

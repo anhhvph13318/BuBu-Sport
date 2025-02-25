@@ -1,77 +1,56 @@
-﻿@model GUI.Models.DTOs.Customer_DTO.Views.IndexObject
+﻿@model List<GUI.Models.DTOs.CustomerDTO>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách khách hàng";
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
 }
 
-<h1>Khách Hàng</h1>
+<h2>Danh sách khách hàng</h2>
 
-<p>
-    <a asp-action="Create">Tạo mới</a>
-</p>
-<div>
-    <form asp-controller="User" asp-action="Index" method="get">
-        <p>
-            Tìm kiếm: <input type="text" name="s" />
-            <input type="submit" value="Tìm kiếm" />
-        </p>
-    </form>
-</div>
-<table class="table">
+<table class="table table-bordered">
     <thead>
         <tr>
-            <th>
-                Tên
-            </th>
-            <th>
-                Địa Chỉ
-            </th>
-            <th>
-                Rank
-            </th>
-            <th>
-                Trạng Thái
-            </th>
-            <th>
-                YearOfBirth
-            </th>
-            <th>
-                Giới Tính
-            </th>
-            <th>
-                Điểm
-            </th>
+            <th>Tên</th>
+            <th>Số điện thoại</th>
+            <th>Địa chỉ</th>
+            <th>Trạng thái</th>
+            <th>Điểm</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Data.LstCustomer) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Adress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Rank)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.YearOfBirth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Sex)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Point)
-                </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
-}
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.Name</td>
+                <td>@customer.Phone</td>
+                <td>@customer.Address</td>
+                <td>@customer.Status</td>
+                <td>@customer.Point</td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            <a class="page-link" href="?page=1">&lt;&lt;</a>
+        </li>
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            <a class="page-link" href="?page=@(currentPage - 1)">&lt;</a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link" href="?page=@i">@i</a>
+            </li>
+        }
+        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+            <a class="page-link" href="?page=@(currentPage + 1)">&gt;</a>
+        </li>
+        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+            <a class="page-link" href="?page=@totalPages">&gt;&gt;</a>
+        </li>
+    </ul>
+</nav>
