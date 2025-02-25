@@ -1,4 +1,4 @@
-﻿@using GUI.Models.DTOs.Voucher_DTO
+﻿ @using GUI.Models.DTOs.Voucher_DTO
 
 @model VoucherFormModel
 
@@ -47,6 +47,7 @@
             <div class="col-6">
                 <label>Ngày bắt đầu</label>
                 <input asp-for="Voucher.StartDate" class="form-control datepicker" type="date" />
+                <span class="text-danger" asp-validation-for="Voucher.StartDate"></span>
             </div>
             <div class="col-6">
                 <label>Ngày kết thúc</label>

@@ -82,12 +82,14 @@ public class VoucherController : Controller
     public async Task<IActionResult> Handle(VoucherFormModel model)
     {
         var validPeriod = model.Voucher.EndDate < model.Voucher.StartDate;
+        var validStartDate = model.Voucher.StartDate < DateTime.Now;
         var validDiscount = model.Voucher.Unit == VoucherUnit.Percent && model.Voucher.Discount > 80;
-        if (!TryValidateModel(model.Voucher) || validPeriod || validDiscount)
+        if (!ModelState.IsValid || validPeriod || validDiscount || validStartDate)
         {
             if(validPeriod)
                 ModelState.AddModelError("Voucher.EndDate", "Ngày kết thúc không thể nhỏ hơn ngày bắt đầu");
-
+            if(validStartDate)
+                ModelState.AddModelError("Voucher.StartDate", "Ngày bắt đầu không thể nhỏ hơn ngày hiện tại");
             if (validDiscount)
                 ModelState.AddModelError("Voucher.Discount", "Giá trị voucher không thể vượt quá 80%");
 
