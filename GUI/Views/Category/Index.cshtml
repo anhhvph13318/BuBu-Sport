@@ -6,7 +6,7 @@
     ViewData["Title"] = "Quản lý danh mục";
 }
 
-@model IEnumerable<CategoryDto>
+@model IEnumerable<CategoryDTO>
 
 <div class="container">
     <div class="row">
@@ -31,7 +31,7 @@
 <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" id="modalContent">
-            @await Html.PartialAsync("_CategoryModal", new CategoryDto())
+            @await Html.PartialAsync("_CategoryModal", new CategoryDTO())
         </div>
     </div>
 </div>

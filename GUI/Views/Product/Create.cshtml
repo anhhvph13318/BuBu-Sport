@@ -19,11 +19,11 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
+@*                 <div class="form-group mb-3">
                     <label asp-for="Price" class="control-label">Giá sản phẩm</label>
                     <input asp-for="Price" class="form-control" id="priceInput" />
                     <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
+                </div> *@
 
                 <div class="form-group mb-3">
                     <label asp-for="Description" class="control-label">Mô tả</label>
@@ -31,16 +31,16 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
+@*                 <div class="form-group mb-3">
                     <label asp-for="PriceNet" class="control-label">Giá bán</label>
                     <input asp-for="PriceNet" class="form-control" />
                     <span asp-validation-for="PriceNet" class="text-danger"></span>
-                </div>
+                </div> *@
 
                 <div class="form-group mb-3">
-                    <label asp-for="Quantity" class="control-label">Số lượng</label>
-                    <input asp-for="Quantity" class="form-control" />
-                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                    <label asp-for="Code" class="control-label">Mã sản phẩm</label>
+                    <input asp-for="Code" class="form-control" id="productCode" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
@@ -82,6 +82,17 @@
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var codeInput = document.getElementById("productCode");
+
+        // Chỉ tự động điền nếu input rỗng (tránh ghi đè khi chỉnh sửa)
+        if (!codeInput.value) {
+            var randomNumber = Math.floor(Math.random() * 99) + 1;
+            var formattedNumber = randomNumber.toString().padStart(2, '0'); // Đảm bảo có 2 chữ số
+            codeInput.value = "SP" + formattedNumber;
+        }
+    });
+
     (function ($) {
         $('#fileInput').on("change", function (e) {
             let file = e.target.files[0];

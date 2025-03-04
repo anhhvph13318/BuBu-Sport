@@ -12,7 +12,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("categories")]
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 public class CategoryController : Controller
 {
     private readonly DBContext _context;
@@ -36,7 +36,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> GetDetail([FromRoute] string id)
     {
         var category = await _context.TbCategories
-            .Select(e => new CategoryDto
+            .Select(e => new CategoryDTO
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -52,7 +52,7 @@ public class CategoryController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CategoryDto request)
+    public async Task<IActionResult> Create([FromBody] CategoryDTO request)
     {
         var category = await _context.TbCategories.FirstOrDefaultAsync(e => e.Name == request.Name);
         if (category is not null)
@@ -74,13 +74,13 @@ public class CategoryController : Controller
         return Json(new
         {
             Table = await RenderViewAsync("_CategoryTable", categories),
-            Modal = await RenderViewAsync("_CategoryModal", new CategoryDto())
+            Modal = await RenderViewAsync("_CategoryModal", new CategoryDTO())
         });
     }
 
     [HttpPatch]
     [Route("{id}")]
-    public async Task<IActionResult> Update([FromBody] CategoryDto request, [FromRoute] string id)
+    public async Task<IActionResult> Update([FromBody] CategoryDTO request, [FromRoute] string id)
     {
         var category = await _context.TbCategories.FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
         if(category is null) return BadRequest();
@@ -98,7 +98,7 @@ public class CategoryController : Controller
         return Json(new
         {
             Table = await RenderViewAsync("_CategoryTable", categories),
-            Modal = await RenderViewAsync("_CategoryModal", new CategoryDto())
+            Modal = await RenderViewAsync("_CategoryModal", new CategoryDTO())
         });
     }
 
@@ -108,7 +108,7 @@ public class CategoryController : Controller
     {
         var categories = await _context.TbCategories.AsNoTracking()
             .Where(e => e.Name.StartsWith(name))
-            .Select(e => new CategoryDto
+            .Select(e => new CategoryDTO
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -124,10 +124,10 @@ public class CategoryController : Controller
         });
     }
 
-    private async Task<IEnumerable<CategoryDto>> FetchCategory()
+    private async Task<IEnumerable<CategoryDTO>> FetchCategory()
     {
         return await _context.TbCategories.AsNoTracking()
-            .Select(e => new CategoryDto
+            .Select(e => new CategoryDTO    
             {
                 Id = e.Id,
                 Name = e.Name,

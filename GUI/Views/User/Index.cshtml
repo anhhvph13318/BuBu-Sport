@@ -1,76 +1,60 @@
 ﻿@model GUI.Models.DTOs.User_DTO.Views.IndexObject
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách nhân viên";
 }
 
-<div class="container">
-    <h3>Danh sách nhân viên</h3>
+<div class="container mt-4">
+    <h2 class="text-center text-primary fw-bold">Danh Sách Nhân Viên</h2>
     <hr />
-    <p>
-        <a asp-action="Create">Tạo mới</a>
-    </p>
-    <div>
-        <form asp-controller="User" asp-action="Index" method="get" class="d-flex">
-            <input type="text" name="s" class="form-control me-2 col-6" placeholder="Tìm kiếm" id="search-input" />
-            <input type="submit" class="btn btn-primary" value="Tìm kiếm" />
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a asp-action="Create" class="btn btn-success">Tạo mới</a>
+        <form asp-controller="User" asp-action="Index" method="get" class="d-flex" style="max-width: 320px; width: 100%;">
+            <input type="text" name="s" class="form-control me-2" placeholder="Tìm kiếm" id="search-input" style="flex: 1; min-width: 150px;" />
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
         </form>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Model.FullName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Model.Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Model.UserName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Model.Position)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Data.listUser)
-            {
+
+
+
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm mt-3 text-center align-middle">
+            <thead class="table-dark">
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FullName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UserName)
-                    </td>
-                    <td>
-                        @if (item.Position == "1")
-                        {
-                            @:Nhân viên
-                        }
-                        else if (item.Position == "2")
-                        {
-                            @:Admin
-                        }
-                        else
-                        {
-                            @:Không xác định
-                        }
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { item.Id }) |
-                        @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
-                        @Html.ActionLink("Delete", "Delete", new { item.Id })
-                    </td>
+                    <th>Họ và tên</th>
+                    <th>Email</th>
+                    <th>Tên đăng nhập</th>
+                    <th>Chức vụ</th>
+                    <th>Mã nhân viên</th>
+                    <th>Hành động</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Data.listUser)
+                {
+                    <tr>
+                        <td>@item.FullName</td>
+                        <td>@item.Email</td>
+                        <td>@item.UserName</td>
+                        <td>
+                            <span class="badge @(item.Position == "1" ? "bg-info" : item.Position == "2" ? "bg-warning" : "bg-secondary")">
+                                @(item.Position == "1" ? "Nhân viên" : item.Position == "2" ? "Admin" : "Không xác định")
+                            </span>
+                        </td>
+                        <td>@item.UserCode</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i> Xóa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
-
-

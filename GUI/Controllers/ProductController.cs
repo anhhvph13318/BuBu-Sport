@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ProductController : ControllerSharedBase
     {
         private readonly DBContext _context;
@@ -27,6 +27,7 @@ namespace GUI.Controllers
         }
         // GET: ProductController
         //[AllowAnonymous]
+        [Route("/Store")]
         public async Task<ActionResult> Index(string s)
         {
             var obj = new GetListProductRequest();
@@ -56,10 +57,10 @@ namespace GUI.Controllers
             ViewBag.Categories = categories;
             return View();
         }
-        private async Task<IEnumerable<CategoryDto>> FetchCategory()
+        private async Task<IEnumerable<CategoryDTO>> FetchCategory()
         {
             return await _context.TbCategories.AsNoTracking()
-                .Select(e => new CategoryDto
+                .Select(e => new CategoryDTO
                 {
                     Id = e.Id,
                     Name = e.Name,
@@ -76,9 +77,6 @@ namespace GUI.Controllers
         {
             try
             {
-                Random random = new Random();
-                string randomTwoDigits = random.Next(10, 100).ToString(); // Sinh ngẫu nhiên 2 số bất kỳ từ 10 đến 99
-                product.Code = "SP" + randomTwoDigits;
                 product.Status = 1;
                 product.TypeImage = "1";
                 var URL = _settings.APIAddress + "api/CreateProduct/Process";
@@ -97,17 +95,64 @@ namespace GUI.Controllers
                 return View();
             }
         }
-
+        private async Task<IEnumerable<ColorDTO>> FetchColor()
+        {
+            return await _context.TbColors.AsNoTracking()
+                .Select(e => new ColorDTO
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Status = (int)e.Status!,
+                    CreateDate = e.CreateDate
+                })
+                .OrderBy(e => e.CreateDate)
+                .ToListAsync();
+        }
+        private async Task<IEnumerable<SizeDTO>> FetchSize()
+        {
+            return await _context.TbSizes.AsNoTracking()
+                .Select(e => new SizeDTO
+                {
+                    Id = e.Id,
+                    SizeName = e.SizeName,
+                })
+                .ToListAsync();
+        }
         // GET: ProductController/Edit/5
         public async Task<ActionResult> Edit(Guid id)
         {
+            var colors = await FetchColor();
+            ViewBag.Colors = colors;
             var categories = await FetchCategory();
             ViewBag.Categories = categories;
+            var sizes = await FetchSize();
+            ViewBag.Sizes = sizes;
             var URL = _settings.APIAddress + "api/DetailProduct/Process";
             var req = new DetailProductRequest() { ID = id };
             var param = JsonConvert.SerializeObject(req);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<DetailProductResponse>>(res) ?? new();
+            // Lấy danh sách chi tiết sản phẩm từ database
+            var datadetail = _context.TbProductDetails.Where(c => c.ProductId == result.Data.Id).ToList();
+            result.Data.DetailData = datadetail;
+
+            // Tạo Dictionary để tối ưu truy vấn
+            var colorDict = colors.ToDictionary(c => c.Id, c => c.Name);
+            var sizeDict = sizes.ToDictionary(s => s.Id, s => s.SizeName);
+
+            // Chuyển đổi danh sách `TbProductDetail` thành `TestDame`
+            result.Data.DetailDataFinal = datadetail.Select(d => new TestDame
+            {
+                Id = d.Id,
+                Price = d.Price,
+                Quantity = d.Quantity,
+                ImageId = d.ImageId,
+                ColorId = d.ColorId,
+                SizeId = d.SizeId,
+                ProductId = d.ProductId,
+                ColorName = d.ColorId.HasValue && colorDict.ContainsKey(d.ColorId.Value) ? colorDict[d.ColorId.Value] : "Unknown",
+                SizeName = d.SizeId.HasValue && sizeDict.ContainsKey(d.SizeId.Value) ? sizeDict[d.SizeId.Value] : "Unknown"
+            }).ToList();
             var model = result.Data;
             return View(model);
         }

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GUI.Controllers;
 
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 public class UserController : ControllerSharedBase
 {
     private HttpService httpService;

@@ -12,7 +12,7 @@ namespace GUI.Controllers
 {
     [Controller]
     [Route("customers")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class CustomerController : ControllerSharedBase
     {
         private HttpService httpService;
@@ -34,7 +34,8 @@ namespace GUI.Controllers
                     Phone = c.Phone,
                     Address = c.Adress,
                     Status = c.Status,
-                    Point = c.Point
+                    Point = c.Point,
+                    Sex = c.Sex,
                 })
                 .ToListAsync();
 

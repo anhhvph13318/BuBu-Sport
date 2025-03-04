@@ -11,7 +11,7 @@ namespace GUI.Controllers
 {
     [Controller]
     [Route("accounts")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class AccountController : Controller
     {
         private readonly DBContext _context;

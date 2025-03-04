@@ -56,6 +56,10 @@ namespace DATN_ACV_DEV.Controllers
 				_response.HighestPrice = _context.TbProducts.Where(p => p.IsDelete == false).Max(c => c.Price);
 				_response.LowestPrice = _context.TbProducts.Where(p => p.IsDelete == false).Min(c => c.Price); 
             var query = _mapper.Map<List<HomePageModel>>(Model);
+            foreach (var item in query)
+            {
+                item.Quantity = _context.TbProductDetails.Where(c => c.ProductId == item.Id).Select(c => c.Quantity).Sum();
+            }
             if (_request.Limit == null)
             {
                 lstProduct = query.Skip(_request.OffSet.Value).Take(Utility.Utility.LimitDefault).ToList();

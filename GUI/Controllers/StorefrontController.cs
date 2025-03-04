@@ -74,7 +74,7 @@ namespace GUI.Controllers
             return View();
 		}
 
-		[Route("/Store")]
+		//[Route("/Store")]
 		public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max)
 		{
 			var model = new Models.DTOs.Product_DTO.Views.IndexObject();

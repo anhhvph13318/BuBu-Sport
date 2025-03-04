@@ -36,7 +36,7 @@ namespace DATN_ACV_DEV.Controllers
         public void AccessDatabase()
         {
             try
-            {
+            {   
                 _Product = _context.TbProducts.Where(p => p.Id == _request.ID && p.IsDelete == false).FirstOrDefault();
                 var PrivateAtrtibute = _context.TbProperties.Where(c => c.ProductId == _request.ID).ToList();
                 var PropertiesName = _context.TbProperties.Where(a => PrivateAtrtibute.Select(x => x.Id).Contains(a.Id) && a.Active != false).Select(n => n.Id).ToList();
