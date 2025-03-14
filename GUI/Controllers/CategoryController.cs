@@ -1,27 +1,38 @@
 ﻿using Azure.Core;
 using DATN_ACV_DEV.Entity;
 using GUI.Models.DTOs;
+using GUI.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using GUI.Models.DTOs.Product_DTO;
+using GUI.Models.DTOs.Product_DTO.Views;
+using GUI.Shared.Common;
+using Microsoft.Extensions.Options;
+using GUI.Controllers.Shared;
+using GUI.FileBase;
 
 namespace GUI.Controllers;
 
 [Controller]
 [Route("categories")]
 //[Authorize(Roles = "Admin")]
-public class CategoryController : Controller
+public class CategoryController : ControllerSharedBase
 {
     private readonly DBContext _context;
     private readonly UserSession _session;
+    private HttpService httpService;
 
-    public CategoryController(DBContext context, UserSession session)
+    public CategoryController(DBContext context, UserSession session, IOptions<CommonSettings> settings)
     {
         _context = context;
         _session = session;
+        _settings = settings.Value;
+        httpService = new();
     }
 
     public async Task<IActionResult> Index()
@@ -123,7 +134,22 @@ public class CategoryController : Controller
             Table = await RenderViewAsync("_CategoryTable", categories)
         });
     }
+    [HttpGet]
+    [Route("produtCategory")]
+    public async Task<ActionResult> ProdutCategory(Guid s)
+    {
+        var obj = new GetListProductRequest();
+        var model = new IndexObject();
+        obj.CategoryID = s;
+        var URL = _settings.APIAddress + "api/HomePage/Process";
+        var param = JsonConvert.SerializeObject(obj);
+        var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+        var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
 
+        model.Data = result.Data;
+
+        return View(model);
+    }
     private async Task<IEnumerable<CategoryDTO>> FetchCategory()
     {
         return await _context.TbCategories.AsNoTracking()

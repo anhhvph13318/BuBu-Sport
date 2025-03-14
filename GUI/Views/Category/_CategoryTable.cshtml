@@ -16,7 +16,8 @@
                 <td>@category.Name</td>
                 <td>@category.StatusText</td>
                 <td>
-                    <button class="btn btn-primary me-1" onclick="showDeatail('@category.Id')">Chi tiết</button>
+                    <button class="btn btn-primary me-1" onclick="showDeatail('@category.Id')">Sửa</button>
+                    <a class="btn btn-info" href="/Store?s=@category.Id">Chi tiết</a>
                 </td>
             </tr>
         }

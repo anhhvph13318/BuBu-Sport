@@ -25,6 +25,7 @@ namespace GUI.Controllers
             httpService = new();
             _context = context;
         }
+        
         // GET: ProductController
         //[AllowAnonymous]
         [Route("/Store")]
@@ -134,14 +135,26 @@ namespace GUI.Controllers
             var result = JsonConvert.DeserializeObject<BaseResponse<DetailProductResponse>>(res) ?? new();
             // Lấy danh sách chi tiết sản phẩm từ database
             var datadetail = _context.TbProductDetails.Where(c => c.ProductId == result.Data.Id).ToList();
-            result.Data.DetailData = datadetail;
+            var groupdata = datadetail
+                .GroupBy(c => new {c.ColorId,c.SizeId})
+                .Select(d => new TbProductDetail
+            {
+                    Id = d.First().Id,
+                    Price = d.First().Price, // Giữ nguyên giá của bản ghi đầu tiên
+                    Quantity = d.Sum(p => p.Quantity), // Cộng tổng số lượng
+                    ImageId = d.First().ImageId,
+                    ColorId = d.Key.ColorId,
+                    SizeId = d.Key.SizeId,
+                    ProductId = d.First().ProductId
+                }).ToList();
+            result.Data.DetailData = groupdata;
 
             // Tạo Dictionary để tối ưu truy vấn
             var colorDict = colors.ToDictionary(c => c.Id, c => c.Name);
             var sizeDict = sizes.ToDictionary(s => s.Id, s => s.SizeName);
 
             // Chuyển đổi danh sách `TbProductDetail` thành `TestDame`
-            result.Data.DetailDataFinal = datadetail.Select(d => new TestDame
+            result.Data.DetailDataFinal = groupdata.Select(d => new TestDame
             {
                 Id = d.Id,
                 Price = d.Price,

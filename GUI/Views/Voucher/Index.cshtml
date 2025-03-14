@@ -17,9 +17,10 @@
         <table class="table table-hover shadow-sm mt-3">
             <thead class="table-dark text-center">
                 <tr>
-                    <th>Tên voucher</th>
                     <th>Mã</th>
+                    <th>Tên voucher</th>
                     <th>Số tiền giảm</th>
+                    <th>Số lượng</th>
                     <th>Thời gian hiệu lực</th>
                     <th>Trạng thái</th>
                     <th>Thao tác</th>
@@ -31,13 +32,14 @@
                     @foreach (var voucher in Model)
                     {
                         <tr>
-                            <td>@voucher.Name</td>
                             <td>@voucher.Code</td>
+                            <td>@voucher.Name</td>
                             <td>
                                 @(voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent
                                     ? $"{voucher.Discount} %"
                                     : voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
                             </td>
+                            <td>@voucher.Quantity</td>
                             <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
                             <td>
                                 <span class="badge @(voucher.Status ? "bg-success" : "bg-danger")">
