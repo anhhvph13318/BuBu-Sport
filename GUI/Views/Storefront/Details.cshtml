@@ -1,0 +1,162 @@
+﻿@model DATN_ACV_DEV.Entity.TbProduct
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="Home.css">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="~/css/style.css" rel="stylesheet" />
+<script src="~/js/script.js"></script>
+<div class="navfix">
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="offcanvas offcanvas-start " id="navbarTogglerDemo01">
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                      <li class="nav-item">
+                      <div class="dropdown">
+                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Shop
+                          </button>
+                          <ul class="dropdown-menu">
+                          <li><p class="dropdown-item" id="header-dropdown-item"><a href="" >JEANS</a></p></li>
+                          <li><a class="dropdown-item" href="#">Skinny Jeans</a></li>
+                          <li><a class="dropdown-item" href="#">Slim jeans</a></li>
+                          <li><a class="dropdown-item" href="#">Relaxed Jeans</a></li>
+                          <li><p class="dropdown-item" id="foot-dropdown-item"><a href="">Shop All</a></p></li>
+                          </ul>
+                      </div>
+                      </li>
+                      <li class="nav-item">
+                          <button class="btn " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          New Arrivals
+                          </button>
+                      </li>
+                      <li class="nav-item">
+                          <button class="btn " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Best Sellers
+                          </button>
+                      </li>
+                      <li class="nav-item">
+                          <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Pages
+                          </button>
+                      </li>
+                    </ul>
+                    </div>
+                  </div></a>
+        </div>
+        <div class="nav-center">
+            <div class="logo">
+                <img src="" alt="">
+              </div>
+        </div>
+        <div class="nav-right">
+            <div class="Search">
+                  <a href="" style="color: black;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                  </a>
+                </div>
+                <div class="user">
+                  <a href="" style="color: black;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                      <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>
+                  </a>
+                </div>
+                <div style="width: 80px;" class="trans">
+                  <select  class="form-select form-select-sm" aria-label="Small select example">
+                    <option selected >EN</option>
+                    <option value="1">VN</option>
+                  </select>
+                </div>
+                <div class="trans">
+                  <select class="form-select form-select-sm" aria-label="Small select example">
+                    <option selected >VND</option>
+                    <option value="1">USD</option>
+                    <option value="2">EUR</option>
+                  </select>
+                </div>
+                  <a type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><img style="height: 20px;" src="data:image/png;base64,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" alt="">0</a>
+      
+                  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                    <div class="offcanvas-header">
+                      <h5 class="offcanvas-title" id="offcanvasRightLabel">Offcanvas right</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                          ...
+                    </div>
+                  </div>
+                </div>
+        </div>
+    </nav>
+<div class="product-container">
+    <div class="product__section-images product-single__media-group" data-product-single-media-group>
+        <div class="gallery-main">
+            <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/288a2235-54ce-4f8e-a133-0117cbc381b4/AIR+JORDAN+1+MID.png" alt="Air Jordan 1 Mid">
+        </div>
+        <div class="carousel-nav thumb-slider-slides">
+            <div class="thumbnail-list">
+                <div class="thumbnail-item">
+                    <input type="radio" id="thumb-1" name="Thumbnails" checked>
+                    <label for="thumb-1">
+                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/288a2235-54ce-4f8e-a133-0117cbc381b4/AIR+JORDAN+1+MID.png" alt="Air Jordan 1 Mid">
+                    </label>
+                </div>
+                <div class="thumbnail-item">
+                    <input type="radio" id="thumb-2" name="Thumbnails">
+                    <label for="thumb-2">
+                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/d48d9a72-3123-49c7-893f-e3cb60be0a8c/AIR+JORDAN+1+MID.png" alt="Air Jordan 1 Mid">
+                    </label>
+                </div>
+                <div class="thumbnail-item">
+                    <input type="radio" id="thumb-3" name="Thumbnails">
+                    <label for="thumb-3">
+                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/a7d138bb-f05b-4708-9f1f-ccf5a6d180d2/AIR+JORDAN+1+MID.png" alt="Air Jordan 1 Mid">
+                    </label>
+                </div>
+                <div class="thumbnail-item">
+                    <input type="radio" id="thumb-4" name="Thumbnails">
+                    <label for="thumb-4">
+                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/852a384c-a6ef-45af-9bf7-2ed47d64ae4f/AIR+JORDAN+1+MID.png" alt="Air Jordan 1 Mid">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="product-details">
+        <h1>@Html.DisplayFor(model => model.Name)</h1>
+        <p class="product-type">Men's Shoes</p>
+        <p class="price">@Html.DisplayFor(model => model.Price)</p>
+        <div class="swatches__container js-variant-selector">
+            <p class="swatches__option-name"><strong>Colour:</strong> <span id="selected-option-1" class="swatches__option-value">White</span></p>
+
+
+            <div class="swatches__swatch--color swatches__shape--square js-swatch-element">
+                <input type="radio" id="colour-black" class="swatches__form--input" name="colour" value="@Html.DisplayFor(model => model.Color)" checked>
+                <label class="swatches__form--label" for="colour-white" tabindex="0" style="background-image: url(https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/288a2235-54ce-4f8e-a133-0117cbc381b4/AIR+JORDAN+1+MID.png); background-position: center center; background-size: 50px;"></label>
+            </div>
+
+        </div>
+        <div class="so-luong">
+            Số lượng : @Html.DisplayFor(model => model.Quantity)
+        </div>
+        <button class="add-to-cart">Add to Cart</button>
+        <div class="product-description">
+            <h3>Description</h3>
+            <p>@Html.DisplayFor(model => model.Description)</p>
+        </div>
+    </div>
+</div>
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+<script src="script.js"></script>

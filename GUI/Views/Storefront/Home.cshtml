@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="Home.css">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+
+
+    <div class="navfix">
+      <div class="p-3 m-0 border-0 bd-example m-0 border-0">
+        <div class="navbar">
+          <nav class="navbar navbar-expand-lg " >
+            <div class="left-content">
+              <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-start " id="navbarTogglerDemo01">
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                  <li class="nav-item">
+                  <div class="dropdown">
+                      <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Shop
+                      </button>
+                      <ul class="dropdown-menu">
+                      <li><p class="dropdown-item" id="header-dropdown-item"><a href="" >JEANS</a></p></li>
+                      <li><a class="dropdown-item" href="#">Skinny Jeans</a></li>
+                      <li><a class="dropdown-item" href="#">Slim jeans</a></li>
+                      <li><a class="dropdown-item" href="#">Relaxed Jeans</a></li>
+                      <li><p class="dropdown-item" id="foot-dropdown-item"><a href="">Shop All</a></p></li>
+                      </ul>
+                  </div>
+                  </li>
+                  <li class="nav-item">
+                      <button class="btn " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      New Arrivals
+                      </button>
+                  </li>
+                  <li class="nav-item">
+                      <button class="btn " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Best Sellers
+                      </button>
+                  </li>
+                  <li class="nav-item">
+                      <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Pages
+                      </button>
+                  </li>
+                </ul>
+                </div>
+              </div>
+            </div>
+          </nav>
+          <div class="logo">
+            <img src="" alt="">
+          </div>
+          <div class="right-content">
+            <div class="Search">
+              <a href="" style="color: black;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+              </a>
+            </div>
+            <div class="user">
+              <a href="" style="color: black;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                  <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                </svg>
+              </a>
+            </div>
+            <div style="width: 80px;" class="trans">
+              <select  class="form-select form-select-sm" aria-label="Small select example">
+                <option selected >EN</option>
+                <option value="1">VN</option>
+              </select>
+            </div>
+            <div class="trans">
+              <select class="form-select form-select-sm" aria-label="Small select example">
+                <option selected >VND</option>
+                <option value="1">USD</option>
+                <option value="2">EUR</option>
+              </select>
+            </div>
+              <a type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><img style="height: 20px;" src="data:image/png;base64,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" alt="">0</a>
+      
+              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasRightLabel">Offcanvas right</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                      ...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <div class="slide-auto">
+      <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="https://int.bape.com/cdn/shop/files/BAP_STA_OS_FEB25_LOOKBOOK_BANNER_BAPE_ONLINE_HP_DESKTOP_2160x1080_a3fc53df-0735-4381-9349-c3e11ce81cd9.jpg?v=1738814408&width=2000" class="d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item">
+            <img src="https://int.bape.com/cdn/shop/files/BAP_STA_FEB25_LOOKBOOK_BANNER_BAPE_ONLINE_HP_DESKTOP_2160x1080_cdb96631-2e2b-43c6-9e30-756a168ee53d.jpg?v=1738577644&width=2000" class="d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item">
+            <img src="https://int.bape.com/cdn/shop/files/20241123_FW24_BAPE_SHARK_ATTACK_1st_n_2nd_2160x1080_4439df49-8810-4de0-928c-8785c526a63f.jpg?v=1732259747&width=2000" class="d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item">
+            <img src="https://int.bape.com/cdn/shop/files/Banner_Resize_M1_PC_-_02.jpg?v=1728015717&width=2000" class="d-block w-100" alt="...">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+
+
+    <div class="content">
+      <div class="border-text">
+        <div class="title-text">
+          Best Seller
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="container" >
+      <div class="container text-center my-3">
+        <div class="row mx-auto my-auto justify-content-center">
+            <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner" role="listbox">
+                    <div class="carousel-item active">
+                        <div class="col-md-3">
+                            <div class="card">
+                              <a href="">
+                                <div class="card-img">
+                                  <img src="https://int.bape.com/cdn/shop/files/0MXSOW4370XXOBKX-pdp-2.jpg?v=1739356413&width=700" class="img-fluid">
+                                  <div class="card-body">
+                                    <p class="card-text">Baby Milo graphic crew socks</p>
+                                    <br>
+                                    <p>$19.00</p>
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="col-md-3">
+                            <div class="card">
+                              <a href="">
+                                <div class="card-img">
+                                    <img src="https://int.bape.com/cdn/shop/files/0MXBGW4224XXOGRB-pdp-2.jpg?v=1739356324&width=700" class="img-fluid">
+                                    <div class="card-body">
+                                      <p class="card-text">Babby Milo & friends backpack</p>
+                                      <br>
+                                      <p>$92.00</p>
+                                    </div>
+                                </div>
+                              </a> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="col-md-3">
+                            <div class="card">
+                              <a href="">
+                                <div class="card-img">
+                                  <img src="https://int.bape.com/cdn/shop/files/0MXBGW4224XAOMLB-pdp-2.jpg?v=1739356309&width=700" class="img-fluid">
+                                  <div class="card-body">
+                                    <p class="card-text">Baby Milo & friends backpack</p>
+                                    <br>
+                                    <p>$19.00</p>
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="col-md-3">
+                            <div class="card">
+                              <a href="">
+                                <div class="card-img">
+                                  <img src="https://int.bape.com/cdn/shop/files/0MXTEW0440XXOBKX-pdp-2.jpg?v=1739352712&width=700" class="img-fluid">
+                                  <div class="card-body">
+                                    <p class="card-text">Milo slim fit tee</p>
+                                    <br>
+                                    <p>$79.00</p>
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="col-md-3">
+                            <div class="card">
+                              <a href="">
+                                <div class="card-img">
+                                  <img src="https://int.bape.com/cdn/shop/files/0MXTEW0439XXOPKL-pdp-2.jpg?v=1739352688&width=700" class="img-fluid">
+                                  <div class="card-body">
+                                    <p class="card-text">AAPEUNVS moonface logo relaxed fit path</p>
+                                    <br>
+                                    <p>$220.00</p>
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="col-md-3">
+                            <div class="card">
+                              <a href="">
+                                <div class="card-img">
+                                  <img src="https://int.bape.com/cdn/shop/files/AAPLJM7708XXOIVX-pdp-2.jpg?v=1739179908&width=700" class="img-fluid">
+                                  <div class="card-body">
+                                    <p class="card-text">AAPEUNVS reversble anorak jacket</p>
+                                    <br>
+                                    <p>$357.00</p>
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev bg-transparent w-aut"  href="#recipeCarousel" role="button" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"><i class="fa-solid fa-arrow-left"></i></span>
+                </a>
+                <a class="carousel-control-next bg-transparent w-aut" href="#recipeCarousel" role="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="container">
+      <a href="">
+        <div class="img-content2">
+          <img src="https://int.bape.com/cdn/shop/files/BAP_STA_OS_FEB25_LOOKBOOK_BANNER_BAPE_ONLINE_HP_DESKTOP_2160x1080_a3fc53df-0735-4381-9349-c3e11ce81cd9.jpg?v=1738814408&width=2000" alt="">
+        </div>
+      </a>
+    </div>
+
+    <div class="container">
+      <div class="row1" >
+        
+          <div class="col1" >
+            <a href="">
+            <img src="https://int.bape.com/cdn/shop/files/BAP_STA_OS_FEB25_LOOKBOOK_BANNER_BAPE_ONLINE_HP_DESKTOP_2160x1080_a3fc53df-0735-4381-9349-c3e11ce81cd9.jpg?v=1738814408&width=2000" alt="">
+            </a>
+          </div>
+          <div class="col1">
+            <a href="">
+              <img src="https://int.bape.com/cdn/shop/files/BAP_STA_OS_FEB25_LOOKBOOK_BANNER_BAPE_ONLINE_HP_DESKTOP_2160x1080_a3fc53df-0735-4381-9349-c3e11ce81cd9.jpg?v=1738814408&width=2000" alt="">
+            </a>
+          </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="border-text">
+        <div class="title-text">
+          Shop by
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row" >
+        <div class="row row-cols-1 row-cols-md-5 g-4" style="margin: 0px;">
+          <a href="">
+            <div class="col">
+              <div class="img__wrap">
+                <img class="img__img" src="https://int.bape.com/cdn/shop/files/AAPLJM7708XXOIVX-pdp-2.jpg?v=1739179908&width=700" />
+                <div class="img__description_layer">
+                  <p class="img__description">TANK</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="col">
+              <div class="img__wrap">
+                <img class="img__img" src="https://int.bape.com/cdn/shop/files/AAPLJM7708XXOIVX-pdp-2.jpg?v=1739179908&width=700" />
+                <div class="img__description_layer">
+                  <p class="img__description">SHORT</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="col">
+              <div class="img__wrap">
+                <img class="img__img" src="https://int.bape.com/cdn/shop/files/AAPLJM7708XXOIVX-pdp-2.jpg?v=1739179908&width=700" />
+                <div class="img__description_layer">
+                  <p class="img__description">SHIRTS</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="col">
+              <div class="img__wrap">
+                <img class="img__img" src="https://int.bape.com/cdn/shop/files/AAPLJM7708XXOIVX-pdp-2.jpg?v=1739179908&width=700" />
+                <div class="img__description_layer">
+                  <p class="img__description">JEANS</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="col">
+              <div class="img__wrap">
+                <img class="img__img" src="https://int.bape.com/cdn/shop/files/AAPLJM7708XXOIVX-pdp-2.jpg?v=1739179908&width=700" />
+                <div class="img__description_layer">
+                  <p class="img__description">FOOTWEAR</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+
+    <footer class="footer-39201">
+      <div class="container">
+        <div class="row">
+          <div class="col-md mb-4 mb-md-0">
+            <h3>Store</h3>
+            <ul class="list-unstyled nav-links">
+              <li><a href="#">Men</a></li>
+              <li><a href="#">Women</a></li>
+              <li><a href="#">Children</a></li>
+              <li><a href="#">New Arrivals</a></li>
+              <li><a href="#">Top Brands</a></li>
+              <li><a href="#">Special Offers</a></li>
+            </ul>
+          </div>
+          <div class="col-md mb-4 mb-md-0">
+            <h3>About</h3>
+            <ul class="list-unstyled nav-links">
+              <li><a href="#">About us</a></li>
+              <li><a href="#">Clients</a></li>
+              <li><a href="#">Services</a></li>
+              <li><a href="#">Best sellers</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div class="col-md mb-4 mb-md-0">
+            <h3>Legal</h3>
+            <ul class="list-unstyled nav-links">
+              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Legality</a></li>
+              <li><a href="#">Author License</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h3>Subscribe</h3>
+            <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque dolor ducimus doloremque earum ullam. Architecto voluptatum odio magni.</p>
+            <form action="#" class="subscribe">
+                <input type="text" class="form-control" placeholder="Enter your e-mail">
+                <input type="submit" class="btn btn-submit" value="Send">
+              </form>
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-12">
+            <div class="border-top my-5" ></div>
+          </div>
+          <div class="col-md-6">
+            <p><small>© 2019 All Rights Reserved.</small></p>
+          </div>
+          <div class="col-md-6 text-md-right">
+            <ul class="social list-unstyled">
+              <li><a href=""><i class="bi bi-facebook" style="color: deepskyblue;"></i></a></li>
+              <li><a href="#"><i class="bi bi-twitter" style="color: deepskyblue;"></i></a></li>
+              <li><a href="#"><i class="bi bi-pinterest" style="color: red;"></i></a></li>
+              <li><a href="#"><i class="bi bi-instagram" style="color: rebeccapurple;"></i></a></li>
+              <li><a href="#"><i class="bi bi-behance" style="color: deepskyblue;"></i></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+
+    <script src="Home.js"></script>
+    
+  </body>
+</html>

@@ -30,6 +30,7 @@ using AccountCustomerRequest = GUI.Models.Customer_DTO.AccountCustomerRequest;
 using EditCustomerResponse = GUI.Models.DTOs.Customer_DTO.EditCustomerResponse;
 using EditCustomerRequest = GUI.Models.DTOs.Customer_DTO.EditCustomerRequest;
 using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace GUI.Controllers
 {
@@ -39,8 +40,11 @@ namespace GUI.Controllers
 	{
 		private HttpService httpService;
 		private VNPayService _VNPayService;
-		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService)
+        private readonly DBContext _context;
+
+        public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService , DBContext dBContext)
 		{
+			_context = dBContext;
 			_settings = settings.Value;
 			httpService = new();
 			_VNPayService = payService;
@@ -74,7 +78,7 @@ namespace GUI.Controllers
             return View();
 		}
 
-		//[Route("/Store")]
+		[Route("/Store")]
 		public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max)
 		{
 			var model = new Models.DTOs.Product_DTO.Views.IndexObject();
@@ -713,7 +717,24 @@ namespace GUI.Controllers
 				});
 			}
 		}
-		public class CreateOrderObject
+		[Route("/Details/{id}")]
+        public async Task<IActionResult> Details(Guid? id)
+        {
+            if (id == null || _context.TbProductDetails == null)
+            {
+                return NotFound();
+            }
+
+            var tbProductDetail = await _context.TbProducts.FindAsync(id);
+                
+            if (tbProductDetail == null)
+            {
+                return NotFound();
+            }
+
+            return View(tbProductDetail);
+        }
+        public class CreateOrderObject
 		{
             public string? name { get; set; }
             public string? phone { get; set; }

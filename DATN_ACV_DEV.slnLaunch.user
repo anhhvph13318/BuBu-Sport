@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "GUI\\GUI.csproj",
+        "Action": "StartWithoutDebugging"
+      },
+      {
+        "Path": "DATN_ACV_DEV\\DATN_ACV_DEV.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

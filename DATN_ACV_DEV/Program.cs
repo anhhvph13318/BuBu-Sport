@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer("Data Source=RATONLYNK;Initial Catalog=DATABASE_ACV_13_01_2024;Integrated Security=True; Encrypt=False;"));
+builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer("Data Source=onlyK;Initial Catalog=DB_DraftBracnh_04_03;Integrated Security=True; Encrypt=False;"));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
