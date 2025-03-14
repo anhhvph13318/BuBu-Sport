@@ -83,7 +83,8 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.UserCode, opt => opt.MapFrom(src => src.UserCode))
                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-               .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position));
+               .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position))
+               .ForMember(dest => dest.InActive, opt => opt.MapFrom(src => src.InActive));
             
 
             CreateMap<TbCustomer, CustomerDTO>()

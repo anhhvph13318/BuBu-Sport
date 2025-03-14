@@ -41,12 +41,19 @@ namespace GUI.Controllers
                     AccountCode = a.AccountCode,
                     Email = a.Email,
                     PhoneNumber = a.PhoneNumber,
-                    Role = a.Role == 0 ? "Nhân viên" : "Khách hàng",
-                    CreateDate = a.CreateDate
+                    Role = a.Role == 0 ? "Khách hàng" : "Nhân viên",
+                    CreateDate = a.CreateDate,
+                    CustomerID = a.CustomerId,
+                    EmployeeId = a.EmployeeId,
                 })
                 .ToListAsync();
-
-            ViewBag.CurrentPage = page;
+            foreach (var item in accounts)
+            {
+                item.Status = item.CustomerID != null ? 
+                    _context.TbCustomers.Where(c=>c.Id == item.CustomerID).Select(c=>c.Status).FirstOrDefault()
+                    : _context.TbUsers.Where(c => c.Id == item.EmployeeId).Select(c => c.InActive).FirstOrDefault().ToString();
+            }
+			ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.PhoneNumber = phoneNumber;
 

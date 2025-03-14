@@ -23,5 +23,6 @@
         public string? UserCode { get; set; }
 
         public string? FullName { get; set; }
+        public bool InActive { get; set; }
     }
 }

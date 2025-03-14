@@ -28,7 +28,7 @@ namespace GUI.Controllers
         
         // GET: ProductController
         //[AllowAnonymous]
-        [Route("/Store")]
+        [Route("/product")]
         public async Task<ActionResult> Index(string s)
         {
             var obj = new GetListProductRequest();

@@ -26,13 +26,14 @@
 
     <!-- Bảng danh sách tài khoản -->
     <div class="table-responsive">
-        <table class="table table-hover shadow-sm mt-3">
-            <thead class="table-dark text-center">
+        <table class="table table-hover shadow-sm mt-3 table-striped">
+            <thead class="table-dark text-center table-striped">
                 <tr>
                     <th>Mã tài khoản</th>
                     <th>Email</th>
                     <th>Số điện thoại</th>
                     <th>Vai trò</th>
+                    <th>Trạng thái</th>
                 </tr>
             </thead>
             <tbody class="text-center align-middle">
@@ -43,8 +44,11 @@
                         <td>@account.Email</td>
                         <td>@account.PhoneNumber</td>
                         <td>
-                            <span class="badge @(account.Role == "Nhân viên" ? "bg-info" : "bg-success")">
-                                @account.Role
+                        @account.Role
+                        </td>
+                        <td>
+                            <span class="badge @((account.Status == "True" || account.Status == "Active") ? "bg-success" : "bg-danger")">
+                                @((account.Status == "True" || account.Status == "Active") ? "Đang hoạt động" : "Không hoạt động")
                             </span>
                         </td>
                     </tr>
