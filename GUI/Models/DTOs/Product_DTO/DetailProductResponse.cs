@@ -1,4 +1,8 @@
-﻿namespace GUI.Models.DTOs.Product_DTO
+﻿using DATN_ACV_DEV.Entity;
+using DATN_ACV_DEV.Model_DTO.ProductDetail_DTO;
+using System.Text.Json.Serialization;
+
+namespace GUI.Models.DTOs.Product_DTO
 {
     public class DetailProductResponse
     {
@@ -27,8 +31,12 @@
         //public string? UrlImage { get; set; }
 
         public string? Color { get; set; }
+        public string? SizeName { get; set; }
 
         public string? Material { get; set; }
         public List<Guid> PropertyID { get; set; }
+        [JsonIgnore] // Ngăn việc serialize thuộc tính này
+        public List<TbProductDetail> DetailData { get; set; }
+        public List<TestDame> DetailDataFinal { get; set; }
     }
 }

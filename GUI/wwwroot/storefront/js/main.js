@@ -532,22 +532,22 @@
 		$('.cart-total').text(convertVND(total));
 	}
 
-	$('#cart-submit').on('click', function (e) {
-		e.preventDefault();
-		let items = $('.cart-item');
-		let buyingItems = [];
-		$.each(items, function (i, obj) {
-			if ($(obj).find('.chk-select-item').is(':checked')) {
-				let id = $(obj).attr('data-itemId');
-				buyingItems.push(id);
-			}
-		});
-		$.post("/ConfirmCart", { ids : buyingItems}, (data) => {
-            if (data.success) {
-				location.href = "/Checkout";
-            }
-		});
-	});
+	//$('#cart-submit').on('click', function (e) {
+	//	e.preventDefault();
+	//	let items = $('.cart-item');
+	//	let buyingItems = [];
+	//	$.each(items, function (i, obj) {
+	//		if ($(obj).find('.chk-select-item').is(':checked')) {
+	//			let id = $(obj).attr('data-itemId');
+	//			buyingItems.push(id);
+	//		}
+	//	});
+	//	$.post("/ConfirmCart", { ids : buyingItems}, (data) => {
+ //           if (data.success) {
+	//			location.href = "/Checkout";
+ //           }
+	//	});
+	//}); -CMT
 
 	function setCookie(cname, cvalue, exdays) {
 		const d = new Date();

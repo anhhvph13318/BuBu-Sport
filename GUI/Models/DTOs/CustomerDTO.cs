@@ -8,5 +8,6 @@
         public string? Address { get; set; }
         public string? Status { get; set; }
         public int? Point { get; set; }
+        public int? Sex { get; set; }
     }
 }

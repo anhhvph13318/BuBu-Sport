@@ -28,54 +28,70 @@
     <link rel="stylesheet" href="~/css/product.css">
 </head>
 <div class="container">
-    <h3>Danh sách sản phẩm</h3>
+    <h2 class="text-center text-primary fw-bold">Danh Sách Sản Phẩm</h2>
     <hr />
-    <p>
-        <a asp-action="Create" class="btn btn-success">Tạo mới</a>
-    </p>
 
-    <!-- Form tìm kiếm -->
-    <div>
-        <form asp-controller="Product" asp-action="Index" method="get" class="d-flex mb-3">
-            <input type="text" name="s" class="form-control me-2 col-6" placeholder="Tìm kiếm" id="search-input" />
+    <!-- Thanh điều khiển (Tạo mới + Tìm kiếm trên cùng một hàng) -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Nút Tạo Mới -->
+        <a asp-action="Create" class="btn btn-success">Tạo mới</a>
+
+        <!-- Form tìm kiếm -->
+        <form asp-controller="Product" asp-action="Index" method="get" class="d-flex">
+            <input type="text" name="s" class="form-control me-2" placeholder="Tìm kiếm" id="search-input" />
             <input type="submit" class="btn btn-primary" value="Tìm kiếm" />
         </form>
     </div>
 
     <!-- Danh sách sản phẩm theo lưới -->
-    <div class="row">
-        @if (Model.Data is not null && Model.Data.LstProduct is not null && Model.Data.LstProduct.Any())
-        {
-            @foreach (var item in Model.Data.LstProduct)
+    <table class="table table-bordered text-center table-striped">
+        <thead class="table-dark text-center table-striped">
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Giá bán</th>
+                <th>Danh mục</th>
+                <th>Mã sản phẩm</th>
+                <th>Trạng thái</th>
+                <th>Hình ảnh</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Data is not null && Model.Data.LstProduct is not null && Model.Data.LstProduct.Any())
             {
-                <div class="col-md-6 col-sm-6 mb-4 d-flex align-items-stretch">
-                    <div class="card w-100">
-                        <div class="row g-0">
-                            <!-- Thông tin sản phẩm bên trái -->
-                            <div class="col-6 p-3">
-                                <h5 class="card-title">@item.Name</h5>
-                                <p class="card-text"><strong>Số lượng:</strong> @item.Quantity</p>
-                                <p class="card-text"><strong>Giá bán:</strong> @item.Price</p>
-                                <p class="card-text"><strong>Mô tả:</strong> @item.Description</p>
-                                <p class="card-text"><strong>Mã sản phẩm:</strong> @item.Code</p>
-                                <p class="card-text"><strong>Trạng thái:</strong> @item.Status</p>
-                                <div class="text-center mt-2">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xóa</a>
-                                </div>
-                            </div>
-                            <!-- Ảnh sản phẩm bên phải -->
-                            <div class="col-6">
-                                <div style="width: 100%; height: 400px; border: 1px solid #ccc; padding: 5px; background-color: #f8f8f8; display: flex; justify-content: center; align-items: center; overflow: hidden;">
-                                    <img src="@item.Image" class="img-fluid" alt="Product Image" style="max-width: 100%; max-height: 100%; object-fit: cover;" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @foreach (var item in Model.Data.LstProduct)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Price</td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.Code</td>
+                        <td>
+                            <span class="badge @(item.Status == "Hoạt động" ? "bg-success" : "bg-danger")">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td style="text-align: center;">
+                            <img src="@item.Image" alt="Product Image" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ccc; padding: 3px; background-color: #f8f8f8;">
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xóa</a>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </div>
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center">Không có sản phẩm nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 </div>
 
 

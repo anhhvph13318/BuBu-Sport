@@ -6,22 +6,25 @@
     ViewData["Title"] = "Quản lý danh mục";
 }
 
-@model IEnumerable<CategoryDto>
+@model IEnumerable<CategoryDTO>
 
 <div class="container">
-    <div class="row">
-        <div class="col-6">
-            <input class="form-control" placeholder="Tên phân loại ..." id="categorySearch" />
-        </div>
-        <div class="col-6">
-            <button class="btn btn-primary ms-1 me-1" onclick="search()">Tìm kiếm</button>
-            <button class="btn btn-danger ms-1 me-1" onclick="reset()">Reset</button>
-        </div>
-    </div>
+    <h2 class="text-center text-primary fw-bold">Quản lý danh mục</h2>
     <hr />
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="clear()">Thêm mới</button>
+    <div class="d-flex justify-content-start align-items-center mb-3">
+    <!-- Nút Thêm mới -->
+    <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="clear()">Thêm mới</button>
+
+    <!-- Ô nhập tìm kiếm -->
+    <div class="d-flex align-items-center ms-auto">
+        <input class="form-control" style="width: 250px;" placeholder="Nhập tên danh mục ..." id="categorySearch" />
+        <button class="btn btn-primary ms-2" onclick="search()">Tìm kiếm</button>
+        <button class="btn btn-danger ms-2" onclick="reset()">Reset</button>
     </div>
+</div>
+
+
+    <!-- Bảng danh sách phân loại -->
     <div id="categoryTable">
         @await Html.PartialAsync("_CategoryTable", Model)
     </div>
@@ -31,7 +34,7 @@
 <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" id="modalContent">
-            @await Html.PartialAsync("_CategoryModal", new CategoryDto())
+            @await Html.PartialAsync("_CategoryModal", new CategoryDTO())
         </div>
     </div>
 </div>

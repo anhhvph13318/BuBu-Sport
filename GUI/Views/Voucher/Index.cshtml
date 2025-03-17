@@ -2,50 +2,65 @@
 @using System.Globalization
 @model IEnumerable<VoucherDTO>
 
-<div class="container">
-  <div class="mb-3 d-flex justify-content-end p-3">
-    <a class="btn btn-primary" href="vouchers/create">Thêm mới</a>
-  </div>
-  <table class="table table-stripped">
-    <thead>
-      <tr>
-        <th>Tên voucher</th>
-        <th>Mã</th>
-        <th>Số tiền giảm</th>
-        <th>Thời gian hiệu lực</th>
-        <th>Trạng thái</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach (var voucher in Model)
-      {
-        <tr>
-          <td>@voucher.Name</td>
-          <td>@voucher.Code</td>
-          @if(voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent)
-          {
-            <td>@voucher.Discount %</td>
-          }
-          else
-          {
-            <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-          }
-          <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
-          <td>
-                        @if(voucher.Status)
-                        {
-                            <span>Hoạt động</span>
-                        } else
-                        {
-                            <span>Không hoạt động</span>
-                        }
-                    </td>
-          <td>
-            <a class="btn btn-primary text-nowrap me-2" asp-controller="Voucher" asp-action="Detail" asp-route-id="@voucher.Id">Chi tiết</a>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+@{
+    ViewData["Title"] = "Danh sách voucher";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center text-primary fw-bold">Danh Sách Voucher</h2>
+    <hr />
+    <div class="mb-3 d-flex justify-content-end p-3">
+        <a class="btn btn-primary" href="vouchers/create">Thêm mới</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm mt-3 table-striped">
+            <thead class="table-dark text-center table-striped">
+                <tr>
+                    <th>Mã</th>
+                    <th>Tên voucher</th>
+                    <th>Số tiền giảm</th>
+                    <th>Số lượng</th>
+                    <th>Thời gian hiệu lực</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody class="text-center align-middle">
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var voucher in Model)
+                    {
+                        <tr>
+                            <td>@voucher.Code</td>
+                            <td>@voucher.Name</td>
+                            <td>
+                                @(voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent
+                                    ? $"{voucher.Discount} %"
+                                    : voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                            </td>
+                            <td>@voucher.Quantity</td>
+                            <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <span class="badge @(voucher.Status ? "bg-success" : "bg-danger")">
+                                    @(voucher.Status ? "Hoạt động" : "Không hoạt động")
+                                </span>
+                            </td>
+                            <td>
+                                <a class="btn btn-primary text-nowrap" asp-controller="Voucher" asp-action="Detail" asp-route-id="@voucher.Id">
+                                    Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">Không có dữ liệu</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
