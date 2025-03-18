@@ -5,13 +5,28 @@
     int currentPage = ViewBag.CurrentPage;
     int totalPages = ViewBag.TotalPages;
     string phoneNumber = ViewBag.PhoneNumber;
+    int stt = (currentPage - 1) * 10 + 1;
 }
 
 <div class="container mt-4">
     <h2 class="text-center text-primary fw-bold">Quản Lý Tài Khoản</h2>
     <hr />
     <!-- Thanh tìm kiếm -->
-    <div class="row mb-3 justify-content-end">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <select id="roleFilter" class="form-control" onchange="filterAccounts()">
+                <option value="">Tất cả vai trò</option>
+                <option value="Khách hàng">Khách hàng</option>
+                <option value="Nhân viên">Nhân viên</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="statusFilter" class="form-control" onchange="filterAccounts()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="Active">Đang hoạt động</option>
+                <option value="Inactive">Không hoạt động</option>
+            </select>
+        </div>
         <div class="col-md-6 d-flex gap-2 justify-content-end">
             <input id="searchPhone" class="form-control border-primary" placeholder="Nhập số điện thoại..." value="@phoneNumber" style="max-width: 250px;">
             <button class="btn btn-primary shadow-sm px-3" onclick="searchAccount()">
@@ -23,12 +38,11 @@
         </div>
     </div>
 
-
-    <!-- Bảng danh sách tài khoản -->
     <div class="table-responsive">
         <table class="table table-hover shadow-sm mt-3 table-striped">
             <thead class="table-dark text-center table-striped">
                 <tr>
+                    <th>STT</th>
                     <th>Mã tài khoản</th>
                     <th>Email</th>
                     <th>Số điện thoại</th>
@@ -37,27 +51,30 @@
                 </tr>
             </thead>
             <tbody class="text-center align-middle">
-                @foreach (var account in Model)
+                @if (Model != null)
                 {
-                    <tr>
-                        <td>@account.AccountCode</td>
-                        <td>@account.Email</td>
-                        <td>@account.PhoneNumber</td>
-                        <td>
-                        @account.Role
-                        </td>
-                        <td>
-                            <span class="badge @((account.Status == "True" || account.Status == "Active") ? "bg-success" : "bg-danger")">
-                                @((account.Status == "True" || account.Status == "Active") ? "Đang hoạt động" : "Không hoạt động")
-                            </span>
-                        </td>
-                    </tr>
+                    @foreach (var account in Model)
+                    {
+                        <tr class="account-row" data-role="@account.Role" data-status="@((account.Status == "True" || account.Status == "Active") ? "Active" : "Inactive")">
+                            <td>@stt</td>
+                            <td>@account.AccountCode</td>
+                            <td>@account.Email</td>
+                            <td>@account.PhoneNumber</td>
+                            <td>@account.Role</td>
+                            <td>
+                                <span class="badge @((account.Status == "True" || account.Status == "Active") ? "bg-success" : "bg-danger")">
+                                    @((account.Status == "True" || account.Status == "Active") ? "Đang hoạt động" : "Không hoạt động")
+                                </span>
+                            </td>
+                        </tr>
+                        stt++;
+                    }
                 }
             </tbody>
         </table>
     </div>
 
-    <!-- Thanh phân trang -->
+
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
@@ -97,6 +114,26 @@
         function searchAccount() {
             let phone = document.getElementById("searchPhone").value;
             window.location.href = `@Url.Action("Index")?phoneNumber=${phone}`;
+        }
+
+        function filterAccounts() {
+            const roleFilter = document.getElementById("roleFilter").value;
+            const statusFilter = document.getElementById("statusFilter").value;
+            const rows = document.querySelectorAll(".account-row");
+
+            rows.forEach(row => {
+                const role = row.getAttribute("data-role");
+                const status = row.getAttribute("data-status");
+
+                const roleMatch = roleFilter === "" || role === roleFilter;
+                const statusMatch = statusFilter === "" || status === statusFilter;
+
+                if (roleMatch && statusMatch) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
         }
     </script>
 }

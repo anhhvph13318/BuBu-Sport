@@ -15,21 +15,21 @@ namespace GUI.Controllers
     public class AccountController : Controller
     {
         private readonly DBContext _context;
-        private const int PageSize = 5; 
+        private const int PageSize = 5;
 
         public AccountController(DBContext context)
         {
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string phoneNumber = "", int page = 1)
+        public async Task<IActionResult> Index(string phoneNumber = "", int page = 1, string role = "", string status = "")
         {
             var query = _context.TbAccounts
                 .AsNoTracking()
-                .Where(a => string.IsNullOrEmpty(phoneNumber) || a.PhoneNumber.Contains(phoneNumber));
-
-            int totalAccounts = await query.CountAsync();
-            int totalPages = (int)Math.Ceiling((double)totalAccounts / PageSize);
+                .Where(a =>
+                    (string.IsNullOrEmpty(phoneNumber) || a.PhoneNumber.Contains(phoneNumber)) &&
+                    (string.IsNullOrEmpty(role) || (a.Role == 0 && role == "Khách hàng") || (a.Role == 1 && role == "Nhân viên"))
+                );
 
             var accounts = await query
                 .OrderBy(a => a.CreateDate)
@@ -42,20 +42,19 @@ namespace GUI.Controllers
                     Email = a.Email,
                     PhoneNumber = a.PhoneNumber,
                     Role = a.Role == 0 ? "Khách hàng" : "Nhân viên",
-                    CreateDate = a.CreateDate,
-                    CustomerID = a.CustomerId,
-                    EmployeeId = a.EmployeeId,
+                    Status = a.CustomerId != null
+                        ? _context.TbCustomers.Where(c => c.Id == a.CustomerId).Select(c => c.Status).FirstOrDefault()
+                        : _context.TbUsers.Where(c => c.Id == a.EmployeeId).Select(c => c.InActive == true ? "Không hoạt động" : "Đang hoạt động").FirstOrDefault(),
+
+                    CreateDate = a.CreateDate
                 })
                 .ToListAsync();
-            foreach (var item in accounts)
-            {
-                item.Status = item.CustomerID != null ? 
-                    _context.TbCustomers.Where(c=>c.Id == item.CustomerID).Select(c=>c.Status).FirstOrDefault()
-                    : _context.TbUsers.Where(c => c.Id == item.EmployeeId).Select(c => c.InActive).FirstOrDefault().ToString();
-            }
-			ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)await query.CountAsync() / PageSize);
             ViewBag.PhoneNumber = phoneNumber;
+            ViewBag.Role = role;
+            ViewBag.Status = status;
 
             return View(accounts);
         }
