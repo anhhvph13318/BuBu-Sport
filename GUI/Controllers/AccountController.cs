@@ -1,4 +1,5 @@
-﻿using DATN_ACV_DEV.Entity;
+﻿using Microsoft.AspNetCore.Mvc;
+using DATN_ACV_DEV.Entity;
 using GUI.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,55 +10,54 @@ using System.Threading.Tasks;
 
 namespace GUI.Controllers
 {
-    [Controller]
-    [Route("accounts")]
-    //[Authorize(Roles = "Admin")]
-    public class AccountController : Controller
-    {
-        private readonly DBContext _context;
-        private const int PageSize = 5; 
+	[Controller]
+	[Route("accounts")]
+	//[Authorize(Roles = "Admin")]
+	public class AccountController : Controller
+	{
+		private readonly DBContext _context;
+		private const int PageSize = 5;
 
-        public AccountController(DBContext context)
-        {
-            _context = context;
-        }
+		public AccountController(DBContext context)
+		{
+			_context = context;
+		}
 
-        public async Task<IActionResult> Index(string phoneNumber = "", int page = 1)
-        {
-            var query = _context.TbAccounts
-                .AsNoTracking()
-                .Where(a => string.IsNullOrEmpty(phoneNumber) || a.PhoneNumber.Contains(phoneNumber));
+		public async Task<IActionResult> Index(string phoneNumber = "", int page = 1, string role = "", string status = "")
+		{
+			var query = _context.TbAccounts
+				.AsNoTracking()
+				.Where(a =>
+					(string.IsNullOrEmpty(phoneNumber) || a.PhoneNumber.Contains(phoneNumber)) &&
+					(string.IsNullOrEmpty(role) || (a.Role == 0 && role == "Khách hàng") || (a.Role == 1 && role == "Nhân viên"))
+				);
 
-            int totalAccounts = await query.CountAsync();
-            int totalPages = (int)Math.Ceiling((double)totalAccounts / PageSize);
+			var accounts = await query
+				.OrderBy(a => a.CreateDate)
+				.Skip((page - 1) * PageSize)
+				.Take(PageSize)
+				.Select(a => new AccountDTO
+				{
+					Id = a.Id,
+					AccountCode = a.AccountCode,
+					Email = a.Email,
+					PhoneNumber = a.PhoneNumber,
+					Role = a.Role == 0 ? "Khách hàng" : "Nhân viên",
+					Status = a.CustomerId != null
+						? _context.TbCustomers.Where(c => c.Id == a.CustomerId).Select(c => c.Status).FirstOrDefault()
+						: _context.TbUsers.Where(c => c.Id == a.EmployeeId).Select(c => c.InActive == true ? "Không hoạt động" : "Đang hoạt động").FirstOrDefault(),
 
-            var accounts = await query
-                .OrderBy(a => a.CreateDate)
-                .Skip((page - 1) * PageSize)
-                .Take(PageSize)
-                .Select(a => new AccountDTO
-                {
-                    Id = a.Id,
-                    AccountCode = a.AccountCode,
-                    Email = a.Email,
-                    PhoneNumber = a.PhoneNumber,
-                    Role = a.Role == 0 ? "Khách hàng" : "Nhân viên",
-                    CreateDate = a.CreateDate,
-                    CustomerID = a.CustomerId,
-                    EmployeeId = a.EmployeeId,
-                })
-                .ToListAsync();
-            foreach (var item in accounts)
-            {
-                item.Status = item.CustomerID != null ? 
-                    _context.TbCustomers.Where(c=>c.Id == item.CustomerID).Select(c=>c.Status).FirstOrDefault()
-                    : _context.TbUsers.Where(c => c.Id == item.EmployeeId).Select(c => c.InActive).FirstOrDefault().ToString();
-            }
+					CreateDate = a.CreateDate
+				})
+				.ToListAsync();
+
 			ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
-            ViewBag.PhoneNumber = phoneNumber;
+			ViewBag.TotalPages = (int)Math.Ceiling((double)await query.CountAsync() / PageSize);
+			ViewBag.PhoneNumber = phoneNumber;
+			ViewBag.Role = role;
+			ViewBag.Status = status;
 
-            return View(accounts);
-        }
-    }
+			return View(accounts);
+		}
+	}
 }

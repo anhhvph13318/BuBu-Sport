@@ -160,11 +160,13 @@ public partial class DBContext : DbContext
         modelBuilder.Entity<TbColor>(entity =>
         {
             entity
-                .HasNoKey()
-                .ToTable("tb_Color");
+                .HasKey(e => e.Id) // Chỉ định khóa chính
+                .HasName("PK_tb_Color"); // Đặt tên khóa chính (tùy chọn)
 
+            entity.ToTable("tb_Color");
+
+            entity.Property(e => e.Id).HasColumnName("ID"); // Định danh cột ID
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 

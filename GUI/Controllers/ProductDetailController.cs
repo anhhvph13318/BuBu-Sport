@@ -9,6 +9,7 @@ using GUI.Models.DTOs.ProductDetail_DTO;
 using GUI.FileBase;
 using Microsoft.EntityFrameworkCore;
 using GUI.Models.DTOs;
+using System.Drawing.Imaging;
 
 namespace GUI.Controllers
 {
@@ -79,5 +80,35 @@ namespace GUI.Controllers
                 return View();
             }
         }
+        public class ColorDto
+        {
+            public Guid ProductID { get; set; }
+            public string Name { get; set; }
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateColorDetail([FromBody] ColorDto colorDto)
+        {
+            try
+            {
+                var URL = _settings.APIAddress + "api/CreateColor/Process";
+                var param = JsonConvert.SerializeObject(colorDto);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductDetailResponse>>(res) ?? new();
+
+                if (result.Status == "400")
+                {
+                    return BadRequest(new { success = false, message = result.Messages.FirstOrDefault()?.MessageText ?? "Lỗi không xác định" });
+                }
+
+                var redirectUrl = $"http://localhost:5011/CreateDetail?productId={colorDto.ProductID}";
+                return Ok(new { success = true, url = redirectUrl });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Có lỗi xảy ra, vui lòng thử lại!" });
+            }
+        }
+
     }
 }

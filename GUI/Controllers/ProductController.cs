@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using GUI.Models.DTOs;
 using DATN_ACV_DEV.Entity;
 using Microsoft.EntityFrameworkCore;
+using Azure.Core;
 
 namespace GUI.Controllers
 {
@@ -25,27 +26,47 @@ namespace GUI.Controllers
             httpService = new();
             _context = context;
         }
-        
-        // GET: ProductController
-        //[AllowAnonymous]
+
         [Route("/product")]
-        public async Task<ActionResult> Index(string s)
+        public async Task<ActionResult> Index(string? name = "", Guid? categoryId = null, decimal? priceFrom = null, decimal? priceTo = null, int status = 0)
         {
             var obj = new GetListProductRequest();
             var model = new IndexObject();
-            obj.Name = string.IsNullOrEmpty(s) ? "" : s;
+
+            // Thiết lập các tham số tìm kiếm
+            obj.Name = string.IsNullOrEmpty(name) ? "" : name;
+            obj.CategoryID = categoryId;
+            obj.PriceFrom = priceFrom;
+            obj.PriceTo = priceTo;
+            obj.Status = status > 0 ? status : null;
+
             var URL = _settings.APIAddress + "api/HomePage/Process";
             var param = JsonConvert.SerializeObject(obj);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
 
             model.Data = result.Data;
+            var checkname = 0;
+            // Truyền các giá trị tìm kiếm hiện tại vào ViewBag để hiển thị trên giao diện
+            if (Guid.TryParse(name, out Guid myGuid))
+            {
+                checkname = 1;
+            }
+            ViewBag.CurrentName = checkname == 0 ? name : "";
+            ViewBag.CurrentCategoryId = categoryId;
+            ViewBag.CurrentPriceFrom = priceFrom;
+            ViewBag.CurrentPriceTo = priceTo;
+            ViewBag.CurrentStatus = status;
+
+            // Tải danh sách danh mục để sử dụng trong dropdown filter
+            var categories = await FetchCategory();
+            ViewBag.Categories = categories;
 
             return View(model);
-        }   
+        }
 
         // GET: ProductController/Details/5
-        
+
         public ActionResult Details(int id)
         {
             return View();

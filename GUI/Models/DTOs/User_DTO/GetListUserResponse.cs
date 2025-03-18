@@ -31,5 +31,7 @@ namespace GUI.Model_DTO.User_DTO
 
         public string? FullName { get; set; }
         public bool InActive { get; set; }
+        [DisplayName("Số điện thoại")]
+        public string PhoneNumber { get; set; }
     }
 }

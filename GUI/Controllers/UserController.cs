@@ -21,25 +21,28 @@ public class UserController : ControllerSharedBase
         httpService = new();
     }
     // GET: UserController
-    public async Task<ActionResult> Index(string s)
+    public async Task<ActionResult> Index(string userName = "", string phoneNumber = "", string userCode = "")
     {
         var obj = new GetListUserRequest();
         var model = new IndexObject();
-        obj.UserName = string.IsNullOrEmpty(s) ? "" : s;
-        var URL = _settings.APIAddress + "api/GetListUser/Process";
-        //foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(param))
-        //{
-        //    if (!string.IsNullOrEmpty(property.GetValue(param)?.ToString()))
-        //    {
-        //        request.AddParameter(property.Name, property.GetValue(param)?.ToString());
 
-        //    }
-        //}
+
+        obj.FullName = string.IsNullOrEmpty(userName) ? "" : userName;
+        obj.UserName = string.IsNullOrEmpty(phoneNumber) ? "" : phoneNumber;
+        obj.UserCode = string.IsNullOrEmpty(userCode) ? "" : userCode;
+
+        var URL = _settings.APIAddress + "api/GetListUser/Process";
+
         var param = JsonConvert.SerializeObject(obj);
-        var res = await httpService.PostAsync(URL, param, HttpMethod.Post,"application/json");
+        var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
         var result = JsonConvert.DeserializeObject<BaseResponse<GetListUserResponse>>(res) ?? new();
 
         model.Data = result.Data;
+
+
+        ViewBag.FullName = userName;
+        ViewBag.UserName = phoneNumber;
+        ViewBag.UserCode = userCode;
 
         return View(model);
     }
