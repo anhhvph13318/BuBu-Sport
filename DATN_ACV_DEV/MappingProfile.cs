@@ -66,7 +66,9 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.NameProduct, opt => opt.MapFrom(src => src.tbProduct.Name))
                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.tbImage.Url))
                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
-               .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.tbProduct.Price));
+               .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.tbProduct.Price))
+               .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.tbProduct.Color))
+               .ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.tbProduct.Size));
 
             
 

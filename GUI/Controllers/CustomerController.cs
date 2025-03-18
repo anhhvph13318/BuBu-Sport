@@ -23,10 +23,12 @@ namespace GUI.Controllers
             httpService = new();
             dBContext = new DBContext();
         }
-        public async Task<IActionResult> Index(int page = 1)
+
+        public async Task<IActionResult> Index(string searchQuery = "", string statusFilter = "", int? sexFilter = null, int page = 1)
         {
             int pageSize = 10;
-            var customers = await dBContext.TbCustomers
+
+            var customersQuery = dBContext.TbCustomers
                 .Select(c => new CustomerDTO
                 {
                     Id = c.Id,
@@ -36,17 +38,33 @@ namespace GUI.Controllers
                     Status = c.Status,
                     Point = c.Point,
                     Sex = c.Sex,
-                })
-                .ToListAsync();
+                });
 
-            int totalRecords = customers.Count();
-            var paginatedCustomers = customers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                customersQuery = customersQuery.Where(c => c.Name.Contains(searchQuery) || c.Phone.Contains(searchQuery));
+            }
+
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                customersQuery = customersQuery.Where(c => c.Status == statusFilter);
+            }
+
+            if (sexFilter.HasValue)
+            {
+                customersQuery = customersQuery.Where(c => c.Sex == sexFilter.Value);
+            }
+
+            int totalRecords = await customersQuery.CountAsync();
+            var paginatedCustomers = await customersQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             ViewBag.CurrentPage = page;
 
             return View(paginatedCustomers);
         }
-
     }
 }

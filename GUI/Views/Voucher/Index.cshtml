@@ -9,14 +9,41 @@
 <div class="container mt-4">
     <h2 class="text-center text-primary fw-bold">Danh Sách Voucher</h2>
     <hr />
-    <div class="mb-3 d-flex justify-content-end p-3">
-        <a class="btn btn-primary" href="vouchers/create">Thêm mới</a>
+<div class="d-flex justify-content-between align-items-center p-3">
+    <!-- Nhóm nút Thêm mới và Bộ lọc trạng thái -->
+        <button class="btn btn-success" onclick="window.location.href='http://localhost:5011/vouchers/create'">Thêm mới</button>
+        <div class="d-flex justify-content-end gap-2">
+            <select id="statusFilter" class="form-control" onchange="filterAccounts()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="2">Đang hoạt động</option>
+                <option value="1">Không hoạt động</option>
+            </select>
+
+            <select id="discountTypeFilter" class="form-control" onchange="filterAccounts()">
+                <option value="">Loại giảm giá</option>
+                <option value="0">Theo phần trăm</option>
+                <option value="1">Giảm trực tiếp</option>
+            </select>
+        </div>
+
+    <!-- Nhóm ô nhập và nút tìm kiếm -->
+    <div class="d-flex gap-2">
+        <input id="searchPhone" class="form-control border-primary" placeholder="Nhập số điện thoại..." value="" style="max-width: 200px;">
+        <button class="btn btn-primary shadow-sm px-3" onclick="searchAccount()">
+            <i class="fas fa-search"></i> Tìm kiếm
+        </button>
+        <a href="@Url.Action("Index")" class="btn btn-outline-secondary shadow-sm px-3">
+            <i class="fas fa-sync"></i> Reset
+        </a>
     </div>
+</div>
+
 
     <div class="table-responsive">
         <table class="table table-hover shadow-sm mt-3 table-striped">
             <thead class="table-dark text-center table-striped">
                 <tr>
+                    <th>STT</th>
                     <th>Mã</th>
                     <th>Tên voucher</th>
                     <th>Số tiền giảm</th>
@@ -29,14 +56,16 @@
             <tbody class="text-center align-middle">
                 @if (Model != null && Model.Any())
                 {
+                    var index = 1;
                     @foreach (var voucher in Model)
                     {
                         <tr>
+                            <td>@index</td>
                             <td>@voucher.Code</td>
                             <td>@voucher.Name</td>
                             <td>
                                 @(voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent
-                                    ? $"{voucher.Discount} %"
+                                    ? (voucher.Discount > 100 ? $"{voucher.Discount}" : $"{voucher.Discount} %")
                                     : voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
                             </td>
                             <td>@voucher.Quantity</td>
@@ -52,6 +81,7 @@
                                 </a>
                             </td>
                         </tr>
+                        index++;
                     }
                 }
                 else
@@ -64,3 +94,20 @@
         </table>
     </div>
 </div>
+<script>
+    function searchAccount() {
+        let phone = document.getElementById("searchPhone").value;
+        window.location.href = `@Url.Action("Index")?code=${phone}`;
+    }
+
+    function filterAccounts() {
+        let status = document.getElementById("statusFilter").value;
+        let unit = document.getElementById("discountTypeFilter").value;
+
+        let url = `@Url.Action("Index")?`;
+        if (status) url += `status=${status}&`;
+        if (unit) url += `unit=${unit}`;
+
+        window.location.href = url;
+    }
+</script>

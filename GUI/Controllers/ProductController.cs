@@ -92,6 +92,29 @@ namespace GUI.Controllers
                 .OrderBy(e => e.CreateDate)
                 .ToListAsync();
         }
+        private async Task<IEnumerable<ColorDTO>> FetchColor()
+        {
+            return await _context.TbColors.AsNoTracking()
+                .Select(e => new ColorDTO
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Status = (int)e.Status!,
+                    CreateDate = e.CreateDate
+                })
+                .OrderBy(e => e.CreateDate)
+                .ToListAsync();
+        }
+        private async Task<IEnumerable<SizeDTO>> FetchSize()
+        {
+            return await _context.TbSizes.AsNoTracking()
+                .Select(e => new SizeDTO
+                {
+                    Id = e.Id,
+                    SizeName = e.SizeName,
+                })
+                .ToListAsync();
+        }
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -117,29 +140,6 @@ namespace GUI.Controllers
                 return View();
             }
         }
-        private async Task<IEnumerable<ColorDTO>> FetchColor()
-        {
-            return await _context.TbColors.AsNoTracking()
-                .Select(e => new ColorDTO
-                {
-                    Id = e.Id,
-                    Name = e.Name,
-                    Status = (int)e.Status!,
-                    CreateDate = e.CreateDate
-                })
-                .OrderBy(e => e.CreateDate)
-                .ToListAsync();
-        }
-        private async Task<IEnumerable<SizeDTO>> FetchSize()
-        {
-            return await _context.TbSizes.AsNoTracking()
-                .Select(e => new SizeDTO
-                {
-                    Id = e.Id,
-                    SizeName = e.SizeName,
-                })
-                .ToListAsync();
-        }
         // GET: ProductController/Edit/5
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -159,7 +159,7 @@ namespace GUI.Controllers
             var groupdata = datadetail
                 .GroupBy(c => new {c.ColorId,c.SizeId})
                 .Select(d => new TbProductDetail
-            {
+                {
                     Id = d.First().Id,
                     Price = d.First().Price, // Giữ nguyên giá của bản ghi đầu tiên
                     Quantity = d.Sum(p => p.Quantity), // Cộng tổng số lượng

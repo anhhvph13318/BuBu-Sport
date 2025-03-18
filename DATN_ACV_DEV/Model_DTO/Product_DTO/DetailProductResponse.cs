@@ -36,6 +36,8 @@ namespace DATN_ACV_DEV.Model_DTO.Product_DTO
 
         public string? Material { get; set; }
         public List<Guid> PropertyID { get; set; }
-       
+        public List<string> ImageArray { get; set; }
+        public string CategoryName { get; set; }
+        public List<DATN_ACV_DEV.Entity.TbProduct> RelatedProducts { get; set; }
     }
 }

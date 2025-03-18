@@ -47,7 +47,7 @@ namespace DATN_ACV_DEV.Controllers
                     _response.Name = _Product.Name;
                     _response.Code = _Product.Code;
                     _response.Price = _Product.Price;
-                    _response.Quantity = _Product.Quantity;
+                    _response.Quantity = _context.TbProductDetails.Where(c=>c.ProductId == _Product.Id).ToList().Sum(c=>c.Quantity);
                     _response.Status = _Product.Status;
                     _response.Description = _Product.Description;
                     _response.PriceNet = _Product.PriceNet;
@@ -59,6 +59,9 @@ namespace DATN_ACV_DEV.Controllers
                     //_response.CategoryName = _Product.Category.Name;
                     _response.PropertyID = PropertiesName;
                     _response.CategoryId = _Product.CategoryId;
+                    _response.ImageArray = _context.TbImages.Where(c => c.ProductId == _request.ID).Select(c=>c.Url).ToList();
+                    _response.RelatedProducts = _context.TbProducts.Where(c => c.CategoryId == _Product.CategoryId && 
+                    c.Id != _Product.Id && c.IsDelete != true).ToList();
                 }
             }
             catch (Exception)

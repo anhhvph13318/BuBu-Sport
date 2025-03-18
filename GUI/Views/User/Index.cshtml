@@ -32,19 +32,23 @@
         <table class="table table-hover shadow-sm mt-3 text-center align-middle table-striped">
             <thead class="table-dark table-striped">
                 <tr>
+                    <th>STT</th>
+                    <th>Mã nhân viên</th>
                     <th>Họ và tên</th>
                     <th>Email</th>
                     <th>Số điện thoại</th>
                     <th>Chức vụ</th>
-                    <th>Mã nhân viên</th>
                     <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
+                @{var index = 1;}
                 @foreach (var item in Model.Data.listUser)
                 {
                     <tr>
+                        <td>@index</td>
+                        <td>@item.UserCode</td>
                         <td>@item.FullName</td>
                         <td>@item.Email</td>
                         <td>@item.UserName</td>
@@ -53,7 +57,6 @@
                                 @(item.Position == "1" ? "Nhân viên" : item.Position == "2" ? "Admin" : "Không xác định")
                             </span>
                         </td>
-                        <td>@item.UserCode</td>
                         <td>
                             <span class="badge @(item.InActive ? "bg-success" : "bg-danger")">
                                 @(item.InActive ? "Đang hoạt động" : "Không hoạt động")
@@ -68,6 +71,7 @@
                             </a>
                         </td>
                     </tr>
+                    index++;
                 }
             </tbody>
         </table>

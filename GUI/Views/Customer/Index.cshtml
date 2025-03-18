@@ -4,42 +4,66 @@
     ViewData["Title"] = "Danh sách khách hàng";
     int currentPage = ViewBag.CurrentPage;
     int totalPages = ViewBag.TotalPages;
+    int startIndex = (currentPage - 1) * 10 + 1;
 }
 
 <div class="container mt-4">
     <h2 class="text-center text-primary fw-bold">Danh Sách Khách Hàng</h2>
     <hr />
-    <div class="table-responsive">
-        <table class="table table-hover shadow-sm mt-3 table-striped">
-            <thead class="table-dark text-center table-striped">
+    <form id="filterForm" method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <select name="statusFilter" class="form-control filter-input">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Active" selected="@(Context.Request.Query["statusFilter"] == "Active")">Đang hoạt động</option>
+                    <option value="Inactive" selected="@(Context.Request.Query["statusFilter"] == "Inactive")">Không hoạt động</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="sexFilter" class="form-control filter-input">
+                    <option value="">Tất cả giới tính</option>
+                    <option value="1" selected="@(Context.Request.Query["sexFilter"] == "1")">Nam</option>
+                    <option value="0" selected="@(Context.Request.Query["sexFilter"] == "0")">Nữ</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 d-flex justify-content-end">
+                <input type="text" name="searchQuery" id="searchQuery" class="form-control w-50 me-2" placeholder="Nhập tên hoặc số điện thoại..." value="@Context.Request.Query["searchQuery"]" />
+                <button type="submit" class="btn btn-primary me-2">Tìm kiếm</button>
+                <a href="/customers" class="btn btn-secondary">Reset</a>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-hover shadow-sm mt-3 table-striped">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>STT</th>
+                <th>Tên</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ</th>
+                <th>Giới tính</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody class="text-center align-middle">
+            @foreach (var customer in Model.Select((c, index) => new { c, index }))
+            {
                 <tr>
-                    <th>Tên</th>
-                    <th>Số điện thoại</th>
-                    <th>Địa chỉ</th>
-                    <th>Giới tính</th>
-                    <th>Trạng thái</th>
+                    <td>@(startIndex + customer.index)</td>
+                    <td>@customer.c.Name</td>
+                    <td>@customer.c.Phone</td>
+                    <td>@customer.c.Address</td>
+                    <td>@(customer.c.Sex == 1 ? "Nam" : "Nữ")</td>
+                    <td>
+                        <span class="badge @(customer.c.Status == "Active" ? "bg-success" : "bg-danger")">
+                            @(customer.c.Status == "Active" ? "Đang hoạt động" : "Không hoạt động")
+                        </span>
+                    </td>
                 </tr>
-            </thead>
-            <tbody class="text-center align-middle">
-                @foreach (var customer in Model)
-                {
-                    <tr>
-                        <td>@customer.Name</td>
-                        <td>@customer.Phone</td>
-                        <td>@customer.Address</td>
-                        <td>
-                            @(customer.Sex == 1 ? "Nam" : "Nữ")
-                        </td>
-                        <td>
-                            <span class="badge @(customer.Status == "Active" ? "bg-success" : "bg-danger")">
-                                @(customer.Status == "Active" ? "Đang hoạt động" : "Không hoạt động")
-                            </span>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
@@ -74,3 +98,15 @@
         </ul>
     </nav>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterInputs = document.querySelectorAll(".filter-input");
+
+        filterInputs.forEach(input => {
+            input.addEventListener("change", function () {
+                document.getElementById("filterForm").submit();
+            });
+        });
+    });
+</script>

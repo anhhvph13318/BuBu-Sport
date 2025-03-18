@@ -92,11 +92,12 @@
     <table class="table table-bordered text-center table-striped">
         <thead class="table-dark text-center table-striped">
             <tr>
+                <th>STT</th>
+                <th>Mã sản phẩm</th>
                 <th>Tên sản phẩm</th>
                 <th>Số lượng</th>
                 <th>Giá bán</th>
                 <th>Danh mục</th>
-                <th>Mã sản phẩm</th>
                 <th>Trạng thái</th>
                 <th>Hình ảnh</th>
                 <th>Hành động</th>
@@ -105,14 +106,18 @@
         <tbody>
             @if (Model.Data is not null && Model.Data.LstProduct is not null && Model.Data.LstProduct.Any())
             {
+                
+                var index = 1;
+
                 @foreach (var item in Model.Data.LstProduct)
                 {
                     <tr>
+                        <td>@index</td>
+                        <td>@item.Code</td>
                         <td>@item.Name</td>
                         <td>@item.Quantity</td>
                         <td>@item.Price</td>
                         <td>@item.CategoryName</td>
-                        <td>@item.Code</td>
                         <td>
                             <span class="badge @(item.Status == "Hoạt động" ? "bg-success" : "bg-danger")">
                                 @item.Status
@@ -126,6 +131,7 @@
                             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xóa</a>
                         </td>
                     </tr>
+                    index++;
                 }
             }
             else

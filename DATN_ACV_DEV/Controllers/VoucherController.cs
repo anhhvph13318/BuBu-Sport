@@ -23,14 +23,16 @@ namespace DATN_ACV_DEV.Controllers
             [FromQuery] string? name,
             [FromQuery] DateTime? startDate,
             [FromQuery] DateTime? endDate,
-            [FromQuery] VoucherUnit? unit)
+            [FromQuery] VoucherUnit? unit,
+            [FromQuery] Status? status)
         {
             var vouchers = await _context.TbVouchers.AsNoTracking()
                 .Where(e => (string.IsNullOrEmpty(code) || e.Code.StartsWith(code.ToUpper()))
                     && (string.IsNullOrEmpty(name) || e.Name.StartsWith(name))
                     && (!startDate.HasValue || e.StartDate >= startDate.Value)
                     && (!endDate.HasValue || e.EndDate <= endDate.Value)
-                    && (!unit.HasValue || e.Unit == unit.Value))
+                    && (!unit.HasValue || e.Unit == unit.Value)
+                    && (!status.HasValue || e.Status == status.Value))
                 .Where(e => e.Quantity > 0)
                 .Select(e => new VoucherDTO
                 {

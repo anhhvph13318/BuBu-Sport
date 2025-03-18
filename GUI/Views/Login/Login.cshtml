@@ -18,8 +18,8 @@
                         @* <h2 class="form__title text-center branding-">SMART HOME</h2> *@
                         @* <h3 class="form__title branding-name">AUTOMATE YOUR HOME, SIMPLIFY YOUR LIFE</h3> *@
                         <h2 class="form__title text-center">ĐĂNG NHẬP</h2>
-                        <input type="text" name="UserName" placeholder="Userame" minlength="1s" maxlength="50" required class="input form-control form-control-lg"/>
-                        <input type="password" name="Password" placeholder="Password" minlength="1" maxlength="20" required class="input form-control form-control-lg"/>
+                        <input type="text" name="UserName" placeholder="Số điện thoại" minlength="1s" maxlength="50" required class="input form-control form-control-lg"/>
+                        <input type="password" name="Password" placeholder="Mật khẩu" minlength="1" maxlength="20" required class="input form-control form-control-lg"/>
                         <a data-bs-toggle="modal" data-bs-target="#forgotpassword" class=" btn link text-right">Bạn quên mật khẩu?</a>
                         <button class="btn-authenticator" type="submit">Đăng nhập</button>
                     </div>
@@ -32,12 +32,18 @@
             <div class="former" >
                 <form asp-action="Register" enctype="multipart/form-data">
                     <div class="w-full">
-                        @* <h2 class="form__title text-center branding-">SMART HOME</h2> *@
-                        @* <h3 class="form__title branding-name">AUTOMATE YOUR HOME, SIMPLIFY YOUR LIFE</h3> *@
-                        <h2 class="form__title text-center">ĐĂNG KÝ</h2>
-                        <input type="text" name="PhoneNumber" placeholder="Username" minlength="1s" maxlength="50" required class="input form-control form-control-lg" />
-                        <input type="password" name="Password" placeholder="Password" minlength="1" maxlength="20" required class="input form-control form-control-lg" />
-                        <input type="text" name="Email" placeholder="Email" minlength="1" maxlength="20" required class="input form-control form-control-lg" />
+                        @* <h2 class="formtitle text-center branding-">SMART HOME</h2> @
+                        @ <h3 class="formtitle branding-name">AUTOMATE YOUR HOME, SIMPLIFY YOUR LIFE</h3> *@
+                        <h2 class="form_title text-center">ĐĂNG KÝ</h2>
+                        <input type="text" name="PhoneNumber" placeholder="Số điện thoại"
+                               pattern="^0[3-9][0-9]{8}$"
+                               title="Số điện thoại phải bắt đầu bằng 0, số thứ 2 trong khoảng từ 3->9 và có đúng 10 chữ số."
+                               required class="input form-control form-control-lg" />
+                        <input type="password" name="Password" placeholder="Mật khẩu" minlength="1" maxlength="20" required class="input form-control form-control-lg" />
+                        <input type="email" name="Email" placeholder="Email"
+                               pattern="^[a-zA-Z0-9.%+-]+@@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
+                               title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@gmail.com)."
+                               required class="input form-control form-control-lg" />
                         <a data-bs-toggle="modal" data-bs-target="#forgotpassword" class=" btn link text-right">Bạn quên mật khẩu?</a>
                         <button class="btn-authenticator" type="submit">Đăng ký</button>
                     </div>

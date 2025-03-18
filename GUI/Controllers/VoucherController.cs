@@ -22,11 +22,12 @@ public class VoucherController : Controller
         [FromQuery] string name,
         [FromQuery] DateTime? startDate,
         [FromQuery] DateTime? endDate,
-        [FromQuery] VoucherUnit? unit)
+        [FromQuery] VoucherUnit? unit,
+        [FromQuery] int? status)
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
-        var rawResponse = await httpClient.GetAsync($"/api/vouchers?code={code}&name={name}&startDate={startDate}&endDate={endDate}&unit={unit}");
+        var rawResponse = await httpClient.GetAsync($"/api/vouchers?code={code}&name={name}&startDate={startDate}&endDate={endDate}&unit={unit}&status={status}");
             
         if(rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
         {

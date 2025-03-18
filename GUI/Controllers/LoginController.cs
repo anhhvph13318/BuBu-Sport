@@ -69,7 +69,7 @@ namespace GUI.Controllers
 
                 return result.Data != null && result.Data.Role == 0
                     ? RedirectToAction("Store", "Storefront")
-                    : RedirectToAction("Create", "Order");
+                    : RedirectToAction("", "Product");
             }
             else
             {

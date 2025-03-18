@@ -61,13 +61,38 @@
         <div class="form-group mb-3">
             <label asp-for="SizeName" class="control-label">Size</label>
             <select id="categorySelect" asp-for="SizeName" class="form-select">
-                <option selected value="">Chọn Size</option>
+                <option selected value="">Chọn size</option>
                 @foreach (var item in ViewBag.Sizes)
                 {
                     <option value="@item.Id">@item.SizeName</option>
                 }
+                <option value="add_new">➕ Thêm size</option>
             </select>
-            <span asp-validation-for="SizeName" class="text-danger"></span>
+            <span asp-validation-for="Color" class="text-danger"></span>
+        </div>
+
+        <!-- Input ẩn chứa ProductID -->
+        <input type="hidden" id="productId" asp-for="ProductID" />
+
+        <!-- Modal thêm size -->
+        <div class="modal fade" id="addColorModal" tabindex="-1" aria-labelledby="addColorLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addColorLabel">Thêm size</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="newColorName" class="form-label">Tên size</label>
+                        <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên size">
+                        <input type="hidden" id="modalProductId" /> <!-- Input ẩn trong modal -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" id="saveNewColor">Lưu</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Lưu biến thể</button>
     </form>
@@ -124,6 +149,7 @@
             alert(error.message); // Hiển thị lỗi nếu có
         }
     });
+
     document.getElementById("addColorButton").addEventListener("click", async function () {
         const productId = document.getElementById("ProductID").value; // Lấy ProductID từ input hidden
         const colorName = document.getElementById("colorInput").value; // Lấy màu từ input (nếu có)

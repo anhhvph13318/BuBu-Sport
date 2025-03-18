@@ -240,7 +240,7 @@
 
 	$('.addCart').on('click', function () {
 		let customerId = getCookie("user-id");
-		$.post("/AddCart", { prId: $(this).attr('data-prId'), userId: customerId }, function (data) {
+		$.post("/AddCart", { prId: $(this).attr('data-prId'), userId: customerId, quantity: $(this).attr('data-quantity') }, function (data) {
             if (!customerId) {
 				setCookie("user-id", data.userId, 90)
             }
@@ -250,7 +250,7 @@
 
 	$('.buyNow').on('click', function () {
 		let customerId = getCookie("user-id");
-		$.post("/BuyNow", { prId: $(this).attr('data-prId'), userId: customerId }, function (data) {
+		$.post("/BuyNow", { prId: $(this).attr('data-prId'), userId: customerId, quantity: $(this).attr('data-quantity') }, function (data) {
 			if (!customerId) {
 				setCookie("user-id", data.userId, 90)
 			}
@@ -266,68 +266,68 @@
 		});
 	});
 
-	$('#order-submit').on('click', function (e) {
-		e.preventDefault();
-		let name = $('#order-name').val();
-		let phone = $('#order-phone').val();
-		let address = $('#order-address').val();
-		let district = $('#order-district').val();
-		let city = $('#order-city').val();
-		let ids = [];
-		let items = $('.order-item');
-		$.each(items, function (i, obj) {
-			let id = $(obj).attr('data-itemId');
-			ids.push(id);
-		});
+	//$('#order-submit').on('click', function (e) {
+	//	e.preventDefault();
+	//	let name = $('#order-name').val();
+	//	let phone = $('#order-phone').val();
+	//	let address = $('#order-address').val();
+	//	let district = $('#order-district').val();
+	//	let city = $('#order-city').val();
+	//	let ids = [];
+	//	let items = $('.order-item');
+	//	$.each(items, function (i, obj) {
+	//		let id = $(obj).attr('data-itemId');
+	//		ids.push(id);
+	//	});
 		
-		let COD = $('#payment-1').is(":checked");
+	//	let COD = $('#payment-1').is(":checked");
 
-        if (!name) {
-			alert("Tên không được để trống");
-			return false;
-		}
+ //       if (!name) {
+	//		alert("Tên không được để trống");
+	//		return false;
+	//	}
 
-		if (!phone) {
-			alert("Số điện thoại không được để trống");
-			return false;
-		}
+	//	if (!phone) {
+	//		alert("Số điện thoại không được để trống");
+	//		return false;
+	//	}
 
-        if (!ValidatePhone(phone)) {
-			alert("Số điện thoại không hợp lệ");
-			return false;
-        }
+ //       if (!ValidatePhone(phone)) {
+	//		alert("Số điện thoại không hợp lệ");
+	//		return false;
+ //       }
 
-		if (!address || !district || !city) {
-			alert("Địa chỉ không được để trống");
-			return false;
-        }
+	//	if (!address || !district || !city) {
+	//		alert("Địa chỉ không được để trống");
+	//		return false;
+ //       }
 
-		if (ids.length) {
-			$.post("/Buy", {
-				name: name,
-				phone: phone,
-				address: address,
-				district: district,
-				city: city,
-				ids: ids,
-				getatstore: false,
-				isVNP: !COD
-			}, function (data) {
-				if (data.success) {
-					if (data.redirect) {
-						window.location.href = data.url;
-					} else {
-						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
-					}
-				} else {
-					alert("Đã có lỗi xảy ra");
-				}
-			});
-		} else {
-            alert("Đã có lỗi xảy ra");
-			return false;
-		}
-	});
+	//	if (ids.length) {
+	//		$.post("/Buy", {
+	//			name: name,
+	//			phone: phone,
+	//			address: address,
+	//			district: district,
+	//			city: city,
+	//			ids: ids,
+	//			getatstore: false,
+	//			isVNP: !COD
+	//		}, function (data) {
+	//			if (data.success) {
+	//				if (data.redirect) {
+	//					window.location.href = data.url;
+	//				} else {
+	//					window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
+	//				}
+	//			} else {
+	//				alert("Đã có lỗi xảy ra");
+	//			}
+	//		});
+	//	} else {
+ //           alert("Đã có lỗi xảy ra");
+	//		return false;
+	//	}
+	//}); -CMT
 
 	let changeQuant;
 	$('.input-quant').on('change', function () {
@@ -532,22 +532,22 @@
 		$('.cart-total').text(convertVND(total));
 	}
 
-	//$('#cart-submit').on('click', function (e) {
-	//	e.preventDefault();
-	//	let items = $('.cart-item');
-	//	let buyingItems = [];
-	//	$.each(items, function (i, obj) {
-	//		if ($(obj).find('.chk-select-item').is(':checked')) {
-	//			let id = $(obj).attr('data-itemId');
-	//			buyingItems.push(id);
-	//		}
-	//	});
-	//	$.post("/ConfirmCart", { ids : buyingItems}, (data) => {
- //           if (data.success) {
-	//			location.href = "/Checkout";
- //           }
-	//	});
-	//}); -CMT
+	$('#cart-submit').on('click', function (e) {
+		e.preventDefault();
+		let items = $('.cart-item');
+		let buyingItems = [];
+		$.each(items, function (i, obj) {
+			if ($(obj).find('.chk-select-item').is(':checked')) {
+				let id = $(obj).attr('data-itemId');
+				buyingItems.push(id);
+			}
+		});
+		$.post("/ConfirmCart", { ids : buyingItems}, (data) => {
+            if (data.success) {
+				location.href = "/Checkout";
+            }
+		});
+	}); 
 
 	function setCookie(cname, cvalue, exdays) {
 		const d = new Date();

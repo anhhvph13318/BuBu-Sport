@@ -38,5 +38,8 @@ namespace GUI.Models.DTOs.Product_DTO
         [JsonIgnore] // Ngăn việc serialize thuộc tính này
         public List<TbProductDetail> DetailData { get; set; }
         public List<TestDame> DetailDataFinal { get; set; }
+        public List<string> ImageArray { get; set; }
+        public string CategoryName { get; set; }
+        public List<ProductDTO> RelatedProducts { get; set; }
     }
 }

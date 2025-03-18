@@ -257,13 +257,16 @@
                                         <div class="product-btns">
                                             @* <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
                                     <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button> *@
-                                            <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">xem chi tiết</span></button>
+                                            <button class="quick-view" onclick="redirectToDetail('@item.Id')">
+                                                <i class="fa fa-eye"></i>
+                                                <span class="tooltipp">xem chi tiết</span>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="add-to-cart">
                                         <button class="add-to-cart-btn addCart" data-prId="@item.Id"><i class="fa fa-shopping-cart"></i> thêm vào giỏ</button>
                                         <br />
-                                        <button disabled class="add-to-cart-btn buyNow" data-prId="@item.Id" style="margin-top:5px;"><i class="fa fa-shopping-cart"></i> mua ngay</button>
+                                        <button class="add-to-cart-btn buyNow" data-prId="@item.Id" style="margin-top:5px;"><i class="fa fa-shopping-cart"></i> mua ngay</button>
                                     </div>
                                 </div>
                             </div>
@@ -302,6 +305,11 @@
         <!-- /container -->
     </div>
     <!-- /SECTION -->
+    <script>
+        function redirectToDetail(productId) {
+            window.location.href = `/productDetail?id=${productId}`;
+        }
+    </script>
 }
 else
 {

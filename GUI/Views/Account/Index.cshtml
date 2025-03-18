@@ -41,6 +41,7 @@
         <table class="table table-hover shadow-sm mt-3 table-striped">
             <thead class="table-dark text-center table-striped">
                 <tr>
+                    <th>STT</th>
                     <th>Mã tài khoản</th>
                     <th>Email</th>
                     <th>Số điện thoại</th>
@@ -49,9 +50,11 @@
                 </tr>
             </thead>
             <tbody class="text-center align-middle">
+                @{var index = 1;}
                 @foreach (var account in Model)
                 {
                     <tr class="account-row" data-role="@account.Role" data-status="@((account.Status == "True" || account.Status == "Active") ? "Active" : "Inactive")">
+                        <td>@index</td>
                         <td>@account.AccountCode</td>
                         <td>@account.Email</td>
                         <td>@account.PhoneNumber</td>
@@ -62,7 +65,9 @@
                             </span>
                         </td>
                     </tr>
+                    index++;
                 }
+
             </tbody>
         </table>
     </div>

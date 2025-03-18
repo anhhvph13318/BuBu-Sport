@@ -18,7 +18,10 @@
                     </div>
                     <div class="order-summary">
                         <div class="order-col">
-                            <div><strong>Sản phẩm</strong></div>
+                            <div><strong>Ảnh sản phẩm</strong></div>
+@*                             <div><strong>Sản phẩm</strong></div>
+                            <div><strong>Màu Sắc</strong></div>
+                            <div><strong>Size</strong></div> *@
                             <div><strong>Giá</strong></div>
                         </div>
                         <div class="order-products">
@@ -26,7 +29,10 @@
                             {
                                 <div class="order-col cart-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
                                     <div class="item">
-                                        <input type="checkbox" class="chk-select-item" id="check-@item.CartDetailID" />
+                                        <input type="checkbox" class="chk-select-item" style="margin-right: 10px;" id="check-@item.CartDetailID" />
+                                        <div>
+                                            <img src="@item.Image" alt="Ảnh sản phẩm" style="width: 50px; height: 50px; object-fit: cover;">
+                                        </div>
                                         <span>@item.NameProduct</span>
                                         <span class="remove-item" data-itemId="@item.CartDetailID" style="margin-top: 9px;align-content: center;">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -35,10 +41,23 @@
                                             </svg>
                                         </span>
                                     </div>
+                                    <!-- Cột màu sắc -->
+                                    <div>@item.Color</div>
+
+                                    <!-- Cột size -->
+                                    <div>@item.Size</div>
+
+                                    <!-- Cột số lượng -->
                                     <div>
-                                        <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a><input class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" /><a class="change-quant cart-quant-up" data-itemId="@item.CartDetailID">+</a>
+                                        <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a>
+                                        <input class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" />
+                                        <a class="change-quant cart-quant-up" data-itemId="@item.CartDetailID">+</a>
                                     </div>
-                                    <div class="sub-total" id="sub-@item.CartDetailID" data-value="@(item.Quantity * item.Price)">@((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</div>
+
+                                    <!-- Cột tổng giá -->
+                                    <div class="sub-total" id="sub-@item.CartDetailID" data-value="@(item.Quantity * item.Price)">
+                                        @((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                    </div>
                                 </div>
                             }
                         </div>

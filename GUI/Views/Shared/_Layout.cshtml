@@ -71,12 +71,56 @@
         a.nav-link {
             width: 200px
         }
+
+        .sidebar {
+            width: 250px;
+            transition: width 0.3s ease-in-out;
+            overflow: hidden;
+        }
+
+            .sidebar.collapsed {
+                width: 60px;
+            }
+
+            .sidebar .logo {
+                width: 100px;
+                transition: width 0.3s ease-in-out;
+            }
+
+            .sidebar.collapsed .logo {
+                width: 40px; /* Thu nhỏ logo */
+            }
+
+            .sidebar.collapsed .sidebar-header a {
+                display: flex;
+                justify-content: center;
+            }
+
+            .sidebar.collapsed .sidebar-header h5 {
+                display: none; /* Ẩn chữ khi thu nhỏ */
+            }
+
+            .sidebar.collapsed .nav-link {
+                text-align: center;
+                padding: 0.75rem 0;
+            }
+
+                .sidebar.collapsed .nav-link i {
+                    font-size: 1.4rem;
+                }
+
+                .sidebar.collapsed .nav-link span {
+                    display: none; /* Ẩn chữ trong menu */
+                }
     </style>
 </head>
 <body>
 <div class="d-flex">
         <div class="sidebar bg-light border-end">
             <div class="sidebar-header d-flex align-items-center p-3">
+                <button id="toggleSidebar" class="btn btn-outline-secondary btn-sm me-2">
+                    <i class="bi bi-list"></i>
+                </button>
                 <a href="/store">
                     <img src="~/Image/LogoBuBu.png" alt="BuBu Logo" class="logo" />
                 </a>
@@ -86,13 +130,13 @@
                     <i class="bi bi-people-fill"> Quản lý khách hàng </i>                  
                 </a> *@
                 <a class="nav-link" href="/product">
-                    <i class="bi bi-bag-fill"> Quản lý sản phẩm </i>
+                    <i class="bi bi-bag-fill"></i> <span>Quản lý sản phẩm</span>
                 </a>
                 <a class="nav-link" href="/user">
-                    <i class="bi bi-person-fill"> Quản lý nhân viên </i>
+                    <i class="bi bi-person-fill"></i> <span>Quản lý nhân viên</span>
                 </a>
                 <a class="nav-link" href="/customers">
-                    <i class="bi bi-people-fill"> Quản lý khách hàng </i>
+                    <i class="bi bi-people-fill"></i> <span>Quản lý khách hàng</span>
                 </a>
 @*                 <a class="nav-link" href="/orders">
                     <i class="bi bi-cart-fill"> Quản lý hoá đơn </i>
@@ -101,13 +145,13 @@
                     <i class="bi bi-cart-fill"> Bán hàng </i>
                 </a> *@
                 <a class="nav-link" href="/vouchers">
-                    <i class="bi bi-wallet"> Quản lý mã giảm giá </i>
+                    <i class="bi bi-wallet"></i> <span>Quản lý mã giảm giá</span>
                 </a>
                 <a class="nav-link" href="/categories">
-                    <i class="bi bi-menu-button-wide"> Quản lý danh mục </i>
+                    <i class="bi bi-menu-button-wide"></i> <span>Quản lý danh mục</span>
                 </a>
                 <a class="nav-link" href="/accounts">
-                    <i class="bi bi-person-bounding-box"> Quản lý tài khoản </i>
+                    <i class="bi bi-person-bounding-box"></i> <span>Quản lý tài khoản</span>
                 </a>
 @*                 <a class="nav-link" href="/signin">
                     <i class="bi bi-door-open-fill"> Đăng xuất </i>
@@ -128,4 +172,9 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+<script>
+    document.getElementById("toggleSidebar").addEventListener("click", function () {
+        document.querySelector(".sidebar").classList.toggle("collapsed");
+    });
+</script>
 </html>
