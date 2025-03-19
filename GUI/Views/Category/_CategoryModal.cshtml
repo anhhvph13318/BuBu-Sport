@@ -1,38 +1,55 @@
 ﻿@using GUI.Models.DTOs
 @model CategoryDTO
 
-<div class="modal-header">
-    <h1 class="modal-title fs-5" id="categoryModalLabel">@(Model.Id != Guid.Empty ? "Cập nhật" : "Thêm mới")</h1>
+<div class="modal-header bg-light">
+    <h5 class="modal-title" id="categoryModalLabel">
+        <i class="bi @(Model.Id != Guid.Empty ? "bi-pencil-square" : "bi-plus-circle") me-2"></i>
+        @(Model.Id != Guid.Empty ? "Cập nhật danh mục" : "Thêm mới danh mục")
+    </h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto">
-    <div class="row">
-        <div class="col-6">
-            <div>
-                <label class="form-label">Tên</label>
-                <input id="categoryName" value="@Model.Name" class="form-control" />
-                <span class="text-danger" id="validate-message" style="display: none">Chưa nhập tên</span>
+<div class="modal-body">
+    <div class="row g-3">
+        <div class="col-12">
+            <label class="form-label">Tên danh mục</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                <input id="categoryName" value="@Model.Name" class="form-control" placeholder="Nhập tên danh mục" />
+            </div>
+            <div class="text-danger mt-1" id="validate-message" style="display: none">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                Vui lòng nhập tên danh mục
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-12">
             <div class="form-check">
-                <label class="form-label">&nbsp;</label>
-                <div>
-                    <input id="categoryStatus" type="checkbox" class="form-check-input"
-                           checked="@Model.StatusFlag" />
-                    <label class="form-check-label ps-1">Hoạt động</label>
-                </div>
+                <input id="categoryStatus" type="checkbox" class="form-check-input"
+                       checked="@Model.StatusFlag" />
+                <label class="form-check-label ps-1">
+                    <i class="bi bi-toggle-on me-1"></i>
+                    Hoạt động
+                </label>
             </div>
         </div>
     </div>
 </div>
-<div class="modal-footer">
-    @if(Model.Id == Guid.Empty)
+<div class="modal-footer bg-light">
+    @if (Model.Id == Guid.Empty)
     {
-        <button type="button" class="btn btn-primary" onclick="createCategory()">Thêm mới</button>
-    } else
-    {
-        <button type="button" class="btn btn-primary" onclick="updateCategory('@Model.Id')">Cập nhật</button>
+        <button type="button" class="btn btn-primary" onclick="createCategory()">
+            <i class="bi bi-save me-1"></i>
+            Lưu
+        </button>
     }
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+    else
+    {
+        <button type="button" class="btn btn-primary" onclick="updateCategory('@Model.Id')">
+            <i class="bi bi-save me-1"></i>
+            Cập nhật
+        </button>
+    }
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle me-1"></i>
+        Hủy bỏ
+    </button>
 </div>
