@@ -1,79 +1,155 @@
 ﻿@model GUI.Models.DTOs.User_DTO.Views.IndexObject
 
 @{
-    ViewData["Title"] = "Danh sách nhân viên";
+    ViewData["Title"] = "Quản Lý Nhân Viên";
 }
 
-<div class="container mt-4">
-    <h2 class="text-center text-primary fw-bold">Danh Sách Nhân Viên</h2>
-    <hr />
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <a asp-action="Create" class="btn btn-success">Tạo mới</a>
-        <form asp-controller="User" asp-action="Index" method="get" class="d-flex" style="max-width: 700px; width: 100%;">
-            <div class="d-flex me-2" style="flex: 3;">
-                <input type="text" name="userName" class="form-control me-2" placeholder="Tên" value="@ViewBag.FullName" />
-                <input type="text" name="phoneNumber" class="form-control me-2" placeholder="SĐT" value="@ViewBag.UserName" />
-                <input type="text" name="userCode" class="form-control" placeholder="Mã NV" value="@ViewBag.UserCode" />
-            </div>
-            <div class="d-flex" style="flex: 1;">
-                <a href="@Url.Action("Index")" class="btn btn-secondary me-2">
-                    <i class="fas fa-undo"></i> Xóa
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search"></i> Tìm
-                </button>
-            </div>
-        </form>
+<div class="container-fluid px-4 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-person-fill me-2"></i>Danh Sách Nhân Viên
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>Tạo mới
+        </a>
     </div>
 
+    <!-- Card tìm kiếm -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-search me-1"></i>
+            Tìm kiếm nhân viên
+        </div>
+        <div class="card-body">
+            <form asp-controller="User" asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="userName" class="form-label">Họ và tên</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="userName" name="userName" value="@ViewBag.FullName" placeholder="Nhập họ tên nhân viên">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="phoneNumber" class="form-label">Số điện thoại</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="@ViewBag.UserName" placeholder="Nhập số điện thoại">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="userCode" class="form-label">Mã nhân viên</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-upc"></i></span>
+                        <input type="text" class="form-control" id="userCode" name="userCode" value="@ViewBag.UserCode" placeholder="Nhập mã nhân viên">
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search me-1"></i> Tìm kiếm
+                    </button>
+                    <a href="@Url.Action("Index", "User")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 
-
-    <div class="table-responsive">
-        <table class="table table-hover shadow-sm mt-3 text-center align-middle table-striped">
-            <thead class="table-dark table-striped">
-                <tr>
-                    <th>STT</th>
-                    <th>Mã nhân viên</th>
-                    <th>Họ và tên</th>
-                    <th>Email</th>
-                    <th>Số điện thoại</th>
-                    <th>Chức vụ</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @{var index = 1;}
-                @foreach (var item in Model.Data.listUser)
-                {
+    <!-- Danh sách nhân viên -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-table me-1"></i>
+            Kết quả tìm kiếm
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-primary">
                     <tr>
-                        <td>@index</td>
-                        <td>@item.UserCode</td>
-                        <td>@item.FullName</td>
-                        <td>@item.Email</td>
-                        <td>@item.UserName</td>
-                        <td>
-                            <span class="badge @(item.Position == "1" ? "bg-info" : item.Position == "2" ? "bg-warning" : "bg-secondary")">
-                                @(item.Position == "1" ? "Nhân viên" : item.Position == "2" ? "Admin" : "Không xác định")
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge @(item.InActive ? "bg-success" : "bg-danger")">
-                                @(item.InActive ? "Đang hoạt động" : "Không hoạt động")
-                            </span>
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i> Xóa
-                            </a>
-                        </td>
+                        <th class="text-center" style="width: 50px;">STT</th>
+                        <th>Mã NV</th>
+                        <th>Họ và tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th class="text-center">Chức vụ</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center" style="width: 150px;">Hành động</th>
                     </tr>
-                    index++;
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @if (Model.Data != null && Model.Data.listUser != null && Model.Data.listUser.Any())
+                    {
+                        var index = 1;
+                        @foreach (var item in Model.Data.listUser)
+                        {
+                            <tr>
+                                <td class="text-center">@index</td>
+                                <td><span class="badge bg-secondary">@item.UserCode</span></td>
+                                <td>@item.FullName</td>
+                                <td>@item.Email</td>
+                                <td>@item.UserName</td>
+                                <td class="text-center">
+                                    <span class="badge @(item.Position == "1" ? "bg-info" : item.Position == "2" ? "bg-warning" : "bg-secondary")">
+                                        <i class="bi @(item.Position == "1" ? "bi-person" : item.Position == "2" ? "bi-shield" : "bi-question-circle") me-1"></i>
+                                        @(item.Position == "1" ? "Nhân viên" : item.Position == "2" ? "Admin" : "Không xác định")
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge @(item.InActive ? "bg-success" : "bg-danger")">
+                                        <i class="bi @(item.InActive ? "bi-check-circle" : "bi-x-circle") me-1"></i>
+                                        @(item.InActive ? "Đang hoạt động" : "Không hoạt động")
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <div class="text-secondary">
+                                    <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
+                                    <p class="mt-2">Không tìm thấy nhân viên nào.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <span class="text-muted">Hiển thị @(Model.Data?.listUser?.Count() ?? 0) nhân viên</span>
+            </div>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Hiệu ứng hover cho các hàng trong bảng
+            $('table tbody tr').hover(
+                function () {
+                    $(this).addClass('table-active');
+                },
+                function () {
+                    $(this).removeClass('table-active');
+                }
+            );
+        });
+    </script>
+}

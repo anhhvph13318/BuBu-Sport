@@ -7,107 +7,182 @@
     string phoneNumber = ViewBag.PhoneNumber;
 }
 
-<div class="container mt-4">
-    <h2 class="text-center text-primary fw-bold">Quản Lý Tài Khoản</h2>
-    <hr />
-    <!-- Thanh tìm kiếm -->
-    <div class="row mb-3">
-        <div class="col-md-3">
-            <select id="roleFilter" class="form-control" onchange="filterAccounts()">
-                <option value="">Tất cả vai trò</option>
-                <option value="Khách hàng">Khách hàng</option>
-                <option value="Nhân viên">Nhân viên</option>
-            </select>
+<div class="container-fluid px-4 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-people-fill me-2"></i>Danh Sách Tài Khoản
+        </h2>
+        <a href="#" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>Tạo mới
+        </a>
+    </div>
+
+    <!-- Card tìm kiếm -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-search me-1"></i>
+            Tìm kiếm tài khoản
         </div>
-        <div class="col-md-3">
-            <select id="statusFilter" class="form-control" onchange="filterAccounts()">
-                <option value="">Tất cả trạng thái</option>
-                <option value="Active">Đang hoạt động</option>
-                <option value="Inactive">Không hoạt động</option>
-            </select>
-        </div>
-        <div class="col-md-6 d-flex gap-2 justify-content-end">
-            <input id="searchPhone" class="form-control border-primary" placeholder="Nhập số điện thoại..." value="@phoneNumber" style="max-width: 250px;">
-            <button class="btn btn-primary shadow-sm px-3" onclick="searchAccount()">
-                <i class="fas fa-search"></i> Tìm kiếm
-            </button>
-            <a href="@Url.Action("Index")" class="btn btn-outline-secondary shadow-sm px-3">
-                <i class="fas fa-sync"></i> Reset
-            </a>
+        <div class="card-body">
+            <form class="row g-3">
+                <div class="col-md-4">
+                    <label for="searchPhone" class="form-label">Số điện thoại</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <input id="searchPhone" type="text" class="form-control" placeholder="Nhập số điện thoại..." value="@phoneNumber">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="roleFilter" class="form-label">Vai trò</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                        <select id="roleFilter" class="form-select">
+                            <option value="">Tất cả vai trò</option>
+                            <option value="Khách hàng">Khách hàng</option>
+                            <option value="Nhân viên">Nhân viên</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="statusFilter" class="form-label">Trạng thái</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                        <select id="statusFilter" class="form-select">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="Active">Đang hoạt động</option>
+                            <option value="Inactive">Không hoạt động</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="button" class="btn btn-primary me-2" onclick="searchAccount()">
+                        <i class="bi bi-search me-1"></i> Tìm kiếm
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover shadow-sm mt-3 table-striped">
-            <thead class="table-dark text-center table-striped">
-                <tr>
-                    <th>STT</th>
-                    <th>Mã tài khoản</th>
-                    <th>Email</th>
-                    <th>Số điện thoại</th>
-                    <th>Vai trò</th>
-                    <th>Trạng thái</th>
-                </tr>
-            </thead>
-            <tbody class="text-center align-middle">
-                @{var index = 1;}
-                @foreach (var account in Model)
-                {
-                    <tr class="account-row" data-role="@account.Role" data-status="@((account.Status == "True" || account.Status == "Active") ? "Active" : "Inactive")">
-                        <td>@index</td>
-                        <td>@account.AccountCode</td>
-                        <td>@account.Email</td>
-                        <td>@account.PhoneNumber</td>
-                        <td>@account.Role</td>
-                        <td>
-                            <span class="badge @((account.Status == "True" || account.Status == "Active") ? "bg-success" : "bg-danger")">
-                                @((account.Status == "True" || account.Status == "Active") ? "Đang hoạt động" : "Không hoạt động")
-                            </span>
-                        </td>
+    <!-- Danh sách tài khoản -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-table me-1"></i>
+            Kết quả tìm kiếm
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-primary">
+                    <tr>
+                        <th class="text-center" style="width: 50px;">STT</th>
+                        <th>Mã tài khoản</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Vai trò</th>
+                        <th class="text-center">Trạng thái</th>
                     </tr>
-                    index++;
-                }
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        var index = 1;
+                        @foreach (var account in Model)
+                        {
+                            <tr class="account-row" data-role="@account.Role" data-status="@((account.Status == "True" || account.Status == "Active") ? "Active" : "Inactive")">
+                                <td class="text-center">@index</td>
+                                <td><span class="badge bg-secondary">@account.AccountCode</span></td>
+                                <td>@account.Email</td>
+                                <td>@account.PhoneNumber</td>
+                                <td>
+                                    <span class="badge bg-info">@account.Role</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge @((account.Status == "True" || account.Status == "Active") ? "bg-success" : "bg-danger")">
+                                        <i class="bi @((account.Status == "True" || account.Status == "Active") ? "bi-check-circle" : "bi-x-circle") me-1"></i>
+                                        @((account.Status == "True" || account.Status == "Active") ? "Đang hoạt động" : "Không hoạt động")
+                                    </span>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="text-secondary">
+                                    <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
+                                    <p class="mt-2">Không tìm thấy tài khoản nào.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted">Hiển thị @(Model?.Count() ?? 0) tài khoản</span>
+                </div>
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span>&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" href="?page=@(currentPage - 1)" aria-label="Previous">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
 
-            </tbody>
-        </table>
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="?page=@i">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <a class="page-link" href="?page=@(currentPage + 1)" aria-label="Next">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <a class="page-link" href="?page=@totalPages" aria-label="Last">
+                                <span>&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
-
-    <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                <a class="page-link" href="?page=1" aria-label="First">
-                    <span>&laquo;&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                <a class="page-link" href="?page=@(currentPage - 1)" aria-label="Previous">
-                    <span>&laquo;</span>
-                </a>
-            </li>
-
-            @for (int i = 1; i <= totalPages; i++)
-            {
-                <li class="page-item @(i == currentPage ? "active" : "")">
-                    <a class="page-link" href="?page=@i">@i</a>
-                </li>
-            }
-
-            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                <a class="page-link" href="?page=@(currentPage + 1)" aria-label="Next">
-                    <span>&raquo;</span>
-                </a>
-            </li>
-            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                <a class="page-link" href="?page=@totalPages" aria-label="Last">
-                    <span>&raquo;&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
 </div>
 
 @section scripts {
     <script>
+        $(document).ready(function () {
+            // Hiệu ứng hover cho các hàng trong bảng
+            $('table tbody tr').hover(
+                function () {
+                    $(this).addClass('table-active');
+                },
+                function () {
+                    $(this).removeClass('table-active');
+                }
+            );
+
+            // Áp dụng filter khi thay đổi dropdown
+            $("#roleFilter, #statusFilter").change(function() {
+                filterAccounts();
+            });
+        });
+
         function searchAccount() {
             let phone = document.getElementById("searchPhone").value;
             window.location.href = `@Url.Action("Index")?phoneNumber=${phone}`;
