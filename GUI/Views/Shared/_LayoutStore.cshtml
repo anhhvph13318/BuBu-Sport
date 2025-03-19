@@ -32,6 +32,150 @@
 	<!-- Custom stlylesheet -->
 	<link type="text/css" rel="stylesheet" href="~/storefront/css/style.css" asp-append-version="true"/>
 </head>
+<style>
+	/* CSS cho dropdown ngôn ngữ */
+	.header-links .dropdown {
+		position: relative;
+		display: inline-block;
+	}
+
+	.header-links .dropdown-toggle {
+		color: #FFF;
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+		padding: 10px;
+		transition: all 0.3s;
+	}
+
+		.header-links .dropdown-toggle:hover {
+			color: #D10024;
+		}
+
+		.header-links .dropdown-toggle .fa {
+			margin-right: 5px;
+		}
+
+	.header-links .dropdown-menu {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		background-color: #1E1F29;
+		min-width: 160px;
+		box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+		z-index: 1000;
+		display: none;
+		border-radius: 4px;
+		padding: 5px 0;
+		margin-top: 5px;
+		border: 1px solid rgba(255,255,255,0.1);
+	}
+
+		.header-links .dropdown-menu li {
+			display: block;
+			width: 100%;
+			padding: 0;
+		}
+
+			.header-links .dropdown-menu li a {
+				color: #FFF;
+				padding: 10px 15px;
+				display: flex;
+				align-items: center;
+				text-decoration: none;
+				transition: all 0.3s;
+			}
+
+				.header-links .dropdown-menu li a:hover {
+					background-color: #D10024;
+					color: #FFF;
+				}
+
+			.header-links .dropdown-menu li .flag-icon {
+				margin-right: 8px;
+				font-size: 16px;
+			}
+
+	.header-links .dropdown:hover .dropdown-menu {
+		display: block;
+	}
+
+	/* Hiệu ứng mũi tên dropdown */
+	.header-links .dropdown-toggle .fa-caret-down {
+		margin-left: 5px;
+		transition: transform 0.3s;
+	}
+
+	.header-links .dropdown:hover .dropdown-toggle .fa-caret-down {
+		transform: rotate(180deg);
+	}
+
+	/* Thêm hiệu ứng cho ngôn ngữ đang chọn */
+	.header-links .dropdown-menu li a.active {
+		background-color: rgba(209, 0, 36, 0.2);
+	}
+
+	/* Hiệu ứng hiển thị menu */
+	@@keyframes fadeIn {
+		from
+
+	{
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	}
+
+	.header-links .dropdown:hover .dropdown-menu {
+		display: block;
+		animation: fadeIn 0.3s forwards;
+	}
+
+	/* CSS cho màn hình loading khi dịch */
+	#translation-loading {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.7);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		z-index: 9999;
+		display: none;
+	}
+
+	.loading-spinner {
+		width: 50px;
+		height: 50px;
+		border: 5px solid rgba(255, 255, 255, 0.3);
+		border-radius: 50%;
+		border-top-color: #D10024;
+		animation: spin 1s ease-in-out infinite;
+	}
+
+	.loading-text {
+		color: white;
+		margin-top: 20px;
+		font-size: 18px;
+	}
+
+	@@keyframes spin {
+		to
+
+	{
+		transform: rotate(360deg);
+	}
+
+	}
+</style>
 <body>
 	<!-- HEADER -->
 	<header>
@@ -42,7 +186,26 @@
 					<li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
 					<li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
 					<li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
-				</ul> *@
+				</ul> *@<!-- Language Selector -->
+				<ul class="header-links pull-left">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							<i class="fa fa-globe"></i> <span id="current-language">Ngôn ngữ</span> <i class="fa fa-caret-down"></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="#" onclick="setLanguage('en')">
+									<span class="flag-icon">🇺🇸</span> English
+								</a>
+							</li>
+							<li>
+								<a href="#" onclick="setLanguage('vi')">
+									<span class="flag-icon">🇻🇳</span> Tiếng Việt
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
 				<ul class="header-links pull-right anonymous">
 					@* <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> *@
 					<li><a href="/SignIn"><i class="fa fa-user-o"></i> Đăng nhập</a></li>
@@ -308,6 +471,7 @@
 	<script src="~/storefront/js/main.js" asp-append-version="true"></script>
 </body>
 </html>
+	
 	<script>
 		function setCookie(cname, cvalue, exdays) {
 			const d = new Date();
@@ -350,3 +514,217 @@
 			$(".signed").show();
 		</script>
 	}
+	<script>
+			// Tạo script để xử lý dịch bằng Azure Translator
+		function translateWebsite(targetLanguage) {
+			// Lấy API key của Azure Translator
+			const apiKey = 'u2VNPSh3LQDFDhifFVHcxawkrkEZpWNThHE8cBXlQEEvB9Xl797jJQQJ99BCACULyCpXJ3w3AAAbACOGEGa2';
+			const endpoint = 'https://api.cognitive.microsofttranslator.com/';
+			const location = 'global'; // Ví dụ: 'eastus'
+
+			// Xác định ngôn ngữ nguồn
+			const sourceLanguage = getCookie('selectedLanguage') || 'vi'; // Mặc định là tiếng Việt
+
+			// Không dịch nếu ngôn ngữ nguồn và đích giống nhau
+			if (sourceLanguage === targetLanguage) {
+				console.log('Source and target languages are the same. No translation needed.');
+				setCookie('selectedLanguage', targetLanguage, 30);
+				updateLanguageUI(targetLanguage);
+				return;
+			}
+
+			// Xử lý các phần tử cần dịch
+			processElementsForTranslation(document.body, sourceLanguage, targetLanguage, apiKey, endpoint, location);
+
+			// Lưu ngôn ngữ đã chọn
+			setCookie('selectedLanguage', targetLanguage, 30);
+
+			// Cập nhật giao diện
+			updateLanguageUI(targetLanguage);
+		}
+
+		// Hàm xử lý các phần tử cần dịch
+		function processElementsForTranslation(rootElement, sourceLanguage, targetLanguage, apiKey, endpoint, location) {
+			// Tìm tất cả các phần tử cần dịch
+			const nodesToTranslate = [];
+			const elementsToExclude = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME', 'OBJECT', 'svg']; // Không dịch các phần tử này
+
+			// Hàm đệ quy để tìm các nút văn bản
+			function traverseNodes(node) {
+				// Bỏ qua các phần tử không cần dịch
+				if (elementsToExclude.includes(node.nodeName)) {
+					return;
+				}
+
+				// Xử lý placeholder cho input và textarea
+				if ((node.nodeName === 'INPUT' || node.nodeName === 'TEXTAREA') && node.placeholder && node.placeholder.trim() !== '') {
+					nodesToTranslate.push({
+						element: node,
+						text: node.placeholder,
+						type: 'placeholder'
+					});
+				}
+
+				// Xử lý nút văn bản
+				if (node.nodeType === Node.TEXT_NODE && node.textContent && node.textContent.trim() !== '') {
+					// Kiểm tra xem nút cha có chứa các thẻ i, span icon hay không
+					const parentContainsIcons =
+						node.parentNode &&
+						Array.from(node.parentNode.children).some(child =>
+							child.nodeName === 'I' || (child.nodeName === 'SPAN' && child.classList.contains('flag-icon'))
+						);
+
+					// Nếu nút cha có chứa icon, chỉ dịch nút văn bản này
+					if (parentContainsIcons) {
+						if (node.textContent.trim() !== '') {
+							nodesToTranslate.push({
+								element: node,
+								text: node.textContent.trim(),
+								type: 'textNode'
+							});
+						}
+					} else {
+						// Nếu không, dịch nút văn bản này
+						nodesToTranslate.push({
+							element: node,
+							text: node.textContent.trim(),
+							type: 'textNode'
+						});
+					}
+				}
+
+				// Duyệt qua các nút con
+				for (let i = 0; i < node.childNodes.length; i++) {
+					traverseNodes(node.childNodes[i]);
+				}
+			}
+
+			// Bắt đầu tìm kiếm từ phần tử gốc
+			traverseNodes(rootElement);
+
+			// Lọc bỏ các nút văn bản trống
+			const filteredNodes = nodesToTranslate.filter(item => item.text && item.text.trim() !== '');
+
+			// Phân chia thành các nhóm để gửi request (giới hạn 100 phần tử/request)
+			const batchSize = 100;
+			const textBatches = [];
+
+			for (let i = 0; i < filteredNodes.length; i += batchSize) {
+				textBatches.push(filteredNodes.slice(i, i + batchSize));
+			}
+
+			// Dịch từng batch
+			textBatches.forEach(batch => {
+				// Chuẩn bị dữ liệu cho request
+				const body = batch.map((item, index) => ({
+					text: item.text,
+					id: index.toString()
+				}));
+
+				// Gửi request đến Azure Translator
+				fetch(`${endpoint}/translate?api-version=3.0&from=${sourceLanguage}&to=${targetLanguage}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Ocp-Apim-Subscription-Key': apiKey,
+						'Ocp-Apim-Subscription-Region': location
+					},
+					body: JSON.stringify(body)
+				})
+				.then(response => {
+					if (!response.ok) {
+						return response.json().then(error => {
+							throw new Error(JSON.stringify(error));
+						});
+					}
+					return response.json();
+				})
+				.then(data => {
+					// Cập nhật nội dung đã dịch
+					data.forEach((translation, index) => {
+						const item = batch[index];
+						const translatedText = translation.translations[0].text;
+
+						if (item.type === 'placeholder') {
+							item.element.setAttribute('placeholder', translatedText);
+						} else if (item.type === 'textNode') {
+							item.element.textContent = translatedText;
+						}
+					});
+				})
+				.catch(error => {
+					console.error('Translation error:', error);
+					// Hiển thị thông báo lỗi cho người dùng trong console
+					console.error('Có lỗi xảy ra khi dịch trang web. Vui lòng thử lại sau.');
+				});
+			});
+		}
+
+		// Hàm cập nhật giao diện ngôn ngữ
+		function updateLanguageUI(language) {
+			const currentLanguage = document.getElementById('current-language');
+			if (language === 'en') {
+				currentLanguage.textContent = 'English';
+			} else if (language === 'vi') {
+				currentLanguage.textContent = 'Tiếng Việt';
+			} else {
+				currentLanguage.textContent = 'Ngôn ngữ';
+			}
+
+			// Cập nhật lớp active cho ngôn ngữ được chọn
+			const languageLinks = document.querySelectorAll('.dropdown-menu a');
+			languageLinks.forEach(link => {
+				if (link.getAttribute('onclick').includes(`'${language}'`)) {
+					link.classList.add('active');
+				} else {
+					link.classList.remove('active');
+				}
+			});
+		}
+
+		// Hàm xử lý chọn ngôn ngữ
+		function setLanguage(language) {
+			translateWebsite(language);
+			return false; // Ngăn chặn hành vi mặc định của thẻ <a>
+		}
+
+		// Khởi tạo ngôn ngữ
+		function initializeLanguage() {
+			const savedLanguage = getCookie('selectedLanguage');
+			if (savedLanguage) {
+				updateLanguageUI(savedLanguage);
+			} else {
+				// Mặc định là tiếng Việt nếu chưa có cookie
+				setCookie('selectedLanguage', 'vi', 30);
+				updateLanguageUI('vi');
+			}
+		}
+
+		// Hiển thị màn hình loading khi dịch
+		function showTranslationLoading() {
+			// Tạo overlay loading nếu chưa tồn tại
+			let loadingOverlay = document.getElementById('translation-loading');
+			if (!loadingOverlay) {
+				loadingOverlay = document.createElement('div');
+				loadingOverlay.id = 'translation-loading';
+				loadingOverlay.innerHTML = `
+					<div class="loading-spinner"></div>
+					<div class="loading-text">Đang dịch...</div>
+				`;
+				document.body.appendChild(loadingOverlay);
+			}
+
+			loadingOverlay.style.display = 'flex';
+		}
+
+		// Ẩn màn hình loading
+		function hideTranslationLoading() {
+			const loadingOverlay = document.getElementById('translation-loading');
+			if (loadingOverlay) {
+				loadingOverlay.style.display = 'none';
+			}
+		}
+
+		// Gọi hàm khởi tạo khi trang được tải
+		document.addEventListener('DOMContentLoaded', initializeLanguage);
+	</script>
