@@ -3,105 +3,174 @@
 @{
     Layout = "_LayoutStore";
 }
+<style> 
+    /* Căn giữa nội dung trong table */
+    .cart-table th, .cart-table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Đảm bảo table chiếm toàn bộ chiều rộng */
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Căn giữa số lượng */
+    .quantity-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Điều chỉnh kích thước nút tăng/giảm */
+    .cart-quant-down, .cart-quant-up {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+    }
+
+    /* Điều chỉnh kích thước input số lượng */
+    .cart-input-quant {
+        width: 50px;
+        height: 32px;
+        text-align: center;
+        font-weight: bold;
+        border: 1px solid #ddd;
+        margin: 0 5px;
+    }
+
+</style>
 @if (Model != null && Model.Any())
 {
-    <!-- SECTION -->
     <div class="section">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
-                <!-- Order Details -->
-                <div class="cart-details">
-                    <div class="section-title text-center">
-                        <h3 class="title">Giỏ của bạn</h3>
+                <div class="col-md-12">
+                    <div class="cart-title text-center mb-4">
+                        <h3 class="title">Giỏ Hàng</h3>
                     </div>
-                    <div class="order-summary">
-                        <div class="order-col">
-                            <div><strong>Ảnh sản phẩm</strong></div>
-@*                             <div><strong>Sản phẩm</strong></div>
-                            <div><strong>Màu Sắc</strong></div>
-                            <div><strong>Size</strong></div> *@
-                            <div><strong>Giá</strong></div>
-                        </div>
-                        <div class="order-products">
-                            @foreach (var item in Model)
-                            {
-                                <div class="order-col cart-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
-                                    <div class="item">
-                                        <input type="checkbox" class="chk-select-item" style="margin-right: 10px;" id="check-@item.CartDetailID" />
-                                        <div>
-                                            <img src="@item.Image" alt="Ảnh sản phẩm" style="width: 50px; height: 50px; object-fit: cover;">
-                                        </div>
-                                        <span>@item.NameProduct</span>
-                                        <span class="remove-item" data-itemId="@item.CartDetailID" style="margin-top: 9px;align-content: center;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
-                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <!-- Cột màu sắc -->
-                                    <div>@item.Color</div>
-
-                                    <!-- Cột size -->
-                                    <div>@item.Size</div>
-
-                                    <!-- Cột số lượng -->
-                                    <div>
-                                        <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a>
-                                        <input class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" />
-                                        <a class="change-quant cart-quant-up" data-itemId="@item.CartDetailID">+</a>
-                                    </div>
-
-                                    <!-- Cột tổng giá -->
-                                    <div class="sub-total" id="sub-@item.CartDetailID" data-value="@(item.Quantity * item.Price)">
-                                        @((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        <div class="order-col">
-                            <div><strong>TỔNG TẠM TÍNH</strong></div>
-                            <div><strong class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover text-center align-middle cart-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 5%;">Chọn</th>
+                                    <th style="width: 10%;">Ảnh</th>
+                                    <th style="width: 20%;">Sản phẩm</th>
+                                    <th style="width: 10%;">Màu sắc</th>
+                                    <th style="width: 10%;">Size</th>
+                                    <th style="width: 15%;">Số lượng</th>
+                                    <th style="width: 10%;">Giá</th>
+                                    <th style="width: 10%;">Thành tiền</th>
+                                    <th style="width: 10%;">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
+                                        <td><input type="checkbox" class="chk-select-item form-check-input" id="check-@item.CartDetailID" /></td>
+                                        <td><img src="@item.Image" alt="Ảnh sản phẩm" class="img-thumbnail cart-img"></td>
+                                        <td>@item.NameProduct</td>
+                                        <td>@item.Color</td>
+                                        <td>@item.Size</td>
+                                        <td>
+                                            <div class="quantity-box">
+                                                <button class="btn btn-sm btn-outline-secondary cart-quant-down" data-itemId="@item.CartDetailID">-</button>
+                                                <input type="text" class="form-control cart-input-quant" id="quant-@item.CartDetailID" value="@item.Quantity">
+                                                <button class="btn btn-sm btn-outline-secondary cart-quant-up" data-itemId="@item.CartDetailID">+</button>
+                                            </div>
+                                        </td>
+                                        <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                                        <td class="sub-total" id="sub-@item.CartDetailID" data-value="@(item.Quantity * item.Price)">
+                                            @((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm remove-item" data-itemId="@item.CartDetailID">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
-                    @* 				<div class="payment-method">
-                <div class="input-radio">
-                <input type="radio" checked name="payment" id="payment-1">
-                <label for="payment-1">
-                <span></span>
-                C.O.D.
-                </label>
-                <div class="caption">
-                <p>Thanh toán khi nhận hàng.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <h4 class="text-danger">Tổng: <span class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</span></h4>
+                        <button id="cart-submit" class="btn btn-primary btn-lg">Thanh toán</button>
+                    </div>
                 </div>
-                </div>
-                </div> *@
-                    <a id="cart-submit" class="primary-btn cart-submit" style="display:none">Thanh toán</a>
-                </div>
-                <!-- /Order Details -->
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /SECTION -->
-    <script src="~/storefront/js/jquery.min.js"></script>
+
     <script>
         $(document).ready(function () {
-            let checkedItems = $(".chk-select-item:checked");
-            let sum = 0;
-            if (checkedItems.length > 0) {
-                $.each(checkedItems, function (i, obj) {
-                    let id = $(obj).attr('id').replace('check-', '');
-                    sum += parseInt($(`#sub-${id}`).text());
+            $(".chk-select-item").change(function () {
+                let sum = 0;
+                $(".chk-select-item:checked").each(function () {
+                    let id = $(this).attr('id').replace('check-', '');
+                    sum += parseInt($(`#sub-${id}`).data("value"));
                 });
-                $('.cart-total').text(sum);
-                $("#cart-submit").show();
-            }
+                $('.cart-total').text(sum.toLocaleString("vi-VN", { style: "currency", currency: "VND" }));
+                $("#cart-submit").toggle(sum > 0);
+            });
         });
     </script>
+
+    <style>
+        /* Căn chỉnh table */
+        .cart-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+            .cart-table th, .cart-table td {
+                vertical-align: middle;
+            }
+
+        /* Hình ảnh sản phẩm */
+        .cart-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+        }
+
+        /* Ô số lượng */
+        .quantity-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-input-quant {
+            width: 50px;
+            height: 35px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #ddd;
+        }
+
+        .cart-quant-down, .cart-quant-up {
+            width: 30px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            transition: 0.2s;
+        }
+
+            .cart-quant-down:hover, .cart-quant-up:hover {
+                background-color: #ddd;
+            }
+
+        /* Nút xóa */
+        .remove-item {
+            color: white !important;
+        }
+    </style>
 }
 else
 {
