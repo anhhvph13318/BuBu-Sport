@@ -38,8 +38,8 @@
                         <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
                         <select class="form-select" id="sexFilter" name="sexFilter">
                             <option value="">-- Tất cả giới tính --</option>
-                            <option value="1" @@(Context.Request.Query["sexFilter"] == "1" ? "selected" : "")>Nam</option>
-                            <option value="0" @@(Context.Request.Query["sexFilter"] == "0" ? "selected" : "")>Nữ</option>
+                            <option value="1" >Nam</option>
+                            <option value="0" >Nữ</option>
                         </select>
                     </div>
                 </div>
@@ -49,8 +49,8 @@
                         <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                         <select class="form-select" id="statusFilter" name="statusFilter">
                             <option value="">Tất cả</option>
-                            <option value="Active" @@(Context.Request.Query["statusFilter"] == "Active" ? "selected" : "")>Hoạt động</option>
-                            <option value="Inactive" @@(Context.Request.Query["statusFilter"] == "Inactive" ? "selected" : "")>Ngừng hoạt động</option>
+                            <option value="Active">Hoạt động</option>
+                            <option value="Inactive">Ngừng hoạt động</option>
                         </select>
                     </div>
                 </div>

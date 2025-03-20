@@ -37,8 +37,8 @@
                         <span class="input-group-text"><i class="bi bi-percent"></i></span>
                         <select class="form-select" id="discountTypeFilter" name="unit">
                             <option value="">-- Tất cả loại --</option>
-                            <option value="0" @@(Context.Request.Query["unit"] == "0" ? "selected" : "")>Theo phần trăm</option>
-                            <option value="1" @@(Context.Request.Query["unit"] == "1" ? "selected" : "")>Giảm trực tiếp</option>
+                            <option value="0" >Theo phần trăm</option>
+                            <option value="1" >Giảm trực tiếp</option>
                         </select>
                     </div>
                 </div>
@@ -48,8 +48,8 @@
                         <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                         <select class="form-select" id="statusFilter" name="status">
                             <option value="">Tất cả</option>
-                            <option value="2" @@(Context.Request.Query["status"] == "2" ? "selected" : "")>Hoạt động</option>
-                            <option value="1" @@(Context.Request.Query["status"] == "1" ? "selected" : "")>Ngừng hoạt động</option>
+                            <option value="2" >Hoạt động</option>
+                            <option value="1" >Ngừng hoạt động</option>
                         </select>
                     </div>
                 </div>
