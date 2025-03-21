@@ -17,7 +17,9 @@
                         <table class="cart-table">
                             <thead>
                                 <tr>
-                                    <th>Chọn</th>
+                                    <th>
+                                        <input type="checkbox" id="select-all" title="Chọn tất cả" />
+                                    </th>
                                     <th>Ảnh</th>
                                     <th>Sản phẩm</th>
                                     <th>Màu sắc</th>
@@ -111,6 +113,10 @@
             text-align: center;
         }
 
+        #select-all {
+            cursor: pointer;
+        }
+
         .col-image {
             width: 80px;
         }
@@ -125,7 +131,7 @@
             }
 
         .col-name {
-            width: 250px; 
+            width: 250px;
             text-align: center;
         }
 
@@ -165,14 +171,16 @@
         .change-quant {
             width: 25px;
             height: 25px;
-            line-height: 23px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 1px solid #ddd;
             border-radius: 4px;
             cursor: pointer;
             background: #f8f9fa;
             text-decoration: none;
             color: #333;
+            font-size: 14px;
         }
 
             .change-quant:hover {
@@ -216,6 +224,23 @@
     <script src="~/storefront/js/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Chọn tất cả
+            $('#select-all').on('change', function () {
+                $('.chk-select-item').prop('checked', this.checked);
+                updateTotal();
+            });
+
+            // Khi thay đổi checkbox từng item
+            $('.chk-select-item').on('change', function () {
+                if (!this.checked) {
+                    $('#select-all').prop('checked', false);
+                } else if ($('.chk-select-item:checked').length === $('.chk-select-item').length) {
+                    $('#select-all').prop('checked', true);
+                }
+                updateTotal();
+            });
+
+            // Cập nhật tổng tiền
             function updateTotal() {
                 let checkedItems = $(".chk-select-item:checked");
                 let sum = 0;
@@ -232,7 +257,6 @@
                 }
             }
 
-            $('.chk-select-item').on('change', updateTotal);
             updateTotal();
         });
     </script>
