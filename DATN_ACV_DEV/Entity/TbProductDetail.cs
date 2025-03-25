@@ -1,26 +1,26 @@
-﻿using System.Drawing;
+using System;
+using System.Collections.Generic;
 
-namespace DATN_ACV_DEV.Entity
+namespace DATN_ACV_DEV.Entity;
+
+public partial class TbProductDetail
 {
-    public class TbProductDetail
-    {
-        public Guid Id { get; set; }
-        public decimal price { get; set; }
-        public int quantity { get; set; }
-        public Guid? ImageId { get; set; }
-        public Guid? ColorId { get; set; }
-        public Guid? SizeId { get; set; }
-        public Guid? ShoeHeightId { get; set; }
-        public Guid? TechnologyId { get; set; }
-        public Guid? MaterialId { get; set; }
-        public Guid ProductID { get; set; }
+    public Guid Id { get; set; }
 
-        public virtual TbImage? Image { get; set; }
-        public virtual TbColor? Color { get; set; }
-        public virtual TbSize? Size { get; set; }
-        public virtual TbShoeHeight? ShoeHeight { get; set; }
-        public virtual TbTechnology? Technology { get; set; }
-        public virtual TbMaterial? Material { get; set; }
-        public virtual TbProduct Product { get; set; }
-    }
+    public decimal Price { get; set; }
+
+    public int Quantity { get; set; }
+
+    public Guid? ImageId { get; set; }
+
+    public Guid? ColorId { get; set; }
+
+    public Guid? SizeId { get; set; }
+
+    public Guid? ProductId { get; set; }
+
+    public virtual TbImage? Image { get; set; }
+
+    public virtual TbProduct? Product { get; set; }
+    public virtual TbSize? Size { get; set; }
 }

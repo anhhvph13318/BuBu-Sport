@@ -39,7 +39,7 @@ namespace DATN_ACV_DEV.Controllers
             var sAscii = !string.IsNullOrEmpty(_request.Name) ? Common.RemoveSignInVietnameseString(_request.Name) : "";
             var Model = _context.TbProducts.Where(p => p.IsDelete == false
                         && (!string.IsNullOrEmpty(_request.Name) ? (p.Name.Contains(_request.Name) || EF.Functions.Collate(p.Name, "Vietnamese_CI_AI").Contains(sAscii)) : true)
-                        && (_request.CategoryID.HasValue ? p.CategoryId >= _request.CategoryID : true)
+                        && (_request.CategoryID.HasValue ? p.CategoryId == _request.CategoryID : true)
                         && (_request.PriceFrom.HasValue ? p.Price >= _request.PriceFrom : true)
                         && (_request.PriceTo.HasValue ? p.Price <= _request.PriceTo : true)
                         && (_request.FromDate.HasValue ? p.CreateDate >= _request.FromDate : true)
@@ -56,6 +56,14 @@ namespace DATN_ACV_DEV.Controllers
 				_response.HighestPrice = _context.TbProducts.Where(p => p.IsDelete == false).Max(c => c.Price);
 				_response.LowestPrice = _context.TbProducts.Where(p => p.IsDelete == false).Min(c => c.Price); 
             var query = _mapper.Map<List<HomePageModel>>(Model);
+            foreach (var item in query)
+            {
+                item.CategoryName = _context.TbCategories.Where(c => c.Id == item.CategoryID).Select(c => c.Name).FirstOrDefault();
+            }
+            foreach (var item in query)
+            {
+                item.Quantity = _context.TbProductDetails.Where(c => c.ProductId == item.Id).Select(c => c.Quantity).Sum();
+            }
             if (_request.Limit == null)
             {
                 lstProduct = query.Skip(_request.OffSet.Value).Take(Utility.Utility.LimitDefault).ToList();
@@ -88,6 +96,11 @@ namespace DATN_ACV_DEV.Controllers
         {
             try
             {
+                if (Guid.TryParse(request.Name, out Guid myGuid))
+                {
+                    request.CategoryID = Guid.Parse(request.Name);
+                    request.Name = null;
+                }
                 _request = request;
                 //CheckAuthorization();
                 //PreValidation(); // validate dữ liệu 

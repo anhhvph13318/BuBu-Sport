@@ -11,10 +11,11 @@ using Microsoft.AspNetCore.Authorization;
 using GUI.Models.DTOs;
 using DATN_ACV_DEV.Entity;
 using Microsoft.EntityFrameworkCore;
+using Azure.Core;
 
 namespace GUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ProductController : ControllerSharedBase
     {
         private readonly DBContext _context;
@@ -25,25 +26,47 @@ namespace GUI.Controllers
             httpService = new();
             _context = context;
         }
-        // GET: ProductController
-        //[AllowAnonymous]
-        public async Task<ActionResult> Index(string s)
+
+        [Route("/product")]
+        public async Task<ActionResult> Index(string? name = "", Guid? categoryId = null, decimal? priceFrom = null, decimal? priceTo = null, int status = 0)
         {
             var obj = new GetListProductRequest();
             var model = new IndexObject();
-            obj.Name = string.IsNullOrEmpty(s) ? "" : s;
+
+            // Thiết lập các tham số tìm kiếm
+            obj.Name = string.IsNullOrEmpty(name) ? "" : name;
+            obj.CategoryID = categoryId;
+            obj.PriceFrom = priceFrom;
+            obj.PriceTo = priceTo;
+            obj.Status = status > 0 ? status : null;
+
             var URL = _settings.APIAddress + "api/HomePage/Process";
             var param = JsonConvert.SerializeObject(obj);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
 
             model.Data = result.Data;
+            var checkname = 0;
+            // Truyền các giá trị tìm kiếm hiện tại vào ViewBag để hiển thị trên giao diện
+            if (Guid.TryParse(name, out Guid myGuid))
+            {
+                checkname = 1;
+            }
+            ViewBag.CurrentName = checkname == 0 ? name : "";
+            ViewBag.CurrentCategoryId = categoryId;
+            ViewBag.CurrentPriceFrom = priceFrom;
+            ViewBag.CurrentPriceTo = priceTo;
+            ViewBag.CurrentStatus = status;
+
+            // Tải danh sách danh mục để sử dụng trong dropdown filter
+            var categories = await FetchCategory();
+            ViewBag.Categories = categories;
 
             return View(model);
-        }   
+        }
 
         // GET: ProductController/Details/5
-        
+
         public ActionResult Details(int id)
         {
             return View();
@@ -56,10 +79,10 @@ namespace GUI.Controllers
             ViewBag.Categories = categories;
             return View();
         }
-        private async Task<IEnumerable<CategoryDto>> FetchCategory()
+        private async Task<IEnumerable<CategoryDTO>> FetchCategory()
         {
             return await _context.TbCategories.AsNoTracking()
-                .Select(e => new CategoryDto
+                .Select(e => new CategoryDTO
                 {
                     Id = e.Id,
                     Name = e.Name,
@@ -67,6 +90,29 @@ namespace GUI.Controllers
                     CreateDate = e.CreateDate
                 })
                 .OrderBy(e => e.CreateDate)
+                .ToListAsync();
+        }
+        private async Task<IEnumerable<ColorDTO>> FetchColor()
+        {
+            return await _context.TbColors.AsNoTracking()
+                .Select(e => new ColorDTO
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Status = (int)e.Status!,
+                    CreateDate = e.CreateDate
+                })
+                .OrderBy(e => e.CreateDate)
+                .ToListAsync();
+        }
+        private async Task<IEnumerable<SizeDTO>> FetchSize()
+        {
+            return await _context.TbSizes.AsNoTracking()
+                .Select(e => new SizeDTO
+                {
+                    Id = e.Id,
+                    SizeName = e.SizeName,
+                })
                 .ToListAsync();
         }
         // POST: ProductController/Create
@@ -83,9 +129,6 @@ namespace GUI.Controllers
 
             try
             {
-                Random random = new Random();
-                string randomTwoDigits = random.Next(10, 100).ToString();
-                product.Code = "SP" + randomTwoDigits;
                 product.Status = 1;
                 product.TypeImage = "1";
 
@@ -112,18 +155,53 @@ namespace GUI.Controllers
                 return View(product);
             }
         }
- 
-
         // GET: ProductController/Edit/5
         public async Task<ActionResult> Edit(Guid id)
         {
+            var colors = await FetchColor();
+            ViewBag.Colors = colors;
             var categories = await FetchCategory();
             ViewBag.Categories = categories;
+            var sizes = await FetchSize();
+            ViewBag.Sizes = sizes;
             var URL = _settings.APIAddress + "api/DetailProduct/Process";
             var req = new DetailProductRequest() { ID = id };
             var param = JsonConvert.SerializeObject(req);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<DetailProductResponse>>(res) ?? new();
+            // Lấy danh sách chi tiết sản phẩm từ database
+            var datadetail = _context.TbProductDetails.Where(c => c.ProductId == result.Data.Id).ToList();
+            var groupdata = datadetail
+                .GroupBy(c => new {c.ColorId,c.SizeId})
+                .Select(d => new TbProductDetail
+                {
+                    Id = d.First().Id,
+                    Price = d.First().Price, // Giữ nguyên giá của bản ghi đầu tiên
+                    Quantity = d.Sum(p => p.Quantity), // Cộng tổng số lượng
+                    ImageId = d.First().ImageId,
+                    ColorId = d.Key.ColorId,
+                    SizeId = d.Key.SizeId,
+                    ProductId = d.First().ProductId
+                }).ToList();
+            result.Data.DetailData = groupdata;
+
+            // Tạo Dictionary để tối ưu truy vấn
+            var colorDict = colors.ToDictionary(c => c.Id, c => c.Name);
+            var sizeDict = sizes.ToDictionary(s => s.Id, s => s.SizeName);
+
+            // Chuyển đổi danh sách `TbProductDetail` thành `TestDame`
+            result.Data.DetailDataFinal = groupdata.Select(d => new TestDame
+            {
+                Id = d.Id,
+                Price = d.Price,
+                Quantity = d.Quantity,
+                ImageId = d.ImageId,
+                ColorId = d.ColorId,
+                SizeId = d.SizeId,
+                ProductId = d.ProductId,
+                ColorName = d.ColorId.HasValue && colorDict.ContainsKey(d.ColorId.Value) ? colorDict[d.ColorId.Value] : "Unknown",
+                SizeName = d.SizeId.HasValue && sizeDict.ContainsKey(d.SizeId.Value) ? sizeDict[d.SizeId.Value] : "Unknown"
+            }).ToList();
             var model = result.Data;
             return View(model);
         }
@@ -176,6 +254,12 @@ namespace GUI.Controllers
             {
                 return View();
             }
+        }
+        [HttpPost]
+        public IActionResult CheckProductCode(string code)
+        {
+            bool isAvailable = !_context.TbProducts.Any(p => p.Code == code);
+            return Json(new { isAvailable });
         }
     }
 }

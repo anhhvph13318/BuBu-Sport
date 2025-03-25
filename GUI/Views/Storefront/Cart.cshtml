@@ -7,80 +7,257 @@
 {
     <!-- SECTION -->
     <div class="section">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
-                <!-- Order Details -->
                 <div class="cart-details">
                     <div class="section-title text-center">
-                        <h3 class="title">Giỏ của bạn</h3>
+                        <h2 class="title">Giỏ hàng của bạn</h2>
                     </div>
                     <div class="order-summary">
-                        <div class="order-col">
-                            <div><strong>Sản phẩm</strong></div>
-                            <div><strong>Giá</strong></div>
-                        </div>
-                        <div class="order-products">
-                            @foreach (var item in Model)
-                            {
-                                <div class="order-col cart-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
-                                    <div class="item">
-                                        <input type="checkbox" class="chk-select-item" id="check-@item.CartDetailID" />
-                                        <span>@item.NameProduct</span>
-                                        <span class="remove-item" data-itemId="@item.CartDetailID" style="margin-top: 9px;align-content: center;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
-                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a><input class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" /><a class="change-quant cart-quant-up" data-itemId="@item.CartDetailID">+</a>
-                                    </div>
-                                    <div class="sub-total" id="sub-@item.CartDetailID" data-value="@(item.Quantity * item.Price)">@((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</div>
-                                </div>
-                            }
-                        </div>
-                        <div class="order-col">
-                            <div><strong>TỔNG TẠM TÍNH</strong></div>
-                            <div><strong class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
-                        </div>
+                        <table class="cart-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all" title="Chọn tất cả" />
+                                    </th>
+                                    <th>Ảnh</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Màu sắc</th>
+                                    <th>Size</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="cart-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
+                                        <td class="col-select">
+                                            <input type="checkbox" class="chk-select-item" id="check-@item.CartDetailID" />
+                                        </td>
+                                        <td class="col-image">
+                                            <img src="@item.Image" alt="Ảnh sản phẩm">
+                                        </td>
+                                        <td class="col-name">
+                                            <span class="product-name" title="@item.NameProduct">@item.NameProduct</span>
+                                        </td>
+                                        <td class="col-color">@item.Color</td>
+                                        <td class="col-size">@item.Size</td>
+                                        <td class="col-quantity">
+                                            <div class="quantity-control">
+                                                <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a>
+                                                <input class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID"
+                                                       data-value="@item.Quantity" value="@item.Quantity" />
+                                                <a class="change-quant cart-quant-up" data-itemId="@item.CartDetailID">+</a>
+                                            </div>
+                                        </td>
+                                        <td class="col-price sub-total" id="sub-@item.CartDetailID"
+                                            data-value="@(item.Quantity * item.Price)">
+                                            @((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                        </td>
+                                        <td class="col-remove">
+                                            <span class="remove-item" data-itemId="@item.CartDetailID">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                                     class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
+                                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
+                                                </svg>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="order-footer">
+                                    <td colspan="6" class="text-right"><strong>TỔNG TẠM TÍNH</strong></td>
+                                    <td class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
-                    @* 				<div class="payment-method">
-                <div class="input-radio">
-                <input type="radio" checked name="payment" id="payment-1">
-                <label for="payment-1">
-                <span></span>
-                C.O.D.
-                </label>
-                <div class="caption">
-                <p>Thanh toán khi nhận hàng.</p>
-                </div>
-                </div>
-                </div> *@
                     <a id="cart-submit" class="primary-btn cart-submit" style="display:none">Thanh toán</a>
                 </div>
-                <!-- /Order Details -->
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /SECTION -->
+
+    <style>
+        .order-summary {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .cart-table th, .cart-table td {
+                padding: 10px;
+                border-bottom: 1px solid #f5f5f5;
+                vertical-align: middle;
+            }
+
+            .cart-table thead th {
+                background: #f8f9fa;
+                font-weight: 600;
+                text-align: center;
+            }
+
+        .col-select {
+            width: 40px;
+            text-align: center;
+        }
+
+        #select-all {
+            cursor: pointer;
+        }
+
+        .col-image {
+            width: 80px;
+        }
+
+            .col-image img {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                border-radius: 4px;
+                display: block;
+                margin: 0 auto;
+            }
+
+        .col-name {
+            width: 250px;
+            text-align: center;
+        }
+
+        .product-name {
+            display: block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .col-color, .col-size {
+            width: 100px;
+            text-align: center;
+        }
+
+        .col-quantity {
+            width: 120px;
+            text-align: center;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .cart-input-quant {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .change-quant {
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #f8f9fa;
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+        }
+
+            .change-quant:hover {
+                background: #e9ecef;
+            }
+
+        .col-price {
+            width: 120px;
+            text-align: right;
+            font-weight: 500;
+            color: #dc3545;
+        }
+
+        .col-remove {
+            width: 60px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .order-footer td {
+            padding: 15px 10px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .cart-total {
+            font-weight: 600;
+            color: #dc3545;
+        }
+
+        .cart-submit {
+            display: block;
+            margin: 20px auto 0;
+            width: 200px;
+            text-align: center;
+        }
+    </style>
+
     <script src="~/storefront/js/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            let checkedItems = $(".chk-select-item:checked");
-            let sum = 0;
-            if (checkedItems.length > 0) {
-                $.each(checkedItems, function (i, obj) {
-                    let id = $(obj).attr('id').replace('check-', '');
-                    sum += parseInt($(`#sub-${id}`).text());
-                });
-                $('.cart-total').text(sum);
-                $("#cart-submit").show();
+            // Chọn tất cả
+            $('#select-all').on('change', function () {
+                $('.chk-select-item').prop('checked', this.checked);
+                updateTotal();
+            });
+
+            // Khi thay đổi checkbox từng item
+            $('.chk-select-item').on('change', function () {
+                if (!this.checked) {
+                    $('#select-all').prop('checked', false);
+                } else if ($('.chk-select-item:checked').length === $('.chk-select-item').length) {
+                    $('#select-all').prop('checked', true);
+                }
+                updateTotal();
+            });
+
+            // Cập nhật tổng tiền
+            function updateTotal() {
+                let checkedItems = $(".chk-select-item:checked");
+                let sum = 0;
+                if (checkedItems.length > 0) {
+                    checkedItems.each(function () {
+                        let id = $(this).attr('id').replace('check-', '');
+                        sum += parseFloat($(`#sub-${id}`).data('value'));
+                    });
+                    $('.cart-total').text(sum.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                    $("#cart-submit").show();
+                } else {
+                    $('.cart-total').text((0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                    $("#cart-submit").hide();
+                }
             }
+
+            updateTotal();
         });
     </script>
 }
@@ -88,9 +265,7 @@ else
 {
     <!-- HOT DEAL SECTION -->
     <div class="section">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="hot-deal">
@@ -112,9 +287,6 @@ else
                     </div>
                 </div>
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /HOT DEAL SECTION -->
 }

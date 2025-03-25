@@ -15,5 +15,6 @@ namespace GUI.Model_DTO.User_DTO
         public string? UserCode { get; set; }
 
         public string? FullName { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }

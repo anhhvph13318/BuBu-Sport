@@ -1,26 +1,32 @@
 ﻿@model GUI.Model_DTO.User_DTO.DetailUserResponse
 
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Xác nhận Xóa";
 }
 
-
-<h3>Có chắc muốn xóa?</h3>
-<div>
-    <h4>Người dùng</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserName): 
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-    </dl>
-    
-    <form asp-action="ConfirmDelete">
-        <input name="Id" value="@Model.Id" hidden/>
-        <input type="submit" value="Xóa" class="btn btn-danger" /> |
-        <a asp-action="Index">Quay lại</a>
-    </form>
+<div class="card shadow-sm border-danger">
+    <div class="card-header bg-danger text-white text-center">
+        <h4>Bạn có chắc muốn xóa người dùng này?</h4>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <strong>Mã Nhân Viên:</strong> @Model.UserCode
+        </div>
+        <div class="mb-3">
+            <strong>Số điện thoại:</strong> @Model.UserName
+        </div>
+        <div class="mb-3">
+            <strong>Email:</strong> @Model.Email
+        </div>
+        <div class="mb-3">
+            <strong>Họ tên:</strong> @Model.FullName
+        </div>
+    </div>
+    <div class="card-footer text-center">
+        <form asp-action="ConfirmDelete" method="post">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger">Xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
 </div>

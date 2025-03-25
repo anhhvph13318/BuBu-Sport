@@ -1,77 +1,189 @@
-﻿@model GUI.Models.DTOs.Customer_DTO.Views.IndexObject
+﻿@model List<GUI.Models.DTOs.CustomerDTO>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản Lý Khách Hàng";
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    int startIndex = (currentPage - 1) * 10 + 1;
 }
 
-<h1>Khách Hàng</h1>
+<div class="container-fluid px-4 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-people-fill me-2"></i>Danh Sách Khách Hàng
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>Tạo mới
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create">Tạo mới</a>
-</p>
-<div>
-    <form asp-controller="User" asp-action="Index" method="get">
-        <p>
-            Tìm kiếm: <input type="text" name="s" />
-            <input type="submit" value="Tìm kiếm" />
-        </p>
-    </form>
+    <!-- Card tìm kiếm -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-search me-1"></i>
+            Tìm kiếm khách hàng
+        </div>
+        <div class="card-body">
+            <form asp-controller="Customer" asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="searchQuery" class="form-label">Tên/SĐT khách hàng</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="searchQuery" name="searchQuery" value="@Context.Request.Query["searchQuery"]" placeholder="Nhập tên hoặc số điện thoại...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="sexFilter" class="form-label">Giới tính</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
+                        <select class="form-select" id="sexFilter" name="sexFilter">
+                            <option value="">-- Tất cả giới tính --</option>
+                            <option value="1" >Nam</option>
+                            <option value="0" >Nữ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="statusFilter" class="form-label">Trạng thái</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                        <select class="form-select" id="statusFilter" name="statusFilter">
+                            <option value="">Tất cả</option>
+                            <option value="Active">Hoạt động</option>
+                            <option value="Inactive">Ngừng hoạt động</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search me-1"></i> Tìm kiếm
+                    </button>
+                    <a href="/Customer/Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách khách hàng -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-table me-1"></i>
+            Kết quả tìm kiếm
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-primary">
+                    <tr>
+                        <th class="text-center" style="width: 50px;">STT</th>
+                        <th>Tên khách hàng</th>
+                        <th>Số điện thoại</th>
+                        <th>Địa chỉ</th>
+                        <th class="text-center">Giới tính</th>
+                        <th class="text-center">Trạng thái</th>
+                        @* <th class="text-center" style="width: 150px;">Hành động</th> *@
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var customer in Model.Select((c, index) => new { c, index }))
+                        {
+                            <tr>
+                                <td class="text-center">@(startIndex + customer.index)</td>
+                                <td>@customer.c.Name</td>
+                                <td>@customer.c.Phone</td>
+                                <td>@customer.c.Address</td>
+                                <td class="text-center">@(customer.c.Sex == 1 ? "Nam" : "Nữ")</td>
+                                <td class="text-center">
+                                    <span class="badge @(customer.c.Status == "Active" ? "bg-success" : "bg-danger")">
+                                        <i class="bi @(customer.c.Status == "Active" ? "bi-check-circle" : "bi-x-circle") me-1"></i>
+                                        @(customer.c.Status == "Active" ? "Hoạt động" : "Ngừng hoạt động")
+                                    </span>
+                                </td>
+                                @* <td class="text-center">
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@customer.c.Id" class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@customer.c.Id" class="btn btn-outline-info btn-sm">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@customer.c.Id" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td> *@
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="text-secondary">
+                                    <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
+                                    <p class="mt-2">Không tìm thấy khách hàng nào.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <span class="text-muted">Hiển thị @(Model?.Count() ?? 0) khách hàng</span>
+            </div>
+            <nav>
+                <ul class="pagination justify-content-center m-0">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="?page=1" aria-label="First">
+                            <span>&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="?page=@(currentPage - 1)" aria-label="Previous">
+                            <span>&laquo;</span>
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" href="?page=@i">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" href="?page=@(currentPage + 1)" aria-label="Next">
+                            <span>&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" href="?page=@totalPages" aria-label="Last">
+                            <span>&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Tên
-            </th>
-            <th>
-                Địa Chỉ
-            </th>
-            <th>
-                Rank
-            </th>
-            <th>
-                Trạng Thái
-            </th>
-            <th>
-                YearOfBirth
-            </th>
-            <th>
-                Giới Tính
-            </th>
-            <th>
-                Điểm
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Data.LstCustomer) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Adress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Rank)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.YearOfBirth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Sex)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Point)
-                </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Hiệu ứng hover cho các hàng trong bảng
+            $('table tbody tr').hover(
+                function () {
+                    $(this).addClass('table-active');
+                },
+                function () {
+                    $(this).removeClass('table-active');
+                }
+            );
+        });
+    </script>
 }
-    </tbody>
-</table>

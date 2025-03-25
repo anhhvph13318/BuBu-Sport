@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using DATN_ACV_DEV.Entity;
+using DATN_ACV_DEV.Model_DTO.ProductDetail_DTO;
+using System.Text.Json.Serialization;
 
 namespace GUI.Models.DTOs.Product_DTO
 {
@@ -37,8 +39,15 @@ namespace GUI.Models.DTOs.Product_DTO
         //public string? UrlImage { get; set; }
 
         public string? Color { get; set; }
+        public string? SizeName { get; set; }
 
         public string? Material { get; set; }
         public List<Guid> PropertyID { get; set; }
+        [JsonIgnore] // Ngăn việc serialize thuộc tính này
+        public List<TbProductDetail> DetailData { get; set; }
+        public List<TestDame> DetailDataFinal { get; set; }
+        public List<string> ImageArray { get; set; }
+        public string CategoryName { get; set; }
+        public List<ProductDTO> RelatedProducts { get; set; }
     }
 }

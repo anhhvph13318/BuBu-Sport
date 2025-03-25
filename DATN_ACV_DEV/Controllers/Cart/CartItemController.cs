@@ -67,6 +67,15 @@ namespace DATN_ACV_DEV.Controllers
                             if (Model != null)
                             {
                                 var product = _context.TbProducts.Where(c => Model.Select(a => a.ProductId).Contains(c.Id)).Distinct().ToList();
+                                foreach (var item in product)
+                                {
+                                    var colorId = _context.TbProductDetails.Where(c=>c.ProductId == item.Id).Select(c=>c.ColorId).FirstOrDefault();
+                                    var sizeId = _context.TbProductDetails.Where(c=>c.ProductId == item.Id).Select(c=>c.SizeId).FirstOrDefault();
+                                    //item.Color = _context.TbColors.Where(c=>c.Id == colorId).Select(c=>c.Name).FirstOrDefault();
+                                    //item.Size = _context.TbSizes.Where(c=>c.Id == sizeId).Select(c=>c.SizeName).FirstOrDefault();
+                                    item.Color = "Green";
+                                    item.Size = 38;
+                                }
                                 var image = _context.TbImages.Where(i => product.Select(e => e.ImageId).Contains(i.Id)).Distinct().ToList();
                                 Model.ForEach(c =>
                                 {

@@ -21,9 +21,8 @@ namespace GUI.Models.DTOs.Product_DTO
         [Range(1, double.MaxValue, ErrorMessage = "Giá bán phải lớn hơn 0.")]
 
         public decimal? PriceNet { get; set; }
-        [Required(ErrorMessage = "Tên thương hiệu không được để trống.")]
-
-        public string Brand { get; set; }
+      
+        public string? SizeName { get; set; }
 
         public bool? Vat { get; set; }
 

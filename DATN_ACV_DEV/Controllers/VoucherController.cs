@@ -11,7 +11,7 @@ namespace DATN_ACV_DEV.Controllers
     public class VoucherController : ControllerBase
     {
         private readonly DBContext _context;
-
+        private TbVoucher _Voucher;
         public VoucherController(DBContext context)
         {
             _context = context;
@@ -23,14 +23,16 @@ namespace DATN_ACV_DEV.Controllers
             [FromQuery] string? name,
             [FromQuery] DateTime? startDate,
             [FromQuery] DateTime? endDate,
-            [FromQuery] VoucherUnit? unit)
+            [FromQuery] VoucherUnit? unit,
+            [FromQuery] Status? status)
         {
             var vouchers = await _context.TbVouchers.AsNoTracking()
                 .Where(e => (string.IsNullOrEmpty(code) || e.Code.StartsWith(code.ToUpper()))
                     && (string.IsNullOrEmpty(name) || e.Name.StartsWith(name))
                     && (!startDate.HasValue || e.StartDate >= startDate.Value)
                     && (!endDate.HasValue || e.EndDate <= endDate.Value)
-                    && (!unit.HasValue || e.Unit == unit.Value))
+                    && (!unit.HasValue || e.Unit == unit.Value)
+                    && (!status.HasValue || e.Status == status.Value))
                 .Where(e => e.Quantity > 0)
                 .Select(e => new VoucherDTO
                 {
@@ -40,7 +42,7 @@ namespace DATN_ACV_DEV.Controllers
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
                     Quantity = e.Quantity.Value,
-                    Unit = e.Unit,
+                    //Unit = e.Unit,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
                     Status = e.Status == Status.Valid,
@@ -94,7 +96,7 @@ namespace DATN_ACV_DEV.Controllers
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
                     Quantity = e.Quantity.Value,
-                    Unit = e.Unit,
+                    //Unit = e.Unit,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
                     Status = e.Status == Status.Valid,
@@ -151,50 +153,50 @@ namespace DATN_ACV_DEV.Controllers
             return Ok(response);
         }
 
-        [HttpPatch]
-        [Route("{id}")]
-        public async Task<IActionResult> UpdateVoucher(
-            [FromRoute] string id,
-            [FromBody] VoucherDTO request)
-        {
-            var response = new BaseResponse<EditVoucherResponse>();
+        //[HttpPatch]
+        //[Route("{id}")]
+        //public Task<IActionResult> UpdateVoucher(
+        //    [FromRoute] string id,
+        //    [FromBody] VoucherDTO request)
+        //{
+        //    var response = new BaseResponse<EditVoucherResponse>();
 
-            var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
-            if(voucher == null)
-                return NotFound(new { id });
+        //    var voucher = _context.TbVouchers.Where(c => c.Id == request.Id).FirstOrDefault();
+        //    if(voucher == null)
+        //        return NotFound(new { id });
 
-            if(request.StartDate > request.EndDate)
-            {
-                response.Messages.Add(new Message
-                {
-                    Field = "EndDate",
-                    MessageText = "Ngày kết thúc không thể nhỏ hơn ngày bắt đầu"
-                });
+        //    if(request.StartDate > request.EndDate)
+        //    {
+        //        response.Messages.Add(new Message
+        //        {
+        //            Field = "EndDate",
+        //            MessageText = "Ngày kết thúc không thể nhỏ hơn ngày bắt đầu"
+        //        });
 
-                return BadRequest(response);
-            }
+        //        return BadRequest(response);
+        //    }
 
-            voucher.Type = request.Type;
-            voucher.UpdateDate = DateTime.Now;
-            voucher.Code = request.Code;
-            voucher.Description = request.Description;
-            voucher.Unit = request.Unit;
-            voucher.MaxDiscount = request.MaxDiscount;
-            voucher.Quantity = request.Quantity;
-            voucher.Discount = request.Discount;
-            //voucher.RequiredTotalAmount = request.RequiredTotalAmount;
-            voucher.Name = request.Name;
-            voucher.Description = request.Description;
-            voucher.MaxDiscount = request.MaxDiscount;
-            voucher.Status = request.Status ? Status.Valid : Status.Closed;
-            voucher.EndDate = request.EndDate;
-            voucher.StartDate =request.StartDate;
+        //    voucher.Type = request.Type;
+        //    voucher.UpdateDate = DateTime.Now;
+        //    voucher.Code = request.Code;
+        //    voucher.Description = request.Description;
+        //    voucher.Unit = request.Unit;
+        //    voucher.MaxDiscount = request.MaxDiscount;
+        //    voucher.Quantity = request.Quantity;
+        //    voucher.Discount = request.Discount;
+        //    //voucher.RequiredTotalAmount = request.RequiredTotalAmount;
+        //    voucher.Name = request.Name;
+        //    voucher.Description = request.Description;
+        //    voucher.MaxDiscount = request.MaxDiscount;
+        //    voucher.Status = request.Status ? Status.Valid : Status.Closed;
+        //    voucher.EndDate = request.EndDate;
+        //    voucher.StartDate =request.StartDate;
 
-            await _context.SaveChangesAsync();
+        //    _context.SaveChangesAsync();
 
-            response.Data = new EditVoucherResponse { ID = voucher.Id };
-            return Ok(response);
-        }
+        //    response.Data = new EditVoucherResponse { ID = voucher.Id };
+        //    return response;
+        //}
 
         [HttpPost]
         [Route("{id}/apply")]

@@ -38,10 +38,10 @@ public partial class TbVoucher
     public virtual ICollection<TbOrder> Orders { get; set; } = new List<TbOrder>();
 }
 
-public enum VoucherUnit
+public enum VoucherUnit : short
 {
-    Percent,
-    Money
+    Percent = 0,
+    Money = 1
 }
 
 public enum VoucherType : short

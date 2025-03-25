@@ -2,50 +2,163 @@
 @using System.Globalization
 @model IEnumerable<VoucherDTO>
 
-<div class="container">
-  <div class="mb-3 d-flex justify-content-end p-3">
-    <a class="btn btn-primary" href="vouchers/create">Thêm mới</a>
-  </div>
-  <table class="table table-stripped">
-    <thead>
-      <tr>
-        <th>Tên voucher</th>
-        <th>Mã</th>
-        <th>Số tiền giảm</th>
-        <th>Thời gian hiệu lực</th>
-        <th>Trạng thái</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach (var voucher in Model)
-      {
-        <tr>
-          <td>@voucher.Name</td>
-          <td>@voucher.Code</td>
-          @if(voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent)
-          {
-            <td>@voucher.Discount %</td>
-          }
-          else
-          {
-            <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-          }
-          <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
-          <td>
-                        @if(voucher.Status)
+@{
+    ViewData["Title"] = "Quản Lý Voucher";
+}
+
+<div class="container-fluid px-4 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-ticket-perforated-fill me-2"></i>Danh Sách Mã Giảm Giá
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>Tạo mới
+        </a>
+    </div>
+
+    <!-- Card tìm kiếm -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-search me-1"></i>
+            Tìm kiếm voucher
+        </div>
+        <div class="card-body">
+            <form asp-controller="Voucher" asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="searchCode" class="form-label">Mã voucher</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+                        <input type="text" class="form-control" id="searchCode" name="code" value="@Context.Request.Query["code"]" placeholder="Nhập mã voucher...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="discountTypeFilter" class="form-label">Loại giảm giá</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                        <select class="form-select" id="discountTypeFilter" name="unit">
+                            <option value="">-- Tất cả loại --</option>
+                            <option value="0" >Theo phần trăm</option>
+                            <option value="1" >Giảm trực tiếp</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="statusFilter" class="form-label">Trạng thái</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                        <select class="form-select" id="statusFilter" name="status">
+                            <option value="">Tất cả</option>
+                            <option value="2" >Hoạt động</option>
+                            <option value="1" >Ngừng hoạt động</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search me-1"></i> Tìm kiếm
+                    </button>
+                    <a href="@Url.Action("Index", "Voucher")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách voucher -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-table me-1"></i>
+            Kết quả tìm kiếm
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-primary">
+                    <tr>
+                        <th class="text-center" style="width: 50px;">STT</th>
+                        <th>Mã</th>
+                        <th>Tên voucher</th>
+                        <th class="text-center">Số tiền giảm</th>
+                        <th class="text-center">Số lượng</th>
+                        <th>Thời gian hiệu lực</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center" style="width: 150px;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        var index = 1;
+                        @foreach (var voucher in Model)
                         {
-                            <span>Hoạt động</span>
-                        } else
-                        {
-                            <span>Không hoạt động</span>
+                            <tr>
+                                <td class="text-center">@index</td>
+                                <td><span class="badge bg-secondary">@voucher.Code</span></td>
+                                <td>@voucher.Name</td>
+                                <td class="text-center">
+                                    @(voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent
+                                        ? (voucher.Discount > 100 ? $"{voucher.Discount}" : $"{voucher.Discount} %")
+                                        : voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                </td>
+                                <td class="text-center">@voucher.Quantity</td>
+                                <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center">
+                                    <span class="badge @(voucher.Status ? "bg-success" : "bg-danger")">
+                                        <i class="bi @(voucher.Status ? "bi-check-circle" : "bi-x-circle") me-1"></i>
+                                        @(voucher.Status ? "Hoạt động" : "Ngừng hoạt động")
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a asp-action="Detail" asp-route-id="@voucher.Id" class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                       @*  <a asp-action="Detail" asp-route-id="@voucher.Id" class="btn btn-outline-info btn-sm">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a> *@
+                                       @*  <a asp-action="Delete" asp-route-id="@voucher.Id" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </a> *@
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
                         }
-                    </td>
-          <td>
-            <a class="btn btn-primary text-nowrap me-2" asp-controller="Voucher" asp-action="Detail" asp-route-id="@voucher.Id">Chi tiết</a>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <div class="text-secondary">
+                                    <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
+                                    <p class="mt-2">Không tìm thấy voucher nào.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <span class="text-muted">Hiển thị @(Model?.Count() ?? 0) voucher</span>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Hiệu ứng hover cho các hàng trong bảng
+            $('table tbody tr').hover(
+                function () {
+                    $(this).addClass('table-active');
+                },
+                function () {
+                    $(this).removeClass('table-active');
+                }
+            );
+        });
+    </script>
+}

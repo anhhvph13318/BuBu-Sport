@@ -41,12 +41,10 @@ public partial class TbOrder
 
     public string? ReasionCancel { get; set; }
 
-    public string? PhoneNumberCustomer { get; set; } // SDT Khách hàng
-    public decimal? Discount { get; set; } // thêm
-    public decimal SubTotal { get; set; } // thêm
-    public string? CustomerName { get; set; } // Tên khách hàng
-    public string? AddressCustomer { get; set; } // Địa chỉ khách
-    public Guid? EmployeeId { get; set; } // ID nhân viên xử lý
+    public string? PhoneNumberCustomer { get; set; }
+
+    public string? AddressCustomer { get; set; }
+
     public short PaymentStatus { get; set; }
 
     public bool IsCustomerTakeYourself { get; set; }

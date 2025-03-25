@@ -19,6 +19,5 @@ public partial class TbImage
 
     public Guid? CreateBy { get; set; }
 
-    public virtual ICollection<TbProduct> TbProducts { get; set; } = new List<TbProduct>();
-    public virtual ICollection<TbProductDetail> ProductDetails { get; set; }
+    public virtual ICollection<TbProductDetail> TbProductDetails { get; set; } = new List<TbProductDetail>();
 }

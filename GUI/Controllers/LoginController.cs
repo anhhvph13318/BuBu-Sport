@@ -24,6 +24,7 @@ namespace GUI.Controllers
     {
         private readonly ILogger<LoginController> _logger;
         private HttpService httpService;
+
         public LoginController(ILogger<LoginController> logger, IOptions<CommonSettings> settings)
         {
             _settings = settings.Value;
@@ -69,7 +70,7 @@ namespace GUI.Controllers
 
                 return result.Data != null && result.Data.Role == 0
                     ? RedirectToAction("Store", "Storefront")
-                    : RedirectToAction("Create", "Order");
+                    : RedirectToAction("", "Product");
             }
             else
             {

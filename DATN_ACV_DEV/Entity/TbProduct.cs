@@ -54,5 +54,6 @@ public partial class TbProduct
     public virtual ICollection<TbCartDetail> TbCartDetails { get; set; } = new List<TbCartDetail>();
 
     public virtual ICollection<TbOrderDetail> TbOrderDetails { get; set; } = new List<TbOrderDetail>();
-    public virtual ICollection<TbProductDetail> ProductDetails { get; set; }
+
+    public virtual ICollection<TbProductDetail> TbProductDetails { get; set; } = new List<TbProductDetail>();
 }

@@ -28,7 +28,7 @@ namespace DATN_ACV_DEV
             CreateMap<TbProduct, HomePageModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.CategoryID, opt => opt.MapFrom(src => src.CategoryId))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                 .ForMember(dest => dest.PriceNet, opt => opt.MapFrom(src => src.PriceNet))
@@ -66,7 +66,9 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.NameProduct, opt => opt.MapFrom(src => src.tbProduct.Name))
                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.tbImage.Url))
                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
-               .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.tbProduct.Price));
+               .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.tbProduct.Price))
+               .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.tbProduct.Color))
+               .ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.tbProduct.Size));
 
             
 
@@ -83,7 +85,8 @@ namespace DATN_ACV_DEV
                .ForMember(dest => dest.UserCode, opt => opt.MapFrom(src => src.UserCode))
                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-               .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position));
+               .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position))
+               .ForMember(dest => dest.InActive, opt => opt.MapFrom(src => src.InActive));
             
 
             CreateMap<TbCustomer, CustomerDTO>()
