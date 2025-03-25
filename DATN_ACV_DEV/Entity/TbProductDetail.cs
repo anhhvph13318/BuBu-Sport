@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace DATN_ACV_DEV.Entity;
@@ -23,5 +23,4 @@ public partial class TbProductDetail
 
     public virtual TbProduct? Product { get; set; }
     public virtual TbSize? Size { get; set; }
-
 }

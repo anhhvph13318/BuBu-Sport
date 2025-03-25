@@ -120,24 +120,39 @@ namespace GUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateProductRequest product)
         {
+            if (!ModelState.IsValid)
+            {
+                var categories = await FetchCategory();
+                ViewBag.Categories = categories;
+                return View(product);
+            }
+
             try
             {
                 product.Status = 1;
                 product.TypeImage = "1";
+
                 var URL = _settings.APIAddress + "api/CreateProduct/Process";
                 var param = JsonConvert.SerializeObject(product);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
+
                 if (result.Status == "400")
                 {
-                    ModelState.AddModelError("UserName", result.Messages.FirstOrDefault().MessageText);
-                    return Empty;
+                    ModelState.AddModelError(string.Empty, result.Messages.FirstOrDefault()?.MessageText ?? "Có lỗi xảy ra.");
+                    var categories = await FetchCategory();
+                    ViewBag.Categories = categories;
+                    return View(product);
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                var categories = await FetchCategory();
+                ViewBag.Categories = categories;
+                ModelState.AddModelError(string.Empty, "Có lỗi trong quá trình xử lý.");
+                return View(product);
             }
         }
         // GET: ProductController/Edit/5

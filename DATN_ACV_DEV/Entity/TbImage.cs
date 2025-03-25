@@ -10,7 +10,7 @@ public partial class TbImage
     public string Url { get; set; } = null!;
 
     public string Type { get; set; } = null!;
-
+    public bool? Status { get; set; }
     public bool? InAcitve { get; set; }
 
     public Guid? ProductId { get; set; }

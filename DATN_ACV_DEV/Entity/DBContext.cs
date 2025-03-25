@@ -31,7 +31,6 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbImage> TbImages { get; set; }
 
-    public virtual DbSet<TbMaterial> TbMaterials { get; set; }
 
     public virtual DbSet<TbOrder> TbOrders { get; set; }
 
@@ -52,7 +51,6 @@ public partial class DBContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=TW4NENH\\TUANANH;Initial Catalog=DB_DraftBracnh_04_03;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Latin1_General_CI_AS");
@@ -189,7 +187,6 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.YearOfBirth).HasColumnType("datetime");
         });
-
         modelBuilder.Entity<TbImage>(entity =>
         {
             entity.ToTable("tb_Image");
@@ -212,7 +209,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("ID");
-            entity.Property(e => e.Status).HasMaxLength(50);
+            
         });
 
         modelBuilder.Entity<TbOrder>(entity =>
@@ -274,7 +271,6 @@ public partial class DBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tb_OrderDetail_tb_Produst");
         });
-
         modelBuilder.Entity<TbProduct>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_tb_Produst");
@@ -311,7 +307,6 @@ public partial class DBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tb_Produst_tb_Category");
         });
-
         modelBuilder.Entity<TbProductDetail>(entity =>
         {
             entity.ToTable("tb_ProductDetail");
@@ -337,7 +332,6 @@ public partial class DBContext : DbContext
                 .HasForeignKey(d => d.SizeId)
                 .HasConstraintName("FK_tb_ProductDetail_tb_Size");
         });
-
         modelBuilder.Entity<TbProperty>(entity =>
         {
             entity.ToTable("tb_Properties");
@@ -349,7 +343,6 @@ public partial class DBContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
-
         modelBuilder.Entity<TbSize>(entity =>
         {
             entity.ToTable("tb_Size");
@@ -359,7 +352,6 @@ public partial class DBContext : DbContext
                 .HasColumnName("ID");
             entity.Property(e => e.SizeName).HasMaxLength(50);
         });
-
         modelBuilder.Entity<TbUser>(entity =>
         {
             entity.ToTable("tb_User");
@@ -381,7 +373,6 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UserCode).HasMaxLength(20);
             entity.Property(e => e.UserName).HasMaxLength(250);
         });
-
         modelBuilder.Entity<TbVoucher>(entity =>
         {
             entity.ToTable("tb_Voucher");
