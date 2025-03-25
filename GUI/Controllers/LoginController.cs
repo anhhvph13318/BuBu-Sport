@@ -24,6 +24,7 @@ namespace GUI.Controllers
     {
         private readonly ILogger<LoginController> _logger;
         private HttpService httpService;
+
         public LoginController(ILogger<LoginController> logger, IOptions<CommonSettings> settings)
         {
             _settings = settings.Value;

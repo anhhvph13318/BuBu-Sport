@@ -11,10 +11,11 @@
 
     <style>
         .sidebar-header .logo {
-            width: 100%; /* Hoặc một giá trị cụ thể như "150px" */
-            max-height: 80px; /* Đảm bảo chiều cao hợp lý */
-            object-fit: contain; /* Giữ tỷ lệ hình ảnh */
+            width: 100%; 
+            max-height: 80px; 
+            object-fit: contain; 
         }
+
         body {
             display: flex;
             min-height: 100vh;
@@ -43,7 +44,7 @@
         }
 
             .sidebar-header img {
-                width: 80px; /* Tăng kích thước ảnh */
+                width: 80px; 
                 margin-right: 1rem;
             }
 
@@ -54,7 +55,7 @@
         .nav-link {
             color: #495057;
         }
-        
+
         .container {
             flex-grow: 1;
             padding: 2rem;
@@ -88,7 +89,7 @@
             }
 
             .sidebar.collapsed .logo {
-                width: 40px; /* Thu nhỏ logo */
+                width: 40px; 
             }
 
             .sidebar.collapsed .sidebar-header a {
@@ -97,7 +98,7 @@
             }
 
             .sidebar.collapsed .sidebar-header h5 {
-                display: none; /* Ẩn chữ khi thu nhỏ */
+                display: none; 
             }
 
             .sidebar.collapsed .nav-link {
@@ -110,23 +111,21 @@
                 }
 
                 .sidebar.collapsed .nav-link span {
-                    display: none; /* Ẩn chữ trong menu */
+                    display: none; 
                 }
     </style>
 </head>
 <body>
-<div class="d-flex">
+    <div class="d-flex">
         <div class="sidebar bg-light border-end">
             <div class="sidebar-header d-flex align-items-center p-3">
                 <button id="toggleSidebar" class="btn btn-outline-secondary btn-sm me-2">
                     <i class="bi bi-list"></i>
                 </button>
-                <a href="/store">
-                    <img src="~/Image/LogoBuBu.png" alt="BuBu Logo" class="logo" />
-                </a>
+                <img src="~/Image/LogoBuBu.png" alt="BuBu Logo" class="logo" />
             </div>
             <nav class="nav flex-column p-3">
-@*                 <a class="nav-link" href="/customer">
+                @*<a class="nav-link" href="/customer">
                     <i class="bi bi-people-fill"> Quản lý khách hàng </i>                  
                 </a> *@
                 <a class="nav-link" href="/product">
@@ -138,7 +137,7 @@
                 <a class="nav-link" href="/customers">
                     <i class="bi bi-people-fill"></i> <span>Quản lý khách hàng</span>
                 </a>
-@*                 <a class="nav-link" href="/orders">
+                @*<a class="nav-link" href="/orders">
                     <i class="bi bi-cart-fill"> Quản lý hoá đơn </i>
                 </a>
                 <a class="nav-link" href="/orders/create">
@@ -153,9 +152,9 @@
                 <a class="nav-link" href="/accounts">
                     <i class="bi bi-person-bounding-box"></i> <span>Quản lý tài khoản</span>
                 </a>
-@*                 <a class="nav-link" href="/signin">
-                    <i class="bi bi-door-open-fill"> Đăng xuất </i>
-                </a> *@
+                <a   class="nav-link" href="/SignIn">
+                    <i class="bi bi-door-open-fill"></i><span>Đăng xuất</span>
+                </a>
             </nav>
         </div>
         <div class="container-fluid">
@@ -176,5 +175,8 @@
     document.getElementById("toggleSidebar").addEventListener("click", function () {
         document.querySelector(".sidebar").classList.toggle("collapsed");
     });
+
+
 </script>
+
 </html>

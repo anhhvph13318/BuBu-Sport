@@ -240,5 +240,11 @@ namespace GUI.Controllers
                 return View();
             }
         }
+        [HttpPost]
+        public IActionResult CheckProductCode(string code)
+        {
+            bool isAvailable = !_context.TbProducts.Any(p => p.Code == code);
+            return Json(new { isAvailable });
+        }
     }
 }
