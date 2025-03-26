@@ -104,7 +104,7 @@ public class VoucherController : Controller
         httpClient.BaseAddress = new Uri(URI);
 
         var response = model.IsEditMode
-            ? await httpClient.PatchAsJsonAsync($"/api/vouchers/{model.Voucher.Id}", model.Voucher)
+            ? await httpClient.PostAsJsonAsync("/api/editVoucher/Process", model.Voucher)
             : await httpClient.PostAsJsonAsync("/api/vouchers", model.Voucher);
 
         if (response.IsSuccessStatusCode)
