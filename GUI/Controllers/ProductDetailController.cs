@@ -85,6 +85,11 @@ namespace GUI.Controllers
             public Guid ProductID { get; set; }
             public string Name { get; set; }
         }
+        public class SizeDto
+        {
+            public Guid ProductID { get; set; }
+            public string SizeName { get; set; }
+        }
         [HttpPost]
         public async Task<IActionResult> CreateColorDetail([FromBody] ColorDto colorDto)
         {
@@ -101,6 +106,30 @@ namespace GUI.Controllers
                 }
 
                 var redirectUrl = $"http://localhost:5011/CreateDetail?productId={colorDto.ProductID}";
+                return Ok(new { success = true, url = redirectUrl });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Có lỗi xảy ra, vui lòng thử lại!" });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateSizeDetail([FromBody] SizeDto sizeDto)
+        {
+            try
+            {
+                var URL = _settings.APIAddress + "api/CreateSize/Process";
+                var param = JsonConvert.SerializeObject(sizeDto);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductDetailResponse>>(res) ?? new();
+
+                if (result.Status == "400")
+                {
+                    return BadRequest(new { success = false, message = result.Messages.FirstOrDefault()?.MessageText ?? "Lỗi không xác định" });
+                }
+
+                var redirectUrl = $"http://localhost:5011/CreateDetail?productId={sizeDto.ProductID}";
                 return Ok(new { success = true, url = redirectUrl });
             }
             catch (Exception ex)

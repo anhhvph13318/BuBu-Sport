@@ -266,68 +266,68 @@
 		});
 	});
 
-	//$('#order-submit').on('click', function (e) {
-	//	e.preventDefault();
-	//	let name = $('#order-name').val();
-	//	let phone = $('#order-phone').val();
-	//	let address = $('#order-address').val();
-	//	let district = $('#order-district').val();
-	//	let city = $('#order-city').val();
-	//	let ids = [];
-	//	let items = $('.order-item');
-	//	$.each(items, function (i, obj) {
-	//		let id = $(obj).attr('data-itemId');
-	//		ids.push(id);
-	//	});
+	$('#order-submit').on('click', function (e) {
+		e.preventDefault();
+		let name = $('#order-name').val();
+		let phone = $('#order-phone').val();
+		let address = $('#order-address').val();
+		let district = $('#order-district').val();
+		let city = $('#order-city').val();
+		let ids = [];
+		let items = $('.order-item');
+		$.each(items, function (i, obj) {
+			let id = $(obj).attr('data-itemId');
+			ids.push(id);
+		});
 		
-	//	let COD = $('#payment-1').is(":checked");
+		let COD = $('#payment-1').is(":checked");
 
- //       if (!name) {
-	//		alert("Tên không được để trống");
-	//		return false;
-	//	}
+        if (!name) {
+			alert("Tên không được để trống");
+			return false;
+		}
 
-	//	if (!phone) {
-	//		alert("Số điện thoại không được để trống");
-	//		return false;
-	//	}
+		if (!phone) {
+			alert("Số điện thoại không được để trống");
+			return false;
+		}
 
- //       if (!ValidatePhone(phone)) {
-	//		alert("Số điện thoại không hợp lệ");
-	//		return false;
- //       }
+        if (!ValidatePhone(phone)) {
+			alert("Số điện thoại không hợp lệ");
+			return false;
+        }
 
-	//	if (!address || !district || !city) {
-	//		alert("Địa chỉ không được để trống");
-	//		return false;
- //       }
+		if (!address || !district || !city) {
+			alert("Địa chỉ không được để trống");
+			return false;
+        }
 
-	//	if (ids.length) {
-	//		$.post("/Buy", {
-	//			name: name,
-	//			phone: phone,
-	//			address: address,
-	//			district: district,
-	//			city: city,
-	//			ids: ids,
-	//			getatstore: false,
-	//			isVNP: !COD
-	//		}, function (data) {
-	//			if (data.success) {
-	//				if (data.redirect) {
-	//					window.location.href = data.url;
-	//				} else {
-	//					window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
-	//				}
-	//			} else {
-	//				alert("Đã có lỗi xảy ra");
-	//			}
-	//		});
-	//	} else {
- //           alert("Đã có lỗi xảy ra");
-	//		return false;
-	//	}
-	//}); -CMT
+		if (ids.length) {
+			$.post("/Buy", {
+				name: name,
+				phone: phone,
+				address: address,
+				district: district,
+				city: city,
+				ids: ids,
+				getatstore: false,
+				isVNP: !COD
+			}, function (data) {
+				if (data.success) {
+					if (data.redirect) {
+						window.location.href = data.url;
+					} else {
+						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
+					}
+				} else {
+					alert("Đã có lỗi xảy ra");
+				}
+			});
+		} else {
+            alert("Đã có lỗi xảy ra");
+			return false;
+		}
+	});
 
 	let changeQuant;
 	$('.input-quant').on('change', function () {

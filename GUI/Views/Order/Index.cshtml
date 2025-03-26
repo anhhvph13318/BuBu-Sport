@@ -38,6 +38,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th class="text-center" style="width: 50px;">STT</th>
                 <th>Mã hóa đơn</th>
                 <th>Khách hàng</th>
                 <th>Sản phẩm</th>
@@ -47,19 +48,26 @@
             </tr>
         </thead>
         <tbody>
-        @foreach (var order in Model)
-        {
-            <tr>
-                <td>@order.code</td>
-                <td>@order.nameCustomer</td>
-                <td>@order.products</td>
-                    <td>@order.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                <td>@order.status</td>
-                <td>
-                    <a class="btn btn-link" asp-controller="Order" asp-action="Detail" asp-route-id="@order.id">Chi tiết</a>
-                </td>
-            </tr>
-        }
+            @if (Model != null && Model.Any())
+            {
+                var index = 1;
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td class="text-center">@index</td>
+                        <td>@order.code</td>
+                        <td>@order.nameCustomer</td>
+                        <td>@order.products</td>
+                        <td>@order.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                        <td>@order.status</td>
+                        <td>
+                            <a class="btn btn-link" asp-controller="Order" asp-action="Detail" asp-route-id="@order.id">Chi tiết</a>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+
         </tbody>
     </table>
 
