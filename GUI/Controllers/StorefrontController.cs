@@ -555,7 +555,7 @@ namespace GUI.Controllers
 					phoneNummber = obj.phone,
 					addressDelivery = string.Join(", ", new List<string> { obj.address, obj.district, obj.city }),
 					name = obj.name,
-					getAtStore = false,
+					getAtStore = true,
 					amountShip = 30000,
 					totalAmountDiscount = discountAmount,
 					voucherID = vouchers
