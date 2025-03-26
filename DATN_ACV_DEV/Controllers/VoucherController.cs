@@ -19,13 +19,16 @@ namespace DATN_ACV_DEV.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetVouchers(
-            [FromQuery] string? code,
-            [FromQuery] string? name,
-            [FromQuery] DateTime? startDate,
-            [FromQuery] DateTime? endDate,
-            [FromQuery] VoucherUnit? unit,
-            [FromQuery] Status? status)
+    [FromQuery] string? code,
+    [FromQuery] string? name,
+    [FromQuery] DateTime? startDate,
+    [FromQuery] DateTime? endDate,
+    [FromQuery] VoucherUnit? unit,
+    [FromQuery] Status? status)
         {
+            // Cập nhật trạng thái voucher trước khi truy vấn
+            await UpdateVoucherStatuses();
+
             var vouchers = await _context.TbVouchers.AsNoTracking()
                 .Where(e => (string.IsNullOrEmpty(code) || e.Code.StartsWith(code.ToUpper()))
                     && (string.IsNullOrEmpty(name) || e.Name.StartsWith(name))
@@ -42,14 +45,43 @@ namespace DATN_ACV_DEV.Controllers
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
                     Quantity = e.Quantity.Value,
-                    //Unit = e.Unit,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
-                    Status = e.Status == Status.Valid,
-                    //RequiredTotalAmount = e.RequiredTotalAmount
+                    Status = e.Status == Status.Active,
                 }).ToListAsync();
 
-            return Ok(new BaseResponse<GetListVoucherResponse> { Data = new GetListVoucherResponse { LstVoucher = vouchers, TotalCount = vouchers.Count } });
+            return Ok(new BaseResponse<GetListVoucherResponse>
+            {
+                Data = new GetListVoucherResponse
+                {
+                    LstVoucher = vouchers,
+                    TotalCount = vouchers.Count
+                }
+            });
+        }
+
+        // Phương thức cập nhật trạng thái voucher
+        private async Task UpdateVoucherStatuses()
+        {
+            var currentDateTime = DateTime.Now;
+
+            // Lấy tất cả các voucher
+            var vouchers = await _context.TbVouchers
+                .Where(v => v.Quantity > 0)
+                .ToListAsync();
+
+            // Cập nhật trạng thái
+            foreach (var voucher in vouchers)
+            {
+                voucher.Status = currentDateTime < voucher.StartDate
+                    ? Status.InActive
+                    : (currentDateTime >= voucher.StartDate && currentDateTime <= voucher.EndDate
+                        ? Status.Active
+                        : Status.Expired);
+            }
+
+            // Lưu các thay đổi
+            await _context.SaveChangesAsync();
         }
 
         [HttpGet]
@@ -62,7 +94,7 @@ namespace DATN_ACV_DEV.Controllers
 
 			var vouchers = await _context.TbVouchers.AsNoTracking()
                 .Include(e => e.Orders)
-                .Where(e => e.Status == Status.Valid && (string.IsNullOrEmpty(phoneNumber) || !e.Orders.Any(d => d.PhoneNumberCustomer == phoneNumber)))
+                .Where(e => e.Status == Status.Active && (string.IsNullOrEmpty(phoneNumber) || !e.Orders.Any(d => d.PhoneNumberCustomer == phoneNumber)))
                 .Where(e => e.StartDate <= DateTime.Now)
                 .Where(e => e.EndDate >= DateTime.Now)
                 .Where(e => e.Quantity > 0)
@@ -77,7 +109,7 @@ namespace DATN_ACV_DEV.Controllers
                     Unit = e.Unit,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
-                    Status = e.Status == Status.Valid,
+                    Status = e.Status == Status.Active,
                     //RequiredTotalAmount = e.RequiredTotalAmount
                 }).ToListAsync();
 
@@ -99,7 +131,7 @@ namespace DATN_ACV_DEV.Controllers
                     //Unit = e.Unit,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
-                    Status = e.Status == Status.Valid,
+                    Status = e.Status == Status.Active,
                     //RequiredTotalAmount = e.RequiredTotalAmount
                 }).FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
 
@@ -143,7 +175,11 @@ namespace DATN_ACV_DEV.Controllers
                 //RequiredTotalAmount = request.RequiredTotalAmount,
                 CreateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"),
                 CreateDate = DateTime.Now,
-                Status = request.Status ? Status.Valid : Status.Closed,
+                Status = DateTime.Now < request.StartDate
+                    ? Status.InActive
+                    : (DateTime.Now >= request.StartDate && DateTime.Now <= request.EndDate
+                        ? Status.Active
+                        : Status.Expired),
             };
 
             await _context.AddAsync(voucher);
@@ -206,7 +242,7 @@ namespace DATN_ACV_DEV.Controllers
         {
             var voucher = await _context.TbVouchers.AsNoTracking()
                 .Where(e => e.StartDate <= DateTime.Now && e.EndDate >= DateTime.Now)
-                .Where(e => e.Status == Status.Valid)
+                .Where(e => e.Status == Status.Active)
                 .Where(e => e.Quantity > 0)
                 .Select(e => new VoucherDTO
                 {
@@ -220,7 +256,7 @@ namespace DATN_ACV_DEV.Controllers
                     Type = e.Type,
                     Discount = e.Discount,
                     MaxDiscount = e.MaxDiscount,
-                    Status = e.Status == Status.Valid,
+                    Status = e.Status == Status.Active,
                     //RequiredTotalAmount = e.RequiredTotalAmount
                 })
                 .FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));

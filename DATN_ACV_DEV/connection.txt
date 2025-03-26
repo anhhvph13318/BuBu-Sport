@@ -8,3 +8,7 @@ VietAnh:
 Vu: Data Source=RATONLYNK;Initial Catalog=DB_SmartHouse;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
 
 Quan: Data Source=Admin-PC\\SQLEXPRESS;Initial Catalog=DB_SmartHouse_12_08;Integrated Security=True;Trust Server Certificate=True
+
+
+
+Tuan Anh : Data Source=TW4NENH\TUANANH;Initial Catalog=DB_BuBu_26_03;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
