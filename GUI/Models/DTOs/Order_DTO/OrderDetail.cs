@@ -42,13 +42,13 @@ public class OrderDetail
         PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.ShippingFee;
         PaymentInfo.Products = Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
 
-        if (Voucher.Id == Guid.Empty)
+        if (Voucher != null && Voucher.Id == Guid.Empty)
         {
             PaymentInfo.TotalDiscount = 0;
             return;
         }
 
-        if (Voucher.Unit == VoucherUnit.Percent)
+        if (Voucher != null && Voucher.Unit == VoucherUnit.Percent)
         {
             var discount = PaymentInfo.TotalAmount * Voucher.Discount / 100;
             var finalDiscount = discount > Voucher.MaxDiscount
@@ -59,8 +59,8 @@ public class OrderDetail
         }
         else
         {
-            PaymentInfo.TotalDiscount = Voucher.Discount;
-            PaymentInfo.FinalAmount -= Voucher.Discount;
+            PaymentInfo.TotalDiscount = Voucher != null ? Voucher.Discount : PaymentInfo.TotalDiscount;
+            PaymentInfo.FinalAmount -= Voucher != null ? Voucher.Discount : 0;
         }
     }
 }

@@ -9,5 +9,7 @@ namespace GUI.Models.DTOs.ProductDetail_DTO
         public Guid? SizeName { get; set; }
         public Guid? Color { get; set; }
         public Guid? ProductID { get; set; }
+        public string Image { get; set; }
+        public string? UrlImage { get; set; }
     }
 }

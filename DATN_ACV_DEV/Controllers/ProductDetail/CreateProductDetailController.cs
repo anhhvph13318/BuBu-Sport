@@ -6,6 +6,8 @@ using DATN_ACV_DEV.Entity;
 using Azure;
 using Microsoft.EntityFrameworkCore;
 using DATN_ACV_DEV.Controllers.Property;
+using DATN_ACV_DEV.Model_DTO.Image_DTO;
+using System.Net.WebSockets;
 
 namespace DATN_ACV_DEV.Controllers.ProductDetail
 {
@@ -19,6 +21,7 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
         private CreateProductDetailResponse _response;
         private string _apiCode = "CreateProductDetail";
         private TbProductDetail _ProductDetail;
+        private CreateImageRequest _Image;
         public CreateProductDetailController(DBContext context)
         {
             _context = context;
@@ -35,6 +38,8 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
             _context.SaveChanges();
             _response.ID = _ProductDetail.Id;
             _res.Data = _response;
+            _context.Add(_Image);
+            _context.SaveChanges();
         }
 
         public void CheckAuthorization()
@@ -55,6 +60,15 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
                 SizeId = _request.SizeName,
                 ProductId = _request.ProductID,
             };
+            _Image = new CreateImageRequest()
+            {
+                Url = _request.UrlImage,
+                Type = "1",
+                InAcitve = true,
+                ProductId = _request.ProductID,
+            
+            };
+            var id = new CreateImageController(_context).Process(_Image);
         }
 
         public void PreValidation()
