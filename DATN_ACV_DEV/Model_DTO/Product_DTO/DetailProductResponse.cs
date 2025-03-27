@@ -1,6 +1,6 @@
 ﻿using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.Model_DTO.ProductDetail_DTO;
-using DATN_ACV_DEV.Models;
+
 using System.Text.Json.Serialization;
 
 namespace DATN_ACV_DEV.Model_DTO.Product_DTO

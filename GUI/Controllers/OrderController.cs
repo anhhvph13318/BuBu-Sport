@@ -32,16 +32,54 @@ public class OrderController : Controller
     private const string TempSaveOrderButtonPartialView = "_TempSaveOrderButtonPartialView";
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)
+    public async Task<IActionResult> Index(
+    [FromQuery] string? code = "",
+    [FromQuery] string? customerName = "",
+    [FromQuery] int status = 0,
+    [FromQuery] decimal? minAmount = null,
+    [FromQuery] decimal? maxAmount = null,
+    [FromQuery] string? orderCodePrefix = "")
     {
-        using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(URI);
-        var rawResponse = await httpClient.GetAsync($"/api/admin/orders?code={code}&customerName={customerName}&status={status}");
-        var response =
-            JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(URI);
+            var query = $"/api/admin/orders?code={code}&customerName={customerName}&status={status}";
+            var rawResponse = await httpClient.GetAsync(query);
+
+            if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new HttpRequestException($"Có lỗi khi gọi API: {rawResponse.StatusCode}");
+            }
+
+            var response = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
 
-        return View(response!.Data);
+            var orders = response!.Data;
+
+            // Lọc theo orderCodePrefix
+            if (!string.IsNullOrEmpty(orderCodePrefix))
+            {
+                orders = orders.Where(o => o.code.StartsWith(orderCodePrefix));
+            }
+
+            if (minAmount.HasValue)
+            {
+                orders = orders.Where(o => o.FinalAmount >= minAmount.Value);
+            }
+            if (maxAmount.HasValue)
+            {
+                orders = orders.Where(o => o.FinalAmount <= maxAmount.Value);
+            }
+
+            return View(orders);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi: {ex.Message}");
+            TempData["Error"] = "Có lỗi xảy ra khi tải danh sách hóa đơn.";
+            return View(new List<OrderListItem>());
+        }
     }
 
     [HttpGet]

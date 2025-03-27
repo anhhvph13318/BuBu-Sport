@@ -55,6 +55,7 @@ namespace DATN_ACV_DEV.Controllers
 
         public void GenerateObjects()
         {
+            var currentDateTime = DateTime.Now;
             try
             {
                 Guid voucherId = _request.Id;
@@ -77,7 +78,11 @@ namespace DATN_ACV_DEV.Controllers
                     _Voucher.EndDate = _request.EndDate;
                     _Voucher.Type = _request.Type;
                     _Voucher.Unit = _request.Unit;
-                    _Voucher.Status = _request.Status ? Status.Valid : Status.Closed;
+                    _Voucher.Status = currentDateTime < _Voucher.StartDate
+                        ? Status.InActive
+                        : (currentDateTime >= _Voucher.StartDate && currentDateTime <= _Voucher.EndDate
+                            ? Status.Active
+                            : Status.Expired);
                     _Voucher.MaxDiscount = _request.MaxDiscount;
                     //Default
                     _Voucher.UpdateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993");

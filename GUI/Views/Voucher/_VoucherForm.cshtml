@@ -56,10 +56,6 @@
                 <span class="text-danger" asp-validation-for="Voucher.EndDate"></span>
             </div>
         </div>
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" asp-for="Voucher.Status"/>
-            <label class ="form-check-label">Khả dụng</label>
-        </div>
         <hr />
         <div class="d-flex justify-content-end">
             <button type="submit" class="btn me-3 @(Model.IsEditMode ? "btn-success" : "btn-primary")">@(Model.IsEditMode ? "Cập nhật" : "Tạo")</button>
