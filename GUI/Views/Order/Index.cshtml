@@ -2,85 +2,201 @@
 @model IEnumerable<GUI.Models.DTOs.Order_DTO.OrderListItem>
 
 @{
-    Layout = "_Layout";
+    ViewData["Title"] = "Quản Lý Hóa Đơn";
+    var currentDate = DateTime.Now;
 }
 
-<div class="container">
-    <h3>Danh sách hóa đơn</h3>
-    <hr />
-    <form asp-action="Index" method="get" class="d-flex justify-content-between" id="search">
-        <div class="d-flex">
-            <label>Mã hóa đơn</label>
-            <input class="form-control" name="code" id="code" />
-        </div>
-        <div class="d-flex">
-            <label>Tên khách hàng</label>
-            <input name="customerName" class="form-control" />
-        </div>
-        <div class="d-flex">
-            <label>Trạng thái</label>
-            <select name="status" class="form-select">
-                <option value="0">-- Trạng thái</option>
-                <option value="1">Chuẩn bị hàng</option>
-                <option value="2">Đang vận chuyển</option>
-                <option value="3">Đã hủy</option>
-                <option value="4">Trả hàng</option>
-                <option value="7">Hoàn thành</option>
-            </select>
-        </div>
-        <div class="d-flex justify-content-between">
-            <input type="submit" value="tìm kiếm" class="btn btn-primary" />
-            <input type="button" value="Reset" class="btn btn-danger" id="resetBtn" />
-        </div>
-    </form>
-    <hr />
+<div class="container-fluid px-4 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-receipt-cutoff me-2"></i>Danh Sách Hóa Đơn
+        </h2>
+        <a asp-action="Create" asp-controller="Order" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>Tạo mới
+        </a>
+    </div>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th class="text-center" style="width: 50px;">STT</th>
-                <th>Mã hóa đơn</th>
-                <th>Khách hàng</th>
-                <th>Sản phẩm</th>
-                <th>Thanh tiền</th>
-                <th>Trạng thái</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Any())
-            {
-                var index = 1;
-                @foreach (var order in Model)
-                {
+    <!-- Card tìm kiếm -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-search me-1"></i>Tìm kiếm hóa đơn
+        </div>
+        <div class="card-body">
+            <form asp-controller="Order" asp-action="Index" method="get" class="row g-3" id="searchForm">
+                <div class="col-md-3">
+                    <label for="searchCode" class="form-label">Mã hóa đơn</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+                        <input type="text" class="form-control" id="searchCode" name="code" value="@Context.Request.Query["code"]" placeholder="Nhập mã hóa đơn...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="customerName" class="form-label">Tên khách hàng</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="customerName" name="customerName" value="@Context.Request.Query["customerName"]" placeholder="Nhập tên khách hàng...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="statusFilter" class="form-label">Trạng thái</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                        <select class="form-select" id="statusFilter" name="status">
+                            <option value="0" selected="@(Context.Request.Query["status"].ToString() == "0")">-- Tất cả trạng thái --</option>
+                            <option value="5" selected="@(Context.Request.Query["status"].ToString() == "5")">Chờ xác nhận</option>
+                            <option value="1" selected="@(Context.Request.Query["status"].ToString() == "1")">Chuẩn bị hàng</option>
+                            <option value="2" selected="@(Context.Request.Query["status"].ToString() == "2")">Đang vận chuyển</option>
+                            <option value="3" selected="@(Context.Request.Query["status"].ToString() == "3")">Đã hủy</option>
+                            <option value="7" selected="@(Context.Request.Query["status"].ToString() == "7")">Hoàn thành</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="orderCodePrefix" class="form-label">Kiểu đơn hàng</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-cart-check"></i></span>
+                        <select class="form-select" id="orderCodePrefix" name="orderCodePrefix">
+                            <option value="" selected="@(string.IsNullOrEmpty(Context.Request.Query["orderCodePrefix"]))">-- Tất cả kiểu --</option>
+                            <option value="OFF" selected="@(Context.Request.Query["orderCodePrefix"] == "OFF")">Tại quầy (OFF)</option>
+                            <option value="ON" selected="@(Context.Request.Query["orderCodePrefix"] == "ON")">Online (ON)</option>
+                            @* <option value="TEMP" selected="@(Context.Request.Query["orderCodePrefix"] == "TEMP")">Nháp (TEMP)</option> *@
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="minAmount" class="form-label">Giá tối thiểu</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
+                        <input type="text" class="form-control number-input" id="minAmount" name="minAmount" 
+                               value="@(Context.Request.Query["minAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["minAmount"], out var min) ? min.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")" 
+                               placeholder="Nhập giá tối thiểu...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="maxAmount" class="form-label">Giá tối đa</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
+                        <input type="text" class="form-control number-input" id="maxAmount" name="maxAmount" 
+                               value="@(Context.Request.Query["maxAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["maxAmount"], out var max) ? max.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")" 
+                               placeholder="Nhập giá tối đa...">
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search me-1"></i>Tìm kiếm
+                    </button>
+                    <a href="@Url.Action("Index", "Order")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách hóa đơn -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-table me-1"></i>Kết quả tìm kiếm
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-primary">
                     <tr>
-                        <td class="text-center">@index</td>
-                        <td>@order.code</td>
-                        <td>@order.nameCustomer</td>
-                        <td>@order.products</td>
-                        <td>@order.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                        <td>@order.status</td>
-                        <td>
-                            <a class="btn btn-link" asp-controller="Order" asp-action="Detail" asp-route-id="@order.id">Chi tiết</a>
-                        </td>
+                        <th class="text-center" style="width: 50px;">STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Kiểu</th>
+                        <th>Khách hàng</th>
+                        <th>Sản phẩm</th>
+                        <th>Thanh tiền</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center" style="width: 150px;">Hành động</th>
                     </tr>
-                    index++;
-                }
-            }
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        var index = 1;
+                        @foreach (var order in Model)
+                        {
+                            var orderType = order.code.StartsWith("OFF") ? "Tại quầy" : /*(order.code.StartsWith("TEMP") ? "Nháp" :*/ "Online"/*)*/;
+                            var statusClass = order.status switch
+                            {
+                                "Chờ xác nhận" => "bg-secondary",
+                                "Chuẩn bị hàng" => "bg-warning",
+                                "Đang vận chuyển" => "bg-info",
+                                "Đã hủy" => "bg-danger",
+                                "Hoàn thành đơn hàng" => "bg-success",
+                                _ => "bg-secondary"
+                            };
 
-        </tbody>
-    </table>
-
+                            <tr>
+                                <td class="text-center">@index</td>
+                                <td><span class="badge bg-secondary">@order.code</span></td>
+                                <td>@orderType</td>
+                                <td>@order.nameCustomer</td>
+                                <td>@order.products</td>
+                                <td>@order.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                                <td class="text-center">
+                                    <span class="badge @statusClass">@order.status</span>
+                                </td>
+                                <td class="text-center">
+                                    <a asp-action="Detail" asp-route-id="@order.id" class="btn btn-outline-warning btn-sm">
+                                        <i class="bi bi-eye"></i> Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <div class="text-secondary">
+                                    <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
+                                    <p class="mt-2">Không tìm thấy hóa đơn nào.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <span class="text-muted">Hiển thị @(Model?.Count() ?? 0) hóa đơn</span>
+            </div>
+        </div>
+    </div>
 </div>
 
-@section Scripts
-{
-    <script type="text/javascript">
-        $("#resetBtn").on('click', function () {
-            $("#code").val('');
-            $("#customerName").val('');
-            $("#status").val("0");
-            $("#search").submit();
-        })
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('table tbody tr').hover(
+                function () {
+                    $(this).addClass('table-active');
+                },
+                function () {
+                    $(this).removeClass('table-active');
+                }
+            );
+
+            // Định dạng số với dấu chấm mỗi 3 số 0
+            $('.number-input').on('input', function () {
+                let value = $(this).val().replace(/\./g, ''); // Xóa dấu chấm cũ
+                if (value && !isNaN(value)) {
+                    $(this).val(Number(value).toLocaleString('vi-VN')); // Thêm dấu chấm
+                }
+            });
+
+            // Xử lý khi submit form để gửi giá trị số thô (không có dấu chấm)
+            $('#searchForm').on('submit', function () {
+                $('.number-input').each(function () {
+                    let value = $(this).val().replace(/\./g, ''); // Xóa dấu chấm trước khi gửi
+                    $(this).val(value);
+                });
+            });
+        });
     </script>
 }
