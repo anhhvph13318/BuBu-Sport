@@ -77,6 +77,10 @@ namespace GUI.Controllers
         {
             var categories = await FetchCategory();
             ViewBag.Categories = categories;
+            var Colors = await FetchColor();
+            ViewBag.Colors = Colors;
+            var Sizes = await FetchSize();
+            ViewBag.Sizes = Sizes;
             return View();
         }
         private async Task<IEnumerable<CategoryDTO>> FetchCategory()
