@@ -246,7 +246,24 @@ namespace GUI.Controllers
             var model = result.Data;
             return View(model);
         }
+        [HttpPost]
+        public IActionResult UpdateDetailQuantity([FromBody] UpdateDetailQuantityModel model)
+        {
+            var detail = _context.TbProductDetails.FirstOrDefault(d => d.Id == model.Id);
+            if (detail != null)
+            {
+                detail.Quantity = model.Quantity;
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
 
+        public class UpdateDetailQuantityModel
+        {
+            public Guid Id { get; set; }
+            public int Quantity { get; set; }
+        }
         // POST: ProductController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

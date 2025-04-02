@@ -1,9 +1,11 @@
 @using GUI.Models.DTOs.Voucher_DTO
 @using System.Globalization
+@using DATN_ACV_DEV.Entity
 @model IEnumerable<VoucherDTO>
 
 @{
     ViewData["Title"] = "Quản Lý Voucher";
+    var currentDate = DateTime.Now;
 }
 
 <div class="container-fluid px-4 mt-3">
@@ -37,8 +39,8 @@
                         <span class="input-group-text"><i class="bi bi-percent"></i></span>
                         <select class="form-select" id="discountTypeFilter" name="unit">
                             <option value="">-- Tất cả loại --</option>
-                            <option value="0" >Theo phần trăm</option>
-                            <option value="1" >Giảm trực tiếp</option>
+                            <option value="0">Theo phần trăm</option>
+                            <option value="1">Giảm trực tiếp</option>
                         </select>
                     </div>
                 </div>
@@ -48,8 +50,9 @@
                         <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                         <select class="form-select" id="statusFilter" name="status">
                             <option value="">Tất cả</option>
-                            <option value="2" >Hoạt động</option>
-                            <option value="1" >Ngừng hoạt động</option>
+                            <option value="2">Hoạt động</option>
+                            <option value="1">Chưa bắt đầu</option>
+                            <option value="3">Hết hiệu lực</option>
                         </select>
                     </div>
                 </div>
@@ -91,21 +94,41 @@
                         var index = 1;
                         @foreach (var voucher in Model)
                         {
+                            // Tính toán trạng thái voucher
+                            var status = currentDate < voucher.StartDate
+                            ? Status.InActive
+                            : (currentDate >= voucher.StartDate && currentDate <= voucher.EndDate
+                            ? Status.Active
+                            : Status.Expired);
+
+                            // Xác định màu sắc và biểu tượng
+                            var (statusClass, statusText, statusIcon) = status switch
+                            {
+                                Status.Active => ("bg-success", "Hoạt động", "bi-check-circle"),
+                                Status.InActive => ("bg-warning", "Chưa bắt đầu", "bi-clock"),
+                                Status.Expired => ("bg-danger", "Hết hiệu lực", "bi-x-circle"),
+                                _ => ("bg-secondary", "Không xác định", "bi-question-circle")
+                            };
+
                             <tr>
                                 <td class="text-center">@index</td>
                                 <td><span class="badge bg-secondary">@voucher.Code</span></td>
                                 <td>@voucher.Name</td>
                                 <td class="text-center">
-                                    @(voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent
+                                    @(voucher.Unit == VoucherUnit.Percent
                                         ? (voucher.Discount > 100 ? $"{voucher.Discount}" : $"{voucher.Discount} %")
                                         : voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
                                 </td>
                                 <td class="text-center">@voucher.Quantity</td>
-                                <td>@voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <span class="text-muted">
+                                        @voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")
+                                    </span>
+                                </td>
                                 <td class="text-center">
-                                    <span class="badge @(voucher.Status ? "bg-success" : "bg-danger")">
-                                        <i class="bi @(voucher.Status ? "bi-check-circle" : "bi-x-circle") me-1"></i>
-                                        @(voucher.Status ? "Hoạt động" : "Ngừng hoạt động")
+                                    <span class="badge @statusClass">
+                                        <i class="bi @statusIcon me-1"></i>
+                                        @statusText
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -113,12 +136,6 @@
                                         <a asp-action="Detail" asp-route-id="@voucher.Id" class="btn btn-outline-warning btn-sm">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                       @*  <a asp-action="Detail" asp-route-id="@voucher.Id" class="btn btn-outline-info btn-sm">
-                                            <i class="bi bi-info-circle"></i>
-                                        </a> *@
-                                       @*  <a asp-action="Delete" asp-route-id="@voucher.Id" class="btn btn-outline-danger btn-sm">
-                                            <i class="bi bi-trash"></i>
-                                        </a> *@
                                     </div>
                                 </td>
                             </tr>
