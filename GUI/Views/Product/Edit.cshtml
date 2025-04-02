@@ -124,24 +124,29 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.DetailDataFinal != null && Model.DetailDataFinal.Any())
+                @if (Model.DetailDataFinal is not null && Model.DetailDataFinal.Any())
                 {
-                    foreach (var item in Model.DetailDataFinal)
+                    @foreach (var item in Model.DetailDataFinal)
                     {
-                        <tr data-color="@item.ColorName" data-size="@item.SizeName">
+                        <tr>
                             <td>
                                 <img src="@item.UrlImage" alt="Hình ảnh" style="width: 68px; height: 48px; object-fit: cover;" />
                             </td>
-                            <td>@item.Quantity</td>
+                            <td>
+                                <input type="number" class="form-control quantity-input" value="@item.Quantity" data-id="@item.Id" min="0" />
+                            </td>
                             <td>@item.ColorName</td>
                             <td>@item.SizeName</td>
+                            <td>
+                                <button type="button" class="btn btn-success btn-save-quantity" data-id="@item.Id">Lưu</button>
+                            </td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="4" class="text-center">Không có sản phẩm nào.</td>
+                        <td colspan="8" class="text-center">Không có sản phẩm nào.</td>
                     </tr>
                 }
             </tbody>
@@ -250,6 +255,35 @@
                     console.log("Hiding row:", row);
                     row.hide();
                 }
+            });
+        });
+    });
+
+    //sua so luong bien the san pham
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btn-save-quantity").forEach(button => {
+            button.addEventListener("click", function () {
+                let id = this.getAttribute("data-id");
+                let inputField = document.querySelector(`.quantity-input[data-id='${id}']`);
+                let newQuantity = inputField.value;
+
+                fetch("/Product/UpdateDetailQuantity", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector("input[name='__RequestVerificationToken']").value
+                    },
+                    body: JSON.stringify({ id: id, quantity: newQuantity })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Cập nhật thành công!");
+                        } else {
+                            alert("Cập nhật thất bại!");
+                        }
+                    })
+                    .catch(error => console.error("Lỗi:", error));
             });
         });
     });
