@@ -118,9 +118,6 @@
                         <div class="card border" id="sizeTableContainer">
                             <div class="card-body p-2">
                                 <div class="row g-2" id="sizeGridContainer">
-                                    @{
-                                        int index = 0;
-                                    }
                                     @foreach (var item in sortedSizes)
                                     {
                                         <div class="col-md-4 col-6">
@@ -131,13 +128,11 @@
                                                 </div>
                                                 <div class="input-group input-group-sm flex-grow-1">
                                                     <input type="number" class="form-control form-control-sm quantityInput"
-                                                           name="SizesQuantities[@index].QuantitySize"
                                                            id="quantity_@item.Id" min="0" value="0" disabled>
-                                                    <input type="hidden" name="SizesQuantities[@index].IdSize" value="@item.Id">
+                                                    <input type="hidden" class="sizeIdInput" value="@item.Id">
                                                 </div>
                                             </div>
                                         </div>
-                                        index++;
                                     }
                                 </div>
                             </div>
@@ -237,21 +232,6 @@
             } else {
                 priceFormatted.textContent = '0 ₫';
             }
-        });
-
-        // Xử lý khi submit form để lấy giá trị thực tế
-        document.getElementById('createProductForm').addEventListener('submit', function() {
-            // Chuyển giá trị có định dạng về số nguyên
-            const priceRaw = priceInput.value.replace(/\./g, '');
-
-            // Tạo input ẩn để gửi giá trị thực
-            const hiddenPrice = document.createElement('input');
-            hiddenPrice.type = 'hidden';
-            hiddenPrice.name = 'Price';
-            hiddenPrice.value = priceRaw;
-
-            // Thêm input ẩn vào form
-            this.appendChild(hiddenPrice);
         });
 
         // Xử lý size checkbox và quantity input
@@ -404,21 +384,47 @@
                     document.getElementById("codeValidationMessage").textContent = "Mã sản phẩm này đã tồn tại!";
                     return;
                 }
+
                 if (confirm("Bạn có chắc muốn thêm sản phẩm này không?")) {
-                    // Loại bỏ size không được chọn trước khi submit
-                    let checkboxes = document.querySelectorAll(".sizeCheckbox");
+                    // Xử lý giá trước khi submit
+                    const priceRaw = priceInput.value.replace(/\./g, '');
+                    const hiddenPrice = document.createElement('input');
+                    hiddenPrice.type = 'hidden';
+                    hiddenPrice.name = 'Price';
+                    hiddenPrice.value = priceRaw;
+                    this.appendChild(hiddenPrice);
 
-                    checkboxes.forEach((checkbox) => {
-                        let sizeItem = checkbox.closest('.size-item');
-                        let quantityInput = sizeItem.querySelector(".quantityInput");
-                        let sizeIdInput = sizeItem.querySelector("input[type=hidden]");
+                    // XỬ LÝ SIZE: Tạo các input động cho các size được chọn
+                    // Xóa bỏ các input SizesQuantities cũ nếu có
+                    document.querySelectorAll('input[name^="SizesQuantities"]').forEach(input => {
+                        input.remove();
+                    });
 
-                        let quantity = parseInt(quantityInput.value);
+                    // Thêm mới chỉ những size được chọn với index liên tiếp
+                    let index = 0;
+                    let checkedSizes = document.querySelectorAll('.sizeCheckbox:checked');
 
-                        if (!checkbox.checked || quantity <= 0) {
-                            if (sizeIdInput) sizeIdInput.remove();
-                            if (quantityInput) quantityInput.remove();
-                        }
+                    checkedSizes.forEach(checkbox => {
+                        let sizeId = checkbox.dataset.sizeId;
+                        let quantity = document.getElementById('quantity_' + sizeId).value;
+
+                        // Tạo input cho IdSize
+                        let sizeIdInput = document.createElement('input');
+                        sizeIdInput.type = 'hidden';
+                        sizeIdInput.name = `SizesQuantities[${index}].IdSize`;
+                        sizeIdInput.value = sizeId;
+
+                        // Tạo input cho QuantitySize
+                        let quantityInput = document.createElement('input');
+                        quantityInput.type = 'hidden';
+                        quantityInput.name = `SizesQuantities[${index}].QuantitySize`;
+                        quantityInput.value = quantity;
+
+                        // Thêm vào form
+                        this.appendChild(sizeIdInput);
+                        this.appendChild(quantityInput);
+
+                        index++;
                     });
 
                     this.submit();
