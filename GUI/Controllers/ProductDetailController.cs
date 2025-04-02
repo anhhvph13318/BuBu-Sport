@@ -53,7 +53,9 @@ namespace GUI.Controllers
                 {
                     Id = e.Id,
                     SizeName = e.SizeName,
+                    CreateDate = e.CreateDate
                 })
+                .OrderBy(e => e.CreateDate)
                 .ToListAsync();
         }
         [HttpPost]

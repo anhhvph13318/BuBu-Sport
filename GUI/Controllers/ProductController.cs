@@ -159,19 +159,35 @@ namespace GUI.Controllers
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<DetailProductResponse>>(res) ?? new();
             // Lấy danh sách chi tiết sản phẩm từ database
-            var datadetail = _context.TbProductDetails.Where(c => c.ProductId == result.Data.Id).ToList();
+            var datadetail = _context.TbProductDetails
+                .Where(c => c.ProductId == result.Data.Id)
+                .ToList();
+
             var groupdata = datadetail
-                .GroupBy(c => new {c.ColorId,c.SizeId})
+                .GroupBy(c => new { c.ColorId, c.SizeId })
+                .Select(d => new
+                {
+                    ProductDetail = d,
+                    SizeCreateDate = _context.TbSizes
+                        .Where(s => s.Id == d.Key.SizeId)
+                        .Select(s => s.CreateDate)
+                        .FirstOrDefault()
+                })
                 .Select(d => new TbProductDetail
                 {
-                    Id = d.First().Id,
-                    Price = d.First().Price, // Giữ nguyên giá của bản ghi đầu tiên
-                    Quantity = d.Sum(p => p.Quantity), // Cộng tổng số lượng
-                    ImageId = d.First().ImageId,
-                    ColorId = d.Key.ColorId,
-                    SizeId = d.Key.SizeId,
-                    ProductId = d.First().ProductId
-                }).ToList();
+                    Id = d.ProductDetail.First().Id,
+                    Price = d.ProductDetail.First().Price, // Giữ nguyên giá của bản ghi đầu tiên
+                    Quantity = d.ProductDetail.Sum(p => p.Quantity), // Cộng tổng số lượng
+                    ImageId = d.ProductDetail.Select(x => x.ImageId).Distinct().Count() == 1
+                        ? d.ProductDetail.First().ImageId
+                        : d.ProductDetail.OrderByDescending(x => x.CreateDate).First().ImageId,
+                    ColorId = d.ProductDetail.Key.ColorId,
+                    SizeId = d.ProductDetail.Key.SizeId,
+                    ProductId = d.ProductDetail.First().ProductId,
+                    CreateDate = d.SizeCreateDate // Lấy CreateDate từ bảng Size
+                })
+                .ToList();
+
             result.Data.DetailData = groupdata;
 
             // Tạo Dictionary để tối ưu truy vấn
@@ -189,8 +205,13 @@ namespace GUI.Controllers
                 SizeId = d.SizeId,
                 ProductId = d.ProductId,
                 ColorName = d.ColorId.HasValue && colorDict.ContainsKey(d.ColorId.Value) ? colorDict[d.ColorId.Value] : "Unknown",
-                SizeName = d.SizeId.HasValue && sizeDict.ContainsKey(d.SizeId.Value) ? sizeDict[d.SizeId.Value] : "Unknown"
-            }).ToList();
+                SizeName = d.SizeId.HasValue && sizeDict.ContainsKey(d.SizeId.Value) ? sizeDict[d.SizeId.Value] : "Unknown",
+                CreateDate = d.CreateDate,
+            }).OrderByDescending(c=>c.CreateDate).ToList();
+            foreach (var item in result.Data.DetailDataFinal)
+            {
+                item.UrlImage = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c=>c.Url).FirstOrDefault();
+            }
             var model = result.Data;
             return View(model);
         }
