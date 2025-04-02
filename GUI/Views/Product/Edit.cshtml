@@ -101,6 +101,7 @@
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
+                    <th>Ảnh</th>
                     @* <th>Giá sản phẩm</th> *@
                     <th>Số lượng</th>
                     @* <th>Giá bán</th> *@
@@ -114,7 +115,9 @@
                     @foreach (var item in Model.DetailDataFinal)
                     {
                         <tr>
-                            @* <td>@item.Price</td> *@
+                            <td>
+                                <img src="@item.UrlImage" alt="Hình ảnh" style="width: 68px; height: 48px; object-fit: cover;" />
+                            </td>                            @* <td>@item.Price</td> *@
                             <td>@item.Quantity</td>
                             @* <td>@item.Price</td> *@
                             <td>@item.ColorName</td>

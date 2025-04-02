@@ -22,7 +22,8 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
         private string _apiCode = "CreateProductDetail";
         private TbProductDetail _ProductDetail;
         private List<TbProductDetail> _ProductDetails;
-        private CreateImageRequest _Image;
+        private CreateImageRequest _Image; 
+        private BaseResponse<CreateImageResponse> _imageId;
         public CreateProductDetailController(DBContext context)
         {
             _context = context;
@@ -64,7 +65,18 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
                                   .FirstOrDefault();
 
             _ProductDetails = new List<TbProductDetail>(); // Danh sách ProductDetail
-
+            // Nếu không có ImageID, tạo ảnh mới
+            if (_request.ImageID == null)
+            {
+                _Image = new CreateImageRequest()
+                {
+                    Url = _request.UrlImage,
+                    Type = "1",
+                    InAcitve = true,
+                    ProductId = _request.ProductID,
+                };
+                _imageId = new CreateImageController(_context).Process(_Image); // Nhận response
+            }
             // Kiểm tra nếu SizesQuantities không null và có dữ liệu
             if (_request.SizesQuantities != null && _request.SizesQuantities.Any())
             {
@@ -75,7 +87,7 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
                         Id = Guid.NewGuid(),
                         Price = _request.Price,
                         Quantity = sizeQuantity.QuantitySize,
-                        ImageId = _request.ImageID ?? imageID,
+                        ImageId = _request.ImageID ?? _imageId.Data.ID,
                         ColorId = _request.Color,
                         SizeId = sizeQuantity.IdSize,
                         ProductId = _request.ProductID,
@@ -91,7 +103,7 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
                     Id = Guid.NewGuid(),
                     Price = _request.Price,
                     Quantity = _request.Quantity, // Lấy Quantity từ request nếu không có danh sách
-                    ImageId = _request.ImageID ?? imageID,
+                    ImageId = _request.ImageID ?? _imageId.Data.ID,
                     ColorId = _request.Color,
                     SizeId = _request.SizeName, // Trường hợp không có danh sách, lấy SizeName trực tiếp từ request
                     ProductId = _request.ProductID,
@@ -100,18 +112,7 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
                 _ProductDetails.Add(productDetail);
             }
 
-            // Nếu không có ImageID, tạo ảnh mới
-            if (_request.ImageID == null)
-            {
-                _Image = new CreateImageRequest()
-                {
-                    Url = _request.UrlImage,
-                    Type = "1",
-                    InAcitve = true,
-                    ProductId = _request.ProductID,
-                };
-                var id = new CreateImageController(_context).Process(_Image);
-            }
+            
         }
 
 
