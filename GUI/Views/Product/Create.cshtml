@@ -9,46 +9,124 @@
         <h2 class="text-center mb-4">Thêm sản phẩm mới</h2>
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="row">
-            <!-- Cột trái: Form nhập liệu -->
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label asp-for="Code" class="form-label">Mã sản phẩm</label>
-                    <input asp-for="Code" class="form-control" id="productCode" placeholder="Nhập mã sản phẩm" required maxlength="7" pattern="SP\d{5}" title="Mã sản phẩm phải là 'SP' theo sau bởi đúng 5 chữ số (ví dụ: SP00001)" />
-                    <span asp-validation-for="Code" class="text-danger" id="codeValidationMessage"></span>
-                </div>
-                <div class="form-group mb-3">
-                    <label asp-for="Name" class="form-label">Tên sản phẩm</label>
-                    <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" required maxlength="100" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group mb-3">
-                    <label asp-for="Price" class="form-label">Giá sản phẩm</label>
-                    <input asp-for="Price" class="form-control" id="priceInput" placeholder="Nhập giá sản phẩm" type="number" required min="0" step="1000" title="Giá phải là số không âm, tối thiểu 0" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
-                <div class="form-group mb-3">
-                    <label asp-for="Description" class="form-label">Mô tả</label>
-                    <textarea asp-for="Description" class="form-control" placeholder="Nhập mô tả" rows="3" required maxlength="500" title="Mô tả không được để trống và tối đa 500 ký tự"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group mb-3">
-                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
-                    <select asp-for="CategoryId" class="form-select" required>
-                        <option value="" disabled selected>Chọn danh mục</option>
-                        @foreach (var item in ViewBag.Categories)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }
-                    </select>
-                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+        <div id="infoSection">
+            <div class="row">
+                <!-- Cột trái: Form nhập liệu -->
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Code" class="form-label">Mã sản phẩm</label>
+                        <input asp-for="Code" class="form-control" id="productCode" placeholder="Nhập mã sản phẩm" required maxlength="7" pattern="SP\d{5}" title="Mã sản phẩm phải là 'SP' theo sau bởi đúng 5 chữ số (ví dụ: SP00001)" />
+                        <span asp-validation-for="Code" class="text-danger" id="codeValidationMessage"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                        <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" required maxlength="100" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Price" class="form-label">Giá sản phẩm</label>
+                        <input asp-for="Price" class="form-control" id="priceInput" placeholder="Nhập giá sản phẩm" type="number" required min="0" step="1000" title="Giá phải là số không âm, tối thiểu 0" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" placeholder="Nhập mô tả" rows="3" required maxlength="500" title="Mô tả không được để trống và tối đa 500 ký tự"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                        <select asp-for="CategoryId" class="form-select" required>
+                            <option value="" disabled selected>Chọn danh mục</option>
+                            @foreach (var item in ViewBag.Categories)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
+            <!-- Nút tiếp tục -->
+            <div class="form-group text-center mt-4">
+                <button type="button" class="btn btn-info" id="nextStep">Tiếp tục</button>
+            </div>
+        </div>
 
-            <!-- Cột phải: Ảnh sản phẩm -->
+        <!-- Phần chọn ảnh (ẩn ban đầu) -->
+        <div id="imageSection" style="display: none;">
             <div class="col-md-6 d-flex justify-content-center align-items-center">
                 <div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Color" class="control-label">Màu sắc</label>
+                        <select id="categorySelect" asp-for="Color" class="form-select">
+                            <option selected value="">Chọn màu sắc</option>
+                            @foreach (var item in ViewBag.Colors)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                            <option value="add_new">➕ Thêm màu sắc</option>
+                        </select>
+                        <span asp-validation-for="Color" class="text-danger"></span>
+                    </div>
+
+
+                    <!-- Modal thêm màu sắc -->
+                    <div class="modal fade" id="addColorModal" tabindex="-1" aria-labelledby="addColorLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addColorLabel">Thêm màu sắc</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <label for="newColorName" class="form-label">Tên màu sắc</label>
+                                    <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên màu">
+                                    <input type="hidden" id="modalProductId" /> <!-- Input ẩn trong modal -->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                    <button type="button" class="btn btn-primary" id="saveNewColor">Lưu</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="control-label">Chọn Size & Nhập Số Lượng</label>
+                        <button type="button" class="btn btn-primary btn-sm" id="toggleSizeTable">
+                            ⬆️
+                        </button>
+                        <div class="table-responsive" id="sizeTableContainer">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Size</th>
+                                        <th>Số lượng</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sizeTableBody">
+                                    @{
+                                        int index = 0;
+                                    }
+                                    @foreach (var item in ViewBag.Sizes)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="@item.Id">
+                                                <label for="size_@item.Id">@item.SizeName</label>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control quantityInput" name="SizesQuantities[@index].QuantitySize"
+                                                       id="quantity_@item.Id" min="0" value="0">
+                                                <input type="hidden" name="SizesQuantities[@index].IdSize" value="@item.Id">
+                                            </td>
+                                        </tr>
+                                        index++;
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label asp-for="UrlImage" class="form-label">Ảnh sản phẩm</label>
                         <input type="file" id="fileInput" class="form-control" accept="image/*" required title="Vui lòng chọn một ảnh sản phẩm" />
@@ -58,12 +136,12 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Nút điều khiển -->
-        <div class="form-group d-flex justify-content-between mt-4">
-            <a asp-action="Index" class="btn btn-secondary">Quay trở lại</a>
-            <button type="submit" class="btn btn-primary" id="submitButton">Thêm mới</button>
+            <!-- Nút quay lại và thêm mới -->
+            <div class="form-group d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-secondary" id="prevStep">Quay lại</button>
+                <button type="submit" class="btn btn-primary" id="submitButton">Thêm mới</button>
+            </div>
         </div>
     </form>
 </div>
@@ -72,6 +150,44 @@
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector("form").addEventListener("submit", function (e) {
+            let rows = document.querySelectorAll("#sizeTableBody tr");
+
+            rows.forEach((row) => {
+                let checkbox = row.querySelector(".sizeCheckbox");
+                let quantityInput = row.querySelector(".quantityInput");
+                let sizeIdInput = row.querySelector("input[type=hidden]");
+
+                let quantity = parseInt(quantityInput.value);
+
+                // Nếu checkbox không được chọn hoặc số lượng = 0, thì xóa input khỏi form
+                if (!checkbox.checked || quantity <= 0) {
+                    sizeIdInput.remove();
+                    quantityInput.remove();
+                }
+            });
+        });
+    });
+    document.getElementById("toggleSizeTable").addEventListener("click", function () {
+        var tableContainer = document.getElementById("sizeTableContainer");
+        if (tableContainer.style.display === "none") {
+            tableContainer.style.display = "block";
+            this.textContent = "⬆️";
+        } else {
+            tableContainer.style.display = "none";
+            this.textContent = "⬇️";
+        }
+    });
+    document.getElementById("nextStep").addEventListener("click", function () {
+        document.getElementById("infoSection").style.display = "none"; // Ẩn form nhập thông tin
+        document.getElementById("imageSection").style.display = "block"; // Hiện form upload ảnh
+    });
+
+    document.getElementById("prevStep").addEventListener("click", function () {
+        document.getElementById("imageSection").style.display = "none"; // Ẩn phần upload ảnh
+        document.getElementById("infoSection").style.display = "block"; // Hiện lại phần nhập thông tin
+    });
     document.addEventListener("DOMContentLoaded", function () {
         var codeInput = document.getElementById("productCode");
         var codeValidationMessage = document.getElementById("codeValidationMessage");
