@@ -18,6 +18,8 @@
 
         public string SizeName { get; set; }
         public string ColorName { get; set; }
+        public string UrlImage { get; set; }
+        public DateTime? CreateDate { get; set; }
 
     }
 }
