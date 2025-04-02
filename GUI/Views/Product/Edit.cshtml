@@ -23,32 +23,16 @@
                     <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-
-               
-
                 <div class="form-group mb-3">
                     <label asp-for="Price" class="form-label">Giá sản phẩm</label>
                     <input asp-for="Price" class="form-control" placeholder="Nhập giá sản phẩm" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
-
                 <div class="form-group mb-3">
                     <label asp-for="Description" class="form-label">Mô tả</label>
                     <textarea asp-for="Description" class="form-control" placeholder="Nhập mô tả"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
-
-@*                 <div class="form-group mb-3">
-                    <label asp-for="PriceNet" class="form-label">Giá bán</label>
-                    <input asp-for="PriceNet" class="form-control" placeholder="Nhập giá bán" />
-                    <span asp-validation-for="PriceNet" class="text-danger"></span>
-                </div> *@
-@*                 <div class="form-group mb-3">
-                    <label asp-for="Quantity" class="form-label">Số lượng</label>
-                    <input asp-for="Quantity" class="form-control" placeholder="Nhập số lượng" />
-                    <span asp-validation-for="Quantity" class="text-danger"></span>
-                </div> *@
-
                 <div class="form-group mb-3">
                     <label asp-for="CategoryId" class="form-label">Danh mục</label>
                     <select id="categorySelect" asp-for="CategoryId" class="form-select">
@@ -62,7 +46,6 @@
                             else
                             {
                                 <option value="@item.Id">@item.Name</option>
-
                             }
                         }
                     </select>
@@ -92,71 +75,96 @@
                              class="mt-3 img-thumbnail" />
                         <input type="hidden" asp-for="UrlImage" value="@Model.Image" id="urlImage" />
                     </div>
-                    <a asp-controller="ProductDetail" asp-action="CreateDetail" asp-route-productId="@Model.Id" class="btn btn-secondary">Thêm biến thể</a>
+                    <a asp-controller="ProductDetail" asp-action="CreateDetail" asp-route-productId="@Model.Id" class="btn btn-secondary mt-2">Thêm biến thể</a>
                 </div>
             </div>
         </div>
     </form>
-    <form asp-action="Edit" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm">
-        <table class="table table-bordered">
+
+    <!-- Bảng biến thể với bộ lọc -->
+    <div class="bg-light p-4 rounded shadow-sm mt-4">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Lọc theo màu sắc</label>
+                <select id="colorFilter" class="form-select">
+                    <option value="">Tất cả màu sắc</option>
+                    @if (Model.DetailDataFinal != null && Model.DetailDataFinal.Any())
+                    {
+                        var uniqueColors = Model.DetailDataFinal.Select(d => d.ColorName).Distinct();
+                        foreach (var color in uniqueColors)
+                        {
+                            <option value="@color">@color</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Lọc theo size</label>
+                <select id="sizeFilter" class="form-select">
+                    <option value="">Tất cả size</option>
+                    @if (Model.DetailDataFinal != null && Model.DetailDataFinal.Any())
+                    {
+                        var uniqueSizes = Model.DetailDataFinal.Select(d => d.SizeName).Distinct();
+                        foreach (var size in uniqueSizes)
+                        {
+                            <option value="@size">@size</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <table class="table table-bordered" id="variantTable">
             <thead class="table-dark">
                 <tr>
                     <th>Ảnh</th>
-                    @* <th>Giá sản phẩm</th> *@
                     <th>Số lượng</th>
-                    @* <th>Giá bán</th> *@
                     <th>Màu sắc</th>
-                    <th>Size<th>
+                    <th>Size</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.DetailDataFinal is not null && Model.DetailDataFinal is not null && Model.DetailData.Any())
+                @if (Model.DetailDataFinal != null && Model.DetailDataFinal.Any())
                 {
-                    @foreach (var item in Model.DetailDataFinal)
+                    foreach (var item in Model.DetailDataFinal)
                     {
-                        <tr>
+                        <tr data-color="@item.ColorName" data-size="@item.SizeName">
                             <td>
                                 <img src="@item.UrlImage" alt="Hình ảnh" style="width: 68px; height: 48px; object-fit: cover;" />
-                            </td>                            @* <td>@item.Price</td> *@
+                            </td>
                             <td>@item.Quantity</td>
-                            @* <td>@item.Price</td> *@
                             <td>@item.ColorName</td>
                             <td>@item.SizeName</td>
-                                                   
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="8" class="text-center">Không có sản phẩm nào.</td>
+                        <td colspan="4" class="text-center">Không có sản phẩm nào.</td>
                     </tr>
                 }
             </tbody>
         </table>
-    </form>
-
+    </div>
 </div>
-
-
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
     (function ($) {
-
         $('#fileInput').on("change", function (e) {
             let file = e.target.files[0];
             let form = new FormData();
 
             form.append("api_key", "284335524597493");
             form.append("upload_preset", "vanh2204");
-            form.append("public_id", @DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            form.append("public_id", new Date().toISOString().replace(/[-:.]/g, ""));
             form.append("file", file);
 
             var settings = {
                 "async": true,
                 "crossDomain": true,
-                "url": "https://api.cloudinary.com/v1_1/dnvuz3evz/image/upload?Vanh1",
+                "url": "https://api.cloudinary.com/v1_1/dnvuz3evz/image/upload",
                 "method": "POST",
                 "processData": false,
                 "contentType": false,
@@ -168,7 +176,7 @@
                 let data = JSON.parse(response);
                 console.log(data);
                 if (data) {
-                    let url = data.secure_url ?? data.url
+                    let url = data.secure_url ?? data.url;
                     console.log(url);
                     if (url) {
                         $("#imagePreview").attr("src", url);
@@ -185,7 +193,6 @@
         if (a) {
             $("#imagePreview").show();
         }
-
     })(jQuery);
 
     // Hiển thị preview ảnh sau khi chọn file
@@ -213,5 +220,37 @@
             spinner.style.display = 'inline-block'; // Hiện spinner khi nhấn nút
             this.closest('form').submit(); // Gửi form
         }
+    });
+
+    // Lọc bảng theo size và màu sắc
+    $(document).ready(function () {
+        console.log("jQuery loaded, binding filter events");
+
+        $('#colorFilter, #sizeFilter').on('change', function () {
+            const colorFilter = $('#colorFilter').val().toLowerCase().trim();
+            const sizeFilter = $('#sizeFilter').val().toLowerCase().trim();
+
+            console.log("Color filter:", colorFilter);
+            console.log("Size filter:", sizeFilter);
+
+            $('#variantTable tbody tr').each(function () {
+                const row = $(this);
+                const color = row.data('color') ? row.data('color').toString().toLowerCase().trim() : '';
+                const size = row.data('size') ? row.data('size').toString().toLowerCase().trim() : '';
+
+                console.log("Row color:", color, "Row size:", size);
+
+                const colorMatch = !colorFilter || color === colorFilter;
+                const sizeMatch = !sizeFilter || size === sizeFilter;
+
+                if (colorMatch && sizeMatch) {
+                    console.log("Showing row:", row);
+                    row.show();
+                } else {
+                    console.log("Hiding row:", row);
+                    row.hide();
+                }
+            });
+        });
     });
 </script>
