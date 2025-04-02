@@ -18,6 +18,7 @@ public partial class TbProductDetail
     public Guid? SizeId { get; set; }
 
     public Guid? ProductId { get; set; }
+    public DateTime? CreateDate { get; set; }
 
     public virtual TbImage? Image { get; set; }
 

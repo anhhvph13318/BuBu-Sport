@@ -15,7 +15,7 @@ namespace DATN_ACV_DEV.Model_DTO.ProductDetail_DTO
     }
     public class SizeQuantityDto
     {
-        public int Id { get; set; } // ID của Size
-        public int Quantity { get; set; } // Số lượng
+        public Guid IdSize { get; set; } // ID của Size
+        public int QuantitySize { get; set; } // Số lượng
     }
 }
