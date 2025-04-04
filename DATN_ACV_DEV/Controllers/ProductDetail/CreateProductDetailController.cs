@@ -41,12 +41,9 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
             {
                 _context.TbProductDetails.AddRange(_ProductDetails); // Lưu nhiều bản ghi cùng lúc
                 _context.SaveChanges();
-                var existingProduct = _context.TbProducts.FirstOrDefault(p => p.Id == _Product.Id);
-                if (existingProduct != null && _ProductDetails.Any())
-                {
-                    existingProduct.Quantity = _ProductDetails.Sum(c => c.Quantity);
-                    _context.SaveChanges(); // Lưu thay đổi số lượng
-                }
+                _Product = _context.TbProducts.Where(p => p.Id == _request.ProductID).FirstOrDefault();
+                _Product.Quantity = _ProductDetails.Sum(c => c.Quantity);
+                _context.SaveChanges(); // Lưu thay đổi số lượng              
             }
             else 
             {
@@ -55,8 +52,8 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
             }
             _response.ID = _ProductDetails.First().Id;
             _res.Data = _response;
-            _context.Add(_Image);
-            _context.SaveChanges();
+            //_context.Add(_Image);
+            //_context.SaveChanges();
         }
 
         public void CheckAuthorization()
