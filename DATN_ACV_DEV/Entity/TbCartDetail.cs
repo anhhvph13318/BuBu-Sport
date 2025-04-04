@@ -12,6 +12,8 @@ public partial class TbCartDetail
     public Guid? ProductId { get; set; }
 
     public Guid? CartId { get; set; }
+    public Guid ColorId { get; set; }
+    public Guid SizeId { get; set; }
 
     public virtual TbCart? Cart { get; set; }
 

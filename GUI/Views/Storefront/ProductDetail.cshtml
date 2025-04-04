@@ -68,7 +68,7 @@
                     <!-- Product Variants Selection -->
                     @if (Model.DetailDataFinal != null && Model.DetailDataFinal.Any())
                     {
-                        <form id="addToCartForm" method="post" action="/cart/add">
+                        <form id="addToCartForm">
                             <input type="hidden" name="productId" value="@Model.Id" />
 
                             <!-- Color Selection -->
@@ -87,9 +87,10 @@
                                     <div class="d-flex flex-wrap gap-2">
                                         @foreach (var color in uniqueColors)
                                         {
+                                            var colorImage = Model.DetailDataFinal.FirstOrDefault(p => p.ColorId == color.ColorId)?.UrlImage;
                                             <div class="form-check">
                                                 <input class="form-check-input color-select" type="radio" name="colorId"
-                                                       id="color_@color.ColorId" value="@color.ColorId" required>
+                                                       id="color_@color.ColorId" value="@color.ColorId" data-image="@colorImage" required>
                                                 <label class="form-check-label" for="color_@color.ColorId">
                                                     @color.ColorName
                                                 </label>
@@ -146,7 +147,7 @@
 
                             <!-- Add to Cart Button -->
                             <div class="d-grid gap-2">
-                                <button class="btn btn-primary addCartDetail" data-prId="@Model.Id" data-quantity="***"><i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng</button>
+                                <button class="btn btn-primary addCartDetailnew" type="button" data-prId="@Model.Id" data-quantity="***"><i class="bi bi-cart-plus"></i> Thêm vào giỏ hàngg</button>
 
                                 <button class="btn btn-outline-primary buyNowDetail" data-prId="@Model.Id" data-quantity="***"><i class="fa fa-shopping-cart"></i> Mua ngay</button>
 
@@ -828,6 +829,21 @@
 
 @section Scripts {
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const colorRadios = document.querySelectorAll(".color-select");
+            const mainImage = document.getElementById("mainImage");
+
+            colorRadios.forEach(radio => {
+                radio.addEventListener("change", function () {
+                    console.log("Color selected:", this.value); // Kiểm tra xem sự kiện có chạy không
+
+                    const newImage = this.getAttribute("data-image");
+                    if (newImage) {
+                        mainImage.src = newImage;
+                    }
+                });
+            });
+        });
         $(document).ready(function () {
             // Product quantity handlers
             $('#increaseQty').click(function () {
@@ -947,23 +963,37 @@
             }
         });
         $(document).ready(function () {
-            $(".addCartDetail").on("click", function () {
+            $(".addCartDetailnew").on("click", function () {
                 let customerId = getCookie("user-id");
                 let quantity = $("#quantity").val(); // Lấy số lượng từ ô input
-                $(this).attr("data-quantity", quantity); // Cập nhật vào data-quantity
+                let selectedColor = $(".color-select:checked").val(); // Màu sắc
+                let selectedSize = $(".size-select:checked").val(); // Kích thước
+
+                // Kiểm tra nếu chưa chọn
+                if (!selectedColor || !selectedSize) {
+                    alert("Vui lòng chọn màu sắc và kích thước!");
+                    return;
+                }
+
+                let productId = $(this).attr("data-prId");
 
                 $.post("/AddCart", {
-                    prId: $(this).attr("data-prId"),
+                    prId: productId,
                     userId: customerId,
-                    quantity: quantity
+                    quantity: quantity,
+                    colorId: selectedColor,  // 🆕 Thêm màu sắc
+                    sizeId: selectedSize     // 🆕 Thêm kích thước
                 }, function (data) {
                     if (!customerId) {
                         setCookie("user-id", data.userId, 90);
                     }
-                    window.location = "/cart";
+
+                    // 🆕 Chuyển hướng và gửi dữ liệu qua URL
+                    window.location = `/cart?prId=${productId}&quantity=${quantity}&colorId=${selectedColor}&sizeId=${selectedSize}`;
                 });
             });
         });
+
         $(document).ready(function () {
             $(".buyNowDetail").on("click", function () {
                 let customerId = getCookie("user-id");
