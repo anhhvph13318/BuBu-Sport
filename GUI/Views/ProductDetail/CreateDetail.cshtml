@@ -8,22 +8,28 @@
 <div class="container my-4">
     <h1 class="text-primary"><i class="fas fa-box-open me-2"></i>Thêm chi tiết sản phẩm</h1>
     <hr class="border-primary" />
-    <form asp-action="CreateDetail" method="post">
+    <form asp-action="CreateDetail" method="post" class="needs-validation" novalidate>
         <div class="row g-4">
             <div class="col-md-6">
                 <input type="hidden" asp-for="ProductID" />
 
-                <div class="form-group mb-3">
-                    <label asp-for="Color" class="control-label fw-bold"><i class="fas fa-palette me-2"></i>Màu sắc</label>
-                    <select id="categorySelect" asp-for="Color" class="form-select shadow-sm">
-                        <option selected value="">Chọn màu sắc</option>
-                        @foreach (var item in ViewBag.Colors)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }
-                        <option value="add_new"><i class="fas fa-plus me-1"></i>Thêm màu sắc</option>
-                    </select>
-                    <span asp-validation-for="Color" class="text-danger"></span>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h5 class="card-title mb-0"><i class="fas fa-palette me-2"></i>Màu sắc</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <select id="categorySelect" asp-for="Color" class="form-select shadow-sm">
+                                <option selected value="">Chọn màu sắc</option>
+                                @foreach (var item in ViewBag.Colors)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                                <option value="add_new"><i class="fas fa-plus me-1"></i>Thêm màu sắc</option>
+                            </select>
+                            <span asp-validation-for="Color" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
 
                 <input type="hidden" id="productId" asp-for="ProductID" />
@@ -48,43 +54,47 @@
                     </div>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label class="control-label fw-bold"><i class="fas fa-ruler me-2"></i>Chọn Size & Số Lượng</label>
-                    <div class="d-flex align-items-center mb-2">
-                        <button type="button" class="btn btn-primary btn-sm me-2" id="toggleSizeTable"><i class="fas fa-angle-up"></i></button>
-                        <button type="button" class="btn btn-outline-primary btn-sm" id="addSizeButton"><i class="fas fa-plus me-1"></i>Thêm size</button>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary bg-opacity-10 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0"><i class="fas fa-ruler me-2"></i>Chọn Size & Số Lượng</h5>
+                        <div>
+                            <button type="button" class="btn btn-primary btn-sm me-2" id="toggleSizeTable"><i class="fas fa-angle-up"></i></button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="addSizeButton"><i class="fas fa-plus me-1"></i>Thêm size</button>
+                        </div>
                     </div>
-                    <div class="table-responsive mt-2 shadow-sm rounded" id="sizeTableContainer" style="max-height: 450px; overflow-y: auto;">
-                        <table class="table table-bordered table-hover table-sm">
-                            <thead class="table-primary sticky-top">
-                                <tr>
-                                    <th class="text-center" style="width: 50%;">Size</th>
-                                    <th class="text-center" style="width: 50%;">Số lượng</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sizeTableBody">
-                                @{
-                                    int index = 0;
-                                }
-                                @foreach (var item in sortedSizes)
-                                {
+                    <div class="card-body p-0">
+                        <div class="table-responsive" id="sizeTableContainer" style="max-height: 450px; overflow-y: auto;">
+                            <table class="table table-bordered table-hover table-sm mb-0">
+                                <thead class="table-primary sticky-top">
                                     <tr>
-                                        <td class="align-middle">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="@item.Id" id="size_@item.Id">
-                                                <label class="form-check-label" for="size_@item.Id">@item.SizeName</label>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle">
-                                            <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[@index].QuantitySize"
-                                                   id="quantity_@item.Id" min="0" value="0" style="width: 80px; margin: 0 auto;">
-                                            <input type="hidden" name="SizesQuantities[@index].IdSize" value="@item.Id">
-                                        </td>
+                                        <th class="text-center" style="width: 50%;">Size</th>
+                                        <th class="text-center" style="width: 50%;">Số lượng</th>
                                     </tr>
-                                    index++;
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody id="sizeTableBody">
+                                    @{
+                                        int index = 0;
+                                    }
+                                    @foreach (var item in sortedSizes)
+                                    {
+                                        <tr>
+                                            <td class="align-middle">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="@item.Id" id="size_@item.Id">
+                                                    <label class="form-check-label" for="size_@item.Id">@item.SizeName</label>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[@index].QuantitySize"
+                                                       id="quantity_@item.Id" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
+                                                <input type="hidden" name="SizesQuantities[@index].IdSize" value="@item.Id">
+                                            </td>
+                                        </tr>
+                                        index++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -110,23 +120,32 @@
                     </div>
                 </div>
 
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 mt-4">
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Lưu biến thể</button>
                     <a href="@Context.Request.Headers["Referer"]" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Quay lại</a>
                 </div>
             </div>
-            <div class="col-md-6 d-flex justify-content-center align-items-center">
-                <div class="card shadow-sm p-3">
-                    <div class="form-group">
-                        <label asp-for="UrlImage" class="form-label fw-bold"><i class="fas fa-image me-2"></i>Ảnh sản phẩm</label>
-                        <input type="file" id="fileInput" class="form-control" accept="image/*" required title="Vui lòng chọn một ảnh sản phẩm" />
-                        <img id="imagePreview"
-                             src="/path/to/default-image.jpg"
-                             alt="Image preview"
-                             style="display: block; width: 250px; height: 250px; object-fit: cover;"
-                             class="mt-3 img-thumbnail" />
-                        <input type="hidden" asp-for="UrlImage" id="urlImage" />
-                        <span asp-validation-for="UrlImage" class="text-danger"></span>
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h5 class="card-title mb-0"><i class="fas fa-image me-2"></i>Ảnh sản phẩm</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <div class="form-group w-100">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="fas fa-upload"></i></span>
+                                <input type="file" id="fileInput" class="form-control" accept="image/*" required title="Vui lòng chọn một ảnh sản phẩm" />
+                            </div>
+                            <div class="text-center">
+                                <img id="imagePreview"
+                                     src="/path/to/default-image.jpg"
+                                     alt="Image preview"
+                                     style="width: 300px; height: 300px; object-fit: cover;"
+                                     class="mt-3 img-thumbnail shadow-sm" />
+                                <input type="hidden" asp-for="UrlImage" id="urlImage" />
+                                <span asp-validation-for="UrlImage" class="text-danger d-block mt-2"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,32 +156,103 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+  
+        document.querySelectorAll(".sizeCheckbox").forEach(checkbox => {
+          
+            checkbox.addEventListener("change", function() {
+                const sizeId = this.getAttribute("data-size-id");
+                const quantityInput = document.getElementById(`quantity_${sizeId}`);
+
+                
+                if (this.checked) {
+                    quantityInput.disabled = false;
+                    quantityInput.value = 1; 
+                    quantityInput.focus();
+                } else {
+                    quantityInput.disabled = true;
+                    quantityInput.value = 0; 
+                }
+            });
+        });
+
         document.querySelector("form").addEventListener("submit", function (e) {
+            e.preventDefault(); 
+
+            
+            let selectedSizes = [];
+            let index = 0;
+
             let rows = document.querySelectorAll("#sizeTableBody tr");
 
             rows.forEach((row) => {
                 let checkbox = row.querySelector(".sizeCheckbox");
                 let quantityInput = row.querySelector(".quantityInput");
-                let sizeIdInput = row.querySelector("input[type=hidden]");
-
+                let sizeId = checkbox.getAttribute("data-size-id");
                 let quantity = parseInt(quantityInput.value);
 
-                if (!checkbox.checked || quantity <= 0) {
-                    sizeIdInput.remove();
-                    quantityInput.remove();
+                if (checkbox.checked && quantity > 0) {
+                    selectedSizes.push({
+                        sizeId: sizeId,
+                        quantity: quantity
+                    });
                 }
             });
+
+            if (selectedSizes.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Lỗi',
+                    text: 'Vui lòng chọn ít nhất một size và nhập số lượng',
+                    confirmButtonColor: '#3085d6'
+                });
+                return;
+            }
+
+            let colorSelect = document.getElementById("categorySelect");
+            if (!colorSelect.value) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Lỗi',
+                    text: 'Vui lòng chọn màu sắc cho sản phẩm',
+                    confirmButtonColor: '#3085d6'
+                });
+                colorSelect.focus();
+                return;
+            }
+
+            document.querySelectorAll('input[name^="SizesQuantities"]').forEach(input => {
+                input.remove();
+            });
+
+            for (let i = 0; i < selectedSizes.length; i++) {
+                let quantityInput = document.createElement('input');
+                quantityInput.type = 'hidden';
+                quantityInput.name = `SizesQuantities[${i}].QuantitySize`;
+                quantityInput.value = selectedSizes[i].quantity;
+
+                let sizeIdInput = document.createElement('input');
+                sizeIdInput.type = 'hidden';
+                sizeIdInput.name = `SizesQuantities[${i}].IdSize`;
+                sizeIdInput.value = selectedSizes[i].sizeId;
+
+                document.querySelector("form").appendChild(quantityInput);
+                document.querySelector("form").appendChild(sizeIdInput);
+            }
+
+            document.querySelector("form").submit();
         });
     });
 
     document.getElementById("toggleSizeTable").addEventListener("click", function () {
         var tableContainer = document.getElementById("sizeTableContainer");
+        var iconElement = this.querySelector("i");
+
         if (tableContainer.style.display === "none") {
             tableContainer.style.display = "block";
-            this.innerHTML = '<i class="fas fa-angle-up"></i>';
+            iconElement.className = "fas fa-angle-up";
         } else {
             tableContainer.style.display = "none";
-            this.innerHTML = '<i class="fas fa-angle-down"></i>';
+            iconElement.className = "fas fa-angle-down";
         }
     });
 
@@ -185,7 +275,10 @@
         var newColorName = document.getElementById("newColorName").value.trim();
         var productId = document.getElementById("modalProductId").value;
 
-        if (!newColorName) return;
+        if (!newColorName) {
+            alert("Vui lòng nhập tên màu sắc");
+            return;
+        }
 
         try {
             let response = await fetch("/ProductDetail/CreateColorDetail", {
@@ -216,7 +309,10 @@
         var newSizeName = document.getElementById("newSizeName").value.trim();
         var productId = document.getElementById("modalProductIdSize").value;
 
-        if (!newSizeName) return;
+        if (!newSizeName) {
+            alert("Vui lòng nhập tên size");
+            return;
+        }
 
         try {
             let response = await fetch("/ProductDetail/CreateSizeDetail", {
@@ -237,13 +333,29 @@
                         <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
                     </div>
                 </td>
-                <td class="align-middle">
+                <td class="align-middle text-center">
                     <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
-                           id="quantity_${newSize.id}" min="0" value="0" style="width: 80px; margin: 0 auto;">
+                           id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
                     <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
                 </td>
             `;
             tableBody.insertBefore(newRow, tableBody.firstChild); // Thêm vào đầu để giữ thứ tự lớn -> bé
+
+            // Add event listener to the new checkbox
+            const newCheckbox = newRow.querySelector(".sizeCheckbox");
+            newCheckbox.addEventListener("change", function() {
+                const sizeId = this.getAttribute("data-size-id");
+                const quantityInput = document.getElementById(`quantity_${sizeId}`);
+
+                if (this.checked) {
+                    quantityInput.disabled = false;
+                    quantityInput.value = 1;
+                    quantityInput.focus();
+                } else {
+                    quantityInput.disabled = true;
+                    quantityInput.value = 0;
+                }
+            });
 
             bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
             document.getElementById("newSizeName").value = "";
@@ -262,6 +374,9 @@
                     $("#imagePreview").attr("src", event.target.result).show();
                 };
                 reader.readAsDataURL(file);
+
+                // Show loading indicator
+                $("#imagePreview").attr("src", "https://i.gifer.com/origin/34/34338d26023e5515f6cc8969aa027bca.gif");
 
                 let form = new FormData();
                 form.append("api_key", "284335524597493");
@@ -292,6 +407,9 @@
                             alert("Không thể tải ảnh lên. Vui lòng thử lại.");
                         }
                     }
+                }).fail(function (error) {
+                    alert("Lỗi khi tải ảnh lên: " + error.statusText);
+                    $("#imagePreview").attr("src", "/path/to/default-image.jpg");
                 });
             }
         });
