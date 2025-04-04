@@ -62,7 +62,7 @@
                         <label asp-for="UrlImage" class="form-label fw-bold">Ảnh sản phẩm</label>
                         <input type="file" id="fileInput" class="form-control" accept="image/*" onchange="previewImage();" />
                         <img id="imagePreview" src="@Model.Image" alt="Image preview"
-                             style="display:@(string.IsNullOrEmpty(Model.Image) ? "none" : "block"); max-width: 250px; max-height: 250px; object-fit: cover;"
+                             style="display:@(string.IsNullOrEmpty(Model.Image) ? "none" : "block"); max-width: 424px; max-height: 404px; object-fit: cover;"
                              class="mt-3 img-thumbnail rounded" />
                         <input type="hidden" asp-for="UrlImage" value="@Model.Image" id="urlImage" />
                     </div>
@@ -130,7 +130,7 @@
                                 <td>@stt</td>
                                 <td>
                                     <img src="@item.UrlImage" alt="@item.ColorName" class="img-fluid rounded"
-                                         style="max-width: 85px; max-height: 85px; object-fit: cover;" />
+                                         style="max-width: 43px; max-height: 68px; object-fit: cover;" />
                                 </td>
                                 <td>@item.ColorName</td>
                                 <td>@item.SizeName</td>
