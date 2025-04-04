@@ -823,7 +823,41 @@
           opacity: 0.3;
           z-index: -1;
         }
+        .form-check.out-of-stock {
+            position: relative;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
 
+            .form-check.out-of-stock::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(220, 53, 69, 0.05);
+                border-radius: var(--border-radius);
+                z-index: 0;
+            }
+
+            .form-check.out-of-stock::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: -5%;
+                width: 110%;
+                height: 1px;
+                background-color: rgba(220, 53, 69, 0.7);
+                transform: rotate(-26deg); 
+                z-index: 1;
+            }
+
+            .form-check.out-of-stock input {
+                pointer-events: none;
+            }
+
+        
     </style>
 </div>
 
@@ -845,6 +879,69 @@
             });
         });
         $(document).ready(function () {
+
+        // Hàm để cập nhật trạng thái size dựa trên màu đã chọn
+        function updateSizeAvailability(colorId) {
+            // Lấy tất cả dữ liệu biến thể sản phẩm
+            var variants = @Html.Raw(Json.Serialize(Model.DetailDataFinal));
+
+            // Lọc các biến thể có màu được chọn
+            var variantsWithSelectedColor = variants.filter(function(variant) {
+                return variant.colorId == colorId;
+            });
+
+            // Reset trạng thái của tất cả các size
+            $('.size-select').each(function() {
+                var sizeId = $(this).val();
+                var sizeContainer = $(this).closest('.form-check');
+
+                // Xóa class out-of-stock
+                sizeContainer.removeClass('out-of-stock');
+                $(this).prop('disabled', false);
+
+                // Kiểm tra xem size này có sẵn trong màu đã chọn không
+                var variantWithSize = variantsWithSelectedColor.find(function(variant) {
+                    return variant.sizeId == sizeId;
+                });
+
+                // Nếu không tìm thấy biến thể hoặc số lượng = 0, đánh dấu là hết hàng
+                if (!variantWithSize || variantWithSize.quantity <= 0) {
+                    sizeContainer.addClass('out-of-stock');
+                    $(this).prop('disabled', true);
+
+                    // Bỏ chọn nếu size này đã được chọn trước đó
+                    if ($(this).prop('checked')) {
+                        $(this).prop('checked', false);
+                    }
+                }
+            });
+
+            // Cập nhật thông tin số lượng kho sau khi thay đổi
+            updateAvailableStock();
+        }
+
+        // Thêm sự kiện để cập nhật trạng thái size khi chọn màu
+        $('.color-select').change(function() {
+            var selectedColorId = $(this).val();
+            updateSizeAvailability(selectedColorId);
+        });
+
+        // Khởi tạo ban đầu - thực hiện ngay khi trang tải xong
+        $(document).ready(function() {
+            // Kiểm tra nếu có màu được chọn sẵn
+            var initialSelectedColor = $('.color-select:checked').val();
+            if (initialSelectedColor) {
+                updateSizeAvailability(initialSelectedColor);
+            } else {
+                // Nếu chưa có màu nào được chọn, chọn màu đầu tiên
+                var firstColor = $('.color-select').first();
+                if (firstColor.length) {
+                    firstColor.prop('checked', true);
+                    updateSizeAvailability(firstColor.val());
+                }
+            }
+        });
+
             // Product quantity handlers
             $('#increaseQty').click(function () {
                 var input = $('#quantity');
