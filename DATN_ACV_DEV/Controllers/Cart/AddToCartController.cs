@@ -87,6 +87,8 @@ namespace DATN_ACV_DEV.Controllers
                 ProductId = _request.ProductId,
                 Quantity = _request.Quantity,
                 CartId = _Cart.Id,
+                ColorId = _request.ColorId,
+                SizeId = _request.SizeId,
             };
             checkCart = true;
         }
@@ -106,6 +108,8 @@ namespace DATN_ACV_DEV.Controllers
                 ProductId = _request.ProductId,
                 Quantity = _request.Quantity,
                 CartId = _Cart.Id,
+                ColorId = _request.ColorId,
+                SizeId = _request.SizeId,
             };
             checkCart = true;
         }
@@ -129,7 +133,7 @@ namespace DATN_ACV_DEV.Controllers
                 try
                 {
                     var LstproductID = _context.TbCartDetails.Where(c => c.CartId == checkExistCart.Id).ToList();
-                    var Product = LstproductID.Where(c => c.ProductId == _request.ProductId).FirstOrDefault();
+                    var Product = LstproductID.Where(c => c.ProductId == _request.ProductId && c.ColorId == _request.ColorId && c.SizeId == _request.SizeId).FirstOrDefault();
                     if (Product != null)
                     {
                         _CartDetail = Product;
@@ -145,6 +149,8 @@ namespace DATN_ACV_DEV.Controllers
                             ProductId = _request.ProductId,
                             Quantity = _request.Quantity,
                             CartId = checkExistCart.Id,
+                            ColorId = _request.ColorId,
+                            SizeId = _request.SizeId,
                         };
                         checkProduct = true;
                     }

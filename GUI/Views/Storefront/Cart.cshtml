@@ -43,7 +43,7 @@
                                             <span class="product-name" title="@item.NameProduct">@item.NameProduct</span>
                                         </td>
                                         <td class="col-color">@item.Color</td>
-                                        <td class="col-size">@item.Size</td>
+                                        <td class="col-size">@item.sizeName</td>
                                         <td class="col-quantity">
                                             <div class="quantity-control">
                                                 <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a>
@@ -223,6 +223,29 @@
 
     <script src="~/storefront/js/jquery.min.js"></script>
     <script>
+        $(document).ready(function () 
+        {
+            // Lấy dữ liệu từ query parameters trong URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const colorId = urlParams.get("colorId");
+            const sizeId = urlParams.get("sizeId");
+
+            // Nếu colorId và sizeId có giá trị, thay thế vào các cột tương ứng trong bảng
+            if (colorId && sizeId) 
+            {
+                // Cập nhật cột màu sắc
+                $(".col-color").each(function () 
+                {
+                    $(this).text(colorData[colorId] || "Màu chưa xác định");
+                });
+
+                // Cập nhật cột kích thước
+                $(".col-size").each(function () 
+                {
+                    $(this).text(sizeData[sizeId] || "Kích thước chưa xác định");
+                });
+            }
+        });
         $(document).ready(function () {
             // Chọn tất cả
             $('#select-all').on('change', function () {

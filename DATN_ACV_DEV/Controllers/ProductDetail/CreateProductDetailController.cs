@@ -21,6 +21,7 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
         private CreateProductDetailResponse _response;
         private string _apiCode = "CreateProductDetail";
         private TbProductDetail _ProductDetail;
+        private TbProduct _Product;
         private List<TbProductDetail> _ProductDetails;
         private CreateImageRequest _Image; 
         private BaseResponse<CreateImageResponse> _imageId;
@@ -40,6 +41,12 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
             {
                 _context.TbProductDetails.AddRange(_ProductDetails); // Lưu nhiều bản ghi cùng lúc
                 _context.SaveChanges();
+                var existingProduct = _context.TbProducts.FirstOrDefault(p => p.Id == _Product.Id);
+                if (existingProduct != null && _ProductDetails.Any())
+                {
+                    existingProduct.Quantity = _ProductDetails.Sum(c => c.Quantity);
+                    _context.SaveChanges(); // Lưu thay đổi số lượng
+                }
             }
             else 
             {
