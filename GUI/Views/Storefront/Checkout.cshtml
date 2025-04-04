@@ -98,8 +98,8 @@
 						}
 					</div>
 					<div class="order-col">
-						<div>Phí giao hàng</div>
-						<div><strong id="shipping-fee">@(30000.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
+@* 						<div>Phí giao hàng</div>
+						<div><strong id="shipping-fee">@(30000.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div> *@
 					</div>
 					<div class="order-col">
 						<div>Giảm giá</div>
@@ -107,7 +107,7 @@
 					</div>
 					<div class="order-col">
 						<div><strong>TỔNG</strong></div>
-						<div><strong class="order-total">@(((int)(ViewBag.Sum > 0 ? (ViewBag.Sum + 30000) : 0)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
+						<div><strong class="order-total">@(((int)(ViewBag.Sum > 0 ? (ViewBag.Sum) : 0)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
 					</div>
 				</div>
 				<div class="shipping-method">

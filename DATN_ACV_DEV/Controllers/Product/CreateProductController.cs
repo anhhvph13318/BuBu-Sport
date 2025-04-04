@@ -93,7 +93,7 @@ namespace DATN_ACV_DEV.Controllers
                 Name = _request.Name,
                 Code = _request.Code,
                 Price = _request.Price,
-                Quantity = _request.Quantity,
+                Quantity = _request.SizesQuantities.Sum(c=>c.QuantitySize),
                 Status = _request.Status,
                 Description = _request.Description,
                 PriceNet = _request.PriceNet,

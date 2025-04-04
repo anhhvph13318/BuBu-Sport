@@ -253,6 +253,11 @@ namespace GUI.Controllers
             {
                 item.Image = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
             }
+
+            foreach (var item in result.Data.DetailDataFinal)
+            {
+                item.UrlImage = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
+            }
             var model = result.Data;
 			return View(model);
         }
@@ -325,28 +330,34 @@ namespace GUI.Controllers
 			}
 		}
 
-		[HttpPost("/AddCart")]
-		public async Task<IActionResult> AddToCart(Guid prId, Guid userId, int quantity)
-		{
-			if (userId == Guid.Empty)
-			{
-				userId = Guid.NewGuid();
-			}
-			var req = new AddToCartRequest();
-			//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
-			req.UserId = userId;
-			req.Quantity = quantity != 0 ? quantity : 1;
-			req.ProductId = prId;
-			var URL = _settings.APIAddress + "api/AddToCart/Process";
-			var param = JsonConvert.SerializeObject(req);
-			var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-			var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
-			if (result.Status == "200")
-			{
-				return Ok(new { userId });
-			}
-			return BadRequest();
-		}
+        [HttpPost("/AddCart")]
+        public async Task<IActionResult> AddToCart(Guid prId, Guid userId, int quantity, Guid colorId, Guid sizeId)
+        {
+			//var productdetailId = _context.TbProductDetails.Where(c=>c.ProductId == prId && c.ColorId == colorId && c.SizeId == sizeId).Select(c => c.Id).FirstOrDefault();
+            if (userId == Guid.Empty)
+            {
+                userId = Guid.NewGuid();
+            }
+
+            var req = new AddToCartRequest
+            {
+                UserId = userId,
+                Quantity = quantity != 0 ? quantity : 1,
+                ProductId = prId,
+                ColorId = colorId,   // 🆕 Thêm màu sắc
+                SizeId = sizeId      // 🆕 Thêm kích thước
+            };
+
+            var URL = _settings.APIAddress + "api/AddToCart/Process";
+            var param = JsonConvert.SerializeObject(req);
+            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+            var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
+            if (result.Status == "200")
+            {
+                return Ok(new { userId });
+            }
+            return BadRequest();
+        }
 
         [HttpPost("/BuyNow")]
         public async Task<IActionResult> BuyNow(Guid prId, Guid userId, int quantity)
@@ -394,7 +405,9 @@ namespace GUI.Controllers
 		[Route("/Cart")]
 		public async Task<IActionResult> Cart()
 		{
-			var a = GetClientIP(HttpContext);
+            var colorId = Request.Query["colorId"].ToString();  // Lấy colorId
+            var sizeId = Request.Query["sizeId"].ToString();    // Lấy sizeId
+            var a = GetClientIP(HttpContext);
 
 			var userId = Guid.Empty;
 			try
@@ -409,22 +422,32 @@ namespace GUI.Controllers
 			{
 				var req = new CartItemRequest();
 				req.UserId = userId;
+				req.colorId = colorId != "" ? Guid.Parse(colorId) : null;
+				req.sizeId = sizeId != "" ? Guid.Parse(sizeId) : null;
 				//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
 				var URL = _settings.APIAddress + "api/CartItem/Process";
 				var param = JsonConvert.SerializeObject(req);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
 				var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
-				var groupdata = result.Data.CartItem.GroupBy(c => new { c.ProductID, c.Price, c.NameProduct })
+                var groupdata = result.Data.CartItem
+					.GroupBy(c => new
+					{
+						c.ProductID,
+						c.Price,
+						c.NameProduct,
+						c.Color,
+						c.sizeName
+					})
 					.Select(d => new CartDTO
 					{
 						CartDetailID = d.First().CartDetailID,
 						Image = d.First().Image,
-						NameProduct = d.First().NameProduct,
-						Price = d.First().Price,
-						ProductID = d.First().ProductID,
-						Quantity = d.First().Quantity,
-						Color = d.First().Color,
-						Size = d.First().Size,
+						NameProduct = d.Key.NameProduct,
+						Price = d.Key.Price,
+						ProductID = d.Key.ProductID,
+						Quantity = d.Sum(x => x.Quantity), // cộng tổng quantity
+						Color = d.Key.Color,
+						sizeName = d.Key.sizeName
 					}).ToList();
                 if (result.Status == "200")
 				{
