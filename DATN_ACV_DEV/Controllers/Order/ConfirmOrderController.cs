@@ -136,7 +136,7 @@ namespace DATN_ACV_DEV.Controllers
                 CustomerId = customer == null ? null : customer.Id,
                 PhoneNumberCustomer = customer != null ? customer.Phone : _request.phoneNummber,
                 AddressDeliveryId = _request.addressDeliveryId,
-                IsCustomerTakeYourself = _request.getAtStore == true,
+                IsCustomerTakeYourself = _request.getAtStore == false,
                 VoucherId = voucherId,
 
 				OrderCounter = false,

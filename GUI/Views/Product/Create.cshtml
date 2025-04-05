@@ -377,13 +377,13 @@
             }
 
             // Nếu tất cả hợp lệ, kiểm tra mã sản phẩm
-            checkCodeAvailability(document.getElementById('productCode').value).then(isAvailable => {
-                if (!isAvailable) {
-                    document.getElementById("imageSection").style.display = "none";
-                    document.getElementById("infoSection").style.display = "block";
-                    document.getElementById("codeValidationMessage").textContent = "Mã sản phẩm này đã tồn tại!";
-                    return;
-                }
+            // checkCodeAvailability(document.getElementById('productCode').value).then(isAvailable => {
+            //     if (!isAvailable) {
+            //         document.getElementById("imageSection").style.display = "none";
+            //         document.getElementById("infoSection").style.display = "block";
+            //         document.getElementById("codeValidationMessage").textContent = "Mã sản phẩm này đã tồn tại!";
+            //         return;
+            //     }
 
                 if (confirm("Bạn có chắc muốn thêm sản phẩm này không?")) {
                     // Xử lý giá trước khi submit
@@ -442,22 +442,22 @@
             return "SP" + formattedNumber;
         }
 
-        function checkCodeAvailability(code) {
-            return new Promise((resolve) => {
-                $.ajax({
-                    url: '/Product/CheckProductCode',
-                    type: 'POST',
-                    data: { code: code },
-                    success: function (response) {
-                        resolve(response.isAvailable);
-                    },
-                    error: function () {
-                        alert("Lỗi khi kiểm tra mã sản phẩm. Vui lòng thử lại.");
-                        resolve(false);
-                    }
-                });
-            });
-        }
+        // function checkCodeAvailability(code) {
+        //     return new Promise((resolve) => {
+        //         $.ajax({
+        //             url: '/Product/CheckProductCode',
+        //             type: 'POST',
+        //             data: { code: code },
+        //             success: function (response) {
+        //                 resolve(response.isAvailable);
+        //             },
+        //             error: function () {
+        //                 alert("Lỗi khi kiểm tra mã sản phẩm. Vui lòng thử lại.");
+        //                 resolve(false);
+        //             }
+        //         });
+        //     });
+        // }
 
         async function setUniqueProductCode() {
             if (!codeInput.value) {

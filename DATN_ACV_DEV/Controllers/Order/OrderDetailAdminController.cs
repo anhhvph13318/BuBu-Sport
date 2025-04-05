@@ -32,10 +32,9 @@ public class OrderDetailAdminController : ControllerBase
 
         if (orderEntity == null)
             return NotFound("Không tìm thấy đơn hàng.");
-
-        var customer = await _context.TbAddressDeliveries
-            .FirstOrDefaultAsync(c => c.Id == orderEntity.AddressDeliveryId);
-
+        var customerId = _context.TbOrders.Where(c => c.Id == Guid.Parse(id)).Select(c => c.CustomerId).FirstOrDefault();
+        var customer = _context.TbCustomers.Where(c => c.Id == customerId).FirstOrDefault();
+        
         var orderDetails = orderEntity.TbOrderDetails.FirstOrDefault();
 
         var product = orderDetails?.Product;
@@ -50,15 +49,15 @@ public class OrderDetailAdminController : ControllerBase
             Customer = customer == null ? null : new CustomerInfo
             {
                 Id = customer.Id,
-                Name = customer.ReceiverName,
-                Address = customer.ProvinceName,
-                PhoneNumber = customer.ReceiverPhone
+                Name = customer.Name,
+                Address = customer.Adress,
+                PhoneNumber = customer.Phone
             },
             ShippingInfo = customer == null ? null : new ShippingInfo
             {
-                Name = customer.ReceiverName,
-                PhoneNumber = customer.ReceiverPhone,
-                Address = customer.ProvinceName
+                Name = customer.Name,
+                PhoneNumber = customer.Phone,
+                Address = customer.Adress
             },
             PaymentInfo = new PaymentInfo
             {
@@ -225,7 +224,7 @@ public class OrderDetailAdminController : ControllerBase
                 PaymentInfo = new PaymentInfo
                 {
                     TotalDiscount = e.TotalAmountDiscount.Value,
-                    ShippingFee = e.IsCustomerTakeYourself ? 0 : 30000,
+                    ShippingFee = e.IsCustomerTakeYourself ? 0 : 0,
                     TotalTax = e.TotalAmount == 0 ? 0 : e.TotalAmount * 10 / 100,
                     TotalAmount = e.TotalAmount,
                     Status = e.Status ?? 0,
