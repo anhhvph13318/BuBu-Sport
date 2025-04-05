@@ -36,5 +36,6 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
+    
   }
 }

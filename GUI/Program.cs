@@ -1,4 +1,4 @@
-using DATN_ACV_DEV.Entity;
+﻿using DATN_ACV_DEV.Entity;
 using GUI;
 using GUI.Hubs;
 using GUI.Shared.Common;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Thêm các dịch vụ vào container trước khi Build()
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -15,28 +16,32 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
         options.AccessDeniedPath = "/Forbidden/";
-		options.LoginPath = "/SignIn";
-	});
+        options.LoginPath = "/SignIn";
+    });
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
-// Add services to the container.
+// Thêm dịch vụ cho controllers và views
 builder.Services.AddControllersWithViews();
-builder.Services.AddMvc();
-//builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
+// Thêm IHttpClientFactory để gọi API
+builder.Services.AddHttpClient();
+
+// Cấu hình CommonSettings
 builder.Services.Configure<CommonSettings>(builder.Configuration.GetSection("CommonSettings"));
+
+// Thêm các dịch vụ khác
 builder.Services.AddSession();
 builder.Services.AddSignalR();
-
 builder.Services.AddScoped<DBContext>();
-
 builder.Services.AddTransient<VNPayService>();
 builder.Services.AddScoped<UserSession>();
 
+// Xây dựng ứng dụng
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Cấu hình pipeline HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -44,9 +49,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseSession();
 app.UseRouting();
 
@@ -56,7 +59,6 @@ app.UseCookiePolicy(new CookiePolicyOptions
 });
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -64,7 +66,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("/forbidden", "forbidden.html");
-
 app.MapHub<OrderHub>("/order-hub");
 
 app.Run();
