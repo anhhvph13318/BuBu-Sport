@@ -32,6 +32,7 @@ using EditCustomerRequest = GUI.Models.DTOs.Customer_DTO.EditCustomerRequest;
 using Azure.Core;
 using GUI.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
+using IndexObject = GUI.Models.DTOs.Product_DTO.Views.IndexObject;
 
 namespace GUI.Controllers
 {
@@ -79,7 +80,7 @@ namespace GUI.Controllers
 		}
 
 		[Route("/Store")]
-		public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max)
+		public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max,string category)
 		{
 			var model = new Models.DTOs.Product_DTO.Views.IndexObject();
 			try
@@ -91,7 +92,14 @@ namespace GUI.Controllers
 				obj.Limit = t <= 0 ? null : t;
 				var offset = t * p;
 				obj.OffSet = offset < 0 ? 0 : offset;
-				var URL = _settings.APIAddress + "api/HomePage/Process";
+
+                // Thêm logic lọc theo danh mục
+                if (!string.IsNullOrEmpty(category) && Guid.TryParse(category, out Guid categoryId))
+                {
+                    obj.CategoryID = categoryId;
+                }
+
+                var URL = _settings.APIAddress + "api/HomePage/Process";
 				var param = JsonConvert.SerializeObject(obj);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
 				var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
@@ -864,5 +872,6 @@ namespace GUI.Controllers
 		{
 			return httpContext.Connection.RemoteIpAddress?.ToString();
 		}
-	}
+        
+    }
 }
