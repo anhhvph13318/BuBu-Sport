@@ -83,7 +83,7 @@ public class VoucherController : Controller
     public async Task<IActionResult> Handle(VoucherFormModel model)
     {
         var validPeriod = model.Voucher.EndDate < model.Voucher.StartDate;
-        var validStartDate = model.Voucher.StartDate < DateTime.Now;
+        var validStartDate = model.Voucher.StartDate < DateTime.Today;
         var validDiscount = model.Voucher.Unit == VoucherUnit.Percent && model.Voucher.Discount > 80;
         if (!ModelState.IsValid || validPeriod || validDiscount || validStartDate)
         {
@@ -104,7 +104,7 @@ public class VoucherController : Controller
         httpClient.BaseAddress = new Uri(URI);
 
         var response = model.IsEditMode
-            ? await httpClient.PatchAsJsonAsync($"/api/vouchers/{model.Voucher.Id}", model.Voucher)
+            ? await httpClient.PostAsJsonAsync("/api/editVoucher/Process", model.Voucher)
             : await httpClient.PostAsJsonAsync("/api/vouchers", model.Voucher);
 
         if (response.IsSuccessStatusCode)

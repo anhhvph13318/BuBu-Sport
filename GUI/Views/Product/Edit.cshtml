@@ -8,191 +8,202 @@
     <form asp-action="Edit" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm">
         <h2 class="text-center mb-4">Chỉnh sửa sản phẩm</h2>
 
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
         <div class="row">
-            <!-- Cột hiển thị thông tin sản phẩm -->
+            <!-- Cột thông tin sản phẩm -->
             <div class="col-md-6">
                 <div class="form-group mb-3">
-                    <label asp-for="Code" class="form-label">Mã sản phẩm</label>
+                    <label asp-for="Code" class="form-label fw-bold">Mã sản phẩm</label>
                     <input asp-for="Code" class="form-control" placeholder="Nhập mã sản phẩm" />
                     <span asp-validation-for="Code" class="text-danger"></span>
                 </div>
                 <div class="form-group mb-3">
-                    <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                    <label asp-for="Name" class="form-label fw-bold">Tên sản phẩm</label>
                     <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-
-               
-
                 <div class="form-group mb-3">
-                    <label asp-for="Price" class="form-label">Giá sản phẩm</label>
+                    <label asp-for="Price" class="form-label fw-bold">Giá sản phẩm</label>
                     <input asp-for="Price" class="form-control" placeholder="Nhập giá sản phẩm" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
-
                 <div class="form-group mb-3">
-                    <label asp-for="Description" class="form-label">Mô tả</label>
-                    <textarea asp-for="Description" class="form-control" placeholder="Nhập mô tả"></textarea>
+                    <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
-
-@*                 <div class="form-group mb-3">
-                    <label asp-for="PriceNet" class="form-label">Giá bán</label>
-                    <input asp-for="PriceNet" class="form-control" placeholder="Nhập giá bán" />
-                    <span asp-validation-for="PriceNet" class="text-danger"></span>
-                </div> *@
-@*                 <div class="form-group mb-3">
-                    <label asp-for="Quantity" class="form-label">Số lượng</label>
-                    <input asp-for="Quantity" class="form-control" placeholder="Nhập số lượng" />
-                    <span asp-validation-for="Quantity" class="text-danger"></span>
-                </div> *@
-
-                <div class="form-group mb-3">
-                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                <div class="form-group mb-4">
+                    <label asp-for="CategoryId" class="form-label fw-bold">Danh mục</label>
                     <select id="categorySelect" asp-for="CategoryId" class="form-select">
                         <option value="">Chọn danh mục</option>
                         @foreach (var item in ViewBag.Categories)
                         {
-                            if (Model.CategoryId == item.Id)
-                            {
-                                <option value="@item.Id" selected>@item.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@item.Id">@item.Name</option>
-
-                            }
+                            <option value="@item.Id" selected="@(Model.CategoryId == item.Id ? "selected" : null)">@item.Name</option>
                         }
                     </select>
                     <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
 
-                <!-- Nút Save và Quay trở lại -->
+                <!-- Nút điều hướng -->
                 <div class="form-group d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-secondary">Quay trở lại</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Quay trở lại</a>
                     <button type="button" class="btn btn-primary" id="saveButton">
                         <span class="spinner-border spinner-border-sm" id="spinner" role="status" aria-hidden="true" style="display:none;"></span>
-                        Save
+                        Lưu thay đổi
                     </button>
                 </div>
             </div>
 
-            <!-- Cột hiển thị ảnh sản phẩm -->
+            <!-- Cột ảnh sản phẩm -->
             <div class="col-md-6 d-flex justify-content-center align-items-center">
-                <div>
-                    <div class="form-group">
-                        <label asp-for="UrlImage" class="form-label">Ảnh sản phẩm</label>
+                <div class="text-center">
+                    <div class="form-group mb-3">
+                        <label asp-for="UrlImage" class="form-label fw-bold">Ảnh sản phẩm</label>
                         <input type="file" id="fileInput" class="form-control" accept="image/*" onchange="previewImage();" />
-                        <img id="imagePreview"
-                             src="@Model.Image"
-                             alt="Image preview"
-                             style="display:none; width: 250px; height: 250px; object-fit: cover;"
-                             class="mt-3 img-thumbnail" />
+                        <img id="imagePreview" src="@Model.Image" alt="Image preview"
+                             style="display:@(string.IsNullOrEmpty(Model.Image) ? "none" : "block"); max-width: 424px; max-height: 404px; object-fit: cover;"
+                             class="mt-3 img-thumbnail rounded" />
                         <input type="hidden" asp-for="UrlImage" value="@Model.Image" id="urlImage" />
                     </div>
-                    <a asp-controller="ProductDetail" asp-action="CreateDetail" asp-route-productId="@Model.Id" class="btn btn-secondary">Thêm biến thể</a>
+                    <a asp-controller="ProductDetail" asp-action="CreateDetail" asp-route-productId="@Model.Id" class="btn btn-outline-primary">Thêm biến thể</a>
                 </div>
             </div>
         </div>
     </form>
-    <form asp-action="Edit" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm">
-        <table class="table table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    @* <th>Giá sản phẩm</th> *@
-                    <th>Số lượng</th>
-                    @* <th>Giá bán</th> *@
-                    <th>Màu sắc</th>
-                    <th>Size<th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.DetailDataFinal is not null && Model.DetailDataFinal is not null && Model.DetailData.Any())
-                {
-                    @foreach (var item in Model.DetailDataFinal)
+
+    <!-- Bảng biến thể -->
+    <div class="bg-light p-4 rounded shadow-sm mt-4">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Lọc theo màu sắc</label>
+                <select id="colorFilter" class="form-select">
+                    <option value="">Tất cả màu sắc</option>
+                    @if (Model.DetailDataFinal != null && Model.DetailDataFinal.Any())
+                    {
+                        var uniqueColors = Model.DetailDataFinal.Select(d => d.ColorName).Distinct();
+                        foreach (var color in uniqueColors)
+                        {
+                            <option value="@color">@color</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Lọc theo size</label>
+                <select id="sizeFilter" class="form-select">
+                    <option value="">Tất cả size</option>
+                    @if (Model.DetailDataFinal != null && Model.DetailDataFinal.Any())
+                    {
+                        var uniqueSizes = Model.DetailDataFinal.Select(d => d.SizeName).Distinct();
+                        foreach (var size in uniqueSizes)
+                        {
+                            <option value="@size">@size</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button id="resetFilters" class="btn btn-outline-secondary w-100">Xóa bộ lọc</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle" id="variantTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" style="width: 10%;">STT</th>
+                        <th scope="col" style="width: 15%;">Ảnh</th>
+                        <th scope="col" style="width: 20%;">Màu sắc</th>
+                        <th scope="col" style="width: 15%;">Size</th>
+                        <th scope="col" style="width: 20%;">Số lượng</th>
+                        <th scope="col" style="width: 20%;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.DetailDataFinal is not null && Model.DetailDataFinal.Any())
+                    {
+                        int stt = 1;
+                        @foreach (var item in Model.DetailDataFinal)
+                        {
+                            <tr data-color="@item.ColorName" data-size="@item.SizeName">
+                                <td>@stt</td>
+                                <td>
+                                    <img src="@item.UrlImage" alt="@item.ColorName" class="img-fluid rounded"
+                                         style="max-width: 43px; max-height: 68px; object-fit: cover;" />
+                                </td>
+                                <td>@item.ColorName</td>
+                                <td>@item.SizeName</td>
+                                <td>
+                                    <input type="number" class="form-control quantity-input w-75 mx-auto"
+                                           value="@item.Quantity" data-id="@item.Id" min="0" disabled />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary btn-edit-quantity" data-id="@item.Id">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-sm btn-save-quantity" data-id="@item.Id">Lưu</button>
+                                </td>
+                            </tr>
+                            stt++;
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            @* <td>@item.Price</td> *@
-                            <td>@item.Quantity</td>
-                            @* <td>@item.Price</td> *@
-                            <td>@item.ColorName</td>
-                            <td>@item.SizeName</td>
-                                                   
+                            <td colspan="6" class="text-center text-muted py-3">Không có biến thể nào được tìm thấy.</td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="8" class="text-center">Không có sản phẩm nào.</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </form>
-
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
-<script>
-    
-</script>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
+    // Upload ảnh lên Cloudinary
     (function ($) {
-
         $('#fileInput').on("change", function (e) {
             let file = e.target.files[0];
             let form = new FormData();
-
             form.append("api_key", "284335524597493");
             form.append("upload_preset", "vanh2204");
-            form.append("public_id", @DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            form.append("public_id", new Date().toISOString().replace(/[-:.]/g, ""));
             form.append("file", file);
 
-            var settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "https://api.cloudinary.com/v1_1/dnvuz3evz/image/upload?Vanh1",
-                "method": "POST",
-                "processData": false,
-                "contentType": false,
-                "mimeType": "multipart/form-data",
-                "data": form
-            };
-
-            $.ajax(settings).done(function (response) {
-                let data = JSON.parse(response);
-                console.log(data);
-                if (data) {
-                    let url = data.secure_url ?? data.url
-                    console.log(url);
-                    if (url) {
-                        $("#imagePreview").attr("src", url);
-                        $("#imagePreview").show();
-                        $('#urlImage').val(url);
+            $.ajax({
+                url: "https://api.cloudinary.com/v1_1/dnvuz3evz/image/upload",
+                method: "POST",
+                processData: false,
+                contentType: false,
+                data: form,
+                success: function (response) {
+                    let data = JSON.parse(response);
+                    if (data && data.secure_url) {
+                        $("#imagePreview").attr("src", data.secure_url).show();
+                        $('#urlImage').val(data.secure_url);
                     } else {
                         $("#imagePreview").hide();
                     }
+                },
+                error: function (error) {
+                    console.error("Upload error:", error);
+                    alert("Không thể tải ảnh lên!");
                 }
             });
         });
 
-        let a = $("#imagePreview").attr("src");
-        if (a) {
+        // Hiển thị ảnh preview ban đầu nếu có
+        if ($("#imagePreview").attr("src")) {
             $("#imagePreview").show();
         }
-
     })(jQuery);
 
-    // Hiển thị preview ảnh sau khi chọn file
+    // Preview ảnh trước khi upload
     function previewImage() {
         const fileInput = document.getElementById('fileInput');
         const preview = document.getElementById('imagePreview');
-        const urlImage = document.getElementById('urlImage');
-
         if (fileInput.files && fileInput.files[0]) {
             const reader = new FileReader();
             reader.onload = function (e) {
@@ -200,17 +211,78 @@
                 preview.style.display = 'block';
             };
             reader.readAsDataURL(fileInput.files[0]);
-        } else {
-            preview.style.display = 'none';
         }
     }
 
+    // Xác nhận lưu form
     document.getElementById('saveButton').addEventListener('click', function () {
-        const isConfirmed = confirm('Bạn có chắc muốn lưu không?');
-        if (isConfirmed) {
+        if (confirm('Bạn có chắc muốn lưu thay đổi không?')) {
             const spinner = document.getElementById('spinner');
-            spinner.style.display = 'inline-block'; // Hiện spinner khi nhấn nút
-            this.closest('form').submit(); // Gửi form
+            spinner.style.display = 'inline-block';
+            this.closest('form').submit();
         }
     });
+
+    // Xử lý bảng biến thể
+    $(document).ready(function () {
+        // Lọc bảng
+        $('#colorFilter, #sizeFilter').on('change', filterTable);
+        $('#resetFilters').on('click', function () {
+            $('#colorFilter').val('');
+            $('#sizeFilter').val('');
+            filterTable();
+        });
+
+        function filterTable() {
+            const colorFilter = $('#colorFilter').val().toLowerCase().trim();
+            const sizeFilter = $('#sizeFilter').val().toLowerCase().trim();
+
+            $('#variantTable tbody tr').each(function () {
+                const row = $(this);
+                const color = row.data('color')?.toString().toLowerCase().trim() || '';
+                const size = row.data('size')?.toString().toLowerCase().trim() || '';
+                row.toggle((!colorFilter || color === colorFilter) && (!sizeFilter || size === sizeFilter));
+            });
+        }
+
+        // Xử lý nút edit
+        $('.btn-edit-quantity').on('click', function () {
+            const id = $(this).data('id');
+            const inputField = $(`.quantity-input[data-id='${id}']`);
+            inputField.prop('disabled', false).focus();
+        });
+
+        // Cập nhật số lượng
+        $('.btn-save-quantity').on('click', function () {
+            const id = $(this).data('id');
+            const inputField = $(`.quantity-input[data-id='${id}']`);
+            const newQuantity = inputField.val();
+
+            if (newQuantity < 0) {
+                alert('Số lượng không thể nhỏ hơn 0!');
+                return;
+            }
+
+            $.ajax({
+                url: '/Product/UpdateDetailQuantity',
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() },
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id, quantity: newQuantity }),
+                success: function (data) {
+                    if (data.success) {
+                        alert('Cập nhật số lượng thành công!');
+                        inputField.prop('disabled', true); // Disable lại sau khi lưu thành công
+                    } else {
+                        alert('Cập nhật thất bại: ' + (data.message || 'Lỗi không xác định'));
+                    }
+                },
+                error: function (error) {
+                    console.error('Lỗi:', error);
+                    alert('Đã xảy ra lỗi khi cập nhật!');
+                }
+            });
+        });
+    });
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Azure.Core;
-using DATN_ACV_DEV.Controllers.Property;
+using DATN_ACV_DEV.Controllers.ProductDetail;
 using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.FileBase;
 using DATN_ACV_DEV.Model_DTO.HomePage;
 using DATN_ACV_DEV.Model_DTO.Image_DTO;
 using DATN_ACV_DEV.Model_DTO.Product_DTO;
+using DATN_ACV_DEV.Model_DTO.ProductDetail_DTO;
 using DATN_ACV_DEV.Model_DTO.Property_DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace DATN_ACV_DEV.Controllers
         private BaseResponse<CreateProductResponse> _res;
         private CreateProductResponse _response;
         private CreateImageRequest _requestImage = new CreateImageRequest();
-        private CreatePropertyRequest _requestProperty = new CreatePropertyRequest();
+        private CreateProductDetailRequest _requestProductDetail = new CreateProductDetailRequest();
         private string _apiCode = "CreateProduct";
         private TbProduct _Produst;
         private TbProperty _Property;
@@ -41,6 +42,31 @@ namespace DATN_ACV_DEV.Controllers
             _context.Add(_Produst);
             _context.SaveChanges();
             _response.ID = _Produst.Id;
+            if (_request.UrlImage != null)
+            {
+                #region Lưu ảnh sản phẩm
+                _requestImage.Url = _request.UrlImage;
+                _requestImage.Type = "1";
+                _requestImage.ProductId = _Produst.Id;
+                var id = new CreateImageController(_context).Process(_requestImage);
+                _Produst.ImageId = id.Data.ID;
+                #endregion
+            }
+            if (_request.SizesQuantities != null) // trường hợp đã có thuộc tính trong danh mục trước đó
+            {
+                #region Lưu thuộc tính sản phẩm
+                foreach (var item in _request.SizesQuantities)
+                {
+                    _requestProductDetail.Price = _request.Price;
+                    _requestProductDetail.Quantity = item.QuantitySize;
+                    _requestProductDetail.ImageID = _Produst.ImageId;
+                    _requestProductDetail.Color = _request.Color;
+                    _requestProductDetail.SizeName = item.IdSize;
+                    _requestProductDetail.ProductID = _Produst.Id;
+                    var id = new CreateProductDetailController(_context).Process(_requestProductDetail);
+                }
+                #endregion
+            }
             _res.Data = _response;
         }
 
@@ -67,7 +93,7 @@ namespace DATN_ACV_DEV.Controllers
                 Name = _request.Name,
                 Code = _request.Code,
                 Price = _request.Price,
-                Quantity = _request.Quantity,
+                Quantity = _request.SizesQuantities.Sum(c=>c.QuantitySize),
                 Status = _request.Status,
                 Description = _request.Description,
                 PriceNet = _request.PriceNet,
@@ -75,35 +101,14 @@ namespace DATN_ACV_DEV.Controllers
                 CategoryId = _request.CategoryId,
                 Vat = _request.Vat,
                 Warranty = _request.Warranty,
-                Color = _request.Color,
+                Color = _request.Color.ToString(),
                 Material = _request.Material,
                 //Default
                 CreateBy = _request.AdminId ?? Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993"), // Tạm thời gán guid khởi tạo.
                 CreateDate = DateTime.Now, // Ngày hiện tại 
                 IsDelete = false,
             };
-            if (_request.PropertyID != null) // trường hợp đã có thuộc tính trong danh mục trước đó
-            {
-                #region Lưu thuộc tính sản phẩm
-                foreach (var item in _request.PropertyID)
-                {
-                    _requestProperty.Name = _context.TbProperties.Where(c => c.Id == item).Select(c => c.Name).FirstOrDefault();
-                    _requestProperty.ProductId = _Produst.Id;
-                    _requestProperty.CategoryId = _Produst.CategoryId;
-                    var id = new CreatePropertyController(_context).Process(_requestProperty);
-                }
-                #endregion
-            }
-            if (_request.UrlImage != null)
-            {
-                #region Lưu ảnh sản phẩm
-                    _requestImage.Url = _request.UrlImage;
-                    _requestImage.Type = "1";
-                    _requestImage.ProductId = _Produst.Id;
-                    var id = new CreateImageController(_context).Process(_requestImage);
-                    _Produst.ImageId = id.Data.ID;
-                #endregion
-            }
+            
         }
 
         public void PreValidation()

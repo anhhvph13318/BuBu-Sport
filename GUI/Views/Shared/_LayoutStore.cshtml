@@ -281,12 +281,10 @@
 	<nav id="navigation">
 		<div class="container">
 			<div id="responsive-nav">
-				<ul class="main-nav nav navbar-nav" id="nav-bar">
-					<li id="store" class="active"><a href="/store" onclick="preserveLanguage('/store', event)">Trang chủ</a></li>
-					<li id="store" class="active"><a href="http://localhost:5011/Store?s=Adidas" onclick="preserveLanguage('http://localhost:5011/Store?s=Adidas', event)">Adidas</a></li>
-					<li id="store" class="active"><a href="http://localhost:5011/Store?s=Puma" onclick="preserveLanguage('http://localhost:5011/Store?s=Puma', event)">Puma</a></li>
-					<li id="store" class="active"><a href="http://localhost:5011/Store?s=Nike" onclick="preserveLanguage('http://localhost:5011/Store?s=Nike', event)">Nike</a></li>
-				</ul>
+                <ul class="main-nav nav navbar-nav" id="nav-bar">
+                    <li id="store" class="active"><a href="/store" onclick="preserveLanguage('/store', event)">Trang chủ</a></li>
+                    <!-- Danh mục sẽ được thêm động bằng JavaScript -->
+                </ul>
 			</div>
 		</div>
 	</nav>
@@ -1047,7 +1045,33 @@
             }
         });
     }
-
+    // Hàm lấy danh sách danh mục và hiển thị lên navbar
+    function loadCategories() {
+        fetch('/categories/list', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(categories => {
+            const navBar = document.getElementById('nav-bar');
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                li.id = 'store';
+                const a = document.createElement('a');
+                a.href = `/Store?category=${category.id}`; // Lọc sản phẩm theo category ID
+                a.textContent = category.name;
+                a.onclick = (event) => preserveLanguage(a.href, event);
+                li.appendChild(a);
+                navBar.appendChild(li);
+            });
+        })
+        .catch(error => console.error('Error loading categories:', error));
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCategories();
+    });
     document.addEventListener('DOMContentLoaded', initializeLanguage);
 </script>
 	@if (!string.IsNullOrEmpty(ViewBag.AccountId))

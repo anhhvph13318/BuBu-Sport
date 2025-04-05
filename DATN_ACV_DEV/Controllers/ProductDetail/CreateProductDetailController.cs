@@ -6,6 +6,8 @@ using DATN_ACV_DEV.Entity;
 using Azure;
 using Microsoft.EntityFrameworkCore;
 using DATN_ACV_DEV.Controllers.Property;
+using DATN_ACV_DEV.Model_DTO.Image_DTO;
+using System.Net.WebSockets;
 
 namespace DATN_ACV_DEV.Controllers.ProductDetail
 {
@@ -19,6 +21,10 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
         private CreateProductDetailResponse _response;
         private string _apiCode = "CreateProductDetail";
         private TbProductDetail _ProductDetail;
+        private TbProduct _Product;
+        private List<TbProductDetail> _ProductDetails;
+        private CreateImageRequest _Image; 
+        private BaseResponse<CreateImageResponse> _imageId;
         public CreateProductDetailController(DBContext context)
         {
             _context = context;
@@ -31,10 +37,23 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
         }
         public void AccessDatabase()
         {
-            _context.Add(_ProductDetail);
-            _context.SaveChanges();
-            _response.ID = _ProductDetail.Id;
+            if (_request.SizesQuantities != null)
+            {
+                _context.TbProductDetails.AddRange(_ProductDetails); // Lưu nhiều bản ghi cùng lúc
+                _context.SaveChanges();
+                _Product = _context.TbProducts.Where(p => p.Id == _request.ProductID).FirstOrDefault();
+                _Product.Quantity = _ProductDetails.Sum(c => c.Quantity);
+                _context.SaveChanges(); // Lưu thay đổi số lượng              
+            }
+            else 
+            {
+                _context.TbProductDetails.AddRange(_ProductDetails); // Lưu nhiều bản ghi cùng lúc
+                _context.SaveChanges();
+            }
+            _response.ID = _ProductDetails.First().Id;
             _res.Data = _response;
+            //_context.Add(_Image);
+            //_context.SaveChanges();
         }
 
         public void CheckAuthorization()
@@ -44,18 +63,63 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
 
         public void GenerateObjects()
         {
-            var imageID = _context.TbProducts.Where(c => c.Id == _request.ProductID).Select(c => c.ImageId).FirstOrDefault();
-            _ProductDetail = new TbProductDetail()
+            var imageID = _context.TbProducts
+                                  .Where(c => c.Id == _request.ProductID)
+                                  .Select(c => c.ImageId)
+                                  .FirstOrDefault();
+
+            _ProductDetails = new List<TbProductDetail>(); // Danh sách ProductDetail
+            // Nếu không có ImageID, tạo ảnh mới
+            if (_request.ImageID == null)
             {
-                Id = Guid.NewGuid(),
-                Price = _request.Price,
-                Quantity = _request.Quantity,
-                ImageId = imageID,
-                ColorId = _request.Color,
-                SizeId = _request.SizeName,
-                ProductId = _request.ProductID,
-            };
+                _Image = new CreateImageRequest()
+                {
+                    Url = _request.UrlImage,
+                    Type = "1",
+                    InAcitve = true,
+                    ProductId = _request.ProductID,
+                };
+                _imageId = new CreateImageController(_context).Process(_Image); // Nhận response
+            }
+            // Kiểm tra nếu SizesQuantities không null và có dữ liệu
+            if (_request.SizesQuantities != null && _request.SizesQuantities.Any())
+            {
+                foreach (var sizeQuantity in _request.SizesQuantities)
+                {
+                    var productDetail = new TbProductDetail()
+                    {
+                        Id = Guid.NewGuid(),
+                        Price = _request.Price,
+                        Quantity = sizeQuantity.QuantitySize,
+                        ImageId = _request.ImageID ?? _imageId.Data.ID,
+                        ColorId = _request.Color,
+                        SizeId = sizeQuantity.IdSize,
+                        ProductId = _request.ProductID,
+                        CreateDate = DateTime.Now,
+                    };
+                    _ProductDetails.Add(productDetail);
+                }
+            }
+            else // Nếu không có SizesQuantities, vẫn tạo ít nhất một bản ghi
+            {
+                var productDetail = new TbProductDetail()
+                {
+                    Id = Guid.NewGuid(),
+                    Price = _request.Price,
+                    Quantity = _request.Quantity, // Lấy Quantity từ request nếu không có danh sách
+                    ImageId = _request.ImageID ?? _imageId.Data.ID,
+                    ColorId = _request.Color,
+                    SizeId = _request.SizeName, // Trường hợp không có danh sách, lấy SizeName trực tiếp từ request
+                    ProductId = _request.ProductID,
+                    CreateDate = DateTime.Now,
+                };
+                _ProductDetails.Add(productDetail);
+            }
+
+            
         }
+
+
 
         public void PreValidation()
         {

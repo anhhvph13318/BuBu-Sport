@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DATN_ACV_DEV.Controllers
 {
-    [Route("api/EditVoucher")]
+    [Route("api/editVoucher")]
     [ApiController]
-    public class EditVoucherController : ControllerBase, IBaseController<EditVoucherRequest, EditVoucherResponse>
+    public class EditVoucherController : ControllerBase, IBaseController<VoucherDTO, EditVoucherResponse>
     {
         private readonly DBContext _context;
-        private EditVoucherRequest _request;
+        private VoucherDTO _request;
         private BaseResponse<EditVoucherResponse> _res;
         private EditVoucherResponse _response;
         private string _apiCode = "EditVoucher";
@@ -38,6 +38,7 @@ namespace DATN_ACV_DEV.Controllers
                 Data = null
             };
             _response = new EditVoucherResponse();
+
         }
 
         public void AccessDatabase()
@@ -49,31 +50,43 @@ namespace DATN_ACV_DEV.Controllers
 
         public void CheckAuthorization()
         {
-            _request.Authorization(_context, _apiCode);
+            //_request.Authorization(_context, _apiCode);
         }
 
         public void GenerateObjects()
         {
+            var currentDateTime = DateTime.Now;
             try
             {
-                _Voucher = _context.TbVouchers.Where(p => p.Id == _request.ID && p.EndDate >= DateTime.Now).FirstOrDefault();
+                Guid voucherId = _request.Id;
+                // Tìm voucher trong database
+                _Voucher = _context.TbVouchers.FirstOrDefault(p => p.Id == voucherId);
+
+                if (_Voucher == null)
+                {
+                    _res.Status = StatusCodes.Status400BadRequest.ToString();
+                    return;
+                }
                 if (_Voucher != null)
                 {
-                    //_Voucher.Name = _request.Name ?? _Voucher.Name;
-                    //_Voucher.Code = _request.Code ?? _Voucher.Code;
-                    //_Voucher.Discount = _request.Discount ?? _Voucher.Discount;
-                    //_Voucher.Description = _request.Description ?? _Voucher.Description;
-                    //_Voucher.Quantity = _request.Quantity ?? _Voucher.Quantity;
-                    //_Voucher.StartDate = _request.StartDate ?? _Voucher.StartDate;
-                    //_Voucher.EndDate = _request.EndDate ?? _Voucher.EndDate;
-                    //_Voucher.Type = _request.Type ?? _Voucher.Type;
-                    //_Voucher.Unit = _request.Unit
-                    //_Voucher.Status = _request.Status ?? _Voucher.Status;
-                    //_Voucher.ProductId = _request.ProductID ?? _Voucher.ProductId;
-                    //_Voucher.CategoryId = _request.CategoryID ?? _Voucher.CategoryId;
-                    ////Default
-                    //_Voucher.UpdateBy = _request.AdminId ?? Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993");
-                    //_Voucher.UpdateDate = DateTime.Now;
+                    _Voucher.Name = _request.Name ?? _Voucher.Name;
+                    _Voucher.Code = _request.Code ?? _Voucher.Code;
+                    _Voucher.Discount = _request.Discount;
+                    _Voucher.Description = _request.Description ?? _Voucher.Description;
+                    _Voucher.Quantity = _request.Quantity;
+                    _Voucher.StartDate = _request.StartDate;
+                    _Voucher.EndDate = _request.EndDate;
+                    _Voucher.Type = _request.Type;
+                    _Voucher.Unit = _request.Unit;
+                    _Voucher.Status = currentDateTime < _Voucher.StartDate
+                        ? Status.InActive
+                        : (currentDateTime >= _Voucher.StartDate && currentDateTime <= _Voucher.EndDate
+                            ? Status.Active
+                            : Status.Expired);
+                    _Voucher.MaxDiscount = _request.MaxDiscount;
+                    //Default
+                    _Voucher.UpdateBy = Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993");
+                    _Voucher.UpdateDate = DateTime.Now;
                 }
             }
             catch (Exception)
@@ -85,7 +98,7 @@ namespace DATN_ACV_DEV.Controllers
         public void PreValidation()
         {
             // vouchert không tồn tại
-            Condition.ConditionVoucher.CreateVoucher_C05(_context, _request.ID, _apiCode, _conC05, _conC05Field);
+            //Condition.ConditionVoucher.CreateVoucher_C05(_context, _request.ID, _apiCode, _conC05, _conC05Field);
             if (_request.Code != null)
             {
 
@@ -110,13 +123,13 @@ namespace DATN_ACV_DEV.Controllers
         }
         [HttpPost]
         [Route("Process")]
-        public BaseResponse<EditVoucherResponse> Process(EditVoucherRequest request)
+        public BaseResponse<EditVoucherResponse> Process(VoucherDTO request)
         {
             try
             {
                 _request = request;
-                CheckAuthorization();
-                PreValidation();
+                //CheckAuthorization();
+                //PreValidation();
                 GenerateObjects();
                 //PostValidation();
                 AccessDatabase();
