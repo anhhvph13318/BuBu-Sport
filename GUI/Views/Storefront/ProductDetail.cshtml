@@ -142,7 +142,7 @@
                                 </div>
                                 <p id="error-message" style="color: red; font-size: 14px; display: none;">Số lượng không hợp lệ!</p>
 
-                                <p id="stock-status" class="mt-2 small text-muted">Số lượng còn lại: <span id="available-stock">@Model.Quantity</span></p>
+                                <p id="stock-status" class="mt-2 small fs-5 text-muted">Số lượng còn lại: <span id="available-stock">@Model.Quantity</span></p>
                             </div>
 
                             <!-- Add to Cart Button -->
@@ -489,14 +489,17 @@
         }
         /* Stock status */
         #stock-status {
-          font-size: 0.85rem;
-          color: var(--text-secondary);
-          margin-top: 0.5rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
         }
 
+
         #stock-status.text-danger {
-          color: var(--danger-color) !important;
+            color: var(--danger-color) !important;
         }
+
 
         /* Buttons */
         .btn {
