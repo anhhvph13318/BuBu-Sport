@@ -1,3 +1,4 @@
+using DATN_ACV_DEV.Controllers;
 using DATN_ACV_DEV.Entity;
 using GUI;
 using GUI.Hubs;
@@ -30,7 +31,7 @@ builder.Services.AddSession();
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<DBContext>();
-
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddTransient<VNPayService>();
 builder.Services.AddScoped<UserSession>();
 

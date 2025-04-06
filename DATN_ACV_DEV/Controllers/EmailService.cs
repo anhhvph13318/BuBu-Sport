@@ -24,7 +24,7 @@ namespace DATN_ACV_DEV.Controllers
         public EmailService(IConfiguration configuration)
         {
             _smtpServer = configuration["Email:SmtpServer"];
-            _smtpPort = int.Parse(configuration["Email:SmtpPort"]);
+            _smtpPort = int.TryParse(configuration["Email:SmtpPort"], out int port) ? port : 587;
             _smtpUsername = configuration["Email:Username"];
             _smtpPassword = configuration["Email:Password"];
             _fromEmail = configuration["Email:FromEmail"];
