@@ -165,7 +165,7 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             // update customer info
             if (payload.Customer.Id != Guid.Empty)
-                order.CustomerId = payload.Customer.Id;
+                order.CustomerId = order.CustomerId == null ? payload.Customer.Id : order.CustomerId;
             else
             {
                 order.Customer = new TbCustomer
@@ -258,7 +258,21 @@ namespace DATN_ACV_DEV.Controllers.Order
                 }
             }
             _context.TbOrders.Update(order);
-            await _context.SaveChangesAsync();
+            //_context.SaveChanges();
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Detail = ex.InnerException?.Message
+                });
+            }
 
             return Ok(new { Success = true });
         }

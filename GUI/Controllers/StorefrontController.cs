@@ -555,7 +555,7 @@ namespace GUI.Controllers
 					}
 				}
 
-				sum += 30000;
+				sum += 0;
 
 				var voucherString = HttpContext.Session.GetString("SelectedVoucher");
 				var discountAmount = 0m;
@@ -587,7 +587,7 @@ namespace GUI.Controllers
 					addressDelivery = string.Join(", ", new List<string> { obj.address, obj.district, obj.city }),
 					name = obj.name,
 					getAtStore = true,
-					amountShip = 30000,
+					amountShip = 0,
 					totalAmountDiscount = discountAmount,
 					voucherID = vouchers
                 };

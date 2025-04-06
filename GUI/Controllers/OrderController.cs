@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Net.WebSockets;
 using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
 
 namespace GUI.Controllers;
@@ -54,7 +55,7 @@ public class OrderController : Controller
 
             var response = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
-
+            
             var orders = response!.Data;
 
             // Lọc theo orderCodePrefix
@@ -112,7 +113,6 @@ public class OrderController : Controller
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
-
         var order = response!.Data;
         order.ReCalculatePaymentInfo();
 
@@ -196,7 +196,7 @@ public class OrderController : Controller
                 order.Status = 1; // set status to prepare
         }
 
-        order.PaymentInfo.ShippingFee = order.IsCustomerTakeYourSelf ? 0 : 30000;
+        order.PaymentInfo.ShippingFee = order.IsCustomerTakeYourSelf ? 0 : 0;
 
         // submit to database
         using var httpClient = new HttpClient();
@@ -601,7 +601,7 @@ public class OrderController : Controller
         {
             order.IsCustomerTakeYourSelf = false;
             order.PaymentInfo.IsCustomerTakeYourSelf = false;
-            order.PaymentInfo.ShippingFee = 30000;
+            order.PaymentInfo.ShippingFee = 0;
             order.Status = 1;
         }
 
@@ -655,8 +655,8 @@ public class OrderController : Controller
 
         var data = response!.Data;
 
-        foreach (var order in data)
-            order.ReCalculatePaymentInfo();
+        //foreach (var order in data)
+        //    order.ReCalculatePaymentInfo();
 
         return data;
     }

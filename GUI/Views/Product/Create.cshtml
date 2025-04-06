@@ -376,7 +376,7 @@
                 return;
             }
 
-            // Nếu tất cả hợp lệ, kiểm tra mã sản phẩm
+            //Nếu tất cả hợp lệ, kiểm tra mã sản phẩm
             checkCodeAvailability(document.getElementById('productCode').value).then(isAvailable => {
                 if (!isAvailable) {
                     document.getElementById("imageSection").style.display = "none";
