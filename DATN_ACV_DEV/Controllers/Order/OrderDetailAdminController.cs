@@ -205,80 +205,88 @@ public class OrderDetailAdminController : ControllerBase
     [Route("/api/storefront/orders/search/{s}")]
     public async Task<IActionResult> SearchStorefront([FromRoute] string s)
     {
-        var isGuid = Guid.TryParse(s, out var id);
-
-        var order = await _context.TbOrders.AsNoTracking()
-            .Include(e => e.Customer)
-            .Include(e => e.TbOrderDetails)
-            .ThenInclude(e => e.Product)
-            .ThenInclude(e => e.tb_Image)
-            .Include(e => e.AddressDelivery)
-            .Include(e => e.Voucher)
-            .Select(e => new OrderDetail()
-            {
-                Id = e.Id,
-                Code = e.OrderCode,
-                IsDraft = e.IsDraft,
-                Customer = new CustomerInfo
-                {
-                    Id = e.Customer.Id,
-                    Name = e.Customer.Name,
-                    Address = e.Customer.Adress,
-                    PhoneNumber = e.Customer.Phone
-                },
-                ShippingInfo = e.AddressDelivery == null ? new ShippingInfo
-                {
-                    Name = "",
-                    PhoneNumber = "",
-                    Address = ""
-                } : new ShippingInfo
-                {
-                    Name = e.AddressDelivery!.ReceiverName,
-                    PhoneNumber = e.AddressDelivery!.ReceiverPhone,
-                    Address = $"{e.AddressDelivery.ProvinceName}"
-                },
-                PaymentInfo = new PaymentInfo
-                {
-                    TotalDiscount = e.TotalAmountDiscount.Value,
-                    ShippingFee = e.IsCustomerTakeYourself ? 0 : 0,
-                    TotalTax = e.TotalAmount == 0 ? 0 : e.TotalAmount * 10 / 100,
-                    TotalAmount = e.TotalAmount,
-                    Status = e.Status ?? 0,
-                    VoucherId = e.VoucherId,
-                    VoucherCode = e.Voucher.Code ?? string.Empty,
-                    PaymentStatus = (e.PaymentMethod == 2 && e.PaymentStatus == 1) || e.Status == Utility.Utility.ORDER_STATUS_DONE ? "Đã thanh toán" : "Chưa thanh toán"
-                },
-                Voucher = e.VoucherId == null
-                    ? new Model_DTO.Voucher_DTO.VoucherDTO()
-                    : new Model_DTO.Voucher_DTO.VoucherDTO
-                    {
-                        Id = e.Voucher.Id,
-                        Code = e.Voucher.Code,
-                        MaxDiscount = e.Voucher.MaxDiscount,
-                        Discount = e.Voucher.Discount,
-                        Unit = e.Voucher.Unit,
-                        Type = e.Voucher.Type,
-                    },
-                IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
-                IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
-                PaymentMethodName = e.PaymentMethod == 1 ? "Thanh toán khi nhận hàng" : "Thanh toán qua công VNPay",
-                StatusText = Common.ConvertStatusOrder(e.Status ?? 0),
-                Status = e.Status ?? 0,
-                Items = e.TbOrderDetails.Select(d => new OrderItem()
-                {
-                    Id = d.ProductId,
-                    Price = d.Product.Price,
-                    Quantity = d.Quantity,
-                    ProductImage = d.Product.tb_Image.Url,
-                    ProductName = d.Product.Name
-                }),
-                Created = e.CreateDate //VANH
-            }).Where(e => !e.IsDraft && (isGuid && e.Id == id) || (!isGuid && e.Customer.PhoneNumber == s) || (e.Code == s)).ToListAsync();
-
-
-        return Ok(new BaseResponse<List<OrderDetail>>()
+        try
         {
-            Data = order ?? new List<OrderDetail>()
-        });
+            var isGuid = Guid.TryParse(s, out var id);
+            var order = await _context.TbOrders.AsNoTracking()
+                .Include(e => e.Customer)
+                .Include(e => e.TbOrderDetails)
+                .ThenInclude(e => e.Product)
+                .Include(e => e.AddressDelivery)
+                .Include(e => e.Voucher)
+                .Select(e => new OrderDetail()
+                {
+                    Id = e.Id,
+                    Code = e.OrderCode,
+                    IsDraft = e.IsDraft,
+                    Customer = new CustomerInfo
+                    {
+                        Id = e.Customer.Id,
+                        Name = e.Customer.Name,
+                        Address = e.Customer.Adress,
+                        PhoneNumber = e.Customer.Phone
+                    },
+                    ShippingInfo = e.AddressDelivery == null ? new ShippingInfo
+                    {
+                        Name = "",
+                        PhoneNumber = "",
+                        Address = ""
+                    } : new ShippingInfo
+                    {
+                        Name = e.AddressDelivery!.ReceiverName,
+                        PhoneNumber = e.AddressDelivery.ReceiverPhone,
+                        Address = $"{e.AddressDelivery.ProvinceName}"
+                    },
+                    PaymentInfo = new PaymentInfo
+                    {
+                        TotalDiscount = e.TotalAmountDiscount ?? 0,
+                        ShippingFee = e.IsCustomerTakeYourself ? 0 : 0,
+                        TotalTax = e.TotalAmount == 0 ? 0 : e.TotalAmount * 10 / 100,
+                        TotalAmount = e.TotalAmount,
+                        Status = e.Status ?? 0,
+                        VoucherId = e.VoucherId,
+                        VoucherCode = e.Voucher != null ? e.Voucher.Code : "",
+                        PaymentStatus = (e.PaymentMethod == 2 && e.PaymentStatus == 1) || e.Status == Utility.Utility.ORDER_STATUS_DONE
+                            ? "Đã thanh toán"
+                            : "Chưa thanh toán"
+                    },
+                    Voucher = e.Voucher == null
+                        ? new Model_DTO.Voucher_DTO.VoucherDTO()
+                        : new Model_DTO.Voucher_DTO.VoucherDTO
+                        {
+                            Id = e.Voucher.Id,
+                            Code = e.Voucher.Code,
+                            MaxDiscount = e.Voucher.MaxDiscount,
+                            Discount = e.Voucher.Discount,
+                            Unit = e.Voucher.Unit,
+                            Type = e.Voucher.Type,
+                        },
+                    IsCustomerTakeYourSelf = e.IsCustomerTakeYourself,
+                    IsSameAsCustomerAddress = e.IsShippingAddressSameAsCustomerAddress,
+                    PaymentMethodName = e.PaymentMethod == 1 ? "Thanh toán khi nhận hàng" : "Thanh toán qua công VNPay",
+                    StatusText = Common.ConvertStatusOrder(e.Status ?? 0),
+                    Status = e.Status ?? 0,
+                    Items = e.TbOrderDetails.Select(d => new OrderItem()
+                    {
+                        Id = d.ProductId,
+                        Price = d.Product.Price,
+                        Quantity = d.Quantity,
+                        ProductImage = d.Product.tb_Image != null ? d.Product.tb_Image.Url : "",
+                        ProductName = d.Product.Name
+                    }),
+                    Created = e.CreateDate
+                })
+                .Where(e => !e.IsDraft && (isGuid && e.Id == id) || (!isGuid && e.Customer.PhoneNumber == s) || (e.Code == s))
+                .ToListAsync();
+
+            return Ok(new BaseResponse<List<OrderDetail>>()
+            {
+                Data = order ?? new List<OrderDetail>()
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "Lỗi khi truy vấn đơn hàng", error = ex.Message });
+        }
     }
 }

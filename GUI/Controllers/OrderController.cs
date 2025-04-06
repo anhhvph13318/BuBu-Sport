@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Net.WebSockets;
 using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
 
 namespace GUI.Controllers;
@@ -54,7 +55,7 @@ public class OrderController : Controller
 
             var response = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
-
+            
             var orders = response!.Data;
 
             // Lọc theo orderCodePrefix
