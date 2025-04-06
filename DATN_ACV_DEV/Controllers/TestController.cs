@@ -19,7 +19,7 @@ namespace DATN_ACV_DEV.Controllers
             string orderCode = "PH38284";
             string customerName = "Nguyễn Minh Quân";
             decimal totalAmount = 5600000;
-            await _emailService.SendOrderConfirmationAsync(email, orderCode, customerName, totalAmount);
+            //await _emailService.SendOrderConfirmationAsync(email, orderCode, customerName, totalAmount);
             return Ok("Email đã được gửi thành công.");
 
         }

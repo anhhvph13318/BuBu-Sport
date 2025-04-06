@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
+using Org.BouncyCastle.Crypto.Macs;
 using System.Threading.Tasks;
 
 namespace DATN_ACV_DEV.Controllers
 {
     public interface IEmailService
     {
-        Task SendOrderConfirmationAsync(string email, string orderCode, string customerName, decimal totalAmount);
+        Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type);
     }
 
     public class EmailService : IEmailService
@@ -22,33 +23,45 @@ namespace DATN_ACV_DEV.Controllers
 
         public EmailService(IConfiguration configuration)
         {
-            _smtpServer = configuration["Email:SmtpServer"];
-            _smtpPort = int.Parse(configuration["Email:SmtpPort"]);
-            _smtpUsername = configuration["Email:Username"];
-            _smtpPassword = configuration["Email:Password"];
-            _fromEmail = configuration["Email:FromEmail"];
-            _fromName = configuration["Email:FromName"];
+            _smtpServer = "smtp.gmail.com";
+            _smtpPort = 587;
+            _smtpUsername = "sprtbubu@gmail.com";
+            _smtpPassword = "luys adyn vknr bdtp";
+            _fromEmail = "sprtbubu@gmail.com";
+            _fromName = "BuBuSport";
         }
 
-        public async Task SendOrderConfirmationAsync(string email, string orderCode, string customerName, decimal totalAmount)
+        public async Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(_fromName, _fromEmail));
+            message.From.Add(new MailboxAddress("BuBuSport", "sprtbubu@gmail.com"));
             message.To.Add(new MailboxAddress(customerName, email));
-            message.Subject = $"Xác nhận đơn hàng #{orderCode}";
-
-            var builder = new BodyBuilder();
-            builder.HtmlBody = 
-            $@"
-                <h2>Đơn thông báo đóng tiền học lại</h2>
+            message.Subject = type == 0 ? $"Yêu cầu cấp lại mật khẩu BuBu Sport" : $"Cập nhật đơn hàng #{orderCode}";
+            var resetpass = $@"
+                <h2>Yêu cầu cấp lại mật khẩu BuBu Sport</h2>
                 <p>Xin chào {customerName},</p>
-                <p><strong>Mã sinh viên:</strong> {orderCode}</p>
-                <p>Em đã không đủ điều kiện để qua môn Đồ Án Tốt Nghiệp. Em cần đóng tiền để được học lại môn vào kì tiếp theo</p>
-                <p>Vui lòng chuyển khoản số tiền {totalAmount:N0}</p>
-                <p>Vào số tài khoản của nhà trường : 1301102004 MBBANK</p>
-                <p>Để đủ điều kiện học lại</p>
-                <p><strong>Tổng tiền:</strong> {totalAmount:N0} VNĐ</p>
+                <p><strong>Số điện thoại:</strong> {phonenumber}</p>
+                <p>Chúng tôi đã nhận được yêu cầu cấp lại mật khẩu của bạn.</p>
+                <p>Mật khẩu mới của bạn là {password:N0}</p>
+                <p>Nếu bạn không thực hiên yêu cầu này vui lòng bỏ qua email này và cài đặt lại mật khẩu.</p>
+                <p>để đảm bảo tính bảo mật cho tài khoản của bạn</p>
+                <p>Xin cảm ơn,</p>
+                <p>Nhóm tài khoản BuBu Sport</p>
             ";
+            var orderstatus = $@"
+                <h2>Trạng thái đơn hàng BuBu Sport</h2>
+                <p>Xin chào {customerName},</p>
+                <p><strong>Số điện thoại:</strong> {phonenumber}</p>
+                <p><strong>Mã hóa đơn:</strong> {orderCode}</p>
+                <p>Chúng tôi xin thông báo đơn hàng của bạn đã được cập nhật trạng thái {status}</p>
+                <p>Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi !!!</p>
+                <p>Xin cảm ơn,</p>
+                <p>Nhóm tài khoản BuBu Sport</p>
+            ";
+            var builder = new BodyBuilder();
+            builder.HtmlBody = type == 0 ? resetpass : orderstatus;
+
+
 
             message.Body = builder.ToMessageBody();
 
