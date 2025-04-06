@@ -4,6 +4,8 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    int productOrder = 1;
+    decimal totalAmount = 0;
 }
 
 @model IEnumerable<OrderItem>
@@ -12,29 +14,41 @@
     <table class="table">
         <thead>
             <tr>
+                <th>STT</th>
+                <th>Mã sản phẩm</th>
                 <th>Ảnh</th>
                 <th>Tên sản phẩm</th>
+                <th>Màu sắc</th>
+                <th>Kích thước</th>
                 <th>Đơn giá</th>
                 <th>Số lượng</th>
+                <th>Thành tiền</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach(var item in Model)
+            @foreach (var item in Model)
             {
-            <tr>
+                var itemTotal = item.Price * item.Quantity;
+                totalAmount += itemTotal;
+                <tr>
+                    <td>@(productOrder++)</td>
+                    <td>@item.Id</td>
                     <td style="width: 15%">
                         <img src="@item.ProductImage" class="img-thumbnail" style="width: 50%" />
                     </td>
                     <td>@item.ProductName</td>
+                    <td>@item.Color</td>
+                    <td>@item.Size</td>
                     <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                     <td>
                         <input class="form-control order-item-quantity" min="1" value="@item.Quantity" type="number" onfocus="backupQuantityValue(event)" onchange="updateQuantity(event, '@item.Id')" />
                     </td>
+                    <td>@itemTotal.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                     <td>
                         <button class="btn btn-danger remove-item-btn" onclick="removeItem('@item.Id')">Xoá</button>
                     </td>
-            </tr>
+                </tr>
             }
         </tbody>
     </table>

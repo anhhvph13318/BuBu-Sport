@@ -22,20 +22,20 @@
                             <div class="price-filter">
                                 <div id="price-slider"></div>
                                 <div class="input-number price-min">
-                                    <input id="price-min" type="number" name="min" data-value="@(Model?.Data?.LowestPrice ?? 0)" value="@ViewBag.PriceFrom">
+                                    <input id="price-min" type="number" name="min" data-value="@(Model?.Data?.LowestPrice ?? 0)" value="@ViewBag.PriceFrom" class="form-control">
                                     <span class="qty-up">+</span>
                                     <span class="qty-down">-</span>
                                 </div>
                                 <span>-</span>
                                 <div class="input-number price-max">
-                                    <input id="price-max" type="number" name="max" data-value="@(Model?.Data?.HighestPrice ?? 0)" value="@ViewBag.PriceTo">
+                                    <input id="price-max" type="number" name="max" data-value="@(Model?.Data?.HighestPrice ?? 0)" value="@ViewBag.PriceTo" class="form-control">
                                     <span class="qty-up">+</span>
                                     <span class="qty-down">-</span>
                                 </div>
                             </div>
                         </div>
                         <!-- /aside Widget -->
-                        <button class="primary-btn form-submit-btn">Tìm kiếm</button>
+                        @*    <button class="primary-btn form-submit-btn">Tìm kiếm</button> *@
                     </div>
                 </form>
                 <!-- /ASIDE -->
@@ -43,45 +43,96 @@
                 <div id="store" class="col-md-9">
                     <!-- store top filter -->
                     <div class="store-filter clearfix">
-                        <div class="store-sort">
-                            <label>
-                                Hiển thị:
-                                <select class="input-select" id="page-display" style="margin-left: 5px;">
-                                    @foreach (var item in ViewBag.TakeOptions)
-                                    {
-                                        if (item == ViewBag.Take)
-                                        {
-                                            <option value="@item" selected>@item</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    }
-                                </select>
-                            </label>
+                        <!-- Thêm form lọc -->
+                        <div class="filter-section" style="margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px;">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <div class="form-group d-flex flex-column h-100">
+                                        <label for="filter-name" class="filter-label mb-2">Tên sản phẩm</label>
+                                        <input id="filter-name" class="form-control" type="text" placeholder="Nhập tên sản phẩm">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group d-flex flex-column h-100">
+                                        <label for="filter-status" class="filter-label mb-2">Trạng thái</label>
+                                        <select id="filter-status" class="form-control">
+                                            <option value="">Tất cả</option>
+                                            <option value="available">Còn hàng</option>
+                                            <option value="out-of-stock">Hết hàng</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="display: none;">
+                                    <div class="form-group d-flex flex-column h-100">
+                                        <label for="filter-category" class="filter-label mb-2">Danh mục</label>
+                                        <select id="filter-category" class="form-control">
+                                            <option value="">Tất cả</option>
+                                            @if (Model.Data.LstProduct != null)
+                                            {
+                                                var categories = Model.Data.LstProduct.Select(p => p.CategoryName).Distinct();
+                                                foreach (var category in categories)
+                                                {
+                                                    <option value="@category">@category</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group d-flex flex-column h-100">
+                                        <label for="page-display" class="filter-label mb-2">Hiển thị</label>
+                                        <select id="page-display" class="form-control">
+                                            @foreach (var item in ViewBag.TakeOptions)
+                                            {
+                                                if (item == ViewBag.Take)
+                                                {
+                                                    <option value="@item" selected>@item</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group d-flex flex-column h-100">
+                                        <label class="filter-label mb-2" style="visibility: hidden;">Nút</label> <!-- Label ẩn để căn chỉnh -->
+                                        <div class="button-group d-flex align-items-center">
+                                            <button id="filter-search" class="btn btn-primary me-2">Tìm kiếm</button>
+                                            <button id="filter-reset" class="btn btn-secondary">Đặt lại</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <!-- Kết thúc form lọc -->
                     </div>
                     <!-- /store top filter -->
                     <!-- store products -->
-                    <div class="row">
+                    <div class="row" id="product-list">
                         @foreach (var item in Model.Data.LstProduct)
                         {
                             <!-- product -->
-                            <div class="col-md-4 col-xs-6">
+                            <div class="col-md-4 col-xs-6 product-item"
+                                 data-name="@item.Name"
+                                 data-category="@item.CategoryName"
+                                 data-status="@(item.Quantity > 0 ? "available" : "out-of-stock")"
+                                 data-price="@item.Price">
                                 <div class="product">
                                     <div class="product-img">
-                                        <img src="@item.Image" alt="">
+                                        <img src="@item.Image" alt="" style="cursor: pointer" onclick="redirectToDetail('@item.Id')">
                                         @if (item.Quantity <= 0)
                                         {
                                             <div class="product-label" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: flex; justify-content: center; align-items: center; background-color: rgba(255, 255, 255, 0.7);">
-                                                <span style="padding: 8px 15px; background-color: rgba(0, 0, 0, 0.6); color: #fff; font-size: 14px; border-radius: 4px; letter-spacing: 1px; font-weight: 500;">HẾT HÀNG</span>
+                                                <span style="padding: 8px 15px; background-color: rgba(0, 0, 0, 0.6); color: #fff; font-size: 14px; letter-spacing: 1px; font-weight: 500;">HẾT HÀNG</span>
                                             </div>
                                         }
                                     </div>
                                     <div class="product-body">
                                         <p class="product-category">@item.CategoryName</p>
-                                        <h3 class="product-name"><a href="#">@item.Name</a></h3>
+                                        <h3 class="product-name"><a href="#" onclick="redirectToDetail('@item.Id')">@item.Name</a></h3>
                                         <h4 class="product-price">
                                             @(item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
                                         </h4>
@@ -94,7 +145,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="add-to-cart">
+                                    @* <div class="add-to-cart">
                                         @if (item.Quantity > 0)
                                         {
                                             <button class="add-to-cart-btn addCart" data-prId="@item.Id"><i class="fa fa-shopping-cart"></i> thêm vào giỏ</button>
@@ -105,7 +156,7 @@
                                         {
                                             <button class="add-to-cart-btn" disabled style="background-color: #f1f1f1; color: #888; border: 1px solid #ddd; cursor: not-allowed; transition: all 0.3s;"><i class="fa fa-times-circle"></i> hết hàng</button>
                                         }
-                                    </div>
+                                    </div> *@
                                 </div>
                             </div>
                             <!-- /product -->
@@ -141,13 +192,7 @@
         <!-- /container -->
     </div>
     <!-- /SECTION -->
-    <script>
-        function redirectToDetail(productId) {
-            console.log("store")
-            window.location.href = `/productDetail?id=${productId}`;
-        }
-    </script>
-
+    <!-- Thêm JavaScript và CSS -->
     <style>
         .product-img {
             position: relative;
@@ -166,7 +211,156 @@
                 background-color: #f1f1f1 !important;
                 color: #888 !important;
             }
+
+        .filter-section {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px; /* Thêm bo góc cho filter-section */
+        }
+
+            .filter-section .row {
+                align-items: center; /* Căn giữa tất cả các phần tử */
+            }
+
+        .form-group {
+            margin-bottom: 0; /* Loại bỏ khoảng cách dưới */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .filter-label {
+            font-weight: 500;
+            color: #444;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-control {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            font-size: 14px;
+            width: 100%;
+            height: 38px; /* Đặt chiều cao cố định để đồng đều */
+            border-radius: 4px; /* Thêm bo góc cho input/select */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+                outline: none;
+            }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 8px 15px;
+            color: #fff;
+            font-size: 14px;
+            height: 38px; /* Chiều cao khớp với form-control */
+            border-radius: 4px; /* Thêm bo góc cho nút */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                transform: translateY(-2px);
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            padding: 8px 15px;
+            color: #fff;
+            font-size: 14px;
+            height: 38px; /* Chiều cao khớp với form-control */
+            border-radius: 4px; /* Thêm bo góc cho nút */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                transform: translateY(-2px);
+            }
     </style>
+
+    <script>
+        // Hàm lọc sản phẩm
+        function filterProducts() {
+            const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+            const categoryFilter = document.getElementById('filter-category').value;
+            const priceFrom = parseFloat(document.getElementById('price-min').value) || 0;
+            const priceTo = parseFloat(document.getElementById('price-max').value) || Infinity;
+
+            const items = document.querySelectorAll('.product-item');
+            items.forEach(item => {
+                const name = item.getAttribute('data-name').toLowerCase();
+                const status = item.getAttribute('data-status');
+                const category = item.getAttribute('data-category');
+                const price = parseFloat(item.getAttribute('data-price'));
+
+                const matchesName = nameFilter ? name.includes(nameFilter) : true;
+                const matchesStatus = statusFilter ? status === statusFilter : true;
+                const matchesCategory = categoryFilter ? category === categoryFilter : true;
+                const matchesPrice = price >= priceFrom && price <= priceTo;
+
+                if (matchesName && matchesStatus && matchesCategory && matchesPrice) {
+                    item.style.display = '';
+                    // Thêm hiệu ứng fade in
+                    item.style.opacity = '0';
+                    setTimeout(() => {
+                        item.style.transition = 'opacity 0.5s ease';
+                        item.style.opacity = '1';
+                    }, 50);
+                } else {
+                    item.style.display = 'none';
+                    item.style.opacity = '0';
+                }
+            });
+        }
+
+        // Xử lý lọc khi bấm "Tìm kiếm"
+        document.getElementById('filter-search').addEventListener('click', function () {
+            filterProducts();
+        });
+
+        // Xử lý đặt lại bộ lọc
+        document.getElementById('filter-reset').addEventListener('click', function () {
+            document.getElementById('filter-name').value = '';
+            document.getElementById('filter-status').value = '';
+            document.getElementById('filter-category').value = '';
+            document.getElementById('price-min').value = document.getElementById('price-min').getAttribute('data-value');
+            document.getElementById('price-max').value = document.getElementById('price-max').getAttribute('data-value');
+
+            const items = document.querySelectorAll('.product-item');
+            items.forEach(item => {
+                item.style.display = '';
+                item.style.opacity = '1';
+            });
+        });
+
+        // Tích hợp với form lọc giá trong aside
+        document.querySelector('.form-submit-btn').addEventListener('click', function (e) {
+            e.preventDefault();
+            filterProducts();
+        });
+
+        // Xử lý chuyển trang chi tiết sản phẩm
+        function redirectToDetail(productId) {
+            console.log("store");
+            window.location.href = `/productDetail?id=${productId}`;
+        }
+    </script>
 }
 else
 {
