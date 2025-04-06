@@ -34,11 +34,11 @@ public class OrderDetailAdminController : ControllerBase
             return NotFound("Không tìm thấy đơn hàng.");
         var customerId = _context.TbOrders.Where(c => c.Id == Guid.Parse(id)).Select(c => c.CustomerId).FirstOrDefault();
         var customer = _context.TbCustomers.Where(c => c.Id == customerId).FirstOrDefault();
-        
-        var orderDetails = orderEntity.TbOrderDetails.FirstOrDefault();
 
-        var product = orderDetails?.Product;
-        var image = _context.TbImages.Where(c => c.Id == product.ImageId).Select(c => c.Url).FirstOrDefault();
+        var orderDetails = _context.TbOrderDetails.Where(c => c.OrderId == Guid.Parse(id)).ToList();
+
+        //var product = orderDetails?.Product;
+        //var image = _context.TbImages.Where(c => c.Id == product.ImageId).Select(c => c.Url).FirstOrDefault();
 
         var order = new OrderDetail()
         {
@@ -83,22 +83,38 @@ public class OrderDetailAdminController : ControllerBase
             PaymentMethodName = orderEntity.PaymentMethod == 2 ? "VNPay" : "Tiền mặt",
             StatusText = Common.ConvertStatusOrder(orderEntity.Status ?? 0),
             Status = orderEntity.Status ?? 0,
-            Items = orderDetails == null ? new List<OrderItem>() : new List<OrderItem>
-        {
-            new OrderItem()
+
+            Items = orderDetails
+            .Select(orderDetail => new OrderItem
             {
-                Id = product?.Id ?? Guid.Empty,
-                Price = product?.Price ?? 0,
-                Quantity = orderDetails.Quantity,
-                ProductImage = image,
-                //Size = product.Size,
-                //Color = product.Color
-                ProductName = product?.Name ?? "Không xác định"
-            }
-        },
+                Id = orderDetail.ProductId,
+                Price = _context.TbProductDetails.Where(c => c.Id == orderDetail.ProductId).Select(c => c.Price).FirstOrDefault(),
+                Quantity = orderDetail.Quantity,
+                ProductImage = _context.TbImages.Where(c => c.Id ==
+                _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.ImageId).FirstOrDefault()).Select(c => c.Url).FirstOrDefault(),
+                Size = _context.TbSizes.Where(c => c.Id ==
+                _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.SizeId).FirstOrDefault()).Select(c => c.SizeName).FirstOrDefault(),
+                Color = _context.TbColors.Where(c=>c.Id == 
+                _context.TbProductDetails.Where(a=>a.Id == orderDetail.ProductId).Select(a=>a.ColorId).FirstOrDefault()).Select(c=>c.Name).FirstOrDefault(),
+                ProductName = _context.TbProducts.Where(c => c.Id ==
+                _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.ProductId).FirstOrDefault()).Select(c => c.Name).FirstOrDefault()
+            })
+            .ToList(),
             Created = orderEntity.CreateDate,
         };
-
+        //foreach (var item in orderDetails.Order)
+        //{
+        //    new OrderItem()
+        //    {
+        //        Id = item.Id ?? Guid.Empty,
+        //        Price = item?.Price ?? 0,
+        //        Quantity = item.Quantity,
+        //        //ProductImage = orderDetails.ProductId,
+        //        //Size = product.Size,
+        //        //Color = product.Color
+        //        ProductName = item?.Name ?? "Không xác định"
+        //    }
+        //}
         return Ok(new BaseResponse<OrderDetail>
         {
             Data = order

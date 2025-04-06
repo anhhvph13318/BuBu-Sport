@@ -36,9 +36,10 @@ public class GetOrderAdminController : ControllerBase
                 amountDiscount = e.TotalAmountDiscount,
                 amountShip = e.AmountShip,
                 id = e.Id,
-                nameCustomer = e.Customer.Name,
+                nameCustomer = e.Description,
                 status = Common.ConvertStatusOrder(e.Status ?? 0),
-                products = string.Join(", ", e.TbOrderDetails.Take(2).Select(e => e.Product.Name))
+                products = string.Join(", ", e.TbOrderDetails
+                .Select(d => d.Product != null ? d.Product.Name : "Không xác định"))
             }).ToListAsync();
 
         return Ok(new BaseResponse<IEnumerable<OrderListItem>>()
@@ -71,7 +72,7 @@ public class GetOrderAdminController : ControllerBase
                 Customer = new CustomerInfo
                 {
                     Id = e.Id,
-                    Name = e.Customer.Name,
+                    Name = e.Description,
                     Address = e.Customer.Adress,
                     PhoneNumber = e.Customer.Phone
                 },

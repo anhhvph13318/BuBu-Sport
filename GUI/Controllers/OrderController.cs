@@ -654,8 +654,8 @@ public class OrderController : Controller
 
         var data = response!.Data;
 
-        foreach (var order in data)
-            order.ReCalculatePaymentInfo();
+        //foreach (var order in data)
+        //    order.ReCalculatePaymentInfo();
 
         return data;
     }
