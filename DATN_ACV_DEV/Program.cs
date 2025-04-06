@@ -1,4 +1,5 @@
 using DATN_ACV_DEV;
+using DATN_ACV_DEV.Controllers;
 using DATN_ACV_DEV.Entity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer("Data S
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-
+builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
