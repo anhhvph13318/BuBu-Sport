@@ -1007,9 +1007,29 @@
             const decreaseBtn = document.getElementById("decreaseQty");
             const increaseBtn = document.getElementById("increaseQty");
             const errorMessage = document.getElementById("error-message");
+            const colorRadios = document.querySelectorAll(".color-select");
+            const sizeRadios = document.querySelectorAll(".size-select");
 
             let maxQuantity = @Model.Quantity; // Số lượng còn lại trong kho
-
+            //kiểm tra xem đã chọn màu và size chưa
+            function isVariantSelected() {
+                const selectedColor = document.querySelector(".color-select:checked");
+                const selectedSize = document.querySelector(".size-select:checked");
+                return selectedColor && selectedSize;
+            }
+            // Hàm cập nhật trạng thái nút tăng/giảm
+            function updateButtonState() {
+                if (isVariantSelected()) {
+                    decreaseBtn.disabled = false;
+                    increaseBtn.disabled = false;
+                    quantityInput.disabled = false;
+                } else {
+                    decreaseBtn.disabled = true;
+                    increaseBtn.disabled = true;
+                    quantityInput.disabled = true;
+                    
+                }
+            }
             // Kiểm tra nhập số hợp lệ
             quantityInput.addEventListener("input", function () {
                 let value = quantityInput.value;
@@ -1052,6 +1072,16 @@
                     showError("Số lượng không được vượt quá " + maxQuantity);
                 }
             });
+            //Kiểm tra trạng thái nút xem đã tích chưa
+            colorRadios.forEach(radio => {
+                radio.addEventListener("change", updateButtonState);
+            });
+
+            sizeRadios.forEach(radio => {
+                radio.addEventListener("change", updateButtonState);
+            });
+            //Set trạng thái ban đầu khi bấm vào sản phẩm lúc chưa chọn
+            updateButtonState();
 
             function showError(message) {
                 errorMessage.textContent = message;
