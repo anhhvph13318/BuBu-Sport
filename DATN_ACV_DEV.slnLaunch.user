@@ -4,13 +4,11 @@
     "Projects": [
       {
         "Path": "DATN_ACV_DEV\\DATN_ACV_DEV.csproj",
-        "Action": "Start",
-        "DebugTarget": "http"
+        "Action": "Start"
       },
       {
         "Path": "GUI\\GUI.csproj",
-        "Action": "Start",
-        "DebugTarget": "http"
+        "Action": "Start"
       }
     ]
   }
