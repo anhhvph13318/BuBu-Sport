@@ -406,10 +406,13 @@ namespace GUI.Controllers
 				// Kiểm tra và hiển thị thông tin size/color
 				foreach (var item in model)
 				{
-
+					var colorid = _context.TbCartDetails.Where(c => c.Id == item.CartDetailID).Select(c => c.ColorId).FirstOrDefault();
+					var sizeid = _context.TbCartDetails.Where(c => c.Id == item.CartDetailID).Select(c => c.SizeId).FirstOrDefault();
+					var color = _context.TbColors.Where(c => c.Id == colorid).Select(c=>c.Name).FirstOrDefault();
+					var size = _context.TbSizes.Where(c => c.Id == sizeid).Select(c=>c.SizeName).FirstOrDefault();
 					// Đảm bảo rằng color và sizeName luôn có giá trị hợp lệ
-					item.Color = string.IsNullOrEmpty(item.Color) ? "Chưa chọn màu" : item.Color;
-					item.sizeName = string.IsNullOrEmpty(item.sizeName) ? "Chưa chọn size" : item.sizeName;
+					item.Color = string.IsNullOrEmpty(color) ? "Chưa chọn màu" : color;
+					item.sizeName = string.IsNullOrEmpty(size) ? "Chưa chọn size" : size;
 				}
 
 				var sum = model.Sum(c => c.Price * c.Quantity);
