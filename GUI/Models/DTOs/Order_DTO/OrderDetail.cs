@@ -70,8 +70,11 @@ public class OrderItem
 {
     public string ProductName { get; set; } = string.Empty;
     public string ProductImage { get; set; } = string.Empty;
+    public string Color { get; set; } = string.Empty;
+    public string Size { get; set; } = string.Empty;
     public int Quantity { get; set; }
     public decimal Price { get; set; }
+    public string Code { get; set; } = string.Empty; 
     public Guid Id { get; set; }
 }
 
