@@ -3,7 +3,7 @@
 
 	let discount = 0;
 	let maxDiscount = 0;
-	let shipping = 30000;
+	let shipping = 0;
 
 	function ValidateEmail(email) {
 		return String(email)
@@ -579,7 +579,7 @@
 		let shippingFee = 0;
 		if ($(this).val() == 1) {
 			$(".shipping-details").addClass("active");
-			shippingFee = 30000;
+			shippingFee = 0;
         } else {
 			$(".shipping-details").removeClass("active");
 		}

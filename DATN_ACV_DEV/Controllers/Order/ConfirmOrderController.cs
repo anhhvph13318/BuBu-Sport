@@ -136,7 +136,7 @@ namespace DATN_ACV_DEV.Controllers
                 CustomerId = customer == null ? null : customer.Id,
                 PhoneNumberCustomer = customer != null ? customer.Phone : _request.phoneNummber,
                 AddressDeliveryId = _request.addressDeliveryId,
-                IsCustomerTakeYourself = _request.getAtStore == true,
+                IsCustomerTakeYourself = _request.getAtStore == false,
                 VoucherId = voucherId,
 
 				OrderCounter = false,
@@ -155,9 +155,10 @@ namespace DATN_ACV_DEV.Controllers
 					if (model != null)
 					{
 						var image = _context.TbImages.Where(i => i.Id == model.ImageId).FirstOrDefault();
+                        var productdetailId = _context.TbProductDetails.Where(c=>c.SizeId == item.SizeId && c.ColorId == item.ColorId && c.ProductId == item.ProductId).Select(c=>c.Id).FirstOrDefault();
 						OrderProduct product = new OrderProduct()
 						{
-							productId = model.Id,
+							productId = productdetailId,
 							categoryId = model.CategoryId,
 							productName = model.Name,
 							productCode = model.Code,
