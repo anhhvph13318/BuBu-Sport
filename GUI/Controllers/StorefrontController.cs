@@ -392,14 +392,26 @@ namespace GUI.Controllers
             return BadRequest();
         }
 
-        [Route("/Checkout")]
+		[Route("/Checkout")]
 		public async Task<IActionResult> Checkout()
 		{
 			if (TempData["ConfirmedCartItems"] != null)
 			{
-				HttpContext.Session.SetString("SelectedVoucher","");
+				HttpContext.Session.SetString("SelectedVoucher", "");
 				TempData.Keep("ConfirmedCartItems");
+
+				// Lấy danh sách sản phẩm từ TempData
 				List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
+
+				// Kiểm tra và hiển thị thông tin size/color
+				foreach (var item in model)
+				{
+
+					// Đảm bảo rằng color và sizeName luôn có giá trị hợp lệ
+					item.Color = string.IsNullOrEmpty(item.Color) ? "Chưa chọn màu" : item.Color;
+					item.sizeName = string.IsNullOrEmpty(item.sizeName) ? "Chưa chọn size" : item.sizeName;
+				}
+
 				var sum = model.Sum(c => c.Price * c.Quantity);
 				if (sum > 0)
 				{
@@ -410,60 +422,67 @@ namespace GUI.Controllers
 			return RedirectToAction(nameof(Cart));
 		}
 
+
 		[Route("/Cart")]
 		public async Task<IActionResult> Cart()
 		{
-            var colorId = Request.Query["colorId"].ToString();  // Lấy colorId
-            var sizeId = Request.Query["sizeId"].ToString();    // Lấy sizeId
-            var a = GetClientIP(HttpContext);
+			var colorId = Request.Query["colorId"].ToString();
+			var sizeId = Request.Query["sizeId"].ToString();
 
 			var userId = Guid.Empty;
 			try
 			{
 				userId = new Guid(Request.Cookies["user-id"]);
 			}
-			catch (Exception)
-			{
-			}
+			catch (Exception) { }
+
 			var model = new List<CartDTO>();
 			if (userId != Guid.Empty)
 			{
-				var req = new CartItemRequest();
-				req.UserId = userId;
-				req.colorId = colorId != "" ? Guid.Parse(colorId) : null;
-				req.sizeId = sizeId != "" ? Guid.Parse(sizeId) : null;
-				//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+				var req = new CartItemRequest
+				{
+					UserId = userId,
+					colorId = colorId != "" ? Guid.Parse(colorId) : null,
+					sizeId = sizeId != "" ? Guid.Parse(sizeId) : null
+				};
+
 				var URL = _settings.APIAddress + "api/CartItem/Process";
 				var param = JsonConvert.SerializeObject(req);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
 				var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
-                var groupdata = result.Data.CartItem
-					.GroupBy(c => new
-					{
-						c.ProductID,
-						c.Price,
-						c.NameProduct,
-						c.Color,
-						c.sizeName
-					})
-					.Select(d => new CartDTO
-					{
-						CartDetailID = d.First().CartDetailID,
-						Image = d.First().Image,
-						NameProduct = d.Key.NameProduct,
-						Price = d.Key.Price,
-						ProductID = d.Key.ProductID,
-						Quantity = d.Sum(x => x.Quantity), // cộng tổng quantity
-						Color = d.Key.Color,
-						sizeName = d.Key.sizeName
-					}).ToList();
-                if (result.Status == "200")
+
+				if (result.Status == "200")
 				{
-					model = groupdata;
+					model = result.Data.CartItem
+						.GroupBy(c => new
+						{
+							c.ProductID,
+							c.Price,
+							c.NameProduct,
+							c.ProductCode,
+							c.Color,
+							c.sizeName
+						})
+						.Select(d => new CartDTO
+						{
+							CartDetailID = d.First().CartDetailID,
+							Image = d.First().Image,
+							ProductCode = d.Key.ProductCode,
+							NameProduct = d.Key.NameProduct,
+							Price = d.Key.Price,
+							ProductID = d.Key.ProductID,
+							Quantity = d.Sum(x => x.Quantity),
+							Color = string.IsNullOrEmpty(d.Key.Color) ? "Chưa chọn màu" : d.Key.Color,
+							sizeName = string.IsNullOrEmpty(d.Key.sizeName) ? "Chưa chọn size" : d.Key.sizeName
+						}).ToList();
+
+					// Lưu dữ liệu vào TempData
+					TempData["ConfirmedCartItems"] = JsonConvert.SerializeObject(model);
 				}
 			}
 			return View(model);
 		}
+
 
 		[HttpPost("/DeleteItem")]
 		public async Task<IActionResult> DeleteItem(Guid id)

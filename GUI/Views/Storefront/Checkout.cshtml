@@ -72,6 +72,8 @@
 				<div class="order-summary">
 					<div class="order-col">
 						<div><strong>Sản phẩm</strong></div>
+						<div><strong>Màu</strong></div>
+						<div><strong>Size</strong></div>
 						<div><strong>TỔNG</strong></div>
 					</div>
 					<div class="order-products">
@@ -81,18 +83,17 @@
 							{
 								<div class="order-col order-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
 									<div>
-										@* <span class="remove-item" data-itemId="@item.CartDetailID" style="margin: 0 5px;">
-											<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-												<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
-												<path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
-											</svg>
-										</span> *@
 										@item.Quantity x @item.NameProduct
 									</div>
-@* 									<div>
-										<a class="change-quant quant-down" data-itemId="@item.CartDetailID">-</a><input class="input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" /><a class="change-quant quant-up" data-itemId="@item.CartDetailID">+</a>
-									</div> *@
-									<div class="sub-total" data-value="@((int)(item.Quantity * item.Price))" id="sub-@item.CartDetailID">@(((int)(item.Quantity * item.Price)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</div>
+									<div class="product-attributes">
+										<span class="product-color">@item.Color</span>
+									</div>
+									<div class="product-attributes">
+										<span class="product-size">@item.sizeName</span>
+									</div>
+									<div class="sub-total" data-value="@((int)(item.Quantity * item.Price))" id="sub-@item.CartDetailID">
+										@(((int)(item.Quantity * item.Price)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+									</div>
 								</div>
 							}
 						}
@@ -214,3 +215,5 @@
 		</div>
 	</div>
 </div>
+<style>
+</style>
