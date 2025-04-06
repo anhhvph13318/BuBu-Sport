@@ -12,16 +12,29 @@ namespace DATN_ACV_DEV.Controllers
         {
             _emailService = emailService;
         }
-        [HttpPost("send-email")]
-        public async Task<IActionResult> SendEmail()
+        public class SendEmailRequest
         {
-            string email = "nguyenquan14124@gmail.com";
-            string orderCode = "PH38284";
-            string customerName = "Nguyễn Minh Quân";
-            decimal totalAmount = 5600000;
-            await _emailService.SendOrderConfirmationAsync(email, orderCode, customerName, totalAmount);
+            public string Email { get; set; }
+            public string OrderCode { get; set; }
+            public string CustomerName { get; set; }
+            public decimal TotalAmount { get; set; }
+        }
+        public class NewPasswordRequest
+        {
+            public string email { get; set; }
+        }
+        [HttpPost("send-email")]
+        public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)
+        {
+            await _emailService.SendOrderConfirmationAsync(request.Email, request.OrderCode, request.CustomerName, request.TotalAmount);
             return Ok("Email đã được gửi thành công.");
 
+        }
+        [HttpPost("send-new-password")]
+        public async Task<IActionResult> SendNewPassword([FromBody] NewPasswordRequest request)
+        {
+            await _emailService.SendNewPasswordAsync(request.email);
+            return Ok("Email đã được gửi thành công.");
         }
 
     }

@@ -33,6 +33,7 @@ using Azure.Core;
 using GUI.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using IndexObject = GUI.Models.DTOs.Product_DTO.Views.IndexObject;
+using DATN_ACV_DEV.Controllers;
 
 namespace GUI.Controllers
 {
@@ -40,15 +41,17 @@ namespace GUI.Controllers
 	[AllowAnonymous]
 	public class StorefrontController : ControllerSharedBase
 	{
+		private readonly IEmailService _emailService;
 		private DBContext _context;
 		private HttpService httpService;
 		private VNPayService _VNPayService;
-		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService, DBContext context)
+		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService, DBContext context, IEmailService emailService)
 		{
 			_settings = settings.Value;
 			httpService = new();
 			_VNPayService = payService;
 			_context = context;
+			_emailService = emailService;
 		}
 
         [Route("/Home")]
