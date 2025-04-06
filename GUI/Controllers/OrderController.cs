@@ -214,7 +214,7 @@ public class OrderController : Controller
             Payment = order.PaymentInfo,
         };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
-            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+            ? await httpClient.PatchAsJsonAsync($"api/order/{order.Id}", payload)
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
         if(rawResponse.IsSuccessStatusCode)
