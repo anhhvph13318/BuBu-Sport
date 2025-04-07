@@ -77,6 +77,7 @@ namespace DATN_ACV_DEV.Controllers
                     _Voucher.StartDate = _request.StartDate;
                     _Voucher.EndDate = _request.EndDate;
                     _Voucher.Type = _request.Type;
+                    _Voucher.Condition = _request.Condition;
                     _Voucher.Unit = _request.Unit;
                     _Voucher.Status = currentDateTime < _Voucher.StartDate
                         ? Status.InActive
