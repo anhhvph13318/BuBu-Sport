@@ -12,8 +12,19 @@ namespace DATN_ACV_DEV.Controllers
         {
             _emailService = emailService;
         }
+        public class SendEmailRequest
+        {
+            public string Email { get; set; }
+            public string OrderCode { get; set; }
+            public string CustomerName { get; set; }
+            public decimal TotalAmount { get; set; }
+        }
+        public class NewPasswordRequest
+        {
+            public string email { get; set; }
+        }
         [HttpPost("send-email")]
-        public async Task<IActionResult> SendEmail()
+        public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)
         {
             string email = "nguyenquan14124@gmail.com";
             string orderCode = "PH38284";
@@ -22,6 +33,12 @@ namespace DATN_ACV_DEV.Controllers
             //await _emailService.SendOrderConfirmationAsync(email, orderCode, customerName, totalAmount);
             return Ok("Email đã được gửi thành công.");
 
+        }
+        [HttpPost("send-new-password")]
+        public async Task<IActionResult> SendNewPassword([FromBody] NewPasswordRequest request)
+        {
+            await _emailService.SendNewPasswordAsync(request.email);
+            return Ok("Email đã được gửi thành công.");
         }
 
     }

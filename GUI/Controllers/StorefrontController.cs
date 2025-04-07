@@ -33,6 +33,8 @@ using Azure.Core;
 using GUI.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using IndexObject = GUI.Models.DTOs.Product_DTO.Views.IndexObject;
+using DATN_ACV_DEV.Controllers;
+using System.Drawing;
 
 namespace GUI.Controllers
 {
@@ -40,15 +42,17 @@ namespace GUI.Controllers
 	[AllowAnonymous]
 	public class StorefrontController : ControllerSharedBase
 	{
+		private readonly IEmailService _emailService;
 		private DBContext _context;
 		private HttpService httpService;
 		private VNPayService _VNPayService;
-		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService, DBContext context)
+		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService, DBContext context, IEmailService emailService)
 		{
 			_settings = settings.Value;
 			httpService = new();
 			_VNPayService = payService;
 			_context = context;
+			_emailService = emailService;
 		}
 
 		[Route("/Home")]
@@ -176,99 +180,105 @@ namespace GUI.Controllers
 			}
 			return View(model);
 		}
-		private async Task<IEnumerable<CategoryDTO>> FetchCategory()
-		{
-			return await _context.TbCategories.AsNoTracking()
-				.Select(e => new CategoryDTO
-				{
-					Id = e.Id,
-					Name = e.Name,
-					Status = (int)e.Status!,
-					CreateDate = e.CreateDate
-				})
-				.OrderBy(e => e.CreateDate)
-				.ToListAsync();
-		}
-		private async Task<IEnumerable<ColorDTO>> FetchColor()
-		{
-			return await _context.TbColors.AsNoTracking()
-				.Select(e => new ColorDTO
-				{
-					Id = e.Id,
-					Name = e.Name,
-					Status = (int)e.Status!,
-					CreateDate = e.CreateDate
-				})
-				.OrderBy(e => e.CreateDate)
-				.ToListAsync();
-		}
-		private async Task<IEnumerable<SizeDTO>> FetchSize()
-		{
-			return await _context.TbSizes.AsNoTracking()
-				.Select(e => new SizeDTO
-				{
-					Id = e.Id,
-					SizeName = e.SizeName,
-				})
-				.ToListAsync();
-		}
-		[Route("/productDetail")]
-		public async Task<IActionResult> ProductDetail(Guid id)
-		{
-			var colors = await FetchColor();
-			ViewBag.Colors = colors;
-			var categories = await FetchCategory();
-			ViewBag.Categories = categories;
-			var sizes = await FetchSize();
-			ViewBag.Sizes = sizes;
-			var URL = _settings.APIAddress + "api/DetailProduct/Process";
-			var req = new DetailProductRequest() { ID = id };
-			var param = JsonConvert.SerializeObject(req);
-			var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-			var result = JsonConvert.DeserializeObject<BaseResponse<DetailProductResponse>>(res) ?? new();
-			// Lấy danh sách chi tiết sản phẩm từ database
-			var datadetail = _context.TbProductDetails.Where(c => c.ProductId == result.Data.Id).ToList();
-			var groupdata = datadetail
-				.GroupBy(c => new { c.ColorId, c.SizeId })
-				.Select(d => new TbProductDetail
-				{
-					Id = d.First().Id,
-					Price = d.First().Price, // Giữ nguyên giá của bản ghi đầu tiên
-					Quantity = d.Sum(p => p.Quantity), // Cộng tổng số lượng
-					ImageId = d.First().ImageId,
-					ColorId = d.Key.ColorId,
-					SizeId = d.Key.SizeId,
-					ProductId = d.First().ProductId
-				}).ToList();
-			result.Data.DetailData = groupdata;
+        private async Task<IEnumerable<CategoryDTO>> FetchCategory()
+        {
+            return await _context.TbCategories.AsNoTracking()
+                .Select(e => new CategoryDTO
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Status = (int)e.Status!,
+                    CreateDate = e.CreateDate
+                })
+                .OrderBy(e => e.CreateDate)
+                .ToListAsync();
+        }
+        private async Task<IEnumerable<ColorDTO>> FetchColor()
+        {
+            return await _context.TbColors.AsNoTracking()
+                .Select(e => new ColorDTO
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Status = (int)e.Status!,
+                    CreateDate = e.CreateDate
+                })
+                .OrderBy(e => e.CreateDate)
+                .ToListAsync();
+        }
+        private async Task<IEnumerable<SizeDTO>> FetchSize()
+        {
+            return await _context.TbSizes.AsNoTracking()
+                .Select(e => new SizeDTO
+                {
+                    Id = e.Id,
+                    SizeName = e.SizeName,
+                })
+                .ToListAsync();
+        }
+        [Route("/productDetail")]
+        public async Task<IActionResult> ProductDetail(Guid id)
+        {
+            var colors = await FetchColor();
+            ViewBag.Colors = colors;
+            var categories = await FetchCategory();
+            ViewBag.Categories = categories;
+            var sizes = await FetchSize();
+            ViewBag.Sizes = sizes;
+            var URL = _settings.APIAddress + "api/DetailProduct/Process";
+            var req = new DetailProductRequest() { ID = id };
+            var param = JsonConvert.SerializeObject(req);
+            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+            var result = JsonConvert.DeserializeObject<BaseResponse<DetailProductResponse>>(res) ?? new();
+            // Lấy danh sách chi tiết sản phẩm từ database
+            var datadetail = _context.TbProductDetails.Where(c => c.ProductId == result.Data.Id).ToList();
+            var groupdata = datadetail
+                .GroupBy(c => new { c.ColorId, c.SizeId })
+                .Select(d => new TbProductDetail
+                {
+                    Id = d.First().Id,
+                    Price = d.First().Price, // Giữ nguyên giá của bản ghi đầu tiên
+                    Quantity = d.Sum(p => p.Quantity), // Cộng tổng số lượng
+                    ImageId = d.First().ImageId,
+                    ColorId = d.Key.ColorId,
+                    SizeId = d.Key.SizeId,
+                    ProductId = d.First().ProductId
+                }).ToList();
+            result.Data.DetailData = groupdata;
 
-			// Tạo Dictionary để tối ưu truy vấn
-			var colorDict = colors.ToDictionary(c => c.Id, c => c.Name);
-			var sizeDict = sizes.ToDictionary(s => s.Id, s => s.SizeName);
+            // Tạo Dictionary để tối ưu truy vấn
+            var colorDict = colors.ToDictionary(c => c.Id, c => c.Name);
+            var sizeDict = sizes.ToDictionary(s => s.Id, s => s.SizeName);
 
-			// Chuyển đổi danh sách `TbProductDetail` thành `TestDame`
-			result.Data.DetailDataFinal = groupdata.Select(d => new TestDame
-			{
-				Id = d.Id,
-				Price = d.Price,
-				Quantity = d.Quantity,
-				ImageId = d.ImageId,
-				ColorId = d.ColorId,
-				SizeId = d.SizeId,
-				ProductId = d.ProductId,
-				ColorName = d.ColorId.HasValue && colorDict.ContainsKey(d.ColorId.Value) ? colorDict[d.ColorId.Value] : "Unknown",
-				SizeName = d.SizeId.HasValue && sizeDict.ContainsKey(d.SizeId.Value) ? sizeDict[d.SizeId.Value] : "Unknown"
-			}).ToList();
-			foreach (var item in result.Data.RelatedProducts)
-			{
-				item.Image = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
-			}
+            // Chuyển đổi danh sách `TbProductDetail` thành `TestDame`
+            result.Data.DetailDataFinal = groupdata.Select(d => new TestDame
+            {
+                Id = d.Id,
+                Price = d.Price,
+                Quantity = d.Quantity,
+                ImageId = d.ImageId,
+                ColorId = d.ColorId,
+                SizeId = d.SizeId,
+                ProductId = d.ProductId,
+                ColorName = d.ColorId.HasValue && colorDict.ContainsKey(d.ColorId.Value) ? colorDict[d.ColorId.Value] : "Unknown",
+                SizeName = d.SizeId.HasValue && sizeDict.ContainsKey(d.SizeId.Value) ? sizeDict[d.SizeId.Value] : "Unknown"
+            }).ToList();
 
-			foreach (var item in result.Data.DetailDataFinal)
-			{
-				item.UrlImage = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
-			}
-			var model = result.Data;
+
+            if (result.Data.RelatedProducts != null)
+            {
+                foreach (var item in result.Data.RelatedProducts)
+                {
+                    item.Image = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
+                }
+            }
+
+
+            foreach (var item in result.Data.DetailDataFinal)
+            {
+                item.UrlImage = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
+            }
+            var model = result.Data;
 			return View(model);
 		}
 
@@ -344,91 +354,83 @@ namespace GUI.Controllers
 		public async Task<IActionResult> AddToCart(Guid prId, Guid userId, int quantity, Guid colorId, Guid sizeId)
 		{
 			//var productdetailId = _context.TbProductDetails.Where(c=>c.ProductId == prId && c.ColorId == colorId && c.SizeId == sizeId).Select(c => c.Id).FirstOrDefault();
-			if (userId == Guid.Empty)
-			{
-				userId = Guid.NewGuid();
-			}
+            if (userId == Guid.Empty)
+            {
+                userId = Guid.NewGuid();
+            }
 
-			var req = new AddToCartRequest
-			{
-				UserId = userId,
-				Quantity = quantity != 0 ? quantity : 1,
-				ProductId = prId,
-				ColorId = colorId,   // 🆕 Thêm màu sắc
-				SizeId = sizeId      // 🆕 Thêm kích thước
-			};
+            var req = new AddToCartRequest
+            {
+                UserId = userId,
+                Quantity = quantity != 0 ? quantity : 1,
+                ProductId = prId,
+                ColorId = colorId,   // 🆕 Thêm màu sắc
+                SizeId = sizeId      // 🆕 Thêm kích thước
+            };
 
-			var URL = _settings.APIAddress + "api/AddToCart/Process";
-			var param = JsonConvert.SerializeObject(req);
-			var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-			var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
-			if (result.Status == "200")
-			{
-				return Ok(new { userId });
-			}
-			return BadRequest();
-		}
+            var URL = _settings.APIAddress + "api/AddToCart/Process";
+            var param = JsonConvert.SerializeObject(req);
+            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+            var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
+            if (result.Status == "200")
+            {
+                return Ok(new { userId });
+            }
+            return BadRequest();
+        }
 
-		[HttpPost("/BuyNow")]
-		public async Task<IActionResult> BuyNow(Guid prId, Guid userId, int quantity)
-		{
-			if (userId == Guid.Empty)
-			{
-				userId = Guid.NewGuid();
-			}
-			var req = new AddToCartRequest();
-			//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
-			req.UserId = Guid.Empty;
-			req.Quantity = quantity != 0 ? quantity : 1;
-			req.ProductId = prId;
+        [HttpPost("/BuyNow")]
+        public async Task<IActionResult> BuyNow(Guid prId, Guid userId, int quantity, Guid colorId, Guid sizeId)
+        {
+            if (userId == Guid.Empty)
+            {
+                userId = Guid.NewGuid();
+            }
+            var req = new AddToCartRequest
+            {
+                UserId = userId, 
+                Quantity = quantity != 0 ? quantity : 1,
+                ProductId = prId,
+                ColorId = colorId,   
+                SizeId = sizeId,    
+                incre = false
+            };
+            //req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+            req.UserId = Guid.Empty;
+            req.Quantity = quantity != 0 ? quantity : 1;
+            req.ProductId = prId;
 			req.incre = false;
-			var URL = _settings.APIAddress + "api/AddToCart/Process";
-			var param = JsonConvert.SerializeObject(req);
-			var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-			var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
-			if (result.Status == "200")
-			{
-				await ConfirmCart(new List<Guid> { result.Data.ItemId });
-				return Ok(new { userId });
-			}
-			return BadRequest();
-		}
+            var URL = _settings.APIAddress + "api/AddToCart/Process";
+            var param = JsonConvert.SerializeObject(req);
+            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+            var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
+            if (result.Status == "200")
+            {
+                await ConfirmCart(new List<Guid> { result.Data.ItemId });
+                return Ok(new { userId });
+            }
+            return BadRequest();
+        }
 
-		[Route("/Checkout")]
-		public async Task<IActionResult> Checkout()
-		{
-			if (TempData["ConfirmedCartItems"] != null)
-			{
-				HttpContext.Session.SetString("SelectedVoucher", "");
-				TempData.Keep("ConfirmedCartItems");
+        [Route("/Checkout")]
+        public async Task<IActionResult> Checkout()
+        {
+            if (TempData["ConfirmedCartItems"] != null)
+            {
+                HttpContext.Session.SetString("SelectedVoucher", "");
+                TempData.Keep("ConfirmedCartItems");
+                List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
+                var sum = model.Sum(c => c.Price * c.Quantity);
+                if (sum > 0)
+                {
+                    ViewBag.Sum = sum;
+                    return View(model);
+                }
+            }
+            return RedirectToAction(nameof(Cart));
+        }
 
-				// Lấy danh sách sản phẩm từ TempData
-				List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
-
-				// Kiểm tra và hiển thị thông tin size/color
-				foreach (var item in model)
-				{
-					var colorid = _context.TbCartDetails.Where(c => c.Id == item.CartDetailID).Select(c => c.ColorId).FirstOrDefault();
-					var sizeid = _context.TbCartDetails.Where(c => c.Id == item.CartDetailID).Select(c => c.SizeId).FirstOrDefault();
-					var color = _context.TbColors.Where(c => c.Id == colorid).Select(c => c.Name).FirstOrDefault();
-					var size = _context.TbSizes.Where(c => c.Id == sizeid).Select(c => c.SizeName).FirstOrDefault();
-					// Đảm bảo rằng color và sizeName luôn có giá trị hợp lệ
-					item.Color = string.IsNullOrEmpty(color) ? "Chưa chọn màu" : color;
-					item.sizeName = string.IsNullOrEmpty(size) ? "Chưa chọn size" : size;
-				}
-
-				var sum = model.Sum(c => c.Price * c.Quantity);
-				if (sum > 0)
-				{
-					ViewBag.Sum = sum;
-					return View(model);
-				}
-			}
-			return RedirectToAction(nameof(Cart));
-		}
-
-
-		[Route("/Cart")]
+        [Route("/Cart")]
 		public async Task<IActionResult> Cart()
 		{
 			var colorId = Request.Query["colorId"].ToString();
