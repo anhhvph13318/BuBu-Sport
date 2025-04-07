@@ -28,6 +28,7 @@ public class OrderItem
     public string ProductImage { get; set; }
     public string Size { get; set; }
     public string Color { get; set; }
+    public string Code { get; set; }
     public int Quantity { get; set; }
     public decimal Price { get; set; }
     public Guid Id { get; set; }
@@ -56,6 +57,7 @@ public class CustomerInfo
     public string Name { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }
 
 public class PaymentInfo
