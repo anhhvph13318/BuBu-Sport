@@ -668,26 +668,15 @@
 	}
 
 	$("#customer-submit").on("click", function () {
-		// Lưu giá trị giới tính ban đầu trước khi thay đổi
-		let originalSex = $("input[type=radio][name=sex]:checked").val();
-
 		// Xác nhận trước khi gửi
 		if (!confirm('Bạn có chắc muốn lưu không?')) {
 			// Hiển thị thông báo "Sửa không thành công" khi bấm Hủy
 			alert("Sửa không thành công");
-
-			// Khôi phục giá trị giới tính ban đầu
-			if (originalSex === "male") {
-				$("input[type=radio][name=sex][value='male']").prop("checked", true);
-			} else if (originalSex === "female") {
-				$("input[type=radio][name=sex][value='female']").prop("checked", true);
-			} else {
-				// Nếu không có giá trị ban đầu, bỏ chọn tất cả
-				$("input[type=radio][name=sex]").prop("checked", false);
-			}
-
 			return false;
 		}
+
+		//// Hiển thị thông báo "Thành công" khi bấm OK trong confirm
+		//alert("Thành công");
 
 		// Hiện spinner (nếu cần, nhưng trong ví dụ này sẽ bỏ qua phần spinner để đơn giản)
 		// $("#spinner").show();
