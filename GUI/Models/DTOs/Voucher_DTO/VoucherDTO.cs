@@ -24,5 +24,7 @@ namespace GUI.Models.DTOs.Voucher_DTO
         [Range(0, double.MaxValue, ErrorMessage = "Không thể nhập số âm")]
         public decimal RequiredTotalAmount { get; set; }
         public IList<Guid> Customers { get; set; } = new List<Guid>();
+        [Range(0, double.MaxValue, ErrorMessage = "Không thể nhập số âm")]
+        public decimal Condition { get; set; }
     }
 }
