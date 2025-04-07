@@ -43,15 +43,15 @@
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                                     aria-controls="panelsStayOpen-collapseOne">
-                                Danh sách hoá đơn tại quầy
+                                Danh sách hoá đơn trực tuyến
                             </button>
                         </h2>
                         <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
                             <div class="accordion-body" id="orderTempSaveContainer">
                                 @if (orders != null)
                                 {
-                                    var inStoreOrders = orders.Where(order => order.OrderTypeName == "Tại quầy").ToList();
-                                    @await Html.PartialAsync("_OrderListPartialView", inStoreOrders)
+                                    var onlineOrders = orders.Where(order => order.OrderTypeName == "Online").ToList();
+                                    @await Html.PartialAsync("_OnlineOrderListPartialView", onlineOrders)
                                 }
                                 else
                                 {
