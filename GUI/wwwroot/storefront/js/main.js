@@ -273,6 +273,7 @@
 		let address = $('#order-address').val();
 		let district = $('#order-district').val();
 		let city = $('#order-city').val();
+		let email = $('#order-email').val();
 		let ids = [];
 		let items = $('.order-item');
 		$.each(items, function (i, obj) {
@@ -309,6 +310,7 @@
 				address: address,
 				district: district,
 				city: city,
+				email:email,
 				ids: ids,
 				getatstore: false,
 				isVNP: !COD

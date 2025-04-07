@@ -51,7 +51,8 @@ public class OrderDetailAdminController : ControllerBase
                 Id = customer.Id,
                 Name = customer.Name,
                 Address = customer.Adress,
-                PhoneNumber = customer.Phone
+                PhoneNumber = customer.Phone,
+                Email = _context.TbAccounts.Where(c=>c.CustomerId == customer.Id).Select(c=>c.Email).FirstOrDefault()
             },
             ShippingInfo = customer == null ? null : new ShippingInfo
             {

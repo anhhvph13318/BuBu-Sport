@@ -33,6 +33,8 @@ using Azure.Core;
 using GUI.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using IndexObject = GUI.Models.DTOs.Product_DTO.Views.IndexObject;
+using DATN_ACV_DEV.Model_DTO.GHN_DTO;
+using DATN_ACV_DEV.Controllers;
 
 namespace GUI.Controllers
 {
@@ -40,11 +42,13 @@ namespace GUI.Controllers
 	[AllowAnonymous]
 	public class StorefrontController : ControllerSharedBase
 	{
+		IEmailService _emailService;
 		private DBContext _context;
 		private HttpService httpService;
 		private VNPayService _VNPayService;
-		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService, DBContext context)
+		public StorefrontController(IOptions<CommonSettings> settings, VNPayService payService, DBContext context, IEmailService emailService)
 		{
+			_emailService = emailService;
 			_settings = settings.Value;
 			httpService = new();
 			_VNPayService = payService;
@@ -513,6 +517,7 @@ namespace GUI.Controllers
 				provinceName = obj.city ?? ""
 			};
 			//addressReq.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+			addressReq.email = obj.email;
 			addressReq.UserId = userId;
 			var URL = _settings.APIAddress + "api/CreateAddress/Process";
 			var paramAdd = JsonConvert.SerializeObject(addressReq);
@@ -611,6 +616,7 @@ namespace GUI.Controllers
 					}
 					else
 					{
+						await _emailService.SendOrderConfirmationAsync(obj.email, result.Data.orderCode, result.Data.nameCustomer, result.Data.phoneNumber, "Chờ xác nhận", "", 1);
 						return Ok(new
 						{
 							success = true,
@@ -854,6 +860,7 @@ namespace GUI.Controllers
 		{
             public string? name { get; set; }
             public string? phone { get; set; }
+            public string? email { get; set; }
 			public string? address { get; set; }
             public string? district { get; set; }
             public string? city { get; set; }
