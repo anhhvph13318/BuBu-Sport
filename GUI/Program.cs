@@ -34,7 +34,7 @@ builder.Services.AddScoped<DBContext>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddTransient<VNPayService>();
 builder.Services.AddScoped<UserSession>();
-
+builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

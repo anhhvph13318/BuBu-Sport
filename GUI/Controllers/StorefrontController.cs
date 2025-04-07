@@ -55,7 +55,7 @@ namespace GUI.Controllers
 			_emailService = emailService;
 		}
 
-        [Route("/Home")]
+		[Route("/Home")]
 		public IActionResult Index()
 		{
 			return View();
@@ -80,11 +80,11 @@ namespace GUI.Controllers
 				httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
 			}
 
-            return View();
+			return View();
 		}
 
 		[Route("/Store")]
-		public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max,string category)
+		public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max, string category)
 		{
 			var model = new Models.DTOs.Product_DTO.Views.IndexObject();
 			try
@@ -97,13 +97,13 @@ namespace GUI.Controllers
 				var offset = t * p;
 				obj.OffSet = offset < 0 ? 0 : offset;
 
-                // Thêm logic lọc theo danh mục
-                if (!string.IsNullOrEmpty(category) && Guid.TryParse(category, out Guid categoryId))
-                {
-                    obj.CategoryID = categoryId;
-                }
+				// Thêm logic lọc theo danh mục
+				if (!string.IsNullOrEmpty(category) && Guid.TryParse(category, out Guid categoryId))
+				{
+					obj.CategoryID = categoryId;
+				}
 
-                var URL = _settings.APIAddress + "api/HomePage/Process";
+				var URL = _settings.APIAddress + "api/HomePage/Process";
 				var param = JsonConvert.SerializeObject(obj);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
 				var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
@@ -113,10 +113,11 @@ namespace GUI.Controllers
 				p = p >= totalPages ? totalPages : p;
 				var topPageDisplay = 3;
 				var startPage = p > 0 ? p - 1 : p;
-				if (p > 0) {
+				if (p > 0)
+				{
 					if (totalPages - p < 3)
 					{
-                        topPageDisplay = totalPages;
+						topPageDisplay = totalPages;
 						startPage = totalPages - 3;
 					}
 					else
@@ -148,7 +149,8 @@ namespace GUI.Controllers
 						var paramAcc = JsonConvert.SerializeObject(req);
 						var resAcc = await httpService.PostAsync(URLAcc, paramAcc, HttpMethod.Post, "application/json");
 						var resultAcc = JsonConvert.DeserializeObject<BaseResponse<AccountCustomerResponse>>(resAcc) ?? new();
-						if (resultAcc != null && resultAcc.Status == "200" && resultAcc.Data != null) {
+						if (resultAcc != null && resultAcc.Status == "200" && resultAcc.Data != null)
+						{
 							if (!resultAcc.Data.IsCustomer)
 							{
 								return RedirectToAction("Index", "Home");
@@ -278,15 +280,15 @@ namespace GUI.Controllers
             }
             var model = result.Data;
 			return View(model);
-        }
+		}
 
-        [Route("/OrderChecking")]
+		[Route("/OrderChecking")]
 		public async Task<IActionResult> OrderChecking(string s)
 		{
 			List<OrderDetail> model = null;
 			ViewBag.OrderSearch = s;
 
-            if (!string.IsNullOrEmpty(s))
+			if (!string.IsNullOrEmpty(s))
 			{
 				using var httpClient = new HttpClient();
 				httpClient.BaseAddress = new Uri(_settings.APIAddress);
@@ -298,7 +300,7 @@ namespace GUI.Controllers
 									await rawResponse.Content.ReadAsStringAsync());
 					model = response.Data;
 
-                }
+				}
 				catch (Exception)
 				{
 
@@ -348,9 +350,9 @@ namespace GUI.Controllers
 			}
 		}
 
-        [HttpPost("/AddCart")]
-        public async Task<IActionResult> AddToCart(Guid prId, Guid userId, int quantity, Guid colorId, Guid sizeId)
-        {
+		[HttpPost("/AddCart")]
+		public async Task<IActionResult> AddToCart(Guid prId, Guid userId, int quantity, Guid colorId, Guid sizeId)
+		{
 			//var productdetailId = _context.TbProductDetails.Where(c=>c.ProductId == prId && c.ColorId == colorId && c.SizeId == sizeId).Select(c => c.Id).FirstOrDefault();
             if (userId == Guid.Empty)
             {
@@ -431,57 +433,63 @@ namespace GUI.Controllers
         [Route("/Cart")]
 		public async Task<IActionResult> Cart()
 		{
-            var colorId = Request.Query["colorId"].ToString();  // Lấy colorId
-            var sizeId = Request.Query["sizeId"].ToString();    // Lấy sizeId
-            var a = GetClientIP(HttpContext);
+			var colorId = Request.Query["colorId"].ToString();
+			var sizeId = Request.Query["sizeId"].ToString();
 
 			var userId = Guid.Empty;
 			try
 			{
 				userId = new Guid(Request.Cookies["user-id"]);
 			}
-			catch (Exception)
-			{
-			}
+			catch (Exception) { }
+
 			var model = new List<CartDTO>();
 			if (userId != Guid.Empty)
 			{
-				var req = new CartItemRequest();
-				req.UserId = userId;
-				req.colorId = colorId != "" ? Guid.Parse(colorId) : null;
-				req.sizeId = sizeId != "" ? Guid.Parse(sizeId) : null;
-				//req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
+				var req = new CartItemRequest
+				{
+					UserId = userId,
+					colorId = colorId != "" ? Guid.Parse(colorId) : null,
+					sizeId = sizeId != "" ? Guid.Parse(sizeId) : null
+				};
+
 				var URL = _settings.APIAddress + "api/CartItem/Process";
 				var param = JsonConvert.SerializeObject(req);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
 				var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
-                var groupdata = result.Data.CartItem
-					.GroupBy(c => new
-					{
-						c.ProductID,
-						c.Price,
-						c.NameProduct,
-						c.Color,
-						c.sizeName
-					})
-					.Select(d => new CartDTO
-					{
-						CartDetailID = d.First().CartDetailID,
-						Image = d.First().Image,
-						NameProduct = d.Key.NameProduct,
-						Price = d.Key.Price,
-						ProductID = d.Key.ProductID,
-						Quantity = d.Sum(x => x.Quantity), // cộng tổng quantity
-						Color = d.Key.Color,
-						sizeName = d.Key.sizeName
-					}).ToList();
-                if (result.Status == "200")
+
+				if (result.Status == "200")
 				{
-					model = groupdata;
+					model = result.Data.CartItem
+						.GroupBy(c => new
+						{
+							c.ProductID,
+							c.Price,
+							c.NameProduct,
+							c.ProductCode,
+							c.Color,
+							c.sizeName
+						})
+						.Select(d => new CartDTO
+						{
+							CartDetailID = d.First().CartDetailID,
+							Image = d.First().Image,
+							ProductCode = d.Key.ProductCode,
+							NameProduct = d.Key.NameProduct,
+							Price = d.Key.Price,
+							ProductID = d.Key.ProductID,
+							Quantity = d.Sum(x => x.Quantity),
+							Color = string.IsNullOrEmpty(d.Key.Color) ? "Chưa chọn màu" : d.Key.Color,
+							sizeName = string.IsNullOrEmpty(d.Key.sizeName) ? "Chưa chọn size" : d.Key.sizeName
+						}).ToList();
+
+					// Lưu dữ liệu vào TempData
+					TempData["ConfirmedCartItems"] = JsonConvert.SerializeObject(model);
 				}
 			}
 			return View(model);
 		}
+
 
 		[HttpPost("/DeleteItem")]
 		public async Task<IActionResult> DeleteItem(Guid id)
@@ -544,15 +552,16 @@ namespace GUI.Controllers
 			{
 				addrId = new Guid();
 			}
-            
-            if (cartDetails != null && cartDetails.Any())
+
+			if (cartDetails != null && cartDetails.Any())
 			{
 				var sum = 0m;
-                if (TempData["ConfirmedCartItems"] != null)
-                {
-                    List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
-                    sum = model.Sum(c => c.Price * c.Quantity);
-                } else if (userId != Guid.Empty)
+				if (TempData["ConfirmedCartItems"] != null)
+				{
+					List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
+					sum = model.Sum(c => c.Price * c.Quantity);
+				}
+				else if (userId != Guid.Empty)
 				{
 					var reqItems = new CartItemRequest();
 					reqItems.UserId = userId;
@@ -590,7 +599,7 @@ namespace GUI.Controllers
 					{
 						discountAmount = voucher.Discount;
 					}
-                    vouchers.Add(voucher.Id);
+					vouchers.Add(voucher.Id);
 				}
 
 				var req = new OrderRequest
@@ -608,7 +617,7 @@ namespace GUI.Controllers
 					amountShip = 0,
 					totalAmountDiscount = discountAmount,
 					voucherID = vouchers
-                };
+				};
 				URL = _settings.APIAddress + "api/ConfirmOrder/Process";
 				var param = JsonConvert.SerializeObject(req);
 				var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
@@ -725,7 +734,8 @@ namespace GUI.Controllers
 		}
 
 		[Route("CustomerInfo")]
-		public async Task<IActionResult> CustomerDetail() {
+		public async Task<IActionResult> CustomerDetail()
+		{
 			var model = new CustomerInfoModel();
 			try
 			{
@@ -812,7 +822,7 @@ namespace GUI.Controllers
 				}
 			}
 			catch (Exception)
-			{}
+			{ }
 			return Json(new
 			{
 				success = false
@@ -870,17 +880,17 @@ namespace GUI.Controllers
 		}
 		public class CreateOrderObject
 		{
-            public string? name { get; set; }
-            public string? phone { get; set; }
+			public string? name { get; set; }
+			public string? phone { get; set; }
 			public string? address { get; set; }
-            public string? district { get; set; }
-            public string? city { get; set; }
+			public string? district { get; set; }
+			public string? city { get; set; }
 			public bool isVNP { get; set; }
 			public List<Guid> ids { get; set; } = new();
-        }
+		}
 
-        public class UpdateCartItem
-        {
+		public class UpdateCartItem
+		{
 			public string cartDetaiID { get; set; }
 			public int? quantity { get; set; }
 			public bool isIncrement { get; set; }
@@ -890,6 +900,7 @@ namespace GUI.Controllers
 		{
 			return httpContext.Connection.RemoteIpAddress?.ToString();
 		}
-        
-    }
+
+	}
 }
+

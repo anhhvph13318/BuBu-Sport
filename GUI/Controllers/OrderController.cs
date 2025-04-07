@@ -157,15 +157,27 @@ public class OrderController : Controller
     }
 
     [HttpGet]
-    [Route("create")]
-    public async Task<IActionResult> Create()
+    [Route("create/online")]
+    public async Task<IActionResult> CreateOnline()
     {
-        var onlineOrders = await FetchOrderList();
+        var orders = await FetchOrderList();
 
         HttpContext.Session.GetCurrentOrder(clearFirst: true);
-        ViewData["Orders"] = onlineOrders;
+        ViewData["Orders"] = orders;
 
-        return View();
+        return View("CreateOnline");
+    }
+
+    [HttpGet]
+    [Route("create/instore")]
+    public async Task<IActionResult> CreateInStore()
+    {
+        var orders = await FetchOrderList();
+
+        HttpContext.Session.GetCurrentOrder(clearFirst: true);
+        ViewData["Orders"] = orders;
+
+        return View("Create");
     }
 
     [HttpPost]

@@ -1,6 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
-using System;
+using Org.BouncyCastle.Crypto.Macs;
 using System.Threading.Tasks;
 using System.Text;
 
@@ -8,8 +8,7 @@ namespace DATN_ACV_DEV.Controllers
 {
     public interface IEmailService
     {
-        Task SendOrderConfirmationAsync(string email, string orderCode, string customerName, decimal totalAmount);
-        Task SendNewPasswordAsync(string email); 
+        Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type);
     }
     public class EmailService : IEmailService
     {
@@ -23,56 +22,45 @@ namespace DATN_ACV_DEV.Controllers
 
         public EmailService(IConfiguration configuration)
         {
-            _smtpServer = configuration["Email:SmtpServer"];
-            _smtpPort = int.TryParse(configuration["Email:SmtpPort"], out int port) ? port : 587;
-            _smtpUsername = configuration["Email:Username"];
-            _smtpPassword = configuration["Email:Password"];
-            _fromEmail = configuration["Email:FromEmail"];
-            _fromName = configuration["Email:FromName"];
+            _smtpServer = "smtp.gmail.com";
+            _smtpPort = 587;
+            _smtpUsername = "sprtbubu@gmail.com";
+            _smtpPassword = "luys adyn vknr bdtp";
+            _fromEmail = "sprtbubu@gmail.com";
+            _fromName = "BuBuSport";
         }
 
-        public async Task SendOrderConfirmationAsync(string email, string orderCode, string customerName, decimal totalAmount)
+        public async Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(_fromName, _fromEmail));
+            message.From.Add(new MailboxAddress("BuBuSport", "sprtbubu@gmail.com"));
             message.To.Add(new MailboxAddress(customerName, email));
-            message.Subject = $"Xác nhận đơn hàng #{orderCode}";
-                
-            var builder = new BodyBuilder();
-            builder.HtmlBody = $@"
-                <p>Chào {customerName},</p>
-                <p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi.</p>
-                <p>Mã đơn hàng: <strong>{orderCode}</strong></p>
-                <p>Tổng số tiền: <strong>{totalAmount:C}</strong></p>
-                <p>Trân trọng</p>";
-
-            message.Body = builder.ToMessageBody();
-
-            using var client = new SmtpClient();
-            await client.ConnectAsync(_smtpServer, _smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(_smtpUsername, _smtpPassword);
-            await client.SendAsync(message);
-            await client.DisconnectAsync(true);
-        }
-
-        public async Task SendNewPasswordAsync(string email)
-        {
-
-            string newPassword = GenerateRandomPassword(); 
-
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(_fromName, _fromEmail));
-            message.To.Add(new MailboxAddress("", email));
-            message.Subject = "Yêu cầu đặt lại mật khẩu website BuBuSport";
-
-            var builder = new BodyBuilder();
-            builder.HtmlBody = 
-            $@"
-                <h2>Yêu cầu đặt lại mật khẩu</h2>
-                <p>Xin chào</p>
-                <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu của bạn.</p>
-                <p>Mật khẩu mới của bạn là: <strong>{newPassword}</strong></p>
+            message.Subject = type == 0 ? $"Yêu cầu cấp lại mật khẩu BuBu Sport" : $"Cập nhật đơn hàng #{orderCode}";
+            var resetpass = $@"
+                <h2>Yêu cầu cấp lại mật khẩu BuBu Sport</h2>
+                <p>Xin chào {customerName},</p>
+                <p><strong>Số điện thoại:</strong> {phonenumber}</p>
+                <p>Chúng tôi đã nhận được yêu cầu cấp lại mật khẩu của bạn.</p>
+                <p>Mật khẩu mới của bạn là {password:N0}</p>
+                <p>Nếu bạn không thực hiên yêu cầu này vui lòng bỏ qua email này và cài đặt lại mật khẩu.</p>
+                <p>để đảm bảo tính bảo mật cho tài khoản của bạn</p>
+                <p>Xin cảm ơn,</p>
+                <p>Nhóm tài khoản BuBu Sport</p>
             ";
+            var orderstatus = $@"
+                <h2>Trạng thái đơn hàng BuBu Sport</h2>
+                <p>Xin chào {customerName},</p>
+                <p><strong>Số điện thoại:</strong> {phonenumber}</p>
+                <p><strong>Mã hóa đơn:</strong> {orderCode}</p>
+                <p>Chúng tôi xin thông báo đơn hàng của bạn đã được cập nhật trạng thái {status}</p>
+                <p>Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi !!!</p>
+                <p>Xin cảm ơn,</p>
+                <p>Nhóm tài khoản BuBu Sport</p>
+            ";
+            var builder = new BodyBuilder();
+            builder.HtmlBody = type == 0 ? resetpass : orderstatus;
+
+
 
             message.Body = builder.ToMessageBody();
 
