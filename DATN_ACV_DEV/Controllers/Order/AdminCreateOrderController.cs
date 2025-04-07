@@ -244,7 +244,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             {
                 foreach (var item in payload.Items)
                 {
-                    var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
+                    var productId = _context.TbProductDetails.Where(c=>c.Id == Guid.Parse(item.Id)).Select(c=>c.ProductId).FirstOrDefault();
+                    var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == productId)
                         ?? throw new NullReferenceException();
 
                     if (product.Quantity <= 0)

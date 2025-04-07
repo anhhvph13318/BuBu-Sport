@@ -78,16 +78,14 @@ public class OrderItem
     public Guid Id { get; set; }
 }
 
-[Serializable]
+
 public class CustomerInfo
 {
     public Guid Id { get; set; }
-    [Required(ErrorMessage = "Chưa nhập tên khách hàng")]
     public string Name { get; set; } = string.Empty;
-    [Required(ErrorMessage = "Chưa nhập số điện thoại")]
     public string PhoneNumber { get; set; } = string.Empty;
-    [Required(ErrorMessage = "Chưa nhập địa chỉ")]
     public string Address { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }
 
 [Serializable]

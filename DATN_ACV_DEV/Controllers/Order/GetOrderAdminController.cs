@@ -116,7 +116,8 @@ public class GetOrderAdminController : ControllerBase
                     Id = e.Id,
                     Name = e.Description,
                     Address = e.Customer.Adress,
-                    PhoneNumber = e.Customer.Phone
+                    PhoneNumber = e.Customer.Phone,
+                    Email = _context.TbAccounts.Where(c=>c.CustomerId == e.CustomerId).Select(c=>c.Email).FirstOrDefault()
                 },
                 PaymentInfo = new PaymentInfo
                 {
