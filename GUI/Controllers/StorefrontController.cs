@@ -34,6 +34,7 @@ using GUI.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using IndexObject = GUI.Models.DTOs.Product_DTO.Views.IndexObject;
 using DATN_ACV_DEV.Controllers;
+using System.Drawing;
 
 namespace GUI.Controllers
 {
@@ -260,10 +261,16 @@ namespace GUI.Controllers
                 ColorName = d.ColorId.HasValue && colorDict.ContainsKey(d.ColorId.Value) ? colorDict[d.ColorId.Value] : "Unknown",
                 SizeName = d.SizeId.HasValue && sizeDict.ContainsKey(d.SizeId.Value) ? sizeDict[d.SizeId.Value] : "Unknown"
             }).ToList();
-            foreach (var item in result.Data.RelatedProducts)
+
+
+            if (result.Data.RelatedProducts != null)
             {
-                item.Image = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
+                foreach (var item in result.Data.RelatedProducts)
+                {
+                    item.Image = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
+                }
             }
+
 
             foreach (var item in result.Data.DetailDataFinal)
             {
@@ -371,13 +378,21 @@ namespace GUI.Controllers
         }
 
         [HttpPost("/BuyNow")]
-        public async Task<IActionResult> BuyNow(Guid prId, Guid userId, int quantity)
+        public async Task<IActionResult> BuyNow(Guid prId, Guid userId, int quantity, Guid colorId, Guid sizeId)
         {
             if (userId == Guid.Empty)
             {
                 userId = Guid.NewGuid();
             }
-            var req = new AddToCartRequest();
+            var req = new AddToCartRequest
+            {
+                UserId = userId, 
+                Quantity = quantity != 0 ? quantity : 1,
+                ProductId = prId,
+                ColorId = colorId,   
+                SizeId = sizeId,    
+                incre = false
+            };
             //req.UserId = new Guid("6E55E6C4-69F8-43A9-B5B7-00216EC0B0AD");
             req.UserId = Guid.Empty;
             req.Quantity = quantity != 0 ? quantity : 1;
@@ -396,24 +411,24 @@ namespace GUI.Controllers
         }
 
         [Route("/Checkout")]
-		public async Task<IActionResult> Checkout()
-		{
-			if (TempData["ConfirmedCartItems"] != null)
-			{
-				HttpContext.Session.SetString("SelectedVoucher","");
-				TempData.Keep("ConfirmedCartItems");
-				List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
-				var sum = model.Sum(c => c.Price * c.Quantity);
-				if (sum > 0)
-				{
-					ViewBag.Sum = sum;
-					return View(model);
-				}
-			}
-			return RedirectToAction(nameof(Cart));
-		}
+        public async Task<IActionResult> Checkout()
+        {
+            if (TempData["ConfirmedCartItems"] != null)
+            {
+                HttpContext.Session.SetString("SelectedVoucher", "");
+                TempData.Keep("ConfirmedCartItems");
+                List<CartDTO> model = JsonConvert.DeserializeObject<List<CartDTO>>(TempData["ConfirmedCartItems"].ToString());
+                var sum = model.Sum(c => c.Price * c.Quantity);
+                if (sum > 0)
+                {
+                    ViewBag.Sum = sum;
+                    return View(model);
+                }
+            }
+            return RedirectToAction(nameof(Cart));
+        }
 
-		[Route("/Cart")]
+        [Route("/Cart")]
 		public async Task<IActionResult> Cart()
 		{
             var colorId = Request.Query["colorId"].ToString();  // Lấy colorId

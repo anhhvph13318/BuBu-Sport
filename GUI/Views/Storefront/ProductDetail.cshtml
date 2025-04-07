@@ -149,8 +149,7 @@
                             <div class="d-grid gap-2">
                                 <button class="btn btn-primary addCartDetailnew" type="button" data-prId="@Model.Id" data-quantity="***"><i class="bi bi-cart-plus"></i> Thêm vào giỏ hàngg</button>
 
-                                <button class="btn btn-outline-primary buyNowDetail" data-prId="@Model.Id" data-quantity="***"><i class="fa fa-shopping-cart"></i> Mua ngay</button>
-
+                                <button type="button" class="btn btn-outline-primary buyNowDetail" data-prId="@Model.Id" data-quantity="***"><i class="fa fa-shopping-cart"></i> Mua ngay</button>
                             </div>
                         </form>
                     }
@@ -1129,11 +1128,18 @@
                 let customerId = getCookie("user-id");
                 let quantity = $("#quantity").val(); // Lấy số lượng từ ô input
                 $(this).attr("data-quantity", quantity); // Cập nhật vào data-quantity
-
+                let selectedColor = $(".color-select:checked").val(); 
+                let selectedSize = $(".size-select:checked").val();
+                if (!selectedColor || !selectedSize) {
+                    alert("Vui lòng chọn màu sắc và kích thước!");
+                    return;
+                }
                 $.post("/BuyNow", {
                     prId: $(this).attr("data-prId"),
                     userId: customerId,
-                    quantity: quantity
+                    quantity: quantity,
+                    colorId: selectedColor,  
+                    sizeId: selectedSize
                 }, function (data) {
                     if (!customerId) {
                         setCookie("user-id", data.userId, 90);
