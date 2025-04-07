@@ -34,12 +34,12 @@ namespace DATN_ACV_DEV.Controllers
             return Ok("Email đã được gửi thành công.");
 
         }
-        [HttpPost("send-new-password")]
-        public async Task<IActionResult> SendNewPassword([FromBody] NewPasswordRequest request)
-        {
-            await _emailService.SendNewPasswordAsync(request.email);
-            return Ok("Email đã được gửi thành công.");
-        }
+        //[HttpPost("send-new-password")]
+        //public async Task<IActionResult> SendNewPassword([FromBody] NewPasswordRequest request)
+        //{
+        //    await _emailService.SendNewPasswordAsync(request.email);
+        //    return Ok("Email đã được gửi thành công.");
+        //}
 
     }
 }
