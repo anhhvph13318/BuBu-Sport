@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using DATN_ACV_DEV.Controllers;
 using GUI.Models.DTOs.ResetPassWord_DTO;
+using DATN_ACV_DEV.Model_DTO.SendEmail_DTO;
 
 namespace GUI.Controllers
 {
@@ -115,21 +116,39 @@ namespace GUI.Controllers
                 return RedirectToAction(nameof(Login));
             }
         }
-
+        public static string GenerateRandomString(int length = 6)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
         [HttpPost]
-        public async Task<IActionResult> ForgotPassWord(string Email)
+        public async Task<IActionResult> ForgotPassWord(CreateEmailRequest request)
         {
             try
             {
-                ViewBag.SweetAlertShowMessage = SweetAlertHelper.ShowMessage("Thông báo",
-                $"Mật khẩu đã được gửi về tài khoản {Email} của Anh/chị! Vui lòng Anh/chị kiểm tra lại mật khẩu gửi về mail và đăng nhập lại hệ thống.",
-                SweetAlertMessageType.success);
+                var password = GenerateRandomString();
+                //ViewBag.SweetAlertShowMessage = SweetAlertHelper.ShowMessage("Thông báo",
+                //$"Mật khẩu đã được gửi về tài khoản {request.Email} của Anh/chị! Vui lòng Anh/chị kiểm tra lại mật khẩu gửi về mail và đăng nhập lại hệ thống.",
+                //SweetAlertMessageType.success);
+                request.Emailtype = 0;
+                request.password = password;
                 var URL = _settings.APIAddress + "api/CreateContentEmail/Process";
-                var param = JsonConvert.SerializeObject(Email);
+                var param = JsonConvert.SerializeObject(request);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<ContentEmailRespone>>(res) ?? new();
-                await _emailService.SendOrderConfirmationAsync(Email,"",result.Data.customerName,result.Data.phonenumber,"",result.Data.password,0);
-                TempData["Message"] = "Email đã được gửi thành công.";
+                if (result != null && result.Messages.Count == 0 && result.Data.customerName != null)
+                {
+                    await _emailService.SendOrderConfirmationAsync(request.Email, "", result.Data.customerName, result.Data.phonenumber, "", result.Data.password, 0);
+                    TempData["Message"] = "Mật khẩu đã được gửi về tài khoản " + request.Email + " vui lòng kiểm tra lại mật khẩu gửi về email và đăng nhập lại hệ thống.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Email chưa được đăng ký tài khoản ở BuBu Sport, vui lòng kiểm tra lại !!!";
+                }
+
+
 
                 // Chuyển hướng về trang Login
                 return Redirect("http://localhost:5011/SignIn");

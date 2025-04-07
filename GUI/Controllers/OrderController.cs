@@ -1,4 +1,6 @@
-﻿using GUI.FileBase;
+﻿using DATN_ACV_DEV.Controllers;
+using DATN_ACV_DEV.Model_DTO.GHN_DTO;
+using GUI.FileBase;
 using GUI.Hubs;
 using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
@@ -21,6 +23,7 @@ namespace GUI.Controllers;
 [Authorize(Roles = "Admin")]
 public class OrderController : Controller
 {
+    private readonly IEmailService _emailService;
     private const string URI = "http://localhost:5059";
     //private const string URI = "https://localhost:44383";
     private const string OrderItemListPartialView = "_OrderItemListPartialView";
@@ -31,7 +34,10 @@ public class OrderController : Controller
     private const string OrderListPartialView = "_OrderListPartialView";
     private const string AvailableVoucherPartialView = "_AvailableVoucherPartialView";
     private const string TempSaveOrderButtonPartialView = "_TempSaveOrderButtonPartialView";
-
+    public OrderController(IEmailService emailService)
+    {
+        _emailService = emailService;
+    }
     [HttpGet]
     public async Task<IActionResult> Index(
     [FromQuery] string? code = "",
@@ -226,12 +232,20 @@ public class OrderController : Controller
             Payment = order.PaymentInfo,
         };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
-            ? await httpClient.PatchAsJsonAsync($"api/order/{order.Id}", payload)
+            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
         if(rawResponse.IsSuccessStatusCode)
         {
             var orders = await FetchOrderList();
+            foreach (var item in orders)
+            {
+                await _emailService.SendOrderConfirmationAsync(item.Customer.Email, item.Code, item.Customer.Name, item.Customer.PhoneNumber, item.StatusText, "", 1);
+            }
+            if (orders.Count() == 0 && order.Status == 7)
+            {
+                await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1);
+            }
             return Json(new 
             { 
                 Orders = await RenderViewAsync(OrderListPartialView, orders),
@@ -665,8 +679,7 @@ public class OrderController : Controller
             JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderDetail>>>(
                 await rawResponse.Content.ReadAsStringAsync());
 
-        var data = response!.Data;
-
+        var data = response!.Data;   
         //foreach (var order in data)
         //    order.ReCalculatePaymentInfo();
 

@@ -22,6 +22,7 @@ public partial class TbAddressDelivery
     public string? ReceiverName { get; set; }
 
     public string? ReceiverPhone { get; set; }
+    public string? receiverEmail { get; set; }
 
     public virtual TbAccount? Account { get; set; }
 

@@ -51,8 +51,11 @@ public class OrderDetailAdminController : ControllerBase
                 Id = customer.Id,
                 Name = customer.Name,
                 Address = customer.Adress,
-                PhoneNumber = customer.Phone
-            },
+                PhoneNumber = customer.Phone,
+                Email = _context.TbAccounts.Where(c=>c.CustomerId == customer.Id).Select(c=>c.Email).FirstOrDefault() != null ?
+				_context.TbAccounts.Where(c => c.CustomerId == customer.Id).Select(c => c.Email).FirstOrDefault():
+                _context.TbAddressDeliveries.Where(c=>c.Id == customer.TbOrders.Select(a=>a.AddressDeliveryId).FirstOrDefault()).Select(c=>c.receiverEmail).FirstOrDefault()
+			},
             ShippingInfo = customer == null ? null : new ShippingInfo
             {
                 Name = customer.Name,
@@ -88,6 +91,8 @@ public class OrderDetailAdminController : ControllerBase
             .Select(orderDetail => new OrderItem
             {
                 Id = orderDetail.ProductId,
+                Code = _context.TbProducts.Where(c => c.Id ==
+                _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.ProductId).FirstOrDefault()).Select(c => c.Code).FirstOrDefault(),
                 Price = _context.TbProductDetails.Where(c => c.Id == orderDetail.ProductId).Select(c => c.Price).FirstOrDefault(),
                 Quantity = orderDetail.Quantity,
                 ProductImage = _context.TbImages.Where(c => c.Id ==
