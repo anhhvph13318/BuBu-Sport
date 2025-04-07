@@ -17,16 +17,20 @@ using DATN_ACV_DEV.Entity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using DATN_ACV_DEV.Controllers;
+using GUI.Models.DTOs.ResetPassWord_DTO;
 
 namespace GUI.Controllers
 {
     public class LoginController : ControllerSharedBase
     {
+        private readonly IEmailService _emailService;
         private readonly ILogger<LoginController> _logger;
         private HttpService httpService;
 
-        public LoginController(ILogger<LoginController> logger, IOptions<CommonSettings> settings)
+        public LoginController(ILogger<LoginController> logger, IOptions<CommonSettings> settings, IEmailService emailService)
         {
+            _emailService = emailService;
             _settings = settings.Value;
             _logger = logger;
             httpService = new();
@@ -113,11 +117,31 @@ namespace GUI.Controllers
         }
 
         [HttpPost]
-        public  IActionResult ForgotPassWord(string Email)
+        public async Task<IActionResult> ForgotPassWord(string Email)
         {
-            ViewBag.SweetAlertShowMessage = SweetAlertHelper.ShowMessage("Thông báo",
-                $"Mật khẩu đã được gửi về tài khoản {Email} của Anh/chị! Vui lòng Anh/chị kiểm tra lại mật khẩu gửi về mail và đăng nhập lại hệ thống.", SweetAlertMessageType.success);
-            return View("Login");
+            try
+            {
+                ViewBag.SweetAlertShowMessage = SweetAlertHelper.ShowMessage("Thông báo",
+                $"Mật khẩu đã được gửi về tài khoản {Email} của Anh/chị! Vui lòng Anh/chị kiểm tra lại mật khẩu gửi về mail và đăng nhập lại hệ thống.",
+                SweetAlertMessageType.success);
+                var URL = _settings.APIAddress + "api/CreateContentEmail/Process";
+                var param = JsonConvert.SerializeObject(Email);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<ContentEmailRespone>>(res) ?? new();
+                await _emailService.SendOrderConfirmationAsync(Email,"",result.Data.customerName,result.Data.phonenumber,"",result.Data.password,0);
+                TempData["Message"] = "Email đã được gửi thành công.";
+
+                // Chuyển hướng về trang Login
+                return Redirect("http://localhost:5011/SignIn");
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi nếu có (ví dụ log lỗi hoặc thông báo)
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi gửi email.";
+
+                // Chuyển hướng về trang Login với thông báo lỗi
+                return Redirect("http://localhost:5011/SignIn");
+            }
         }
         
 
