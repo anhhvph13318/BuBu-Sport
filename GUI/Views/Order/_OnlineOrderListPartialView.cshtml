@@ -4,15 +4,15 @@
 
 @if (Model is null || Model.Count == 0)
 {
-    <p class="text-center">Không có đơn hàng tại quầy</p>
+    <p class="text-center">Không có đơn hàng online</p>
 }
 else
 {
-    var orders = Model.Where(order => order.OrderTypeName == "Tại quầy").ToList();
+    var onlineOrders = Model.Where(order => order.OrderTypeName == "Online").ToList();
 
-    @if (orders.Count == 0)
+    @if (onlineOrders.Count == 0)
     {
-        <p class="text-center">Không có đơn hàng tại quầy</p>
+        <p class="text-center">Không có đơn hàng online</p>
     }
     else
     {
@@ -28,7 +28,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var order in Model.Where(order => order.OrderTypeName == "Tại quầy").ToList())
+                @foreach (var order in Model.Where(order => order.OrderTypeName == "Online").ToList())
                 {
                     <tr>
                         <td>@order.Code</td>

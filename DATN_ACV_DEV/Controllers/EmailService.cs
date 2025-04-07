@@ -1,9 +1,8 @@
 ﻿using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using Org.BouncyCastle.Crypto.Macs;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace DATN_ACV_DEV.Controllers
 {
@@ -11,9 +10,9 @@ namespace DATN_ACV_DEV.Controllers
     {
         Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type);
     }
-
     public class EmailService : IEmailService
     {
+        
         private readonly string _smtpServer;
         private readonly int _smtpPort;
         private readonly string _smtpUsername;
@@ -75,6 +74,15 @@ namespace DATN_ACV_DEV.Controllers
             await client.AuthenticateAsync(_smtpUsername, _smtpPassword);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
+        }
+
+
+        public static string GenerateRandomPassword(int length = 10)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

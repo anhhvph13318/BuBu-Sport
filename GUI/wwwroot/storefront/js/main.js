@@ -1,4 +1,4 @@
-﻿(function($) {
+﻿(function ($) {
 	"use strict"
 
 	let discount = 0;
@@ -7,10 +7,10 @@
 
 	function ValidateEmail(email) {
 		return String(email)
-		.toLowerCase()
-		.match(
-		  /(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*:(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)(?:,\s*(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*))*)?;\s*)/
-		);
+			.toLowerCase()
+			.match(
+				/(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*:(?:(?:\r\n)?[ \t])*(?:(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*)(?:,\s*(?:(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*|(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)*\<(?:(?:\r\n)?[ \t])*(?:@(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*(?:,@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*)*:(?:(?:\r\n)?[ \t])*)?(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|"(?:[^\"\r\\]|\\.|(?:(?:\r\n)?[ \t]))*"(?:(?:\r\n)?[ \t])*))*@(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*)(?:\.(?:(?:\r\n)?[ \t])*(?:[^()<>@,;:\\".\[\] \000-\031]+(?:(?:(?:\r\n)?[ \t])+|\Z|(?=[\["()<>@,;:\\".\[\]]))|\[([^\[\]\r\\]|\\.)*\](?:(?:\r\n)?[ \t])*))*\>(?:(?:\r\n)?[ \t])*))*)?;\s*)/
+			);
 	}
 
 	function ValidatePhone(phone) {
@@ -67,9 +67,9 @@
 	/////////////////////////////////////////
 
 	// Products Slick
-	$('.products-slick').each(function() {
+	$('.products-slick').each(function () {
 		var $this = $(this),
-				$nav = $this.attr('data-nav');
+			$nav = $this.attr('data-nav');
 
 		$this.slick({
 			slidesToShow: 4,
@@ -81,27 +81,27 @@
 			arrows: true,
 			appendArrows: $nav ? $nav : false,
 			responsive: [{
-	        breakpoint: 991,
-	        settings: {
-	          slidesToShow: 2,
-	          slidesToScroll: 1,
-	        }
-	      },
-	      {
-	        breakpoint: 480,
-	        settings: {
-	          slidesToShow: 1,
-	          slidesToScroll: 1,
-	        }
-	      },
-	    ]
+				breakpoint: 991,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 1,
+				}
+			},
+			{
+				breakpoint: 480,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+				}
+			},
+			]
 		});
 	});
 
 	// Products Widget Slick
-	$('.products-widget-slick').each(function() {
+	$('.products-widget-slick').each(function () {
 		var $this = $(this),
-				$nav = $this.attr('data-nav');
+			$nav = $this.attr('data-nav');
 
 		$this.slick({
 			infinite: true,
@@ -117,34 +117,34 @@
 
 	// Product Main img Slick
 	$('#product-main-img').slick({
-    infinite: true,
-    speed: 300,
-    dots: false,
-    arrows: true,
-    fade: true,
-    asNavFor: '#product-imgs',
-  });
+		infinite: true,
+		speed: 300,
+		dots: false,
+		arrows: true,
+		fade: true,
+		asNavFor: '#product-imgs',
+	});
 
 	// Product imgs Slick
-  $('#product-imgs').slick({
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    arrows: true,
-    centerMode: true,
-    focusOnSelect: true,
+	$('#product-imgs').slick({
+		slidesToShow: 3,
+		slidesToScroll: 1,
+		arrows: true,
+		centerMode: true,
+		focusOnSelect: true,
 		centerPadding: 0,
 		vertical: true,
-    asNavFor: '#product-main-img',
+		asNavFor: '#product-main-img',
 		responsive: [{
-        breakpoint: 991,
-        settings: {
-					vertical: false,
-					arrows: false,
-					dots: true,
-        }
-      },
-    ]
-  });
+			breakpoint: 991,
+			settings: {
+				vertical: false,
+				arrows: false,
+				dots: true,
+			}
+		},
+		]
+	});
 
 	// Product img zoom
 	var zoomMainProduct = document.getElementById('product-main-img');
@@ -162,49 +162,49 @@
 	let maxInput = parseInt($("#price-max").val());
 	let step = (max - min) / 100;
 
-	$('.input-number').each(function() {
+	$('.input-number').each(function () {
 		var $this = $(this),
-		$input = $this.find('input[type="number"]'),
-		up = $this.find('.qty-up'),
-		down = $this.find('.qty-down');
+			$input = $this.find('input[type="number"]'),
+			up = $this.find('.qty-up'),
+			down = $this.find('.qty-down');
 
 		down.on('click', function () {
 			var value = parseInt($input.val()) - step;
 			value = value < min ? min : value;
 			$input.val(value);
 			$input.change();
-			updatePriceSlider($this , value)
+			updatePriceSlider($this, value)
 		})
 
 		up.on('click', function () {
 			var value = parseInt($input.val()) + step;
 			$input.val(value);
 			$input.change();
-			updatePriceSlider($this , value)
+			updatePriceSlider($this, value)
 		})
 	});
 
 	var priceInputMax = document.getElementById('price-max'),
 		priceInputMin = document.getElementById('price-min');
 
-    if (priceInputMax) {
+	if (priceInputMax) {
 		priceInputMax.addEventListener('change', function () {
 			updatePriceSlider($(this).parent(), this.value)
 		});
 		priceInputMax.value = maxInput;
-    }
+	}
 
-    if (priceInputMin) {
+	if (priceInputMin) {
 		priceInputMin.addEventListener('change', function () {
 			updatePriceSlider($(this).parent(), this.value)
 		});
 		priceInputMin.value = minInput;
-    }
+	}
 
-	function updatePriceSlider(elem , value) {
-		if ( elem.hasClass('price-min') ) {
+	function updatePriceSlider(elem, value) {
+		if (elem.hasClass('price-min')) {
 			priceSlider.noUiSlider.set([value, null]);
-		} else if ( elem.hasClass('price-max')) {
+		} else if (elem.hasClass('price-max')) {
 			priceSlider.noUiSlider.set([null, value]);
 		}
 	}
@@ -222,13 +222,13 @@
 			}
 		});
 
-		priceSlider.noUiSlider.on('update', function( values, handle ) {
+		priceSlider.noUiSlider.on('update', function (values, handle) {
 			var value = values[handle];
 			handle ? priceInputMax.value = value : priceInputMin.value = value
 		});
 		priceSlider.noUiSlider.set([minInput, maxInput]);
 	}
-	
+
 
 	$(function () {
 		//let path = window.location.pathname.slice(0, 6);
@@ -241,9 +241,9 @@
 	$('.addCart').on('click', function () {
 		let customerId = getCookie("user-id");
 		$.post("/AddCart", { prId: $(this).attr('data-prId'), userId: customerId, quantity: $(this).attr('data-quantity') }, function (data) {
-            if (!customerId) {
+			if (!customerId) {
 				setCookie("user-id", data.userId, 90)
-            }
+			}
 			window.location = "/cart";
 		});
 	});
@@ -280,10 +280,10 @@
 			let id = $(obj).attr('data-itemId');
 			ids.push(id);
 		});
-		
+
 		let COD = $('#payment-1').is(":checked");
 
-        if (!name) {
+		if (!name) {
 			alert("Tên không được để trống");
 			return false;
 		}
@@ -293,17 +293,28 @@
 			return false;
 		}
 
-        if (!ValidatePhone(phone)) {
+		if (!ValidatePhone(phone)) {
 			alert("Số điện thoại không hợp lệ");
 			return false;
-        }
+		}
 
 		if (!address || !district || !city) {
 			alert("Địa chỉ không được để trống");
 			return false;
-        }
+		}
 
 		if (ids.length) {
+      			Swal.fire({
+				title: 'Xác nhận đặt hàng',
+				text: 'Bạn có chắc chắn muốn đặt đơn hàng này?',
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Đồng ý',
+				cancelButtonText: 'Hủy'
+			}).then((result) => {
+				if (result.isConfirmed) {
 			$.post("/Buy", {
 				name: name,
 				phone: phone,
@@ -323,10 +334,12 @@
 					}
 				} else {
 					alert("Đã có lỗi xảy ra");
+          }
+					});
 				}
 			});
 		} else {
-            alert("Đã có lỗi xảy ra");
+			alert("Đã có lỗi xảy ra");
 			return false;
 		}
 	});
@@ -336,17 +349,17 @@
 		let el = $(this);
 		let value = $(this).val();
 		let id = $(this).parent().parent().attr('data-itemId');
-        if (isNaN(value)) {
+		if (isNaN(value)) {
 			$(this).val($(this).attr('data-value'));
 			return;
 		}
 
 		if (changeQuant) {
 			clearTimeout(changeQuant);
-        }
+		}
 		changeQuant = setTimeout(function () {
 			updateQuantity(value, id, false, el);
-			
+
 		}, 500)
 	});
 
@@ -373,7 +386,7 @@
 		if (updateQuantity(value, id, true, el)) {
 			$(`#quant-${id}`).val(quant);
 			$(`#sub-${id}`).text(convertVND(parseFloat(price) * quant));
-        }
+		}
 	});
 
 	const updateQuantity = function (quantity, id, incre, el) {
@@ -382,18 +395,18 @@
 			quantity: quantity,
 			isIncrement: incre
 		}, function (data) {
-            if (data && data.success) {
+			if (data && data.success) {
 				let subTotal = parseFloat(data.data.quantity) * parseFloat(data.data.price);
 				if (!incre) {
 					$(`#sub-${id}`).text(subTotal);
-                }
+				}
 				UpdatePrice();
 				el.attr('data-value', value);
 				return true;
 			} else {
 				el.val(el.attr('data-value'));
 				return false;
-            }
+			}
 		});
 	}
 
@@ -403,12 +416,12 @@
 		$.each(subTotals, function (i, obj) {
 			var el = obj.id;
 			let number = parseFloat($("#" + el).attr("data-value"));
-            if (number) {
+			if (number) {
 				total += number;
-            }
+			}
 		});
 
-        if (shipping) {
+		if (shipping) {
 			total += shipping;
 		}
 
@@ -525,11 +538,11 @@
 
 
 
-        if (total > 0) {
+		if (total > 0) {
 			$("#cart-submit").show();
-        } else {
+		} else {
 			$("#cart-submit").hide();
-        }
+		}
 
 		$('.cart-total').text(convertVND(total));
 	}
@@ -544,12 +557,12 @@
 				buyingItems.push(id);
 			}
 		});
-		$.post("/ConfirmCart", { ids : buyingItems}, (data) => {
-            if (data.success) {
+		$.post("/ConfirmCart", { ids: buyingItems }, (data) => {
+			if (data.success) {
 				location.href = "/Checkout";
-            }
+			}
 		});
-	}); 
+	});
 
 	function setCookie(cname, cvalue, exdays) {
 		const d = new Date();
@@ -582,7 +595,7 @@
 		if ($(this).val() == 1) {
 			$(".shipping-details").addClass("active");
 			shippingFee = 0;
-        } else {
+		} else {
 			$(".shipping-details").removeClass("active");
 		}
 		var shippingString = convertVND(shippingFee);
@@ -598,9 +611,9 @@
 
 	$(".pagination-btn").on("click", function (e) {
 		e.preventDefault();
-        if (!$(this).hasClass("active")) {
+		if (!$(this).hasClass("active")) {
 			insertParam("p", $(this).attr("data-page"));
-        }
+		}
 	})
 
 	let cName = getCookie("cName");
@@ -622,7 +635,7 @@
 	});
 
 	let voucherBtn = document.querySelector("#voucher-btn");
-    if (voucherBtn) {
+	if (voucherBtn) {
 		voucherBtn.addEventListener("click", (e) => {
 			const customerPhone = getCookie('cPhone');
 			if (!customerPhone) {
@@ -630,7 +643,7 @@
 				alert("Bạn chưa đăng nhập. Hãy đăng nhập để sử dụng voucher");
 				e.stopPropagation();
 				return false;
-            }
+			}
 
 			fetch(GET_AVAILABLE_VOUCHER(customerPhone))
 				.then(res => res.json())
@@ -641,7 +654,7 @@
 				.then(() => {
 					$(".btn-apply-voucher").on("click", function (e) {
 						$.post("/ApplyVoucher", { vId: $(this).attr("data-id") }, (data) => {
-                            if (data.success) {
+							if (data.success) {
 								discount = data.discount;
 								maxDiscount = data.maxDiscount;
 								$("#voucherCode").val(data.code);
@@ -651,7 +664,7 @@
 						});
 					});
 				});
-			
+
 		});
 	}
 
@@ -666,10 +679,10 @@
 		if (email && !ValidateEmail(email)) {
 			alert("Email không đúng định dạng");
 			return false;
-        }
+		}
 		let sex = null;
 		let selectedSex = $("input[type=radio][name=sex]:checked");
-        if (selectedSex && selectedSex.length > 0) {
+		if (selectedSex && selectedSex.length > 0) {
 			sex = selectedSex.val();
 		}
 		$.post("/UpdateCustomerInfo", {
@@ -682,9 +695,9 @@
 				alert("Thành công");
 				setCookie("cName", name)
 				location.reload();
-            } else {
+			} else {
 				alert("Thất bại");
-            }
+			}
 		});
 	});
 
@@ -692,7 +705,7 @@
 		let oldPassword = $("#customer-oldpassword").val();
 		let password = $("#customer-newpassword").val();
 		let cfpassword = $("#customer-cfnewpassword").val();
-        if (password != cfpassword) {
+		if (password != cfpassword) {
 			alert("Mật khẩu và mật khẩu xác nhận không khớp");
 			return false;
 		}
@@ -705,7 +718,7 @@
 			password,
 		}, (data) => {
 			if (data.success) {
-				
+
 				alert("Thành công! Vui lòng đăng nhập lại");
 				eraseCookie("cName");
 				eraseCookie("cPhone");
