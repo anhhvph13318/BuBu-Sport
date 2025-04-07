@@ -332,9 +332,10 @@
 					} else {
 						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
 					}
-				} else {
+				} else
+				{
 					alert("Đã có lỗi xảy ra");
-          }
+				}
 					});
 				}
 			});
