@@ -13,8 +13,6 @@ namespace DATN_ACV_DEV.Controllers.Order
         public OrderController(DBContext context)
         {
             _context = context;
-        }
-
-        
+        }  
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Net.WebSockets;
 using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
 
 namespace GUI.Controllers;
@@ -54,7 +55,7 @@ public class OrderController : Controller
 
             var response = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
-
+            
             var orders = response!.Data;
 
             // Lọc theo orderCodePrefix
@@ -213,7 +214,7 @@ public class OrderController : Controller
             Payment = order.PaymentInfo,
         };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
-            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+            ? await httpClient.PatchAsJsonAsync($"api/order/{order.Id}", payload)
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
         if(rawResponse.IsSuccessStatusCode)
@@ -654,8 +655,8 @@ public class OrderController : Controller
 
         var data = response!.Data;
 
-        foreach (var order in data)
-            order.ReCalculatePaymentInfo();
+        //foreach (var order in data)
+        //    order.ReCalculatePaymentInfo();
 
         return data;
     }

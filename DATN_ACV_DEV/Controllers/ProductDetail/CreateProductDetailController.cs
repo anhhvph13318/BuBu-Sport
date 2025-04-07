@@ -89,7 +89,7 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
                     var productDetail = new TbProductDetail()
                     {
                         Id = Guid.NewGuid(),
-                        Price = _request.Price,
+                        Price = _context.TbProducts.Where(c=>c.Id == _request.ProductID).Select(c=>c.Price).FirstOrDefault(),
                         Quantity = sizeQuantity.QuantitySize,
                         ImageId = _request.ImageID ?? _imageId.Data.ID,
                         ColorId = _request.Color,

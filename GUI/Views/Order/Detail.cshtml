@@ -5,6 +5,7 @@
 @{
     Layout = "_Layout";
     int productOrder = 1;
+    decimal totalAmount = 0;
 }
 
 
@@ -20,10 +21,10 @@ else
         <div class="mb-3 mt-3">
             <h5>Trạng thái đơn hàng</h5>
             <div class="border m-0 p-3 row">
-                @foreach(var item in OrderUtil.OrderStepProcessing)
+                @foreach (var item in OrderUtil.OrderStepProcessing)
                 {
                     <div class="form-check col-3">
-                        <input class="form-check-input" type="radio" disabled checked="@(Model.Status == item.Key)"/>
+                        <input class="form-check-input" type="radio" disabled checked="@(Model.Status == item.Key)" />
                         <label style="opacity: 1" class="form-check-label">@item.Value</label>
                     </div>
                 }
@@ -59,7 +60,7 @@ else
                         <td colspan="3" class="pe-2 text-end">@Model.PaymentInfo.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                     </tr>
                     <tr>
-@*                         <td>Phí giao hàng</td>
+                        @*                         <td>Phí giao hàng</td>
                         <td colspan="3" class="pe-2 text-end">@Model.PaymentInfo.ShippingFee.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td> *@
                     </tr>
                     <tr>
@@ -85,7 +86,8 @@ else
                     if (Model.IsSameAsCustomerAddress)
                     {
                         <p class="mb-1 p-1">Giống với thông tin khách hàng</p>
-                    } else
+                    }
+                    else
                     {
                         <div class="mb-3 col-4">
                             <label>Họ và tên</label>
@@ -110,21 +112,35 @@ else
                 <thead>
                     <tr>
                         <th>STT</th>
+                        <th>Mã sản phẩm</th>
                         <th>Tên sản phẩm</th>
+                        <th>Màu sắc</th>
+                        <th>Kích thước</th>
                         <th>Đơn giá</th>
                         <th>Số lượng</th>
+                        <th>Thành tiền</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(var item in Model.Items)
+                    @foreach (var item in Model.Items)
                     {
+                        var itemTotal = item.Price * item.Quantity;
+                        totalAmount += itemTotal;
                         <tr>
                             <td>@(productOrder++)</td>
+                            <td>@item.Id</td>
                             <td>@item.ProductName</td>
+                            <td>@item.Color</td>
+                            <td>@item.Size</td>
                             <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                             <td>@item.Quantity</td>
+                            <td>@itemTotal.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                         </tr>
                     }
+                    <tr>
+                        <td colspan="7" class="text-end"><strong>Tổng tiền:</strong></td>
+                        <td><strong>@totalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</strong></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
