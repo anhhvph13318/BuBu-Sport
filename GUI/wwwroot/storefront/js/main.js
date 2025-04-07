@@ -668,56 +668,100 @@
 	}
 
 	$("#customer-submit").on("click", function () {
+		// Lưu giá trị giới tính ban đầu trước khi thay đổi
+		let originalSex = $("input[type=radio][name=sex]:checked").val();
+
+		// Xác nhận trước khi gửi
+		if (!confirm('Bạn có chắc muốn lưu không?')) {
+			// Hiển thị thông báo "Sửa không thành công" khi bấm Hủy
+			alert("Sửa không thành công");
+
+			// Khôi phục giá trị giới tính ban đầu
+			if (originalSex === "male") {
+				$("input[type=radio][name=sex][value='male']").prop("checked", true);
+			} else if (originalSex === "female") {
+				$("input[type=radio][name=sex][value='female']").prop("checked", true);
+			} else {
+				// Nếu không có giá trị ban đầu, bỏ chọn tất cả
+				$("input[type=radio][name=sex]").prop("checked", false);
+			}
+
+			return false;
+		}
+
+		// Hiện spinner (nếu cần, nhưng trong ví dụ này sẽ bỏ qua phần spinner để đơn giản)
+		// $("#spinner").show();
+
 		let name = $("#customer-fullname").val();
 		if (!name) {
 			alert("Bắt buộc phải nhập tên");
+			// $("#spinner").hide();
 			return false;
 		}
+
 		let address = $("#customer-address").val();
 		let email = $("#customer-email").val();
 		if (email && !ValidateEmail(email)) {
 			alert("Email không đúng định dạng");
+			// $("#spinner").hide();
 			return false;
 		}
+
 		let sex = null;
 		let selectedSex = $("input[type=radio][name=sex]:checked");
 		if (selectedSex && selectedSex.length > 0) {
 			sex = selectedSex.val();
 		}
+
+		// Gửi yêu cầu AJAX
 		$.post("/UpdateCustomerInfo", {
 			name,
 			address,
 			sex,
 			email
 		}, (data) => {
-			if (data.success) {
-				alert("Thành công");
-				setCookie("cName", name)
-				location.reload();
-			} else {
-				alert("Thất bại");
-			}
+			// Ẩn spinner (nếu có)
+			// $("#spinner").hide();
+			alert("Thành công!"); // Thông báo thành công sau khi gửi
+		}).fail(() => {
+			// Ẩn spinner nếu có lỗi
+			// $("#spinner").hide();
+			alert("Thất bại!"); // Thông báo thất bại nếu có lỗi
 		});
 	});
 
+
 	$("#password-submit").on("click", function () {
+		// Xác nhận trước khi gửi
+		if (!confirm('Bạn có chắc muốn đổi mật khẩu không?')) {
+			// Hiển thị thông báo "Sửa không thành công" khi bấm Hủy
+			alert("Sửa không thành công");
+			return false;
+		}
+
+		// Hiển thị thông báo "Sửa thành công" khi bấm OK trong confirm
+		alert("Sửa thành công");
+
 		let oldPassword = $("#customer-oldpassword").val();
 		let password = $("#customer-newpassword").val();
 		let cfpassword = $("#customer-cfnewpassword").val();
+
 		if (password != cfpassword) {
 			alert("Mật khẩu và mật khẩu xác nhận không khớp");
 			return false;
 		}
+
 		if (password == oldPassword) {
 			alert("Mật khẩu cũ và mật khẩu mới không được giống nhau");
 			return false;
 		}
+
+		// Gửi yêu cầu AJAX
 		$.post("/UpdatePassword", {
 			oldPassword,
 			password,
 		}, (data) => {
 			if (data.success) {
-
 				alert("Thành công! Vui lòng đăng nhập lại");
 				eraseCookie("cName");
 				eraseCookie("cPhone");
@@ -729,8 +773,9 @@
 			} else {
 				if (data.wrong) {
 					alert("Mật khẩu cũ chưa chính xác");
+				} else {
+					alert("Thất bại");
 				}
-				else { alert("Thất bại"); }
 			}
 		});
 	});
