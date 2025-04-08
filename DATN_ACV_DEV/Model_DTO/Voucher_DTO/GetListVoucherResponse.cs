@@ -26,5 +26,6 @@ namespace DATN_ACV_DEV.Model_DTO.Voucher_DTO
         public bool Status { get; set; }
         public decimal MaxDiscount { get; set; }
         public decimal RequiredTotalAmount { get; set; }
+        public decimal Condition { get; set; }
     }
 }

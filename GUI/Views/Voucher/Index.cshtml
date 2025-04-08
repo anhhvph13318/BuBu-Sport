@@ -85,6 +85,7 @@
                         <th class="text-center">Số lượng</th>
                         <th>Thời gian hiệu lực</th>
                         <th class="text-center">Trạng thái</th>
+                        <th class="text-center">Điều kiện áp dụng</th> <!-- Thêm cột mới -->
                         <th class="text-center" style="width: 150px;">Hành động</th>
                     </tr>
                 </thead>
@@ -94,14 +95,12 @@
                         var index = 1;
                         @foreach (var voucher in Model)
                         {
-                            // Tính toán trạng thái voucher
                             var status = currentDate < voucher.StartDate
                             ? Status.InActive
                             : (currentDate >= voucher.StartDate && currentDate <= voucher.EndDate
                             ? Status.Active
                             : Status.Expired);
 
-                            // Xác định màu sắc và biểu tượng
                             var (statusClass, statusText, statusIcon) = status switch
                             {
                                 Status.Active => ("bg-success", "Hoạt động", "bi-check-circle"),
@@ -132,6 +131,9 @@
                                     </span>
                                 </td>
                                 <td class="text-center">
+                                    @voucher.Condition.ToString("C", CultureInfo.GetCultureInfo("vi-VN")) <!-- Hiển thị Condition -->
+                                </td>
+                                <td class="text-center">
                                     <div class="btn-group">
                                         <a asp-action="Detail" asp-route-id="@voucher.Id" class="btn btn-outline-warning btn-sm">
                                             <i class="bi bi-pencil-square"></i>
@@ -145,7 +147,8 @@
                     else
                     {
                         <tr>
-                            <td colspan="8" class="text-center py-4">
+                            <td colspan="9" class="text-center py-4">
+                                <!-- Cập nhật colspan từ 8 thành 9 -->
                                 <div class="text-secondary">
                                     <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
                                     <p class="mt-2">Không tìm thấy voucher nào.</p>

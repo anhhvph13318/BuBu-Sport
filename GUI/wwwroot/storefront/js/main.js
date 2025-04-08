@@ -332,9 +332,10 @@
 					} else {
 						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
 					}
-				} else {
+				} else
+				{
 					alert("Đã có lỗi xảy ra");
-          }
+				}
 					});
 				}
 			});
@@ -634,39 +635,6 @@
 		});
 	});
 
-	let voucherBtn = document.querySelector("#voucher-btn");
-	if (voucherBtn) {
-		voucherBtn.addEventListener("click", (e) => {
-			const customerPhone = getCookie('cPhone');
-			if (!customerPhone) {
-
-				alert("Bạn chưa đăng nhập. Hãy đăng nhập để sử dụng voucher");
-				e.stopPropagation();
-				return false;
-			}
-
-			fetch(GET_AVAILABLE_VOUCHER(customerPhone))
-				.then(res => res.json())
-				.then(data => {
-					$('#voucher-list').html('');
-					$('#voucher-list').html(data.vouchers);
-				})
-				.then(() => {
-					$(".btn-apply-voucher").on("click", function (e) {
-						$.post("/ApplyVoucher", { vId: $(this).attr("data-id") }, (data) => {
-							if (data.success) {
-								discount = data.discount;
-								maxDiscount = data.maxDiscount;
-								$("#voucherCode").val(data.code);
-								UpdatePrice();
-							}
-							$(".modal-footer button").click();
-						});
-					});
-				});
-
-		});
-	}
 
 	$("#customer-submit").on("click", function () {
 		let name = $("#customer-fullname").val();

@@ -24,5 +24,8 @@ namespace GUI.Models.DTOs.Voucher_DTO
         [Range(0, double.MaxValue, ErrorMessage = "Không thể nhập số âm")]
         public decimal RequiredTotalAmount { get; set; }
         public IList<Guid> Customers { get; set; } = new List<Guid>();
+        [Required(ErrorMessage = "Vui lòng nhập giá trị tối thiểu của đơn hàng")]
+        [Range(0, 1000000000, ErrorMessage = "Giá trị tối thiểu của đơn hàng phải từ 0 đến 1.000.000.000")]
+        public decimal Condition { get; set; }
     }
 }
