@@ -38,18 +38,6 @@
                 <div class="card-body">
                     <h2 class="card-title mb-3">@Model.Name</h2>
 
-                    <div class="mb-3">
-                        <span class="badge bg-primary">@Model.CategoryName</span>
-                        @if (Model.Status == 1)
-                        {
-                            <span class="badge bg-success">Còn hàng</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">Hết hàng</span>
-                        }
-                    </div>
-
                     <p class="fs-4 fw-bold text-danger mb-3">
 @*                         @Model.Price.ToString("C0", culture)
                         @if (Model.OldPrice > 0 && Model.OldPrice > Model.Price)
@@ -258,12 +246,7 @@
           --transition: all 0.25s ease;
         }
 
-        body {
-          font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-          color: var(--text-primary);
-          background-color: #f8f9fa;
-          line-height: 1.6;
-        }
+
 
         .container {
           max-width: 1200px;
@@ -366,7 +349,7 @@
         }
 
         .badge.bg-danger {
-          background-color: var(--danger-color) !important;
+          background-color: grey !important;
         }
 
         /* Price styling */
@@ -1164,13 +1147,21 @@
                     if (!customerId) {
                         setCookie("user-id", data.userId, 90);
                     }
-
-                    // Hiển thị thông báo thành công bằng toastr thay vì chuyển hướng
                     toastr.success("Đã thêm sản phẩm vào giỏ hàng thành công!");
+                    updateCartCount();
                 }).fail(function(error) {
                     toastr.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!");
                 });
             });
+            function updateCartCount() {
+                let userId = getCookie("user-id");
+                if (userId) {
+                    $.get("/CartCount", { userId: userId }, function (data) {
+                        $("#cart-count").text(data.count);
+                    });
+                }
+            }
+            updateCartCount();
         });
 
         $(document).ready(function () {
