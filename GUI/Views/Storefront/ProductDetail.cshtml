@@ -147,9 +147,9 @@
 
                             <!-- Add to Cart Button -->
                             <div class="d-grid gap-2">
-                                <button class="btn btn-primary addCartDetailnew" type="button" data-prId="@Model.Id" data-quantity="***"><i class="bi bi-cart-plus"></i> Thêm vào giỏ hàngg</button>
+                                <button class="btn btn-primary addCartDetailnew" type="button" data-prId="@Model.Id" data-quantity="***"><i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng</button>
 
-                                @* <button type="button" class="btn btn-outline-primary buyNowDetail" data-prId="@Model.Id" data-quantity="***"><i class="fa fa-shopping-cart"></i> Mua ngay</button> *@
+                                <button type="button" class="btn btn-outline-primary buyNowDetail" data-prId="@Model.Id" data-quantity="***"><i class="fa fa-shopping-cart"></i> Mua ngay</button> 
                             </div>
                         </form>
                     }
@@ -865,6 +865,23 @@
 
 @section Scripts {
     <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
         document.addEventListener("DOMContentLoaded", function () {
             const colorRadios = document.querySelectorAll(".color-select");
             const mainImage = document.getElementById("mainImage");
@@ -1092,15 +1109,46 @@
             }
         });
         $(document).ready(function () {
+            // Kiểm tra và giới hạn số lượng sản phẩm khi nhập vào
+            $("#quantity").on("input", function() {
+                let maxStock = parseInt($('#available-stock').text());
+                let currentValue = parseInt($(this).val()) || 0;
+        
+                if (currentValue > maxStock) {
+                    $(this).val(maxStock);
+                    $("#error-message").text("Số lượng không được vượt quá " + maxStock).show();
+                } else if (currentValue < 1) {
+                    $(this).val(1);
+                    $("#error-message").text("Số lượng tối thiểu là 1").show();
+                } else {
+                    $("#error-message").hide();
+                }
+            });
+
+            // Xử lý thêm vào giỏ hàng
             $(".addCartDetailnew").on("click", function () {
                 let customerId = getCookie("user-id");
-                let quantity = $("#quantity").val(); // Lấy số lượng từ ô input
+                let quantity = parseInt($("#quantity").val()) || 1; // Lấy số lượng từ ô input
                 let selectedColor = $(".color-select:checked").val(); // Màu sắc
                 let selectedSize = $(".size-select:checked").val(); // Kích thước
+                let maxStock = parseInt($('#available-stock').text());
 
-                // Kiểm tra nếu chưa chọn
                 if (!selectedColor || !selectedSize) {
-                    alert("Vui lòng chọn màu sắc và kích thước!");
+                    // Sử dụng toastr để thông báo lỗi
+                    toastr.error("Vui lòng chọn màu sắc và kích thước!");
+                    return;
+                }
+
+                // Kiểm tra số lượng
+                if (quantity > maxStock) {
+                    toastr.warning("Số lượng không được vượt quá " + maxStock);
+                    $("#quantity").val(maxStock);
+                    return;
+                }
+
+                if (quantity < 1) {
+                    toastr.warning("Số lượng tối thiểu là 1");
+                    $("#quantity").val(1);
                     return;
                 }
 
@@ -1110,15 +1158,17 @@
                     prId: productId,
                     userId: customerId,
                     quantity: quantity,
-                    colorId: selectedColor,  // 🆕 Thêm màu sắc
-                    sizeId: selectedSize     // 🆕 Thêm kích thước
+                    colorId: selectedColor,
+                    sizeId: selectedSize
                 }, function (data) {
                     if (!customerId) {
                         setCookie("user-id", data.userId, 90);
                     }
 
-                    // 🆕 Chuyển hướng và gửi dữ liệu qua URL
-                    window.location = `/cart?prId=${productId}&quantity=${quantity}&colorId=${selectedColor}&sizeId=${selectedSize}`;
+                    // Hiển thị thông báo thành công bằng toastr thay vì chuyển hướng
+                    toastr.success("Đã thêm sản phẩm vào giỏ hàng thành công!");
+                }).fail(function(error) {
+                    toastr.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!");
                 });
             });
         });

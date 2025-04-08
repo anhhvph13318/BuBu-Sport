@@ -85,6 +85,9 @@ public class VoucherController : Controller
         var validPeriod = model.Voucher.EndDate < model.Voucher.StartDate;
         var validStartDate = model.Voucher.StartDate < DateTime.Today;
         var validDiscount = model.Voucher.Unit == VoucherUnit.Percent && model.Voucher.Discount > 80;
+        var validCondition = model.Voucher.Condition < 0;
+        var validConditionWithDiscount = model.Voucher.Unit == VoucherUnit.Money && model.Voucher.Condition <= model.Voucher.Discount;
+        var validMaxCondition = model.Voucher.Condition > 1000000000;
         if (!ModelState.IsValid || validPeriod || validDiscount || validStartDate)
         {
             if (validPeriod)
@@ -93,6 +96,13 @@ public class VoucherController : Controller
                 ModelState.AddModelError("Voucher.StartDate", "Ngày bắt đầu không thể nhỏ hơn ngày hiện tại");
             if (validDiscount)
                 ModelState.AddModelError("Voucher.Discount", "Giá trị voucher không thể vượt quá 80%");
+
+            if (validCondition)
+                ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng không thể là số âm");
+            if (validConditionWithDiscount)
+                ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng phải lớn hơn giá trị giảm giá");
+            if (validMaxCondition)
+                ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng quá lớn");
 
             return model.IsEditMode ? View("Detail", model) : View("Create", model);
         }
