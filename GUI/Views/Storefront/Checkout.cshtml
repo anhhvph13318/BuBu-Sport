@@ -419,12 +419,12 @@
 				$("#error-message").hide();
 
 				// lấy dữ liệu voucher
-				fetch(`http://localhost:5011/api/vouchers/available`)
+				fetch(`http://localhost:5011/api/vouchers/available?phoneNumber=${customerPhone}`)
 					.then(res => res.json())
 					.then(response => {
 						const vouchers = response.data.lstVoucher;
 						$("#voucher-table-body").empty();
-                        console.log(vouchers);
+
 						if (vouchers && vouchers.length > 0) {
 							let currentTotal = 0;
 							$('.sub-total').each(function() {
