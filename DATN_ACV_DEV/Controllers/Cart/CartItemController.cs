@@ -11,6 +11,7 @@ using DATN_ACV_DEV.Model_DTO.Product_DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Net.WebSockets;
 
 namespace DATN_ACV_DEV.Controllers
@@ -134,11 +135,20 @@ namespace DATN_ACV_DEV.Controllers
                     LstCartItem = _mapper.Map<List<CartDTO>>(Model);
 					foreach (var model in LstCartItem) //size && color
 					{
+                        var cardId = _context.TbCartDetails.Where(c => c.Id == _request.id.First()).Select(c => c.CartId).FirstOrDefault();
+                        var customerid = _context.TbCarts.Where(c=>c.Id == cardId).Select(c=>c.AccountId).FirstOrDefault();                     
+                        var accountId = _context.TbAccounts.Where(c=>c.CustomerId == customerid).Select(c=>c.Id).FirstOrDefault();                     
 						var colorId = _context.TbCartDetails.Where(c => c.Id == model.CartDetailID).Select(c => c.ColorId).FirstOrDefault();
 						var productCode = _context.TbProducts.First(c => c.Code == model.ProductCode).Code;
 						var sizeId = _context.TbCartDetails.Where(c => c.Id == model.CartDetailID).Select(c => c.SizeId).FirstOrDefault();
 						model.SizeName = _context.TbSizes.First(c => c.Id == sizeId).SizeName;
 						model.Color = _context.TbColors.First(c => c.Id == colorId).Name;
+                        model.receiverName = _context.TbCustomers.Where(c => c.Id == _request.UserId).Select(c => c.Name).FirstOrDefault();
+                        model.receiverPhone = _context.TbCustomers.Where(c => c.Id == _request.UserId).Select(c => c.Name).FirstOrDefault();
+                        model.receiverEmail = _context.TbAccounts.Where(c => c.CustomerId == _request.UserId).Select(c => c.Email).FirstOrDefault();
+                        model.receiverWard = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.createDate).Select(c => c.WardName).FirstOrDefault();
+                        model.receiverDistrict = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.createDate).Select(c => c.DistrictName).FirstOrDefault();
+                        model.receiverProvince = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.createDate).Select(c => c.ProvinceName).FirstOrDefault();
 					}
 					_response.CartItem = LstCartItem;
                 }
