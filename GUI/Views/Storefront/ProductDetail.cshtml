@@ -865,6 +865,23 @@
 
 @section Scripts {
     <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
         document.addEventListener("DOMContentLoaded", function () {
             const colorRadios = document.querySelectorAll(".color-select");
             const mainImage = document.getElementById("mainImage");
@@ -1116,7 +1133,6 @@
                 let selectedSize = $(".size-select:checked").val(); // Kích thước
                 let maxStock = parseInt($('#available-stock').text());
 
-                // Kiểm tra nếu chưa chọn
                 if (!selectedColor || !selectedSize) {
                     // Sử dụng toastr để thông báo lỗi
                     toastr.error("Vui lòng chọn màu sắc và kích thước!");
