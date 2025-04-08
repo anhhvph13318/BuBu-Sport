@@ -636,38 +636,64 @@
 	});
 
 
-	$("#customer-submit").on("click", function () {
+	$("#customer-submit").on("click", function (event) {
+		// Ngăn hành động mặc định của nút (nếu trong form)
+		event.preventDefault();
+
+		// Xác nhận trước khi gửi
+		if (!confirm('Bạn có chắc muốn lưu không?')) {
+			// Hiển thị thông báo "Sửa không thành công" khi bấm Hủy
+			alert("Sửa không thành công");
+
+			// Khôi phục trạng thái ban đầu cho tất cả các trường
+			$("#customer-fullname").val(originalData.name  "");
+			$("#customer-address").val(originalData.address  "");
+			$("#customer-email").val(originalData.email || "");
+
+			// Khôi phục radio button giới tính
+			$("input[type=radio][name=sex]").prop("checked", false);
+			if (originalData.sex) {
+				$("input[type=radio][name=sex][value='" + originalData.sex + "']").prop("checked", true);
+			}
+
+			return; // Thoát hàm, không gửi dữ liệu
+		}
+
+		// Lấy dữ liệu hiện tại khi bấm OK
 		let name = $("#customer-fullname").val();
 		if (!name) {
 			alert("Bắt buộc phải nhập tên");
-			return false;
+			return;
 		}
+
 		let address = $("#customer-address").val();
 		let email = $("#customer-email").val();
 		if (email && !ValidateEmail(email)) {
 			alert("Email không đúng định dạng");
-			return false;
+			return;
 		}
+
 		let sex = null;
 		let selectedSex = $("input[type=radio][name=sex]:checked");
 		if (selectedSex && selectedSex.length > 0) {
 			sex = selectedSex.val();
 		}
+
+		// Gửi yêu cầu AJAX khi bấm OK
 		$.post("/UpdateCustomerInfo", {
 			name,
 			address,
 			sex,
 			email
 		}, (data) => {
-			if (data.success) {
-				alert("Thành công");
-				setCookie("cName", name)
-				location.reload();
-			} else {
-				alert("Thất bại");
-			}
+			// Cập nhật originalData sau khi lưu thành công
+			originalData = { name, address, email, sex };
+			alert("Thành công!");
+		}).fail(() => {
+			alert("Thất bại!");
 		});
 	});
+});
 
 	$("#password-submit").on("click", function () {
 		let oldPassword = $("#customer-oldpassword").val();
