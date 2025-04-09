@@ -332,15 +332,20 @@ namespace GUI.Controllers
         {
             var productDetail = await _context.TbProductDetails
                 .Where(pd => pd.Id == id)
-                .Select(pd => new
-                {
-                    pd.Id,
-                    pd.Color.Name,
-                    pd.Size.SizeName,
-                    pd.Price,
-                    pd.Quantity
-                })
-                .FirstOrDefaultAsync();
+				.Select(pd => new ProductDetailDTO
+				{
+					Id = pd.Id,
+                    Name = _context.TbProducts.Where(a => a.Id == _context.TbProductDetails.Where(c => c.Id == pd.Id).Select(c => c.ProductId).FirstOrDefault()).Select(a => a.Name).FirstOrDefault(),
+					Color = pd.Color.Name,
+					Size = pd.Size.SizeName,
+					Price = _context.TbProducts.Where(a=>a.Id == _context.TbProductDetails.Where(c=>c.Id == pd.Id).Select(c=>c.ProductId).FirstOrDefault()).Select(a=>a.Price).FirstOrDefault(),
+					Quantity = pd.Quantity,
+					ImageUrl = pd.Image.Url,
+					ProductId = pd.ProductId,
+                    //ProductCode = _context.TbProducts.Where(a => a.Id == _context.TbProductDetails.Where(c => c.Id == pd.Id).Select(c => c.ProductId).FirstOrDefault()).Select(a => a.Code).FirstOrDefault(),
+
+				})
+				.FirstOrDefaultAsync();
 
             if (productDetail == null)
             {
@@ -349,6 +354,17 @@ namespace GUI.Controllers
 
             return Ok(productDetail);
         }
-
-    }
+		public class ProductDetailDTO
+		{
+			public Guid Id { get; set; }
+			public string Name { get; set; }
+			public string ProductCode { get; set; }
+			public string Color { get; set; }       // Tên màu
+			public string Size { get; set; }        // Tên kích thước
+			public decimal Price { get; set; }
+			public int Quantity { get; set; }
+			public string ImageUrl { get; set; }    // Đường dẫn hình ảnh
+			public Guid? ProductId { get; set; }
+		}
+	}
 }

@@ -285,12 +285,13 @@
                             // Tạo một đối tượng OrderItem từ thông tin biến thể
                             const orderItem = {
                                 Id: variantDetail.id,
-                                ProductName: variantDetail.productName, // Tên sản phẩm
-                                ProductImage: variantDetail.image, // Hình ảnh sản phẩm
+                                ProductName: variantDetail.name, // Tên sản phẩm
+                                ProductImage: variantDetail.ImageUrl, // Hình ảnh sản phẩm
                                 Color: variantDetail.color, // Màu sắc
                                 Size: variantDetail.size, // Kích thước
                                 Quantity: parseInt(quantity), // Số lượng
                                 Price: variantDetail.price // Đơn giá
+                                //ProductCode: variantDetail.ProductCode
                             };
 
                             // Thêm vào bảng giỏ hàng
@@ -298,9 +299,9 @@
                             const row = `
                                 <tr>
                                     <td></td> <!-- STT sẽ được tính tự động -->
-                                    <td>${orderItem.Id}</td>
+                                            <td>${orderItem.ProductCode}</td>
                                     <td style="width: 15%">
-                                        <img src="${orderItem.ProductImage}" class="img-thumbnail" style="width: 50%" />
+                                       <img src="${orderItem.ProductImage}" class="img-thumbnail" style="width: 50%" />
                                     </td>
                                     <td>${orderItem.ProductName}</td>
                                     <td>${orderItem.Color}</td>
