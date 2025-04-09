@@ -17,9 +17,19 @@
 					<div class="section-title">
 						<h3 class="title">Địa chỉ giao hàng</h3>
 					</div>
+					@{
+						var firstCart = Model?.FirstOrDefault();
+					}
+
 					<div class="form-group">
-						<input id="order-name" class="input" type="text" name="name" placeholder="Họ tên">
+						<input id="order-name"
+							   class="input"
+							   type="text"
+							   name="name"
+							   placeholder="Họ tên"
+							   value="@firstCart?.receiverName" />
 					</div>
+
 					<div class="form-group">
 						<input id="order-phone"
 							   class="input"
@@ -28,19 +38,44 @@
 							   placeholder="Số điện thoại"
 							   maxlength="10"
 							   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
-							   required />
-					</div> @* VANH *@
-					<div class="form-group">
-						<input id="order-email" class="input" type="email" name="email" placeholder="Email">
+							   required
+							   value="@firstCart?.receiverPhone" />
 					</div>
+
 					<div class="form-group">
-						<input id="order-address" class="input" type="text" name="address" placeholder="Số nhà/tên đường">
+						<input id="order-email"
+							   class="input"
+							   type="email"
+							   name="email"
+							   placeholder="Email"
+							   value="@firstCart?.receiverEmail" />
 					</div>
+
 					<div class="form-group">
-						<input id="order-district" class="input" type="text" name="district" placeholder="Quận/huyện">
+						<input id="order-address"
+							   class="input"
+							   type="text"
+							   name="address"
+							   placeholder="Số nhà/tên đường"
+							   value="@firstCart?.receiverWard" />
 					</div>
+
 					<div class="form-group">
-						<input id="order-city" class="input" type="text" name="city" placeholder="Thành phố">
+						<input id="order-district"
+							   class="input"
+							   type="text"
+							   name="district"
+							   placeholder="Quận/huyện"
+							   value="@firstCart?.receiverDistrict" />
+					</div>
+
+					<div class="form-group">
+						<input id="order-city"
+							   class="input"
+							   type="text"
+							   name="city"
+							   placeholder="Thành phố"
+							   value="@firstCart?.receiverProvince" />
 					</div>
 				</div>
 				<!-- /Billing Details -->
@@ -172,7 +207,7 @@
 					</tbody>
 				</table>
 				<p id="no-vouchers-message" style="display: none;">Không có voucher khả dụng.</p>
-				<p id="no-eligible-vouchers-message" style="display: none;">Không có voucher thỏa điều kiện áp dụng cho đơn hàng hiện tại.</p>
+				<p id="no-eligible-vouchers-message" style="display: none;">Không có voucher thỏa mãn điều kiện áp dụng cho đơn hàng hiện tại.</p>
 				<p id="error-message" style="display: none;">Đã xảy ra lỗi khi tải danh sách voucher.</p>
 			</div>
 			<div class="modal-footer">
@@ -191,6 +226,9 @@
 		border-radius: 5px;
 	}
 
+	.larger-swal {
+		font-size: 1.5rem !important; 
+	}
 	.order-summary {
 		margin-bottom: 30px;
 	}

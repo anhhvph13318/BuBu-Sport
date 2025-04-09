@@ -84,8 +84,9 @@
                         <th class="text-center">Số tiền giảm</th>
                         <th class="text-center">Số lượng</th>
                         <th>Thời gian hiệu lực</th>
+                        <th class="text-center">Điều kiện áp dụng</th>
+                        <th class="text-center">Giảm tối đa</th>
                         <th class="text-center">Trạng thái</th>
-                        <th class="text-center">Điều kiện áp dụng</th> <!-- Thêm cột mới -->
                         <th class="text-center" style="width: 150px;">Hành động</th>
                     </tr>
                 </thead>
@@ -124,15 +125,21 @@
                                         @voucher.StartDate.ToString("dd/MM/yyyy") - @voucher.EndDate.ToString("dd/MM/yyyy")
                                     </span>
                                 </td>
+
+                                <td class="text-center">
+                                    @voucher.Condition.ToString("C", CultureInfo.GetCultureInfo("vi-VN")) <!-- Hiển thị Condition -->
+                                </td>
+
+                                <td class="text-center">
+                                    @voucher.MaxDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN")) <!-- Hiển thị Condition -->
+                                </td>
                                 <td class="text-center">
                                     <span class="badge @statusClass">
                                         <i class="bi @statusIcon me-1"></i>
                                         @statusText
                                     </span>
                                 </td>
-                                <td class="text-center">
-                                    @voucher.Condition.ToString("C", CultureInfo.GetCultureInfo("vi-VN")) <!-- Hiển thị Condition -->
-                                </td>
+                                
                                 <td class="text-center">
                                     <div class="btn-group">
                                         <a asp-action="Detail" asp-route-id="@voucher.Id" class="btn btn-outline-warning btn-sm">
