@@ -109,9 +109,15 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             if(errors.Count == 0)
             {
-                await _context.TbOrders.AddAsync(order);
-                await _context.SaveChangesAsync();
-
+                try
+                {
+					await _context.TbOrders.AddAsync(order);
+					await _context.SaveChangesAsync();
+				}
+                catch (Exception ex)
+                {
+                    throw;
+                }
                 return Ok(new { Success = true });
             }
 

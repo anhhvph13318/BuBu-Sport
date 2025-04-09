@@ -6,7 +6,7 @@
 //const API_URL = "https://localhost:44383";
 const HOST_URL = "http://localhost:5011";
 
-const PRODUCT_FILTER_API = `${API_URL}/api/GetListProduct/Process`;
+const PRODUCT_FILTER_API = `${API_URL}/api/GetListProductDetail/Process`;
 const PRODUCT_SELECT_API = `${API_URL}/api/`;
 const PRODUCT_STOCK_API = (id) => `${API_URL}/api/products/${id}/stock`;
 

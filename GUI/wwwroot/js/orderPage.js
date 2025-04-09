@@ -40,29 +40,40 @@ $('#search').on('input', async function (e) {
 
     const value = e.target.value;
 
-    const products = await productStorage.filter(value);
+    try {
+        const products = await productStorage.filter(value);
 
-    for (let i = 0; i < products.length; i++) {
-        if(products[i].quantity <= 0) continue;
+        if (!Array.isArray(products)) {
+            console.warn("Sản phẩm trả về không phải mảng:", products);
+            return;
+        }
 
-        const item = document.createElement('a');
-        item.setAttribute('class', 'text-decoration-none');
-        const itemContent = `
-            <div class="d-flex">
-                <img class="img-thumbnail" style="min-width: 100px; height: 50px" src=${products[i].image} alrt=""/>
-                <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].name}</p>
-            </div>
-        `;
+        for (let i = 0; i < products.length; i++) {
+            if (products[i].quantity <= 0) continue;
 
-        item.onclick = function () {
-            const { id, name, price, image } = products[i]
-            handleItemSelect(id, name, price, image);
-        };
+            const item = document.createElement('a');
+            item.setAttribute('class', 'text-decoration-none');
+            const itemContent = `
+                <div class="d-flex">
+                    <img class="img-thumbnail" style="min-width: 100px; height: 50px" src=${products[i].image} alrt=""/>
+                    <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].name}</p>
+                    <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].color}</p>
+                    <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].size}</p>
+                </div>
+            `;
 
-        $(item).append(itemContent);
-        $(`#autocomplete-list`).append(item);
+            item.onclick = function () {
+                const { id, code , name, price, image ,color ,size} = products[i]
+                handleItemSelect(id, code, name, price, image, color, size);
+            };
+
+            $(item).append(itemContent);
+            $('#autocomplete-list').append(item);
+        }
+    } catch (error) {
+        console.error("Lỗi khi tìm kiếm sản phẩm:", error);
     }
-})
+});
 
 function isCustomerTakeYourSelfChange() {
     const shipping = $('#shippingLocation').val();
@@ -159,7 +170,7 @@ function show(id) {
         });
 }
 
-function handleItemSelect(id, name, price, image) {
+function handleItemSelect(id, code, name, price, image, color, size) {
     clearSearchResult();
 
     fetch(ORDER_ADD_ITEM, {
@@ -169,10 +180,13 @@ function handleItemSelect(id, name, price, image) {
         },
         body: JSON.stringify({
             id: id,
+            code: code,
             productName: name,
             quantity: 1,
             productImage: image,
-            price: price
+            price: price,
+            color: color,
+            size: size,
         })
     })
         .then(res => res.json())
