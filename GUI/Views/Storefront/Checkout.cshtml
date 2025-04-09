@@ -457,7 +457,7 @@
 				$("#error-message").hide();
 
 				// lấy dữ liệu voucher
-				fetch(`http://localhost:5011/api/vouchers/available?phoneNumber=${customerPhone}`)
+				fetch(`http://localhost:5011/api/vouchers/available`)
 					.then(res => res.json())
 					.then(response => {
 						const vouchers = response.data.lstVoucher;

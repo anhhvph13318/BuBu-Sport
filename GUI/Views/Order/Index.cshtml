@@ -70,6 +70,7 @@
                             <option value="" selected="@(string.IsNullOrEmpty(Context.Request.Query["orderCodePrefix"]))">-- Tất cả kiểu --</option>
                             <option value="OFF" selected="@(Context.Request.Query["orderCodePrefix"] == "OFF")">Tại quầy (OFF)</option>
                             <option value="ON" selected="@(Context.Request.Query["orderCodePrefix"] == "ON")">Online (ON)</option>
+                            <option value="TEMP" selected="@(Context.Request.Query["orderCodePrefix"] == "TEMP")">Hóa đơn chờ (TEMP)</option>
                         </select>
                     </div>
                 </div>
