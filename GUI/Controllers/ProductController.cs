@@ -335,8 +335,8 @@ namespace GUI.Controllers
                 .Select(pd => new
                 {
                     pd.Id,
-                    pd.Color,
-                    pd.Size,
+                    pd.Color.Name,
+                    pd.Size.SizeName,
                     pd.Price,
                     pd.Quantity
                 })
