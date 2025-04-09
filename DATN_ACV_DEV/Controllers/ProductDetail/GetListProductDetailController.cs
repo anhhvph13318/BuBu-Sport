@@ -2,6 +2,7 @@
 using DATN_ACV_DEV.FileBase;
 using DATN_ACV_DEV.Model_DTO.ProductDetail_DTO;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DATN_ACV_DEV.Controllers.ProductDetail
 {
@@ -39,9 +40,24 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
 
 		public void GenerateObjects()
 		{
-			_ProductDetails = _context.TbProductDetails.OrderByDescending(c=>c.CreateDate).ToList();
-			_response.TbProductDetails = _ProductDetails;
-			_res.Data = _response;
+			_ProductDetails = _context.TbProductDetails.Where(c=>c.Product.Name.Contains(_request.Name)).OrderByDescending(c=>c.CreateDate).ToList();
+			var query = _ProductDetails
+				.Select(a => new ProductDetailDTO
+				{
+					Id = a.Id,
+					Code = _context.TbProducts.Where(c=>c.Id == a.ProductId).Select(c=>c.Code).FirstOrDefault(),
+					Image = _context.TbImages.Where(d=>d.Id == _context.TbProductDetails.Where(c=>c.Id == a.Id).Select(c=>c.ImageId).FirstOrDefault()).Select(d=>d.Url).FirstOrDefault(),
+					Name = _context.TbProducts.Where(c => c.Id == a.ProductId).Select(c => c.Name).FirstOrDefault(),
+					Color = _context.TbColors.Where(d=>d.Id == _context.TbProductDetails.Where(c => c.Id == a.Id).Select(c => c.ColorId).FirstOrDefault()).Select(d=>d.Name).FirstOrDefault(),
+					Size = _context.TbSizes.Where(d => d.Id == _context.TbProductDetails.Where(c => c.Id == a.Id).Select(c => c.SizeId).FirstOrDefault()).Select(d => d.SizeName).FirstOrDefault(),
+					Price = _context.TbProducts.Where(c => c.Id == a.ProductId).Select(c => c.Price).FirstOrDefault(),
+					Quantity = 1,
+					// Thêm các thuộc tính khác nếu ProductDetailDTO có
+				})
+				.ToList();
+			_response.LstProduct = query;
+			_response.TotalCount = _ProductDetails.Count;
+		_res.Data = _response;
 		}
 
 		public void PreValidation()
@@ -59,7 +75,7 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
 				//PreValidation();
 				GenerateObjects();
 				//PostValidation();
-				AccessDatabase();
+				//AccessDatabase();
 			}
 			catch (ACV_Exception ex)
 			{

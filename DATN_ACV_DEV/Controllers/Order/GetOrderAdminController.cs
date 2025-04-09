@@ -40,7 +40,7 @@ public class GetOrderAdminController : ControllerBase
                 amountDiscount = e.TotalAmountDiscount,
                 amountShip = e.AmountShip,
                 id = e.Id,
-                nameCustomer = e.Description,
+                nameCustomer = _context.TbCustomers.Where(c=>c.Id == e.CustomerId).Select(c=>c.Name).FirstOrDefault() ,
                 status = Common.ConvertStatusOrder(e.Status ?? 0),
                 // Lấy tên sản phẩm từ ProductDetail → Product
                 products = "",
@@ -114,7 +114,7 @@ public class GetOrderAdminController : ControllerBase
                 Customer = new CustomerInfo
                 {
                     Id = e.Id,
-                    Name = e.Description,
+                    Name = _context.TbCustomers.Where(c=>c.Id == e.CustomerId).Select(c=>c.Name).FirstOrDefault(),
                     Address = e.Customer.Adress,
                     PhoneNumber = e.Customer.Phone,
                     Email = _context.TbAccounts.Where(c=>c.CustomerId == e.CustomerId).Select(c=>c.Email).FirstOrDefault()

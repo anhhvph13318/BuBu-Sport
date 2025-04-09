@@ -4,82 +4,238 @@
     ViewData["Title"] = "Edit";
 }
 
-<div class="container mt-5">
-    <form asp-action="Edit" class="bg-light p-4 rounded shadow-sm">
-        <h2 class="text-center mb-4">Chỉnh sửa nhân viên</h2>
+<style>
+    .row {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 25px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
 
+    .form-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        width: 100%;
+        padding: 25px;
+        border-radius: 12px;
+        /* Xóa viền cứng */
+        border: none;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        background-color: #ffffff;
+        transition: box-shadow 0.3s ease;
+    }
+
+        .form-container:hover {
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.1); /* đậm hơn khi hover */
+        }
+    .column {
+        flex: 1;
+        min-width: 300px;
+        max-width: 400px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .control-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 8px 12px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 6px 0 0 6px;
+        color: #555;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+    }
+
+    .text-danger {
+        display: block;
+        margin-top: 3px;
+        font-size: 0.875em;
+    }
+
+    .form-check-label {
+        margin-left: 6px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 10px 25px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        border: none;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+    h2 {
+        text-align: center;
+        width: 100%;
+        margin: 0 0 20px 0;
+        color: #007bff;
+        font-size: 1.75rem;
+        font-weight: 600;
+    }
+
+    hr {
+        width: 100%;
+        border-top: 2px solid #e0e0e0;
+        margin-bottom: 25px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        width: 100%;
+        margin-top: 25px;
+    }
+</style>
+
+<div class="row">
+    <form asp-action="Edit" class="form-container">
+        <h2 class="text-primary fw-bold">
+            Chỉnh sửa nhân viên
+        </h2>
+       
+        <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="row">
-            <!-- Cột hiển thị thông tin nhân viên -->
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label asp-for="UserName" class="form-label">Số điện thoại</label>
-                    <input asp-for="UserName" class="form-control" placeholder="Nhập số điện thoại" />
+        <div style="display: flex; flex-wrap: wrap; gap: 30px; width: 100%;">
+            <div class="column">
+                <div class="form-group">
+                    <label asp-for="UserName" class="control-label">Số điện thoại</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        <input asp-for="UserName" class="form-control" placeholder="Nhập số điện thoại" />
+                    </div>
                     <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="Password" class="form-label">Mật khẩu</label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label">Mật khẩu</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                    </div>
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="Nhập email" />
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Nhập email" />
+                    </div>
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label for="Position" class="form-label">Vị trí</label>
-                    <select asp-for="Position" class="form-select">
-                        <option value="">Chọn vị trí</option>
-                        <option value="1">Nhân viên</option>
-                        <option value="2">Admin</option>
-                    </select>
-                    <span asp-validation-for="Position" class="text-danger"></span>
+                <div class="form-group form-check">
+                    <input type="checkbox" asp-for="InActive" class="form-check-input" id="activeCheck" />
+                    <label class="form-check-label" for="activeCheck">Hoạt động</label>
+                    <span asp-validation-for="InActive" class="text-danger"></span>
                 </div>
+            </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="FullName" class="form-label">Họ tên</label>
-                    <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên" />
+            <div class="column">
+                <div class="form-group">
+                    <label asp-for="FullName" class="control-label">Họ tên</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên" />
+                    </div>
                     <span asp-validation-for="FullName" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="UserCode" class="form-label">Mã Nhân Viên</label>
-                    <input asp-for="UserCode" class="form-control" placeholder="Nhập mã nhân viên" />
+                <div class="form-group">
+                    <label asp-for="UserCode" class="control-label">Mã Nhân Viên</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                        <input asp-for="UserCode" class="form-control" placeholder="Nhập mã nhân viên" />
+                    </div>
                     <span asp-validation-for="UserCode" class="text-danger"></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="InActive" class="form-label">Hoạt động</label>
-                    <input type="checkbox" asp-for="InActive" class="form-check-input" />
-                    <span asp-validation-for="InActive" class="text-danger"></span>
-                </div>
-
-                <!-- Nút Save và Quay trở lại -->
-                <div class="form-group d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-secondary">Quay trở lại</a>
-                    <button type="button" class="btn btn-primary" id="saveButton">
-                        <span class="spinner-border spinner-border-sm" id="spinner" role="status" aria-hidden="true" style="display:none;"></span>
-                        Save
-                    </button>
+                <div class="form-group">
+                    <label asp-for="Position" class="control-label">Vị trí</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                        <select asp-for="Position" class="form-select">
+                            <option value="">Chọn vị trí</option>
+                            <option value="1">Nhân viên</option>
+                            <option value="2">Admin</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Position" class="text-danger"></span>
                 </div>
             </div>
+        </div>
+
+        <div class="button-container">
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            <button type="button" class="btn btn-primary" id="saveButton">
+                <span class="spinner-border spinner-border-sm" id="spinner" role="status" aria-hidden="true" style="display:none;"></span>
+                Lưu
+            </button>
         </div>
     </form>
 </div>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script>
     document.getElementById('saveButton').addEventListener('click', function () {
-        const isConfirmed = confirm('Bạn có chắc muốn lưu không?');
-        if (isConfirmed) {
+        const confirmed = confirm('Bạn có chắc muốn lưu không?');
+        if (confirmed) {
             const spinner = document.getElementById('spinner');
-            spinner.style.display = 'inline-block'; // Hiện spinner khi nhấn nút
-            this.closest('form').submit(); // Gửi form
+            spinner.style.display = 'inline-block';
+            this.closest('form').submit();
         }
     });
 </script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
