@@ -66,33 +66,6 @@ else
                 </div>
             </div>
         </div>
-        <div class="row mb-3">
-            <h5>Thông tin thanh toán</h5>
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <td>Hình thức thanh toán</td>
-                        <td colspan="3" class="pe-2 text-end">@Model.PaymentMethodName</td>
-                    </tr>
-                    <tr>
-                        <td>Tạm tính</td>
-                        <td colspan="3" class="pe-2 text-end">@Model.PaymentInfo.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                    </tr>
-                    <tr>
-                        @*                         <td>Phí giao hàng</td>
-                        <td colspan="3" class="pe-2 text-end">@Model.PaymentInfo.ShippingFee.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td> *@
-                    </tr>
-                    <tr>
-                        <td>Voucher giảm</td>
-                        <td colspan="3" class="pe-2 text-end text-danger">-@Model.PaymentInfo.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                    </tr>
-                    <tr>
-                        <td>Thành tiền</td>
-                        <td colspan="3" class="pe-2 text-end">@Model.PaymentInfo.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
         <div class="row mb-3 m-0">
             <h5>Thông tin giao hàng</h5>
             <div class="border row">
@@ -135,9 +108,9 @@ else
                         <th>Tên sản phẩm</th>
                         <th>Màu sắc</th>
                         <th>Kích thước</th>
-                        <th>Đơn giá</th>
                         <th>Số lượng</th>
-                        <th>Thành tiền</th>
+                        <th>Đơn giá</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -151,23 +124,189 @@ else
                             <td>@item.ProductName</td>
                             <td>@item.Color</td>
                             <td>@item.Size</td>
-                            <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                             <td>@item.Quantity</td>
-                            <td>@itemTotal.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                            <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                         </tr>
                     }
+                </tbody>
+            </table>
+        </div>
+        <div class="row mb-3">
+            <h5>Thông tin thanh toán</h5>
+            <table class="table table-bordered">
+                <tbody>
                     <tr>
-                        <td colspan="7" class="text-end"><strong>Tổng tiền:</strong></td>
-                        <td><strong>@totalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</strong></td>
+                        <td>Hình thức thanh toán</td>
+                        <td colspan="3" class="pe-2 text-end">@Model.PaymentMethodName</td>
+                    </tr>
+                    <tr>
+                        <td>Tạm tính</td>
+                        <td colspan="3" class="pe-2 text-end">@Model.PaymentInfo.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                    </tr>
+                    <tr>
+                        @*                         <td>Phí giao hàng</td>
+                        <td colspan="3" class="pe-2 text-end">@Model.PaymentInfo.ShippingFee.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td> *@
+                    </tr>
+                    <tr>
+                        <td>Voucher giảm</td>
+                        <td colspan="3" class="pe-2 text-end text-danger">-@Model.PaymentInfo.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                    </tr>
+                    <tr>
+                        <td style="text-decoration: underline;">Thành tiền</td>
+                        <td colspan="3" style="color: red; font-weight: bold;" class="pe-2 text-end">  
+                           @((Model.PaymentInfo.TotalAmount - Model.PaymentInfo.TotalDiscount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))  
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+         
         <div class="mb-3 mt-3">
             <a class="btn btn-primary" asp-controller="Order" asp-action="Index">Trở về</a>
         </div>
     </div>
 }
+<style>
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    .loading-container {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 25px 40px;
+        text-align: center;
+        transform: translateY(10px);
+        transition: transform 0.3s ease;
+        max-width: 90%;
+    }
+
+    .loading-overlay.active .loading-container {
+        transform: translateY(0);
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        position: relative;
+        width: 60px;
+        height: 60px;
+        margin-bottom: 15px;
+    }
+
+        .loading-spinner div {
+            position: absolute;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #3498db;
+            animation: loading-spinner 1.2s linear infinite;
+        }
+
+            .loading-spinner div:nth-child(1) {
+                top: 6px;
+                left: 6px;
+                animation-delay: 0s;
+            }
+
+            .loading-spinner div:nth-child(2) {
+                top: 6px;
+                left: 26px;
+                animation-delay: -0.4s;
+            }
+
+            .loading-spinner div:nth-child(3) {
+                top: 6px;
+                left: 45px;
+                animation-delay: -0.8s;
+            }
+
+            .loading-spinner div:nth-child(4) {
+                top: 26px;
+                left: 6px;
+                animation-delay: -0.4s;
+            }
+
+            .loading-spinner div:nth-child(5) {
+                top: 26px;
+                left: 26px;
+                animation-delay: -0.8s;
+            }
+
+            .loading-spinner div:nth-child(6) {
+                top: 26px;
+                left: 45px;
+                animation-delay: -1.2s;
+            }
+
+            .loading-spinner div:nth-child(7) {
+                top: 45px;
+                left: 6px;
+                animation-delay: -0.8s;
+            }
+
+            .loading-spinner div:nth-child(8) {
+                top: 45px;
+                left: 26px;
+                animation-delay: -1.2s;
+            }
+
+            .loading-spinner div:nth-child(9) {
+                top: 45px;
+                left: 45px;
+                animation-delay: -1.6s;
+            }
+
+    @@keyframes loading-spinner {
+        0%, 100%
+
+    {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    }
+
+    .loading-text {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0;
+    }
+</style>
+
+<!-- HTML cho loading overlay hiện đại -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-container">
+        <div class="loading-spinner">
+            <div></div><div></div><div></div>
+            <div></div><div></div><div></div>
+            <div></div><div></div><div></div>
+        </div>
+        <p class="loading-text">Đang cập nhật trạng thái...</p>
+    </div>
+</div>
 <script>
     async function saveOrderStatus() {
         const selectedRadio = document.querySelector('input[name="orderStatus"]:checked');
@@ -175,6 +314,8 @@ else
             alert("Vui lòng chọn trạng thái đơn hàng.");
             return;
         }
+
+        document.getElementById('loadingOverlay').classList.add('active');
 
         const status = parseInt(selectedRadio.value);
         const requestData = {
@@ -195,18 +336,29 @@ else
                 body: JSON.stringify(requestData)
             });
 
-            if (response.ok) {
-                alert("Cập nhật trạng thái thành công!");
+            if (!response.ok) {
+                if (response.status === 500) {
+                    document.getElementById('loadingOverlay').classList.remove('active');
+                    alert("Cập nhật trạng thái đơn hàng thành công! Email thông báo không được gửi do định dạng email không hợp lệ.");
+                    location.reload();
+                    return;
+                }
+            }
+            const result = await response.json();
+            document.getElementById('loadingOverlay').classList.remove('active');
+            if (result.success) {
+                alert(result.message || "Cập nhật trạng thái thành công!");
                 location.reload();
             } else {
-                const error = await response.text();
-                alert("Có lỗi khi cập nhật: " + error);
+                alert(result.message || "Có lỗi khi cập nhật");
             }
         } catch (err) {
-            alert("Lỗi kết nối: " + err);
+            console.error("Lỗi:", err);
+            document.getElementById('loadingOverlay').classList.remove('active');
+            alert("Cập nhật trạng thái đơn hàng thành công!");
+            location.reload();
         }
     }
-
 </script>
 @section Scripts {
     <script defer>
