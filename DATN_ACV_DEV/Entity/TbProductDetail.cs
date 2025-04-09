@@ -24,5 +24,6 @@ public partial class TbProductDetail
 
     public virtual TbProduct? Product { get; set; }
     public virtual TbSize? Size { get; set; }
+    public virtual TbColor? Color { get; set; } = null!;
 
 }
