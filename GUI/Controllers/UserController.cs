@@ -68,7 +68,6 @@ public class UserController : ControllerSharedBase
         {
             Random random = new Random();
             int randomNumber = random.Next(10, 100); // Tạo số ngẫu nhiên từ 10 đến 99
-            user.InActive = true;
             user.UserCode = user.UserCode.ToLower();
             var URL = _settings.APIAddress + "api/CreateUser/create-User";
             var param = JsonConvert.SerializeObject(user);
