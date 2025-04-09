@@ -312,16 +312,16 @@ namespace GUI.Controllers
         {
             var variants = await _context.TbProductDetails
                 .Where(pd => pd.ProductId == productId)
-                .Include(pd => pd.Color) // Bao gồm màu sắc
-                .Include(pd => pd.Size) // Bao gồm kích cỡ
+                .Include(pd => pd.Color) 
+                .Include(pd => pd.Size) 
                 .Select(pd => new
                 {
                     pd.Id,
                     Color = pd.Color.Name,
                     Size = pd.Size.SizeName,
                     pd.Price,
-                    pd.Quantity, // Lấy số lượng
-                    Image = pd.Image.Url // Nếu bạn có hình ảnh cho biến thể
+                    pd.Quantity,
+                    ImageUrl = pd.Image.Url 
                 })
                 .ToListAsync();
 
@@ -342,7 +342,7 @@ namespace GUI.Controllers
 					Quantity = pd.Quantity,
 					ImageUrl = pd.Image.Url,
 					ProductId = pd.ProductId,
-                    //ProductCode = _context.TbProducts.Where(a => a.Id == _context.TbProductDetails.Where(c => c.Id == pd.Id).Select(c => c.ProductId).FirstOrDefault()).Select(a => a.Code).FirstOrDefault(),
+                    ProductCode = _context.TbProducts.Where(a => a.Id == _context.TbProductDetails.Where(c => c.Id == pd.Id).Select(c => c.ProductId).FirstOrDefault()).Select(a => a.Code).FirstOrDefault(),
 
 				})
 				.FirstOrDefaultAsync();

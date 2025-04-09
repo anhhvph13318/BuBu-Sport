@@ -31,7 +31,7 @@
         height: 200px;
     }
 </style>
-<link href="~/lib/toastr/toastr.css" rel="stylesheet">
+<link href="~/lib/toastr/toastr.css" rel="stylesheet" />
 
 <div class="container-fluid" id="order-container">
     <div class="row">
@@ -62,6 +62,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="border p-3 h-75">
                 <form autocomplete="off" class="w-100" onsubmit="return false">
                     <div class="mb-3 autocomplete w-100">
@@ -82,6 +83,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-4 p-3">
             <div class="p-3 border mb-3">
                 <h5>Thông tin khách hàng</h5>
@@ -90,6 +92,7 @@
                     @await Html.PartialAsync("_OrderCustomerInfoPartialView", new CustomerInfo())
                 </div>
             </div>
+
             <div class="p-3 border mb-3">
                 <h5>Thông tin giao hàng</h5>
                 <hr />
@@ -97,6 +100,7 @@
                     @await Html.PartialAsync("_OrderShippingInfoPartialView", new ShippingInfo())
                 </div>
             </div>
+
             <div id="checkout-area-2" class="p-3 border">
                 <h5>Thông tin hoá đơn</h5>
                 <hr />
@@ -147,9 +151,7 @@
                             <th>Chi tiết</th>
                         </tr>
                     </thead>
-                    <tbody id="productListBody">
-                        <!-- Dữ liệu sản phẩm sẽ được thêm vào đây bằng JavaScript -->
-                    </tbody>
+                    <tbody id="productListBody"></tbody>
                 </table>
             </div>
         </div>
@@ -167,15 +169,14 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Chọn</th> 
+                            <th>STT</th>
                             <th>Màu sắc</th>
                             <th>Kích cỡ</th>
-                            <th>Giá</th>
                             <th>Số lượng</th>
+                            <th>Chọn</th>
                         </tr>
                     </thead>
-                    <tbody id="variantOptions">
-                    </tbody>
+                    <tbody id="variantOptions"></tbody>
                 </table>
             </div>
             <div class="modal-footer">
@@ -191,89 +192,78 @@
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>
     <script src="~/js/orderPage.js"></script>
+
+    <script>
+        function updateTableSTT(tableSelector) {
+            $(`${tableSelector} tbody tr`).each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+    </script>
+
     <script>
         $(document).ready(function () {
-
             $('#btnShowProductList').on('click', function () {
                 fetch('/api/products')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Error: ${response.status} ${response.statusText}`);
-                        }
-                        return response.json();
-                    })
+                    .then(res => res.json())
                     .then(data => {
-                        const productListBody = $('#productListBody');
-                        productListBody.empty();
-
+                        const productListBody = $('#productListBody').empty();
                         data.forEach((product, index) => {
+                            if (!product.image?.trim()) return;
+
                             const row = `
                                 <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${product.code}</td>
+                                    <td></td>
+                                    <td><span class="badge bg-secondary">${product.code}</span></td>
                                     <td>${product.name}</td>
-                                    <td><img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px;"></td>
+                                    <td><img src="${product.image}" style="width: 50px; height: 50px;" /></td>
                                     <td>${product.price} VNĐ</td>
                                     <td><button class="btn btn-info btn-detail" data-id="${product.id}">Chi tiết</button></td>
-                                </tr>
-                            `;
+                                </tr>`;
                             productListBody.append(row);
+                            updateTableSTT('#productListModal table');
                         });
-
-                        $('#productListModal').modal('show'); 
-                    })
-                    .catch(error => {
-                        console.error('Error fetching products:', error);
+                        $('#productListModal').modal('show');
                     });
             });
 
             $(document).on('click', '.btn-detail', function () {
                 const productId = $(this).data('id');
-
                 fetch(`/api/products/${productId}/variants`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Error: ${response.status} ${response.statusText}`);
-                        }
-                        return response.json();
-                    })
+                    .then(res => res.json())
                     .then(variants => {
-                        const variantOptions = $('#variantOptions');
-                        variantOptions.empty(); 
-
+                        const variantOptions = $('#variantOptions').empty();
                         variants.forEach(variant => {
                             const row = `
                                 <tr>
-                                    <td>
-                                        <input type="checkbox" class="form-check-input" data-variant-id="${variant.id}">
-                                    </td>
+                                    <td></td>
                                     <td>${variant.color}</td>
                                     <td>${variant.size}</td>
-                                    <td>${variant.price} VNĐ</td>
-                                    <td>
-                                        <input type="number" class="form-control" min="1" max="${variant.quantity}" value="1" data-variant-id="${variant.id}">
-                                    </td>
-                                </tr>
-                            `;
+                                    <td><input type="number" class="form-control" min="1" max="${variant.quantity}" value="1" data-variant-id="${variant.id}" /></td>
+                                    <td><input type="checkbox" class="form-check-input" data-variant-id="${variant.id}" /></td>
+                                </tr>`;
                             variantOptions.append(row);
                         });
-
+                        updateTableSTT('#variantSelectionModal table');
                         $('#variantSelectionModal').modal('show');
-                    })
-                    .catch(error => {
-                        console.error('Error fetching variants:', error);
                     });
             });
 
-        $('#btnConfirmVariant').on('click', function () {
-            // Lấy tất cả các biến thể đã chọn
-            $('#variantOptions input[type="checkbox"]:checked').each(function () {
-                const variantId = $(this).data('variant-id');
-                const quantityInput = $(this).closest('tr').find('input[type="number"]');
-                const quantity = quantityInput.val();
+            $('#btnConfirmVariant').on('click', function () {
+                let hasInvalidQuantity = false;
 
-                if (quantity > 0) {
-                    // Gọi API để lấy thông tin cho từng biến thể đã chọn
+                $('#variantOptions input[type="checkbox"]:checked').each(function () {
+                    const variantId = $(this).data('variant-id');
+                    const quantityInput = $(this).closest('tr').find('input[type="number"]');
+                    const quantity = parseInt(quantityInput.val());
+                    const max = parseInt(quantityInput.attr('max'));
+
+                    if (isNaN(quantity) || quantity <= 0 || quantity > max) {
+                        toastr.warning("Số lượng không hợp lệ hoặc vượt quá tồn kho!");
+                        hasInvalidQuantity = true;
+                        return;
+                    }
+
                     fetch(`/api/productdetails/${variantId}`)
                         .then(response => {
                             if (!response.ok) {
@@ -282,51 +272,78 @@
                             return response.json();
                         })
                         .then(variantDetail => {
-                            // Tạo một đối tượng OrderItem từ thông tin biến thể
                             const orderItem = {
                                 Id: variantDetail.id,
-                                ProductName: variantDetail.name, // Tên sản phẩm
-                                ProductImage: variantDetail.ImageUrl, // Hình ảnh sản phẩm
-                                Color: variantDetail.color, // Màu sắc
-                                Size: variantDetail.size, // Kích thước
-                                Quantity: parseInt(quantity), // Số lượng
-                                Price: variantDetail.price // Đơn giá
-                                //ProductCode: variantDetail.ProductCode
+                                ProductCode: variantDetail.productCode,
+                                ProductName: variantDetail.name,
+                                ProductImage: variantDetail.imageUrl,
+                                Color: variantDetail.color,
+                                Size: variantDetail.size,
+                                Quantity: quantity,
+                                Price: variantDetail.price
                             };
 
-                            // Thêm vào bảng giỏ hàng
-                            const itemTotal = orderItem.Price * orderItem.Quantity;
-                            const row = `
-                                <tr>
-                                    <td></td> <!-- STT sẽ được tính tự động -->
-                                            <td>${orderItem.ProductCode}</td>
-                                    <td style="width: 15%">
-                                       <img src="${orderItem.ProductImage}" class="img-thumbnail" style="width: 50%" />
-                                    </td>
-                                    <td>${orderItem.ProductName}</td>
-                                    <td>${orderItem.Color}</td>
-                                    <td>${orderItem.Size}</td>
-                                    <td>${orderItem.Price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                                    <td>
-                                        <input class="form-control order-item-quantity" min="1" value="${orderItem.Quantity}" type="number" />
-                                    </td>
-                                    <td>${itemTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                                    <td>
-                                        <button class="btn btn-danger remove-item-btn" onclick="removeItem('${orderItem.Id}')">Xoá</button>
-                                    </td>
-                                </tr>
-                            `;
-                            $('#orderItemContainer tbody').append(row); // Thêm vào bảng giỏ hàng
+                            const existingRow = $(`#orderItemContainer tbody tr`).filter(function () {
+                                return $(this).find('button.remove-item-btn').data('id') == orderItem.Id;
+                            });
+
+                            if (existingRow.length > 0) {
+                                const qtyInput = existingRow.find('.order-item-quantity');
+                                const currentQty = parseInt(qtyInput.val());
+                                const newQty = currentQty + orderItem.Quantity;
+
+                                if (newQty > max) {
+                                    toastr.error("Tổng số lượng vượt quá tồn kho.");
+                                    return;
+                                }
+
+                                qtyInput.val(newQty);
+                                const totalCell = existingRow.find('td').eq(8);
+                                const newTotal = newQty * orderItem.Price;
+                                totalCell.text(newTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                            } else {
+                                const itemTotal = orderItem.Price * orderItem.Quantity;
+                                const row = `
+                                    <tr>
+                                        <td></td>
+                                        <td><span class="badge bg-secondary">${orderItem.ProductCode}</span></td>
+                                        <td style="width: 15%">
+                                           <img src="${orderItem.ProductImage}" class="img-thumbnail" style="width: 50%" />
+                                        </td>
+                                        <td>${orderItem.ProductName}</td>
+                                        <td>${orderItem.Color}</td>
+                                        <td>${orderItem.Size}</td>
+                                        <td>${orderItem.Price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                                        <td>
+                                            <input class="form-control order-item-quantity" min="1" value="${orderItem.Quantity}" type="number" />
+                                        </td>
+                                        <td>${itemTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                                        <td>
+                                            <button class="btn btn-danger remove-item-btn" data-id="${orderItem.Id}">Xoá</button>
+                                        </td>
+                                    </tr>
+                                `;
+                                $('#orderItemContainer tbody').append(row);
+                            }
+
+                            updateTableSTT('#orderItemContainer table');
                         })
                         .catch(error => {
                             console.error('Error fetching variant details:', error);
                         });
+                });
+
+                if (!hasInvalidQuantity) {
+                    $('#variantSelectionModal').modal('hide');
+                    $('#productListModal').modal('hide');
                 }
             });
 
-            // Đóng modal chọn biến thể
-            $('#variantSelectionModal').modal('hide');
-        });
+
+            $(document).on('click', '.remove-item-btn', function () {
+                $(this).closest('tr').remove();
+                updateTableSTT('#orderItemContainer table');
+            });
         });
     </script>
 }
