@@ -50,7 +50,7 @@
                             <div class="accordion-body" id="orderTempSaveContainer">
                                 @if (orders != null)
                                 {
-                                    var inStoreOrders = orders.Where(order => order.OrderTypeName == "Tại quầy").ToList();
+                                    var inStoreOrders = orders.Where(order => order.OrderTypeName == "Tại quầy" || order.OrderTypeName == "Nháp").ToList();
                                     @await Html.PartialAsync("_OrderListPartialView", inStoreOrders)
                                 }
                                 else

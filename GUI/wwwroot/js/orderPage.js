@@ -295,7 +295,7 @@ function saveOrder(isDraft) {
         status: $('#orderStatus').val(),
         customerInfo,
         shippingInfo,
-        isDraft
+        isDraft,
     }
 
     fetch(ORDER_TEMP_SAVE_API, {

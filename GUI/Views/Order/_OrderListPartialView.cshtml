@@ -8,7 +8,7 @@
 }
 else
 {
-    var orders = Model.Where(order => order.OrderTypeName == "Tại quầy").ToList();
+    var orders = Model.Where(order => order.OrderTypeName == "Tại quầy" || order.OrderTypeName == "Nháp").ToList();
 
     @if (orders.Count == 0)
     {
@@ -28,7 +28,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var order in Model.Where(order => order.OrderTypeName == "Tại quầy").ToList())
+                @foreach (var order in Model.Where(order => order.OrderTypeName == "Tại quầy" || order.OrderTypeName == "Nháp").ToList())
                 {
                     <tr>
                         <td>@order.Code</td>

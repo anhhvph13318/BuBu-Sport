@@ -34,7 +34,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             {
                 Id = Guid.NewGuid(),
                 TbOrderDetails = items.ToList(),
-                Status = payload.Status,
+                Status = payload.IsDraft == true ? 0 : payload.Status,
                 TotalAmount = payload.Payment.TotalAmount,
                 TotalAmountDiscount = payload.Payment.TotalDiscount,
                 AmountShip = payload.Payment.ShippingFee,
@@ -95,7 +95,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             // re-update product stock
             foreach (var item in payload.Items)
             {
-                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
+                var productID = _context.TbProductDetails.Where(c => c.Id == Guid.Parse(item.Id)).Select(c => c.ProductId).FirstOrDefault();
+                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == productID)
                     ?? throw new NullReferenceException();
 
                 if (product.Quantity <= 0)

@@ -44,7 +44,7 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
 			var query = _ProductDetails
 				.Select(a => new ProductDetailDTO
 				{
-					Id = a.ProductId,
+					Id = a.Id,
 					Code = _context.TbProducts.Where(c=>c.Id == a.ProductId).Select(c=>c.Code).FirstOrDefault(),
 					Image = _context.TbImages.Where(d=>d.Id == _context.TbProductDetails.Where(c=>c.Id == a.Id).Select(c=>c.ImageId).FirstOrDefault()).Select(d=>d.Url).FirstOrDefault(),
 					Name = _context.TbProducts.Where(c => c.Id == a.ProductId).Select(c => c.Name).FirstOrDefault(),
