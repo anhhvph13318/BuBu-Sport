@@ -10,6 +10,7 @@ namespace GUI.Models.DTOs.Voucher_DTO
         public string Name { get; set; } = string.Empty;
         [Required(ErrorMessage = "Không được để trống")]
         public string Code { get; set; } = string.Empty;
+        [Range(0, int.MaxValue, ErrorMessage = "Không thể nhập số âm")]
         public int Discount { get; set; }
         public string? Description { get; set; }
         [Range(0, int.MaxValue, ErrorMessage = "Không thể nhập số âm")]
