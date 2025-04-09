@@ -84,25 +84,31 @@ public class VoucherController : Controller
     {
         var validPeriod = model.Voucher.EndDate < model.Voucher.StartDate;
         var validStartDate = model.Voucher.StartDate < DateTime.Today;
-        var validDiscount = model.Voucher.Unit == VoucherUnit.Percent && model.Voucher.Discount > 80;
-        var validCondition = model.Voucher.Condition < 0;
+        var validDiscountPercent = model.Voucher.Unit == VoucherUnit.Percent && (model.Voucher.Discount < 5 || model.Voucher.Discount > 100);
+        var validDiscountMoney = model.Voucher.Unit == VoucherUnit.Money && model.Voucher.Discount < 1000;
+        var validCondition = model.Voucher.Condition < 5000;
         var validConditionWithDiscount = model.Voucher.Unit == VoucherUnit.Money && model.Voucher.Condition <= model.Voucher.Discount;
+        var validMaxDiscount = model.Voucher.MaxDiscount < 5000;
         var validMaxCondition = model.Voucher.Condition > 1000000000;
-        if (!ModelState.IsValid || validPeriod || validDiscount || validStartDate)
+        var validMinCondition = model.Voucher.Condition < 5000;
+        if (!ModelState.IsValid || validPeriod || validDiscountPercent || validStartDate || validCondition || validConditionWithDiscount || validMaxCondition || validDiscountMoney  || validMaxDiscount)
         {
             if (validPeriod)
                 ModelState.AddModelError("Voucher.EndDate", "Ngày kết thúc không thể nhỏ hơn ngày bắt đầu");
             if (validStartDate)
                 ModelState.AddModelError("Voucher.StartDate", "Ngày bắt đầu không thể nhỏ hơn ngày hiện tại");
-            if (validDiscount)
-                ModelState.AddModelError("Voucher.Discount", "Giá trị voucher không thể vượt quá 80%");
-
+            if (validDiscountPercent)
+                ModelState.AddModelError("Voucher.Discount", "Giá trị voucher phải nằm trong khoảng từ 5% đến 100%");
+            if (validDiscountMoney)
+                ModelState.AddModelError("Voucher.Discount", "Giá trị tối thiểu là 1000đ");
             if (validCondition)
-                ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng không thể là số âm");
+                ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng không thể ít hơn 5000");
             if (validConditionWithDiscount)
                 ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng phải lớn hơn giá trị giảm giá");
             if (validMaxCondition)
                 ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng quá lớn");
+            if (validMaxDiscount)
+                ModelState.AddModelError("Voucher.MaxDiscount", "Giá trị tối thiểu không được ít hơn 5000đ");
 
             return model.IsEditMode ? View("Detail", model) : View("Create", model);
         }

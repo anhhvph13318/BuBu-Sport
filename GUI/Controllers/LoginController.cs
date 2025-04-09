@@ -46,7 +46,6 @@ namespace GUI.Controllers
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<LoginResponse>>(res) ?? new();
             await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone,request.statusText, "", 1);
-            TempData["Message"] = "Cập nhật trạng thái đơn hàng thành công !";
             return Redirect($"/orders/{request.id}");
         }
         [Route("/SignIn")]
