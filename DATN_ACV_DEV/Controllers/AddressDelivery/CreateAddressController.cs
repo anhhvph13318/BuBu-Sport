@@ -55,18 +55,20 @@ namespace DATN_ACV_DEV.Controllers
         public void GenerateObjects()
         {
             var checkUser = _context.TbCustomers.FirstOrDefault(c => c.Id == _request.UserId);
+            var acccountId = _context.TbAccounts.Where(c => c.CustomerId == _request.UserId).Select(c=>c.Id).FirstOrDefault();
             _addressDelivery = new TbAddressDelivery
             {
                 Id = Guid.NewGuid(),
-                ProvinceName = string.Join(", ", new List<string> { _request.provinceName, _request.districName, _request.wardName }),
+                ProvinceName = _request.provinceName,
                 DistrictName = _request.districName,
                 WardName = _request.wardName,
                 Status = _request.status,
-                //AccountId = _request.UserId,
+                AccountId = acccountId != null ? acccountId : null,
                 receiverEmail = _request.email,
                 ReceiverName = string.IsNullOrEmpty(_request.receiverName) ? checkUser?.Name ?? "" : _request.receiverName,
                 ReceiverPhone = string.IsNullOrEmpty(_request.receiverPhone) ? checkUser?.Phone ?? "" : _request.receiverPhone,
                 IsDelete = false,
+                createDate = DateTime.Now,
             };
         }
 

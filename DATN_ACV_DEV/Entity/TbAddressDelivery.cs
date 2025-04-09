@@ -23,6 +23,7 @@ public partial class TbAddressDelivery
 
     public string? ReceiverPhone { get; set; }
     public string? receiverEmail { get; set; }
+    public DateTime? createDate { get; set; }
 
     public virtual TbAccount? Account { get; set; }
 

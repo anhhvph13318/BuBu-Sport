@@ -11,6 +11,12 @@
         public decimal Price { get; set; }
         public string Color { get; set; }
         public string? SizeName { get; set; }
+        public string? receiverName { get; set; }
+        public string? receiverEmail { get; set; }
+        public string? receiverPhone { get; set; }
+        public string? receiverDistrict { get; set; }
+        public string? receiverWard { get; set; }
+        public string? receiverProvince { get; set; }
 
     }
 }
