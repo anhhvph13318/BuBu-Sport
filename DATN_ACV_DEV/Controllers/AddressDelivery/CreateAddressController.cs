@@ -63,7 +63,7 @@ namespace DATN_ACV_DEV.Controllers
                 DistrictName = _request.districName,
                 WardName = _request.wardName,
                 Status = _request.status,
-                AccountId = acccountId != null ? acccountId : null,
+                AccountId = acccountId != null && acccountId != Guid.Empty ? acccountId : null,
                 receiverEmail = _request.email,
                 ReceiverName = string.IsNullOrEmpty(_request.receiverName) ? checkUser?.Name ?? "" : _request.receiverName,
                 ReceiverPhone = string.IsNullOrEmpty(_request.receiverPhone) ? checkUser?.Phone ?? "" : _request.receiverPhone,
