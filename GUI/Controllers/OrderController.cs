@@ -20,7 +20,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("orders")]
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 public class OrderController : Controller
 {
     private readonly IEmailService _emailService;
@@ -278,8 +278,8 @@ public class OrderController : Controller
     {
         var order = HttpContext.Session.GetCurrentOrder();
         var stock = await GetProductStock(item.Id);
-        if (stock.Quantity < item.Quantity)
-            return BadRequest();
+        //if (stock.Quantity < item.Quantity)
+            //return BadRequest();
 
         var existItem = order.Items.FirstOrDefault(e => e.Id == item.Id);
         if (existItem is null)

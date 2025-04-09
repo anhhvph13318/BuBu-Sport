@@ -31,6 +31,8 @@
 
 	<!-- Custom stlylesheet -->
 	<link type="text/css" rel="stylesheet" href="~/storefront/css/style.css" asp-append-version="true"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 <style>
 	/* CSS cho dropdown ngôn ngữ */
@@ -38,6 +40,14 @@
 		position: relative;
 		display: inline-block;
 	}
+
+
+    .badge {
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 12px;
+        color: white;
+    }
 
 	.header-links .dropdown-toggle {
 		color: #FFF;
@@ -260,12 +270,15 @@
 									<span>Tra cứu đơn hàng</span>
 								</a>
 							</div>
-							<div class="dropdown">
-								<a href="/cart">
-									<i class="fa fa-shopping-cart"></i>
-									<span>Giỏ hàng</span>
-								</a>
-							</div>
+                            <div class="dropdown">
+                                <a href="/cart">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Giỏ hàng</span>
+                                    <span id="cart-count" class="badge bg-danger" style="margin-left: 5px;">
+                                        @(ViewBag.CartItemCount ?? 0)
+                                    </span>
+                                </a>
+                            </div>
 							<div class="menu-toggle">
 								<a href="#">
 									<i class="fa fa-bars"></i>
@@ -322,6 +335,8 @@
 	<script src="~/storefront/js/slick.min.js" asp-append-version="true"></script>
 	<script src="~/storefront/js/nouislider.min.js" asp-append-version="true"></script>
 	<script src="~/storefront/js/jquery.zoom.min.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 	@await RenderSectionAsync("Scripts", required: false)
 	<script src="~/storefront/js/main.js" asp-append-version="true"></script>
 
@@ -330,6 +345,23 @@
 </html>
 
 <script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
     function setCookie(cname, cvalue, exdays) {
         const d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));

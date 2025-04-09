@@ -11,6 +11,12 @@
         public string sizeName { get; set;}
         public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public string? receiverName { get; set; }
+        public string? receiverEmail { get; set; }
+        public string? receiverPhone { get; set; }
+        public string? receiverDistrict { get; set; }
+        public string? receiverWard { get; set; }
+        public string? receiverProvince { get; set; }
 
     }
 }

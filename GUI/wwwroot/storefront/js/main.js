@@ -312,7 +312,12 @@
 				confirmButtonColor: '#3085d6',
 				cancelButtonColor: '#d33',
 				confirmButtonText: 'Đồng ý',
-				cancelButtonText: 'Hủy'
+				cancelButtonText: 'Hủy',
+				width: '600px', 
+				padding: '2em', 
+				customClass: {
+					popup: 'larger-swal'
+				}
 			}).then((result) => {
 				if (result.isConfirmed) {
 			$.post("/Buy", {

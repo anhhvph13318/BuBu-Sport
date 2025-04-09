@@ -10,6 +10,7 @@ namespace GUI.Models.DTOs.Voucher_DTO
         public string Name { get; set; } = string.Empty;
         [Required(ErrorMessage = "Không được để trống")]
         public string Code { get; set; } = string.Empty;
+        [Range(0, int.MaxValue, ErrorMessage = "Không thể nhập số âm")]
         public int Discount { get; set; }
         public string? Description { get; set; }
         [Range(0, int.MaxValue, ErrorMessage = "Không thể nhập số âm")]
@@ -24,7 +25,8 @@ namespace GUI.Models.DTOs.Voucher_DTO
         [Range(0, double.MaxValue, ErrorMessage = "Không thể nhập số âm")]
         public decimal RequiredTotalAmount { get; set; }
         public IList<Guid> Customers { get; set; } = new List<Guid>();
-        [Range(0, double.MaxValue, ErrorMessage = "Không thể nhập số âm")]
+        [Required(ErrorMessage = "Vui lòng nhập giá trị tối thiểu của đơn hàng")]
+        [Range(0, 1000000000, ErrorMessage = "Giá trị tối thiểu của đơn hàng phải từ 0 đến 1.000.000.000")]
         public decimal Condition { get; set; }
     }
 }

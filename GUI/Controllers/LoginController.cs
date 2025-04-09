@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using DATN_ACV_DEV.Controllers;
 using GUI.Models.DTOs.ResetPassWord_DTO;
 using DATN_ACV_DEV.Model_DTO.SendEmail_DTO;
+using DATN_ACV_DEV.Model_DTO.Order_DTO;
 
 namespace GUI.Controllers
 {
@@ -36,7 +37,17 @@ namespace GUI.Controllers
             _logger = logger;
             httpService = new();
         }
-
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatusONOrder([FromBody]UpdatStatusOrderRequest request)
+        {
+            request.statusText = request.status == 1 ? "Chuẩn bị hàng" : (request.status == 2 ? "Đang vận chuyển" : "Hoàn thành");
+            var URL = _settings.APIAddress + "api/UpdateStatusONOrder/Process";
+            var param = JsonConvert.SerializeObject(request);
+            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+            var result = JsonConvert.DeserializeObject<BaseResponse<LoginResponse>>(res) ?? new();
+            await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone,request.statusText, "", 1);
+            return Redirect($"/orders/{request.id}");
+        }
         [Route("/SignIn")]
         public async Task<IActionResult> Login([FromQuery] int? action)
         {

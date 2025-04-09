@@ -31,7 +31,7 @@
         height: 200px;
     }
 </style>
-<link href="~/lib/toastr/toastr.css" rel="stylesheet">
+<link href="~/lib/toastr/toastr.css" rel="stylesheet" />
 
 <div class="container-fluid" id="order-container">
     <div class="row">
@@ -50,7 +50,7 @@
                             <div class="accordion-body" id="orderTempSaveContainer">
                                 @if (orders != null)
                                 {
-                                    var inStoreOrders = orders.Where(order => order.OrderTypeName == "Tại quầy").ToList();
+                                    var inStoreOrders = orders.Where(order => order.OrderTypeName == "Tại quầy" || order.OrderTypeName == "Nháp").ToList();
                                     @await Html.PartialAsync("_OrderListPartialView", inStoreOrders)
                                 }
                                 else
@@ -62,6 +62,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="border p-3 h-75">
                 <form autocomplete="off" class="w-100" onsubmit="return false">
                     <div class="mb-3 autocomplete w-100">
@@ -70,6 +71,7 @@
                     </div>
                 </form>
                 <div class="d-flex justify-content-end">
+                    <button id="btnShowProductList" class="btn btn-primary me-2">Danh sách sản phẩm</button>
                     <div id="tempSaveButtonContainer" class="me-2">
                         @await Html.PartialAsync("_TempSaveOrderButtonPartialView")
                     </div>
@@ -81,6 +83,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-4 p-3">
             <div class="p-3 border mb-3">
                 <h5>Thông tin khách hàng</h5>
@@ -89,6 +92,7 @@
                     @await Html.PartialAsync("_OrderCustomerInfoPartialView", new CustomerInfo())
                 </div>
             </div>
+
             <div class="p-3 border mb-3">
                 <h5>Thông tin giao hàng</h5>
                 <hr />
@@ -96,6 +100,7 @@
                     @await Html.PartialAsync("_OrderShippingInfoPartialView", new ShippingInfo())
                 </div>
             </div>
+
             <div id="checkout-area-2" class="p-3 border">
                 <h5>Thông tin hoá đơn</h5>
                 <hr />
@@ -127,9 +132,218 @@
     </div>
 </div>
 
+<div id="productListModal" class="modal fade" tabindex="-1" aria-labelledby="productListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productListModalLabel">Danh sách sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Ảnh sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productListBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="variantSelectionModal" class="modal fade" tabindex="-1" aria-labelledby="variantSelectionModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="variantSelectionModalLabel">Chọn biến thể cho sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Màu sắc</th>
+                            <th>Kích cỡ</th>
+                            <th>Số lượng</th>
+                            <th>Chọn</th>
+                        </tr>
+                    </thead>
+                    <tbody id="variantOptions"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmVariant">Xác nhận chọn biến thể</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>
     <script src="~/js/orderPage.js"></script>
+
+    <script>
+        function updateTableSTT(tableSelector) {
+            $(`${tableSelector} tbody tr`).each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#btnShowProductList').on('click', function () {
+                fetch('/api/products')
+                    .then(res => res.json())
+                    .then(data => {
+                        const productListBody = $('#productListBody').empty();
+                        data.forEach((product, index) => {
+                            if (!product.image?.trim()) return;
+
+                            const row = `
+                                <tr>
+                                    <td></td>
+                                    <td><span class="badge bg-secondary">${product.code}</span></td>
+                                    <td>${product.name}</td>
+                                    <td><img src="${product.image}" style="width: 50px; height: 50px;" /></td>
+                                    <td>${product.price} VNĐ</td>
+                                    <td><button class="btn btn-info btn-detail" data-id="${product.id}">Chi tiết</button></td>
+                                </tr>`;
+                            productListBody.append(row);
+                            updateTableSTT('#productListModal table');
+                        });
+                        $('#productListModal').modal('show');
+                    });
+            });
+
+            $(document).on('click', '.btn-detail', function () {
+                const productId = $(this).data('id');
+                fetch(`/api/products/${productId}/variants`)
+                    .then(res => res.json())
+                    .then(variants => {
+                        const variantOptions = $('#variantOptions').empty();
+                        variants.forEach(variant => {
+                            const row = `
+                                <tr>
+                                    <td></td>
+                                    <td>${variant.color}</td>
+                                    <td>${variant.size}</td>
+                                    <td><input type="number" class="form-control" min="1" max="${variant.quantity}" value="1" data-variant-id="${variant.id}" /></td>
+                                    <td><input type="checkbox" class="form-check-input" data-variant-id="${variant.id}" /></td>
+                                </tr>`;
+                            variantOptions.append(row);
+                        });
+                        updateTableSTT('#variantSelectionModal table');
+                        $('#variantSelectionModal').modal('show');
+                    });
+            });
+
+            $('#btnConfirmVariant').on('click', function () {
+                let hasInvalidQuantity = false;
+
+                $('#variantOptions input[type="checkbox"]:checked').each(function () {
+                    const variantId = $(this).data('variant-id');
+                    const quantityInput = $(this).closest('tr').find('input[type="number"]');
+                    const quantity = parseInt(quantityInput.val());
+                    const max = parseInt(quantityInput.attr('max'));
+
+                    if (isNaN(quantity) || quantity <= 0 || quantity > max) {
+                        toastr.warning("Số lượng không hợp lệ hoặc vượt quá tồn kho!");
+                        hasInvalidQuantity = true;
+                        return;
+                    }
+
+                    fetch(`/api/productdetails/${variantId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Error: ${response.status} ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(variantDetail => {
+                            const orderItem = {
+                                Id: variantDetail.id,
+                                ProductCode: variantDetail.productCode,
+                                ProductName: variantDetail.name,
+                                ProductImage: variantDetail.imageUrl,
+                                Color: variantDetail.color,
+                                Size: variantDetail.size,
+                                Quantity: quantity,
+                                Price: variantDetail.price
+                            };
+
+                            const existingRow = $(`#orderItemContainer tbody tr`).filter(function () {
+                                return $(this).find('button.remove-item-btn').data('id') == orderItem.Id;
+                            });
+
+                            if (existingRow.length > 0) {
+                                const qtyInput = existingRow.find('.order-item-quantity');
+                                const currentQty = parseInt(qtyInput.val());
+                                const newQty = currentQty + orderItem.Quantity;
+
+                                if (newQty > max) {
+                                    toastr.error("Tổng số lượng vượt quá tồn kho.");
+                                    return;
+                                }
+
+                                qtyInput.val(newQty);
+                                const totalCell = existingRow.find('td').eq(8);
+                                const newTotal = newQty * orderItem.Price;
+                                totalCell.text(newTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                            } else {
+                                const itemTotal = orderItem.Price * orderItem.Quantity;
+                                const row = `
+                                    <tr>
+                                        <td></td>
+                                        <td><span class="badge bg-secondary">${orderItem.ProductCode}</span></td>
+                                        <td style="width: 15%">
+                                           <img src="${orderItem.ProductImage}" class="img-thumbnail" style="width: 50%" />
+                                        </td>
+                                        <td>${orderItem.ProductName}</td>
+                                        <td>${orderItem.Color}</td>
+                                        <td>${orderItem.Size}</td>
+                                        <td>${orderItem.Price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                                        <td>
+                                            <input class="form-control order-item-quantity" min="1" value="${orderItem.Quantity}" type="number" />
+                                        </td>
+                                        <td>${itemTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                                        <td>
+                                            <button class="btn btn-danger remove-item-btn" data-id="${orderItem.Id}">Xoá</button>
+                                        </td>
+                                    </tr>
+                                `;
+                                $('#orderItemContainer tbody').append(row);
+                            }
+
+                            updateTableSTT('#orderItemContainer table');
+                        })
+                        .catch(error => {
+                            console.error('Error fetching variant details:', error);
+                        });
+                });
+
+                if (!hasInvalidQuantity) {
+                    $('#variantSelectionModal').modal('hide');
+                    $('#productListModal').modal('hide');
+                }
+            });
+
+
+            $(document).on('click', '.remove-item-btn', function () {
+                $(this).closest('tr').remove();
+                updateTableSTT('#orderItemContainer table');
+            });
+        });
+    </script>
 }

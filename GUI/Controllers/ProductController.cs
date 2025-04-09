@@ -288,5 +288,83 @@ namespace GUI.Controllers
             bool isAvailable = !_context.TbProducts.Any(p => p.Code == code);
             return Json(new { isAvailable });
         }
-    }
+
+        [HttpGet]
+        [Route("api/products")]
+        public async Task<IActionResult> GetProducts()
+        {
+            var products = await _context.TbProducts
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Code,
+                    p.Name,
+                    p.Price,
+                    Image = p.TbProductDetails.FirstOrDefault().Image.Url
+                })
+                .ToListAsync();
+
+            return Ok(products);
+        }
+        [HttpGet]
+        [Route("api/products/{productId}/variants")]
+        public async Task<IActionResult> GetProductVariants(Guid productId)
+        {
+            var variants = await _context.TbProductDetails
+                .Where(pd => pd.ProductId == productId)
+                .Include(pd => pd.Color) 
+                .Include(pd => pd.Size) 
+                .Select(pd => new
+                {
+                    pd.Id,
+                    Color = pd.Color.Name,
+                    Size = pd.Size.SizeName,
+                    pd.Price,
+                    pd.Quantity,
+                    ImageUrl = pd.Image.Url 
+                })
+                .ToListAsync();
+
+            return Ok(variants);
+        }
+        [HttpGet("/api/productdetails/{id}")]
+        public async Task<IActionResult> GetProductDetail(Guid id)
+        {
+            var productDetail = await _context.TbProductDetails
+                .Where(pd => pd.Id == id)
+				.Select(pd => new ProductDetailDTO
+				{
+					Id = pd.Id,
+                    Name = _context.TbProducts.Where(a => a.Id == _context.TbProductDetails.Where(c => c.Id == pd.Id).Select(c => c.ProductId).FirstOrDefault()).Select(a => a.Name).FirstOrDefault(),
+					Color = pd.Color.Name,
+					Size = pd.Size.SizeName,
+					Price = _context.TbProducts.Where(a=>a.Id == _context.TbProductDetails.Where(c=>c.Id == pd.Id).Select(c=>c.ProductId).FirstOrDefault()).Select(a=>a.Price).FirstOrDefault(),
+					Quantity = pd.Quantity,
+					ImageUrl = pd.Image.Url,
+					ProductId = pd.ProductId,
+                    ProductCode = _context.TbProducts.Where(a => a.Id == _context.TbProductDetails.Where(c => c.Id == pd.Id).Select(c => c.ProductId).FirstOrDefault()).Select(a => a.Code).FirstOrDefault(),
+
+				})
+				.FirstOrDefaultAsync();
+
+            if (productDetail == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(productDetail);
+        }
+		public class ProductDetailDTO
+		{
+			public Guid Id { get; set; }
+			public string Name { get; set; }
+			public string ProductCode { get; set; }
+			public string Color { get; set; }       // Tên màu
+			public string Size { get; set; }        // Tên kích thước
+			public decimal Price { get; set; }
+			public int Quantity { get; set; }
+			public string ImageUrl { get; set; }    // Đường dẫn hình ảnh
+			public Guid? ProductId { get; set; }
+		}
+	}
 }
