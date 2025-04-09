@@ -17,16 +17,21 @@ using DATN_ACV_DEV.Entity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using DATN_ACV_DEV.Controllers;
+using GUI.Models.DTOs.ResetPassWord_DTO;
+using DATN_ACV_DEV.Model_DTO.SendEmail_DTO;
 
 namespace GUI.Controllers
 {
     public class LoginController : ControllerSharedBase
     {
+        private readonly IEmailService _emailService;
         private readonly ILogger<LoginController> _logger;
         private HttpService httpService;
 
-        public LoginController(ILogger<LoginController> logger, IOptions<CommonSettings> settings)
+        public LoginController(ILogger<LoginController> logger, IOptions<CommonSettings> settings, IEmailService emailService)
         {
+            _emailService = emailService;
             _settings = settings.Value;
             _logger = logger;
             httpService = new();
@@ -111,13 +116,51 @@ namespace GUI.Controllers
                 return RedirectToAction(nameof(Login));
             }
         }
-
-        [HttpPost]
-        public  IActionResult ForgotPassWord(string Email)
+        public static string GenerateRandomString(int length = 6)
         {
-            ViewBag.SweetAlertShowMessage = SweetAlertHelper.ShowMessage("Thông báo",
-                $"Mật khẩu đã được gửi về tài khoản {Email} của Anh/chị! Vui lòng Anh/chị kiểm tra lại mật khẩu gửi về mail và đăng nhập lại hệ thống.", SweetAlertMessageType.success);
-            return View("Login");
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassWord(CreateEmailRequest request)
+        {
+            try
+            {
+                var password = GenerateRandomString();
+                //ViewBag.SweetAlertShowMessage = SweetAlertHelper.ShowMessage("Thông báo",
+                //$"Mật khẩu đã được gửi về tài khoản {request.Email} của Anh/chị! Vui lòng Anh/chị kiểm tra lại mật khẩu gửi về mail và đăng nhập lại hệ thống.",
+                //SweetAlertMessageType.success);
+                request.Emailtype = 0;
+                request.password = password;
+                var URL = _settings.APIAddress + "api/CreateContentEmail/Process";
+                var param = JsonConvert.SerializeObject(request);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<ContentEmailRespone>>(res) ?? new();
+                if (result != null && result.Messages.Count == 0 && result.Data.customerName != null)
+                {
+                    await _emailService.SendOrderConfirmationAsync(request.Email, "", result.Data.customerName, result.Data.phonenumber, "", result.Data.password, 0);
+                    TempData["Message"] = "Mật khẩu đã được gửi về tài khoản " + request.Email + " vui lòng kiểm tra lại mật khẩu gửi về email và đăng nhập lại hệ thống.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Email chưa được đăng ký tài khoản ở BuBu Sport, vui lòng kiểm tra lại !!!";
+                }
+
+
+
+                // Chuyển hướng về trang Login
+                return Redirect("http://localhost:5011/SignIn");
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi nếu có (ví dụ log lỗi hoặc thông báo)
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi gửi email.";
+
+                // Chuyển hướng về trang Login với thông báo lỗi
+                return Redirect("http://localhost:5011/SignIn");
+            }
         }
         
 

@@ -72,6 +72,7 @@ namespace DATN_ACV_DEV.Controllers
                                 {
                                     var Color = Model.Where(c => c.CartId == _Cart.Id).Select(c => c.ColorId).FirstOrDefault();
                                     var Size = Model.Where(c => c.CartId == _Cart.Id).Select(c => c.SizeId).FirstOrDefault();
+                                    
                                     item.Color = _context.TbColors.Where(c => c.Id == Color).Select(c => c.Name).FirstOrDefault();
                                     item.SizeName = _context.TbSizes.Where(c=>c.Id == Size).Select(c=>c.SizeName).FirstOrDefault();
                                 }
@@ -98,6 +99,7 @@ namespace DATN_ACV_DEV.Controllers
                             foreach (var model in LstCartItem) //size && color
                             {
                                 var colorId = _context.TbCartDetails.Where(c=>c.Id == model.CartDetailID).Select(c=>c.ColorId).FirstOrDefault();
+                                var productCode = _context.TbProducts.First(c => c.Code == model.ProductCode).Code;
                                 var sizeId = _context.TbCartDetails.Where(c => c.Id == model.CartDetailID).Select(c => c.SizeId).FirstOrDefault();
                                 model.SizeName = _context.TbSizes.First(c => c.Id == sizeId).SizeName;
                                 model.Color = _context.TbColors.First(c=>c.Id == colorId).Name;
@@ -130,7 +132,15 @@ namespace DATN_ACV_DEV.Controllers
                         });
                     }
                     LstCartItem = _mapper.Map<List<CartDTO>>(Model);
-                    _response.CartItem = LstCartItem;
+					foreach (var model in LstCartItem) //size && color
+					{
+						var colorId = _context.TbCartDetails.Where(c => c.Id == model.CartDetailID).Select(c => c.ColorId).FirstOrDefault();
+						var productCode = _context.TbProducts.First(c => c.Code == model.ProductCode).Code;
+						var sizeId = _context.TbCartDetails.Where(c => c.Id == model.CartDetailID).Select(c => c.SizeId).FirstOrDefault();
+						model.SizeName = _context.TbSizes.First(c => c.Id == sizeId).SizeName;
+						model.Color = _context.TbColors.First(c => c.Id == colorId).Name;
+					}
+					_response.CartItem = LstCartItem;
                 }
 
             }

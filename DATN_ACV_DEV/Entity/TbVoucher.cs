@@ -23,7 +23,7 @@ public partial class TbVoucher
     public VoucherUnit Unit { get; set; }
     public decimal MaxDiscount { get; set; }
     //public decimal RequiredTotalAmount { get; set; }
-
+    public decimal Condition { get; set; }
     public Status Status { get; set; }
 
     public Guid? UpdateBy { get; set; }

@@ -48,8 +48,12 @@
     </div>
 </div>
 <div class="row ps-2 pe-2">
+    <p class="col-6">Tạm tính: </p>
+    <p id="total-amount" class="text-end col-6">@Model.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
+</div>
+<div class="row ps-2 pe-2">
     <p class="col-6">Khuyến mãi:</p>
-    <p class="text-end col-6" id="discount-amount">@Model.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
+    <p class="text-end col-6" id="discount-amount">- @Model.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
 </div>
 @if(!Model.IsCustomerTakeYourSelf)
 {
@@ -58,11 +62,8 @@
         <p id="discount-amount" class="text-end col-6">@Model.ShippingFee.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p> *@
     </div>
 }
-<div class="row ps-2 pe-2">
-    <p class="col-6">Tạm tính: </p>
-    <p id="total-amount" class="text-end col-6">@Model.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
-</div>
+
 <div class="row ps-2 pe-2">
     <p class="col-6">Thành tiền: </p>
-    <p id="total-amount" class="text-end col-6">@Model.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
+    <p id="total-amount" class="text-end col-6">@((Model.TotalAmount - Model.TotalDiscount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</p>
 </div>
