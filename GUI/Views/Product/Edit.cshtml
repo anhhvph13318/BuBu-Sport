@@ -3,10 +3,22 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
+<style>
+    h2 {
+        text-align: center;
+        width: 100%;
+        margin: 0 0 20px 0;
+        color: #007bff;
+        font-size: 1.75rem;
+        font-weight: 600;
+    }
+</style>
 <div class="container mt-5">
     <form asp-action="Edit" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm">
-        <h2 class="text-center mb-4">Chỉnh sửa sản phẩm</h2>
+        <h2 class="text-primary fw-bold">
+            Chỉnh sửa sản phẩm
+        </h2>
+     
 
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
