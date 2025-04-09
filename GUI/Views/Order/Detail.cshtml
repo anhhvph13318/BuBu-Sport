@@ -108,9 +108,9 @@ else
                         <th>Tên sản phẩm</th>
                         <th>Màu sắc</th>
                         <th>Kích thước</th>
-                        <th>Số lượng</th>
                         <th>Đơn giá</th>
-
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,10 +124,15 @@ else
                             <td>@item.ProductName</td>
                             <td>@item.Color</td>
                             <td>@item.Size</td>
-                            <td>@item.Quantity</td>
                             <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                            <td>@item.Quantity</td>
+                            <td>@itemTotal.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                         </tr>
                     }
+                    <tr>
+                        <td colspan="7" class="text-end"><strong>Tổng tiền:</strong></td>
+                        <td><strong>@totalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</strong></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

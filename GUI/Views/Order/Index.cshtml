@@ -4,6 +4,20 @@
 @{
     ViewData["Title"] = "Quản Lý Hóa Đơn";
     var currentDate = DateTime.Now;
+
+    var sortedOrders = Model?.OrderBy(o =>
+    {
+        return o.status switch
+        {
+            "Chờ xác nhận" => 1,
+            "Chuẩn bị hàng" => 2,
+            "Đang vận chuyển" => 3,
+            "Đã hủy" => 4,
+            "Hoàn thành đơn hàng" => 5,
+            _ => 6
+        };
+    })
+    .ThenByDescending(o => o.id);
 }
 
 <div class="container-fluid px-4 mt-3">
@@ -56,7 +70,6 @@
                             <option value="" selected="@(string.IsNullOrEmpty(Context.Request.Query["orderCodePrefix"]))">-- Tất cả kiểu --</option>
                             <option value="OFF" selected="@(Context.Request.Query["orderCodePrefix"] == "OFF")">Tại quầy (OFF)</option>
                             <option value="ON" selected="@(Context.Request.Query["orderCodePrefix"] == "ON")">Online (ON)</option>
-                            @* <option value="TEMP" selected="@(Context.Request.Query["orderCodePrefix"] == "TEMP")">Nháp (TEMP)</option> *@
                         </select>
                     </div>
                 </div>
@@ -64,8 +77,8 @@
                     <label for="minAmount" class="form-label">Giá tối thiểu</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
-                        <input type="text" class="form-control number-input" id="minAmount" name="minAmount" 
-                               value="@(Context.Request.Query["minAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["minAmount"], out var min) ? min.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")" 
+                        <input type="text" class="form-control number-input" id="minAmount" name="minAmount"
+                               value="@(Context.Request.Query["minAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["minAmount"], out var min) ? min.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")"
                                placeholder="Nhập giá tối thiểu...">
                     </div>
                 </div>
@@ -73,8 +86,8 @@
                     <label for="maxAmount" class="form-label">Giá tối đa</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
-                        <input type="text" class="form-control number-input" id="maxAmount" name="maxAmount" 
-                               value="@(Context.Request.Query["maxAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["maxAmount"], out var max) ? max.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")" 
+                        <input type="text" class="form-control number-input" id="maxAmount" name="maxAmount"
+                               value="@(Context.Request.Query["maxAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["maxAmount"], out var max) ? max.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")"
                                placeholder="Nhập giá tối đa...">
                     </div>
                 </div>
@@ -110,12 +123,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
+                    @if (sortedOrders != null && sortedOrders.Any())
                     {
                         var index = 1;
-                        @foreach (var order in Model)
+                        @foreach (var order in sortedOrders)
                         {
-                            var orderType = order.code.StartsWith("OFF") ? "Tại quầy" : /*(order.code.StartsWith("TEMP") ? "Nháp" :*/ "Online"/*)*/;
+                            var orderType = order.code.StartsWith("OFF") ? "Tại quầy" : "Online";
                             var statusClass = order.status switch
                             {
                                 "Chờ xác nhận" => "bg-secondary",
@@ -161,7 +174,7 @@
         </div>
         <div class="card-footer bg-light d-flex justify-content-between align-items-center">
             <div>
-                <span class="text-muted">Hiển thị @(Model?.Count() ?? 0) hóa đơn</span>
+                <span class="text-muted">Hiển thị @(sortedOrders?.Count() ?? 0) hóa đơn</span>
             </div>
         </div>
     </div>
