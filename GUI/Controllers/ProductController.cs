@@ -288,5 +288,67 @@ namespace GUI.Controllers
             bool isAvailable = !_context.TbProducts.Any(p => p.Code == code);
             return Json(new { isAvailable });
         }
+
+        [HttpGet]
+        [Route("api/products")]
+        public async Task<IActionResult> GetProducts()
+        {
+            var products = await _context.TbProducts
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Code,
+                    p.Name,
+                    p.Price,
+                    Image = p.TbProductDetails.FirstOrDefault().Image.Url
+                })
+                .ToListAsync();
+
+            return Ok(products);
+        }
+        [HttpGet]
+        [Route("api/products/{productId}/variants")]
+        public async Task<IActionResult> GetProductVariants(Guid productId)
+        {
+            var variants = await _context.TbProductDetails
+                .Where(pd => pd.ProductId == productId)
+                .Include(pd => pd.Color) // Bao gồm màu sắc
+                .Include(pd => pd.Size) // Bao gồm kích cỡ
+                .Select(pd => new
+                {
+                    pd.Id,
+                    Color = pd.Color.Name,
+                    Size = pd.Size.SizeName,
+                    pd.Price,
+                    pd.Quantity, // Lấy số lượng
+                    Image = pd.Image.Url // Nếu bạn có hình ảnh cho biến thể
+                })
+                .ToListAsync();
+
+            return Ok(variants);
+        }
+        [HttpGet("/api/productdetails/{id}")]
+        public async Task<IActionResult> GetProductDetail(Guid id)
+        {
+            var productDetail = await _context.TbProductDetails
+                .Where(pd => pd.Id == id)
+                .Select(pd => new
+                {
+                    pd.Id,
+                    pd.Color,
+                    pd.Size,
+                    pd.Price,
+                    pd.Quantity
+                })
+                .FirstOrDefaultAsync();
+
+            if (productDetail == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(productDetail);
+        }
+
     }
 }
