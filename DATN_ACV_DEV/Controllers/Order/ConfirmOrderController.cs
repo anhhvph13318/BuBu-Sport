@@ -100,7 +100,7 @@ namespace DATN_ACV_DEV.Controllers
         public void GenerateObjects()
         {
             customer = _context.TbCustomers.FirstOrDefault(c => c.Id == _request.UserId);
-            account = _context.TbAccounts.Where(c => c.CustomerId == customer.Id).FirstOrDefault();
+            account = customer != null ? _context.TbAccounts.Where(c => c.CustomerId == customer.Id).FirstOrDefault() : null;
             if (customer == null)
             {
                 //var address = _context.TbAddressDeliveries.FirstOrDefault(c => c.Id == _request.addressDeliveryId);
