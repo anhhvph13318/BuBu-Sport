@@ -23,8 +23,8 @@ public partial class TbVoucher
     public VoucherUnit Unit { get; set; }
     public decimal MaxDiscount { get; set; }
     //public decimal RequiredTotalAmount { get; set; }
-
-    public Status Status { get; set; } = Status.Valid;
+    public decimal Condition { get; set; }
+    public Status Status { get; set; }
 
     public Guid? UpdateBy { get; set; }
 
@@ -36,10 +36,10 @@ public partial class TbVoucher
     public virtual ICollection<TbOrder> Orders { get; set; } = new List<TbOrder>();
 }
 
-public enum VoucherUnit
+public enum VoucherUnit : short
 {
-    Percent,
-    Money
+    Percent = 0,
+    Money = 1
 }
 
 public enum VoucherType : short
@@ -49,6 +49,7 @@ public enum VoucherType : short
 
 public enum Status : short
 {
-    Closed = 1,
-    Valid = 2
+    InActive = 1,
+    Active = 2,
+    Expired = 3
 }

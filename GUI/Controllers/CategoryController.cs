@@ -1,27 +1,38 @@
 ﻿using Azure.Core;
 using DATN_ACV_DEV.Entity;
 using GUI.Models.DTOs;
+using GUI.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using GUI.Models.DTOs.Product_DTO;
+using GUI.Models.DTOs.Product_DTO.Views;
+using GUI.Shared.Common;
+using Microsoft.Extensions.Options;
+using GUI.Controllers.Shared;
+using GUI.FileBase;
 
 namespace GUI.Controllers;
 
 [Controller]
 [Route("categories")]
-[Authorize(Roles = "Admin")]
-public class CategoryController : Controller
+//[Authorize(Roles = "Admin")]
+public class CategoryController : ControllerSharedBase
 {
     private readonly DBContext _context;
     private readonly UserSession _session;
+    private HttpService httpService;
 
-    public CategoryController(DBContext context, UserSession session)
+    public CategoryController(DBContext context, UserSession session, IOptions<CommonSettings> settings)
     {
         _context = context;
         _session = session;
+        _settings = settings.Value;
+        httpService = new();
     }
 
     public async Task<IActionResult> Index()
@@ -36,7 +47,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> GetDetail([FromRoute] string id)
     {
         var category = await _context.TbCategories
-            .Select(e => new CategoryDto
+            .Select(e => new CategoryDTO
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -52,7 +63,7 @@ public class CategoryController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CategoryDto request)
+    public async Task<IActionResult> Create([FromBody] CategoryDTO request)
     {
         var category = await _context.TbCategories.FirstOrDefaultAsync(e => e.Name == request.Name);
         if (category is not null)
@@ -74,13 +85,13 @@ public class CategoryController : Controller
         return Json(new
         {
             Table = await RenderViewAsync("_CategoryTable", categories),
-            Modal = await RenderViewAsync("_CategoryModal", new CategoryDto())
+            Modal = await RenderViewAsync("_CategoryModal", new CategoryDTO())
         });
     }
 
     [HttpPatch]
     [Route("{id}")]
-    public async Task<IActionResult> Update([FromBody] CategoryDto request, [FromRoute] string id)
+    public async Task<IActionResult> Update([FromBody] CategoryDTO request, [FromRoute] string id)
     {
         var category = await _context.TbCategories.FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
         if(category is null) return BadRequest();
@@ -98,7 +109,7 @@ public class CategoryController : Controller
         return Json(new
         {
             Table = await RenderViewAsync("_CategoryTable", categories),
-            Modal = await RenderViewAsync("_CategoryModal", new CategoryDto())
+            Modal = await RenderViewAsync("_CategoryModal", new CategoryDTO())
         });
     }
 
@@ -108,7 +119,7 @@ public class CategoryController : Controller
     {
         var categories = await _context.TbCategories.AsNoTracking()
             .Where(e => e.Name.StartsWith(name))
-            .Select(e => new CategoryDto
+            .Select(e => new CategoryDTO
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -123,11 +134,26 @@ public class CategoryController : Controller
             Table = await RenderViewAsync("_CategoryTable", categories)
         });
     }
+    [HttpGet]
+    [Route("produtCategory")]
+    public async Task<ActionResult> ProdutCategory(Guid s)
+    {
+        var obj = new GetListProductRequest();
+        var model = new IndexObject();
+        obj.CategoryID = s;
+        var URL = _settings.APIAddress + "api/HomePage/Process";
+        var param = JsonConvert.SerializeObject(obj);
+        var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+        var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
 
-    private async Task<IEnumerable<CategoryDto>> FetchCategory()
+        model.Data = result.Data;
+
+        return View(model);
+    }
+    private async Task<IEnumerable<CategoryDTO>> FetchCategory()
     {
         return await _context.TbCategories.AsNoTracking()
-            .Select(e => new CategoryDto
+            .Select(e => new CategoryDTO    
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -164,5 +190,13 @@ public class CategoryController : Controller
         await viewResult.View.RenderAsync(viewContext);
 
         return writer.GetStringBuilder().ToString();
+    }
+    //
+    [HttpGet]
+    [Route("list")]
+    public async Task<IActionResult> GetCategoryList()
+    {
+        var categories = await FetchCategory();
+        return Json(categories);
     }
 }

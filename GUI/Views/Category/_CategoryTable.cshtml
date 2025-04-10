@@ -1,22 +1,55 @@
 ﻿@using GUI.Models.DTOs
-@model IEnumerable<CategoryDto>
+@model IEnumerable<CategoryDTO>
 
-<table class="table table-striped">
-    <thead>
+<table class="table table-hover table-striped">
+    <thead class="table-primary">
         <tr>
-            <th>Tên</th>
-            <th>Trạng thái</th>
-            <th></th>
+            <th class="text-center" style="width: 50px;">STT</th>
+            <th>Tên danh mục</th>
+            <th class="text-center">Trạng thái</th>
+            <th class="text-center" style="width: 150px;">Hành động</th>
         </tr>
     </thead>
     <tbody>
-        @foreach(var category in Model)
+        @if (Model != null && Model.Any())
+        {
+            var index = 1;
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td class="text-center">@index</td>
+                    <td>@category.Name</td>
+                    <td class="text-center">
+                        <span class="badge @(category.StatusText == "Hoạt động" ? "bg-success" : "bg-danger")">
+                            <i class="bi @(category.StatusText == "Hoạt động" ? "bi-check-circle" : "bi-x-circle") me-1"></i>
+                            @category.StatusText
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-warning btn-sm" onclick="showDeatail('@category.Id')">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <a href="/product?name=@category.Id" class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-info-circle"></i>
+                            </a>
+                            @* <button class="btn btn-outline-danger btn-sm" onclick="deleteCategory('@category.Id')">
+                                <i class="bi bi-trash"></i>
+                            </button> *@
+                        </div>
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+        else
         {
             <tr>
-                <td>@category.Name</td>
-                <td>@category.StatusText</td>
-                <td>
-                    <button class="btn btn-primary me-1" onclick="showDeatail('@category.Id')">Chi tiết</button>
+                <td colspan="4" class="text-center py-4">
+                    <div class="text-secondary">
+                        <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
+                        <p class="mt-2">Không tìm thấy danh mục nào.</p>
+                    </div>
                 </td>
             </tr>
         }

@@ -218,7 +218,6 @@ namespace DATN_ACV_DEV.Controllers
                             productName = model.Name,
                             productCode = model.Code,
                             price = model.Price,
-                            weight = model.Weight,
                             quantity = item.Quantity.Value,
                             url = image != null ? image.Url : ""
                         };

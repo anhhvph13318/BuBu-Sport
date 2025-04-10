@@ -65,6 +65,7 @@ namespace DATN_ACV_DEV.Controllers
                     _Produst.ImageId = _request.ImageId != null ? _request.ImageId : _Produst.ImageId;
                     _Produst.CategoryId = (_request.CategoryId != null && _request.CategoryId != new Guid()) ? _request.CategoryId : _Produst.CategoryId;
                     _Produst.UpdateBy = _request.AdminId ?? Guid.Parse("9a8d99e6-cb67-4716-af99-1de3e35ba993");//Guid của 1 tài khoản có trong DB
+                    _Produst.Quantity = _request.Quantity;
                     _Produst.UpdateDate = DateTime.Now; // Ngày hiện tại 
                 }
                 if (_Image != null)

@@ -4,44 +4,51 @@
     Layout = "_LoginLayout";
 }
 
+<!-- Thêm CDN Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <link href="~/css/login.css" rel="stylesheet" />
 
-<div  class="login-body">
+<div class="login-body">
     <div class="container @((ViewBag.Action != null && ViewBag.Action == 2) ? "right-panel-active" : "")">
-        <!-- Sign Up -->
         <!-- Sign In -->
         <div class="container__form container--signin">
-
-            <div class="former">
+            <div class="former position-relative">
                 <form asp-action="LoginNow" enctype="multipart/form-data">
+                    <!-- Nút Trang chủ trong khung trắng form đăng nhập -->
+                    <a href="/Store" class="home-button" title="Về trang cửa hàng">
+                        <i class="fas fa-home"></i> Trang chủ
+                    </a>
                     <div class="w-full">
-                        @* <h2 class="form__title text-center branding-">SMART HOME</h2> *@
-                        @* <h3 class="form__title branding-name">AUTOMATE YOUR HOME, SIMPLIFY YOUR LIFE</h3> *@
                         <h2 class="form__title text-center">ĐĂNG NHẬP</h2>
-                        <input type="text" name="UserName" placeholder="Userame" minlength="1s" maxlength="50" required class="input form-control form-control-lg"/>
-                        <input type="password" name="Password" placeholder="Password" minlength="1" maxlength="20" required class="input form-control form-control-lg"/>
-                        <a data-bs-toggle="modal" data-bs-target="#forgotpassword" class=" btn link text-right">Bạn quên mật khẩu?</a>
+                        <input type="text" name="UserName" placeholder="Số điện thoại" minlength="1" maxlength="50" required class="input form-control form-control-lg" />
+                        <input type="password" name="Password" placeholder="Mật khẩu" minlength="1" maxlength="20" required class="input form-control form-control-lg" />
+                        <a data-bs-toggle="modal" data-bs-target="#forgotpassword" class="btn link text-right">Bạn quên mật khẩu?</a>
                         <button class="btn-authenticator" type="submit">Đăng nhập</button>
                     </div>
-                   
                 </form>
-
             </div>
         </div>
+        <!-- Sign Up -->
         <div class="container__form container--signup">
-            <div class="former" >
+            <div class="former">
                 <form asp-action="Register" enctype="multipart/form-data">
+                    <a href="/Store" class="home-button" title="Về trang cửa hàng">
+                        <i class="fas fa-home"></i> Trang chủ
+                    </a>
                     <div class="w-full">
-                        @* <h2 class="form__title text-center branding-">SMART HOME</h2> *@
-                        @* <h3 class="form__title branding-name">AUTOMATE YOUR HOME, SIMPLIFY YOUR LIFE</h3> *@
-                        <h2 class="form__title text-center">ĐĂNG KÝ</h2>
-                        <input type="text" name="PhoneNumber" placeholder="Username" minlength="1s" maxlength="50" required class="input form-control form-control-lg" />
-                        <input type="password" name="Password" placeholder="Password" minlength="1" maxlength="20" required class="input form-control form-control-lg" />
-                        <input type="text" name="Email" placeholder="Email" minlength="1" maxlength="20" required class="input form-control form-control-lg" />
-                        <a data-bs-toggle="modal" data-bs-target="#forgotpassword" class=" btn link text-right">Bạn quên mật khẩu?</a>
+                        <h2 class="form_title text-center">ĐĂNG KÝ</h2>
+                        <input type="text" name="PhoneNumber" placeholder="Số điện thoại"
+                               pattern="^0[3-9][0-9]{8}$"
+                               title="Số điện thoại phải bắt đầu bằng 0, số thứ 2 trong khoảng từ 3->9 và có đúng 10 chữ số."
+                               required class="input form-control form-control-lg" />
+                        <input type="password" name="Password" placeholder="Mật khẩu" minlength="1" maxlength="20" required class="input form-control form-control-lg" />
+                        <input type="email" name="Email" placeholder="Email"
+                               pattern="^[a-zA-Z0-9.%+-]+@@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
+                               title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@gmail.com)."
+                               required class="input form-control form-control-lg" />
+                        <a data-bs-toggle="modal" data-bs-target="#forgotpassword" class="btn link text-right">Bạn quên mật khẩu?</a>
                         <button class="btn-authenticator" type="submit">Đăng ký</button>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -53,48 +60,106 @@
                 </div>
                 <div class="overlay__panel overlay--right">
                     <button class="btn-authenticator" id="signUp">Đăng ký</button>
-
                 </div>
             </div>
         </div>
     </div>
-
 </div>
-<!-- Vertically centered modal -->
 
-
-
-<div class="modal fade " id="forgotpassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Forgot Password -->
+<div class="modal fade" id="forgotpassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <form asp-action="ForgotPassWord" enctype="multipart/form-data">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Lấy lại mật khẩu</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-                <div class="mb-3">
-                    <label for="message-text" class="col-form-label">Email: <span class="text-danger">*</span></label>
-                    <input type="email" name="Email" class="form-control" id="recipient-name">
+            <div class="modal-content">
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Lấy lại mật khẩu</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Email: <span class="text-danger">*</span></label>
+                        <input type="email" name="Email" class="form-control" id="recipient-name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
-                <button type="submit" class="btn btn-primary">Xác nhận</button>
-            </div>
-        </div>
         </form>
     </div>
 </div>
+
+<style>
+    /* CSS cho nút Trang chủ */
+    .home-button {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        align-items: center;
+        padding: 8px 14px;
+        background-color: #ffffff; /* Nền trắng hòa với khung */
+        color: #007bff; /* Màu chữ/icon xanh dương */
+        text-decoration: none;
+        border-radius: 25px; /* Bo góc mềm mại hơn */
+        font-size: 15px;
+        font-weight: 600; /* Chữ đậm hơn một chút */
+        border: 2px solid #007bff; /* Viền đậm hơn */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ */
+        transition: all 0.3s ease;
+    }
+
+        .home-button i {
+            margin-right: 6px;
+            font-size: 18px; /* Icon lớn hơn một chút */
+        }
+
+        .home-button:hover {
+            background-color: #007bff; /* Đổi màu nền khi hover */
+            color: white; /* Đổi màu chữ khi hover */
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bóng đậm hơn khi hover */
+        }
+
+    /* Đảm bảo nút nằm trong khung trắng mà không đè lên nội dung */
+    .former {
+        position: relative;
+        padding-top: 50px; /* Tăng khoảng cách để không che tiêu đề */
+    }
+</style>
+
 <script>
-    // function pageLoaded() {
-    //     const signInBtn = document.getElementById("signIn");
-    //     signInBtn.click();
-    // }
-    // window.onload = pageLoaded;
+    document.body.style.overflow = 'hidden';
 </script>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        @if (TempData["Message"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: '@Html.Raw(TempData["Message"])'
+                    });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: '@Html.Raw(TempData["ErrorMessage"])'
+                    });
+            </text>
+        }
+                });
+    </script>
+}
 @* @if (TempData["SweetAlertMessage"] != null)
 {
     <script>

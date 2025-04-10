@@ -1,26 +1,29 @@
 ﻿@model GUI.Models.DTOs.Product_DTO.DetailProductResponse
 
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Xác nhận Xóa";
 }
 
-
-<h3>Có chắc muốn thay đổi trạng thái?</h3>
-<div>
-    <h4>Sản phẩm</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @* @Html.DisplayNameFor(model => model.Product):  *@
-        </dt>
-        <dd class = "col-sm-10">
-            @* @Html.DisplayFor(model => model.Product) *@
-        </dd>
-    </dl>
-    
-    <form asp-action="ConfirmDelete">
-        <input name="Id" value="@Model.Id" hidden/>
-        <input type="submit" value="Xóa" class="btn btn-danger" /> |
-        <a asp-action="Index">Quay lại</a>
-    </form>
+<div class="card shadow-sm border-danger">
+    <div class="card-header bg-danger text-white text-center">
+        <h4>Bạn có chắc muốn xóa sản phẩm này?</h4>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <strong>Tên sản phẩm:</strong> @Model.Name
+        </div>
+        <div class="mb-3">
+            <strong>Mã sản phẩm:</strong> @Model.Code
+        </div>
+        <div class="mb-3">
+            <strong>Giá sản phẩm:</strong> @Model.Price VNĐ
+        </div>
+    </div>
+    <div class="card-footer text-center">
+        <form asp-action="ConfirmDelete" method="post">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger">Xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
 </div>

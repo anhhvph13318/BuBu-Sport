@@ -42,13 +42,13 @@ public class OrderDetail
         PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.ShippingFee;
         PaymentInfo.Products = Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
 
-        if (Voucher.Id == Guid.Empty)
+        if (Voucher != null && Voucher.Id == Guid.Empty)
         {
             PaymentInfo.TotalDiscount = 0;
             return;
         }
 
-        if (Voucher.Unit == VoucherUnit.Percent)
+        if (Voucher != null && Voucher.Unit == VoucherUnit.Percent)
         {
             var discount = PaymentInfo.TotalAmount * Voucher.Discount / 100;
             var finalDiscount = discount > Voucher.MaxDiscount
@@ -59,8 +59,8 @@ public class OrderDetail
         }
         else
         {
-            PaymentInfo.TotalDiscount = Voucher.Discount;
-            PaymentInfo.FinalAmount -= Voucher.Discount;
+            PaymentInfo.TotalDiscount = Voucher != null ? Voucher.Discount : PaymentInfo.TotalDiscount;
+            PaymentInfo.FinalAmount -= Voucher != null ? Voucher.Discount : 0;
         }
     }
 }
@@ -70,21 +70,22 @@ public class OrderItem
 {
     public string ProductName { get; set; } = string.Empty;
     public string ProductImage { get; set; } = string.Empty;
+    public string Color { get; set; } = string.Empty;
+    public string Size { get; set; } = string.Empty;
     public int Quantity { get; set; }
     public decimal Price { get; set; }
+    public string Code { get; set; } = string.Empty; 
     public Guid Id { get; set; }
 }
 
-[Serializable]
+
 public class CustomerInfo
 {
     public Guid Id { get; set; }
-    [Required(ErrorMessage = "Chưa nhập tên khách hàng")]
     public string Name { get; set; } = string.Empty;
-    [Required(ErrorMessage = "Chưa nhập số điện thoại")]
     public string PhoneNumber { get; set; } = string.Empty;
-    [Required(ErrorMessage = "Chưa nhập địa chỉ")]
     public string Address { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }
 
 [Serializable]

@@ -18,4 +18,6 @@ public partial class TbImage
     public DateTime? CreateDate { get; set; }
 
     public Guid? CreateBy { get; set; }
+
+    public virtual ICollection<TbProductDetail> TbProductDetails { get; set; } = new List<TbProductDetail>();
 }

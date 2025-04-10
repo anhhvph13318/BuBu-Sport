@@ -82,7 +82,6 @@ namespace DATN_ACV_DEV.Controllers.GHN_API
                     name = product.Name,
                     code = product.Code,
                     quantity = item.Quantity,
-                    weight = product.Weight ?? 5
                 });
             }
             _requestCreateOrderGHN = new RequestCreateOrderGHN

@@ -2,130 +2,528 @@
 
 @{
     ViewData["Title"] = "Thêm sản phẩm";
+
+    // Sắp xếp sizes từ lớn đến bé - cách an toàn không dùng LINQ
+    var sortedSizes = new List<dynamic>(ViewBag.Sizes);
+    sortedSizes.Sort((a, b) => string.Compare(b.SizeName, a.SizeName));
 }
 
-<div class="container">
-    <h1>Thêm sản phẩm mới</h1>
-    <hr />
-    <form asp-action="Create">
+<div class="container mt-5">
+    <form asp-action="Create" enctype="multipart/form-data" class="bg-white p-4 rounded shadow" id="createProductForm" novalidate>
+        <h2 class="text-center mb-4 fw-bold text-primary">Thêm sản phẩm mới</h2>
+        <hr class="mb-4">
+
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="row">
-            <!-- Bên trái: Form nhập liệu -->
-            <div class="col-md-6">
-                <div class="form-group mb-3">
-                    <label asp-for="Name" class="control-label">Tên sản phẩm</label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+        <!-- Section 1: Thông tin cơ bản -->
+        <div id="infoSection">
+            <div class="row">
+                <!-- Cột trái: Form nhập liệu -->
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Code" class="form-label fw-semibold">Mã sản phẩm</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+                            <input asp-for="Code" class="form-control" id="productCode" placeholder="SP00001" required maxlength="7" pattern="SP\d{5}" title="Mã sản phẩm phải là 'SP' theo sau bởi đúng 5 chữ số (ví dụ: SP00001)" />
+                        </div>
+                        <span asp-validation-for="Code" class="text-danger" id="codeValidationMessage"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold">Tên sản phẩm</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                            <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" required maxlength="100" />
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Price" class="form-label fw-semibold">Giá sản phẩm</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                            <input asp-for="Price" class="form-control" id="priceInput" placeholder="Nhập giá sản phẩm" type="number" required min="0" step="1000" title="Giá phải là số không âm, tối thiểu 0" />
+
+                        </div>
+                        <div class="form-text" id="priceFormatted">0 ₫</div>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="CategoryId" class="form-label fw-semibold">Danh mục</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-folder"></i></span>
+                            <select asp-for="CategoryId" class="form-select" required>
+                                <option value="" disabled selected>Chọn danh mục</option>
+                                @foreach (var item in ViewBag.Categories)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="Price" class="control-label">Giá sản phẩm</label>
-                    <input asp-for="Price" class="form-control" id="priceInput" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="Description" class="control-label">Mô tả</label>
-                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="PriceNet" class="control-label">Giá bán</label>
-                    <input asp-for="PriceNet" class="form-control" />
-                    <span asp-validation-for="PriceNet" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="Quantity" class="control-label">Số lượng</label>
-                    <input asp-for="Quantity" class="form-control" />
-                    <span asp-validation-for="Quantity" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="CategoryId" class="control-label">Danh mục</label>
-                    <select id="categorySelect" asp-for="CategoryId" class="form-select">
-                        <option selected value="">Chọn danh mục</option>
-                        @foreach (var item in ViewBag.Categories)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }
-                    </select>
-                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                <!-- Cột phải: Mô tả -->
+                <div class="col-md-6">
+                    <div class="form-group mb-3 h-90">
+                        <label asp-for="Description" class="form-label fw-semibold">Mô tả</label>
+                        <div class="input-group h-100">
+                            <span class="input-group-text"><i class="bi bi-file-text"></i></span>
+                            <textarea asp-for="Description" class="form-control " placeholder="Nhập mô tả sản phẩm..." rows="9" required maxlength="500" title="Mô tả không được để trống và tối đa 500 ký tự"></textarea>
+                        </div>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Bên phải: Ảnh sản phẩm -->
-            <div class="col-md-6 d-flex justify-content-center align-items-center">
-                <div class="text-center">
-                    <label class="form-label">Ảnh sản phẩm</label>
-                    <input type="file" id="fileInput" class="form-control mb-3" accept="image/*" />
-                    <div style="width: 300px; height: 300px; border: 1px solid #ccc; padding: 5px; background-color: #f8f8f8; display: flex; justify-content: center; align-items: center; overflow: hidden;">
-                        <img id="imagePreview" src="/path/to/default-image.jpg" alt="Image preview" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
-                    </div>
-                    <input type="hidden" asp-for="UrlImage" id="urlImage" />
-                </div>
+            <!-- Nút tiếp tục -->
+            <div class="form-group text-center mt-4">
+                <button type="button" class="btn btn-primary px-4 py-2 mt-4" id="nextStep">
+                    <i class="bi bi-arrow-right-circle me-2"></i>Tiếp tục
+                </button>
             </div>
         </div>
 
-        <!-- Nút submit -->
-        <div class="form-group mt-4">
-            <input type="submit" value="Thêm mới" class="btn btn-primary" />
+        <!-- Section 2: Màu sắc, Size và Ảnh -->
+        <div id="imageSection" style="display: none;">
+            <div class="row">
+                <!-- Cột trái: Màu sắc và Size -->
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label asp-for="Color" class="form-label fw-semibold">Màu sắc</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-palette"></i></span>
+                            <select id="categorySelect" asp-for="Color" class="form-select">
+                                <option selected value="">Chọn màu sắc</option>
+                                @foreach (var item in ViewBag.Colors)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                                <option value="add_new">➕ Thêm màu sắc</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Color" class="text-danger"></span>
+                    </div>
+
+                    <!-- Phần chọn size đã được tối ưu -->
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-semibold d-flex justify-content-between align-items-center">
+                            <span>Size & Số Lượng</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-circle" id="toggleSizeTable" title="Ẩn/hiện bảng size">
+                                <i class="bi bi-chevron-up" id="toggleIcon"></i>
+                            </button>
+                        </label>
+                        <div class="card border" id="sizeTableContainer">
+                            <div class="card-body p-2">
+                                <div class="row g-2" id="sizeGridContainer">
+                                    @foreach (var item in sortedSizes)
+                                    {
+                                        <div class="col-md-4 col-6">
+                                            <div class="size-item border rounded p-2 d-flex align-items-center">
+                                                <div class="form-check me-2">
+                                                    <input type="checkbox" class="form-check-input sizeCheckbox" id="size_@item.Id" data-size-id="@item.Id">
+                                                    <label class="form-check-label fw-bold" for="size_@item.Id">@item.SizeName</label>
+                                                </div>
+                                                <div class="input-group input-group-sm flex-grow-1">
+                                                    <input type="number" class="form-control form-control-sm quantityInput"
+                                                           id="quantity_@item.Id" min="0" value="0" disabled>
+                                                    <input type="hidden" class="sizeIdInput" value="@item.Id">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải: Upload ảnh -->
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="UrlImage" class="form-label fw-semibold">Ảnh sản phẩm</label>
+                        <div class="card border bg-light">
+                            <div class="card-body text-center">
+                                <img id="imagePreview" src="/path/to/default-image.jpg" alt="Xem trước hình ảnh" class="mb-3 img-fluid img-thumbnail" style="max-height: 250px; max-width: 100%;">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                    <input type="file" id="fileInput" class="form-control" accept="image/*" required title="Vui lòng chọn một ảnh sản phẩm" />
+                                </div>
+                                <input type="hidden" asp-for="UrlImage" id="urlImage" />
+                                <span asp-validation-for="UrlImage" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút quay lại và thêm mới -->
+            <div class="form-group d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-outline-secondary px-4 py-2" id="prevStep">
+                    <i class="bi bi-arrow-left-circle me-2"></i>Quay lại
+                </button>
+                <button type="submit" class="btn btn-success px-4 py-2" id="submitButton">
+                    <i class="bi bi-plus-circle me-2"></i>Thêm mới
+                </button>
+            </div>
         </div>
     </form>
-    <div class="mt-3">
-        <a asp-action="Index">Quay lại</a>
+</div>
+
+<!-- Modal thêm màu sắc -->
+<div class="modal fade" id="addColorModal" tabindex="-1" aria-labelledby="addColorLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addColorLabel">Thêm màu sắc mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newColorName" class="form-label">Tên màu sắc</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-palette"></i></span>
+                        <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên màu">
+                    </div>
+                    <input type="hidden" id="modalProductId" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="saveNewColor">
+                    <i class="bi bi-save me-1"></i>Lưu
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
+<!-- CSS cho phần size -->
+<style>
+    .size-item {
+        background-color: #f8f9fa;
+        transition: all 0.2s ease;
+    }
+
+        .size-item:hover {
+            background-color: #e9ecef;
+        }
+
+    .form-check-input:checked + .form-check-label {
+        color: #0d6efd;
+    }
+</style>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
-    (function ($) {
-        $('#fileInput').on("change", function (e) {
-            let file = e.target.files[0];
+    document.addEventListener("DOMContentLoaded", function () {
+        // Format hiển thị giá khi nhập
+        const priceInput = document.getElementById('priceInput');
+        const priceFormatted = document.getElementById('priceFormatted');
 
-            // Hiển thị ảnh ngay lập tức
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = function (event) {
-                    $("#imagePreview").attr("src", event.target.result).show();
-                };
-                reader.readAsDataURL(file);
+        priceInput.addEventListener('input', function() {
+            // Hiển thị giá đã định dạng bên dưới ô input
+            if (this.value) {
+                priceFormatted.textContent = parseInt(this.value).toLocaleString('vi-VN') + ' ₫';
+            } else {
+                priceFormatted.textContent = '0 ₫';
             }
+        });
 
-            // Tiến hành upload ảnh lên Cloudinary
-            let form = new FormData();
-            form.append("api_key", "284335524597493");
-            form.append("upload_preset", "vanh2204");
-            form.append("public_id", new Date().toISOString().replace(/[-:.]/g, ""));
-            form.append("file", file);
+        // Xử lý size checkbox và quantity input
+        const sizeCheckboxes = document.querySelectorAll('.sizeCheckbox');
+        sizeCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const sizeItem = this.closest('.size-item');
+                const quantityInput = sizeItem.querySelector('.quantityInput');
 
-            var settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "https://api.cloudinary.com/v1_1/dnvuz3evz/image/upload",
-                "method": "POST",
-                "processData": false,
-                "contentType": false,
-                "mimeType": "multipart/form-data",
-                "data": form
-            };
-
-            $.ajax(settings).done(function (response) {
-                let data = JSON.parse(response);
-                console.log(data);
-                if (data) {
-                    let url = data.secure_url ?? data.url;
-                    if (url) {
-                        $("#imagePreview").attr("src", url); // Cập nhật URL từ server
-                        $('#urlImage').val(url);             // Gán URL vào input ẩn
-                    } else {
-                        alert("Không thể tải ảnh lên. Vui lòng thử lại.");
-                    }
+                if (this.checked) {
+                    sizeItem.style.backgroundColor = '#e6f2ff';
+                    sizeItem.style.borderColor = '#0d6efd';
+                    quantityInput.disabled = false;
+                    quantityInput.value = 1; // Giá trị mặc định khi chọn
+                    quantityInput.focus();
+                } else {
+                    sizeItem.style.backgroundColor = '#f8f9fa';
+                    sizeItem.style.borderColor = '#dee2e6';
+                    quantityInput.disabled = true;
+                    quantityInput.value = 0;
                 }
             });
         });
-    })(jQuery);
+
+        // Toggle bảng size
+        document.getElementById("toggleSizeTable").addEventListener("click", function () {
+            const tableContainer = document.getElementById("sizeTableContainer");
+            const toggleIcon = document.getElementById("toggleIcon");
+
+            if (tableContainer.style.display === "none") {
+                tableContainer.style.display = "block";
+                toggleIcon.className = "bi bi-chevron-up";
+            } else {
+                tableContainer.style.display = "none";
+                toggleIcon.className = "bi bi-chevron-down";
+            }
+        });
+
+        // Validate form section trước khi chuyển đổi
+        function validateInfoSection() {
+            // Lấy các trường bắt buộc trong màn hình đầu tiên
+            const codeInput = document.getElementById('productCode');
+            const nameInput = document.querySelector('input[name="Name"]');
+            const priceInput = document.getElementById('priceInput');
+            const categorySelect = document.querySelector('select[name="CategoryId"]');
+            const descriptionTextarea = document.querySelector('textarea[name="Description"]');
+
+            // Kiểm tra từng trường
+            let isValid = true;
+            let errorMessage = "Vui lòng điền đầy đủ thông tin sau:\n";
+
+            if (!codeInput.value || !codeInput.checkValidity()) {
+                isValid = false;
+                errorMessage += "- Mã sản phẩm (đúng định dạng SP + 5 chữ số)\n";
+                codeInput.classList.add('is-invalid');
+            } else {
+                codeInput.classList.remove('is-invalid');
+            }
+
+            if (!nameInput.value) {
+                isValid = false;
+                errorMessage += "- Tên sản phẩm\n";
+                nameInput.classList.add('is-invalid');
+            } else {
+                nameInput.classList.remove('is-invalid');
+            }
+
+            if (!priceInput.value || parseInt(priceInput.value) < 0) {
+                isValid = false;
+                errorMessage += "- Giá sản phẩm (phải là số không âm)\n";
+                priceInput.classList.add('is-invalid');
+            } else {
+                priceInput.classList.remove('is-invalid');
+            }
+
+            if (!categorySelect.value) {
+                isValid = false;
+                errorMessage += "- Danh mục\n";
+                categorySelect.classList.add('is-invalid');
+            } else {
+                categorySelect.classList.remove('is-invalid');
+            }
+
+            if (!descriptionTextarea.value) {
+                isValid = false;
+                errorMessage += "- Mô tả sản phẩm";
+                descriptionTextarea.classList.add('is-invalid');
+            } else {
+                descriptionTextarea.classList.remove('is-invalid');
+            }
+
+            return { isValid, errorMessage };
+        }
+
+        // Chuyển đổi giữa các bước với validation
+        document.getElementById("nextStep").addEventListener("click", function () {
+            const validation = validateInfoSection();
+
+            if (validation.isValid) {
+                document.getElementById("infoSection").style.display = "none";
+                document.getElementById("imageSection").style.display = "block";
+            } else {
+                alert(validation.errorMessage);
+                // Hiện lại section 1 để người dùng sửa lỗi
+                document.getElementById("infoSection").style.display = "block";
+                document.getElementById("imageSection").style.display = "none";
+            }
+        });
+
+        document.getElementById("prevStep").addEventListener("click", function () {
+            document.getElementById("imageSection").style.display = "none";
+            document.getElementById("infoSection").style.display = "block";
+        });
+
+        // Xử lý form submit với kiểm tra cả 2 màn hình
+        var form = document.getElementById("createProductForm");
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Kiểm tra section 1 trước
+            const infoValidation = validateInfoSection();
+            if (!infoValidation.isValid) {
+                // Chuyển về màn hình 1 và hiển thị lỗi
+                document.getElementById("imageSection").style.display = "none";
+                document.getElementById("infoSection").style.display = "block";
+                alert("Vui lòng sửa các lỗi ở thông tin sản phẩm:\n" + infoValidation.errorMessage);
+                return;
+            }
+
+            // Kiểm tra section 2 (file ảnh)
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                fileInput.classList.add('is-invalid');
+                alert("Vui lòng chọn ảnh sản phẩm");
+                return;
+            }
+
+            // Kiểm tra có size nào được chọn không
+            const sizesChecked = document.querySelectorAll('.sizeCheckbox:checked');
+            if (sizesChecked.length === 0) {
+                alert("Vui lòng chọn ít nhất một size");
+                return;
+            }
+
+            //Nếu tất cả hợp lệ, kiểm tra mã sản phẩm
+            checkCodeAvailability(document.getElementById('productCode').value).then(isAvailable => {
+                if (!isAvailable) {
+                    document.getElementById("imageSection").style.display = "none";
+                    document.getElementById("infoSection").style.display = "block";
+                    document.getElementById("codeValidationMessage").textContent = "Mã sản phẩm này đã tồn tại!";
+                    return;
+                }
+
+                if (confirm("Bạn có chắc muốn thêm sản phẩm này không?")) {
+                    // Xử lý giá trước khi submit
+                    const priceRaw = priceInput.value.replace(/\./g, '');
+                    const hiddenPrice = document.createElement('input');
+                    hiddenPrice.type = 'hidden';
+                    hiddenPrice.name = 'Price';
+                    hiddenPrice.value = priceRaw;
+                    this.appendChild(hiddenPrice);
+
+                    // XỬ LÝ SIZE: Tạo các input động cho các size được chọn
+                    // Xóa bỏ các input SizesQuantities cũ nếu có
+                    document.querySelectorAll('input[name^="SizesQuantities"]').forEach(input => {
+                        input.remove();
+                    });
+
+                    // Thêm mới chỉ những size được chọn với index liên tiếp
+                    let index = 0;
+                    let checkedSizes = document.querySelectorAll('.sizeCheckbox:checked');
+
+                    checkedSizes.forEach(checkbox => {
+                        let sizeId = checkbox.dataset.sizeId;
+                        let quantity = document.getElementById('quantity_' + sizeId).value;
+
+                        // Tạo input cho IdSize
+                        let sizeIdInput = document.createElement('input');
+                        sizeIdInput.type = 'hidden';
+                        sizeIdInput.name = `SizesQuantities[${index}].IdSize`;
+                        sizeIdInput.value = sizeId;
+
+                        // Tạo input cho QuantitySize
+                        let quantityInput = document.createElement('input');
+                        quantityInput.type = 'hidden';
+                        quantityInput.name = `SizesQuantities[${index}].QuantitySize`;
+                        quantityInput.value = quantity;
+
+                        // Thêm vào form
+                        this.appendChild(sizeIdInput);
+                        this.appendChild(quantityInput);
+
+                        index++;
+                    });
+
+                    this.submit();
+                }
+            });
+        });
+
+        // Xử lý mã sản phẩm
+        var codeInput = document.getElementById("productCode");
+        var codeValidationMessage = document.getElementById("codeValidationMessage");
+
+        function generateProductCode() {
+            var randomNumber = Math.floor(Math.random() * 100000);
+            var formattedNumber = String(randomNumber).padStart(5, '0');
+            return "SP" + formattedNumber;
+        }
+
+        function checkCodeAvailability(code) {
+            return new Promise((resolve) => {
+                $.ajax({
+                    url: '/Product/CheckProductCode',
+                    type: 'POST',
+                    data: { code: code },
+                    success: function (response) {
+                        resolve(response.isAvailable);
+                    },
+                    error: function () {
+                        alert("Lỗi khi kiểm tra mã sản phẩm. Vui lòng thử lại.");
+                        resolve(false);
+                    }
+                });
+            });
+        }
+
+        async function setUniqueProductCode() {
+            if (!codeInput.value) {
+                let newCode;
+                let isUnique = false;
+                do {
+                    newCode = generateProductCode();
+                    isUnique = await checkCodeAvailability(newCode);
+                } while (!isUnique);
+                codeInput.value = newCode;
+            }
+        }
+
+        setUniqueProductCode();
+
+        // Xử lý thêm màu sắc
+        $('#categorySelect').on('change', function() {
+            if($(this).val() === 'add_new') {
+                $('#addColorModal').modal('show');
+                $(this).val(''); // Reset selection
+            }
+        });
+
+        // Xử lý upload ảnh
+        (function ($) {
+            $('#fileInput').on("change", function (e) {
+                let file = e.target.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function (event) {
+                        $("#imagePreview").attr("src", event.target.result).show();
+                    };
+                    reader.readAsDataURL(file);
+
+                    let form = new FormData();
+                    form.append("api_key", "284335524597493");
+                    form.append("upload_preset", "vanh2204");
+                    form.append("public_id", new Date().toISOString().replace(/[-:.]/g, ""));
+                    form.append("file", file);
+
+                    var settings = {
+                        "async": true,
+                        "crossDomain": true,
+                        "url": "https://api.cloudinary.com/v1_1/dnvuz3evz/image/upload",
+                        "method": "POST",
+                        "processData": false,
+                        "contentType": false,
+                        "mimeType": "multipart/form-data",
+                        "data": form
+                    };
+
+                    $.ajax(settings).done(function (response) {
+                        let data = JSON.parse(response);
+                        console.log(data);
+                        if (data) {
+                            let url = data.secure_url ?? data.url;
+                            if (url) {
+                                $("#imagePreview").attr("src", url);
+                                $('#urlImage').val(url);
+                            } else {
+                                alert("Không thể tải ảnh lên. Vui lòng thử lại.");
+                            }
+                        }
+                    });
+                }
+            });
+        })(jQuery);
+    });
 </script>

@@ -7,80 +7,294 @@
 {
     <!-- SECTION -->
     <div class="section">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
-                <!-- Order Details -->
                 <div class="cart-details">
                     <div class="section-title text-center">
-                        <h3 class="title">Giỏ của bạn</h3>
+                        <h2 class="title">Giỏ hàng của bạn</h2>
                     </div>
                     <div class="order-summary">
-                        <div class="order-col">
-                            <div><strong>Sản phẩm</strong></div>
-                            <div><strong>Giá</strong></div>
-                        </div>
-                        <div class="order-products">
-                            @foreach (var item in Model)
-                            {
-                                <div class="order-col cart-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
-                                    <div class="item">
-                                        <input type="checkbox" class="chk-select-item" id="check-@item.CartDetailID" />
-                                        <span>@item.NameProduct</span>
-                                        <span class="remove-item" data-itemId="@item.CartDetailID" style="margin-top: 9px;align-content: center;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
-                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a><input class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" /><a class="change-quant cart-quant-up" data-itemId="@item.CartDetailID">+</a>
-                                    </div>
-                                    <div class="sub-total" id="sub-@item.CartDetailID" data-value="@(item.Quantity * item.Price)">@((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</div>
-                                </div>
-                            }
-                        </div>
-                        <div class="order-col">
-                            <div><strong>TỔNG TẠM TÍNH</strong></div>
-                            <div><strong class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
-                        </div>
+                        <table class="cart-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all" title="Chọn tất cả" />
+                                    </th>
+                                    <th>Ảnh</th>
+                                    <th>Mã Sản Phẩm</th>
+                                    <th>Tên Sản phẩm</th>            
+                                    <th>Màu sắc</th>
+                                    <th>Size</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá</th>
+                                    <th>Tổng Tiền</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="cart-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
+                                        <td class="col-select">
+                                            <input type="checkbox" class="chk-select-item" id="check-@item.CartDetailID" />
+                                        </td>
+
+                                        <td class="col-image">
+                                            <img src="@item.Image" alt="Ảnh sản phẩm">
+                                        </td>
+                                        <td class="col-code">
+                                            <span class="product-code" title="@item.ProductCode">@item.ProductCode</span>
+                                        </td>
+                                        <td class="col-name">
+                                            <span class="product-name" title="@item.NameProduct">@item.NameProduct</span>
+                                        </td>
+                                        
+                                        <td class="col-color">@item.Color</td>
+                                        <td class="col-size">@item.sizeName</td>
+                                        <td class="col-quantity">
+                                            <div class="quantity-control">
+                                                <input disabled class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID "
+                                                       data-value="@item.Quantity" value="@item.Quantity" />
+                                            </div>
+                                        </td>
+                                        <td class="col-price" >
+                                            @(item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                        </td>
+                                        <td class="col-total" id="sub-@item.CartDetailID"
+                                            data-value="@(item.Quantity * item.Price)" style="color: red">
+                                            @((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                        <td class="col-remove" style="color: red">
+                                            <span class="remove-item" data-itemId="@item.CartDetailID">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                                     class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
+                                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
+                                                </svg>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="order-footer">
+                                    <td colspan="8" class="text-right"><strong>TỔNG TẠM TÍNH</strong></td>
+                                    <td style="color: red" class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
-                    @* 				<div class="payment-method">
-                <div class="input-radio">
-                <input type="radio" checked name="payment" id="payment-1">
-                <label for="payment-1">
-                <span></span>
-                C.O.D.
-                </label>
-                <div class="caption">
-                <p>Thanh toán khi nhận hàng.</p>
+                    <a id="cart-submit" class="primary-btn cart-submit">Thanh toán</a>
                 </div>
-                </div>
-                </div> *@
-                    <a id="cart-submit" class="primary-btn cart-submit" style="display:none">Thanh toán</a>
-                </div>
-                <!-- /Order Details -->
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /SECTION -->
+
+    <style>
+        /* Định dạng cho bảng giỏ hàng */
+        table.cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Định dạng header của bảng */
+        .cart-table thead {
+            background-color: white;
+            font-weight: bold;
+        }
+
+        .cart-table th, .cart-table td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Cấu trúc cho các ô (cell) trong bảng */
+        .cart-item {
+            background-color: white;
+            border-bottom: 1px solid white;
+        }
+
+            .cart-item:hover {
+                background-color: white;
+            }
+
+        .cart-table td {
+            text-align: center;
+        }
+
+        /* Các cột hình ảnh sản phẩm */
+        .col-image img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* Cột mã sản phẩm */
+        .col-code {
+            
+            font-size: 14px;
+            color: darkgrey;
+        }
+
+        /* Cột tên sản phẩm */
+        .col-name {
+            
+        }
+
+        /* Cột màu sắc và size */
+        .col-color, .col-size {
+
+            color: gray
+        }
+
+        /* Cột số lượng */
+        .col-quantity {
+            width: 150px;
+        }
+
+        /* Cột giá sản phẩm */
+        .col-price {
+            
+            color: red /* Màu đỏ cho giá */
+        }
+
+        /* Cột tổng tiền */
+        .col-total {
+            
+            color: red; /* Màu đỏ cho tổng tiền */
+        }
+
+        /* Cột xóa sản phẩm */
+        .col-remove {
+            color: red
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+            col-remove:hover {
+                color: red
+            }
+
+        /* Kiểm soát checkbox */
+        .col-select input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        /* Định dạng cho các nút điều chỉnh số lượng */
+        .quantity-control input {
+            width: 60px;
+            text-align: center;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        /* Định dạng footer */
+        .order-footer {
+            background-color: #f1f1f1;
+            font-weight: bold;
+            color: #333;
+            text-align: right;
+            padding: 12px;
+        }
+
+        .cart-total {
+            font-size: 16px;
+            color: red; /* Màu đỏ cho tổng */
+        }
+        /* Checkbox 'Chọn tất cả' */
+        #select-all {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        /* Hiệu ứng hover cho hàng sản phẩm */
+        .cart-item:hover .col-remove svg {
+            transform: scale(1.1);
+            transition: transform 0.3s;
+        }
+
+        /* Định dạng biểu tượng thùng rác */
+        .cart-item .col-remove svg {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+    </style>
+
     <script src="~/storefront/js/jquery.min.js"></script>
     <script>
-        $(document).ready(function () {
-            let checkedItems = $(".chk-select-item:checked");
-            let sum = 0;
-            if (checkedItems.length > 0) {
-                $.each(checkedItems, function (i, obj) {
-                    let id = $(obj).attr('id').replace('check-', '');
-                    sum += parseInt($(`#sub-${id}`).text());
+        $(document).ready(function () 
+        {
+            // Lấy dữ liệu từ query parameters trong URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const colorId = urlParams.get("colorId");
+            const sizeId = urlParams.get("sizeId");
+
+            // Nếu colorId và sizeId có giá trị, thay thế vào các cột tương ứng trong bảng
+            if (colorId && sizeId) 
+            {
+                // Cập nhật cột màu sắc
+                $(".col-color").each(function () 
+                {
+                    $(this).text(colorData[colorId] || "Màu chưa xác định");
                 });
-                $('.cart-total').text(sum);
-                $("#cart-submit").show();
+
+                // Cập nhật cột kích thước
+                $(".col-size").each(function () 
+                {
+                    $(this).text(sizeData[sizeId] || "Kích thước chưa xác định");
+                });
             }
+        });
+        $(document).ready(function () {
+            // Chọn tất cả
+            $('#select-all').on('change', function () {
+                $('.chk-select-item').prop('checked', this.checked);
+                updateTotal();
+            });
+
+            // Khi thay đổi checkbox từng item
+            $('.chk-select-item').on('change', function () {
+                if (!this.checked) {
+                    $('#select-all').prop('checked', false);
+                } else if ($('.chk-select-item:checked').length === $('.chk-select-item').length) {
+                    $('#select-all').prop('checked', true);
+                }
+                updateTotal();
+            });
+
+            // Cập nhật tổng tiền
+            function updateTotal() {
+                let checkedItems = $(".chk-select-item:checked");
+                let sum = 0;
+                if (checkedItems.length > 0) {
+                    checkedItems.each(function () {
+                        let id = $(this).attr('id').replace('check-', '');
+                        sum += parseFloat($(`#sub-${id}`).data('value'));
+                    });
+                    $('.cart-total').text(sum.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                    $("#cart-submit").show();
+                } else {
+                    $('.cart-total').text((0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                    $("#cart-submit").hide();
+                }
+            }
+
+            updateTotal();
         });
     </script>
 }
@@ -88,9 +302,7 @@ else
 {
     <!-- HOT DEAL SECTION -->
     <div class="section">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="hot-deal">
@@ -112,9 +324,6 @@ else
                     </div>
                 </div>
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /HOT DEAL SECTION -->
 }

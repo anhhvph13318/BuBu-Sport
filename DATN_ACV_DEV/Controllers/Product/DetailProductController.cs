@@ -36,7 +36,7 @@ namespace DATN_ACV_DEV.Controllers
         public void AccessDatabase()
         {
             try
-            {
+            {   
                 _Product = _context.TbProducts.Where(p => p.Id == _request.ID && p.IsDelete == false).FirstOrDefault();
                 var PrivateAtrtibute = _context.TbProperties.Where(c => c.ProductId == _request.ID).ToList();
                 var PropertiesName = _context.TbProperties.Where(a => PrivateAtrtibute.Select(x => x.Id).Contains(a.Id) && a.Active != false).Select(n => n.Id).ToList();
@@ -47,18 +47,21 @@ namespace DATN_ACV_DEV.Controllers
                     _response.Name = _Product.Name;
                     _response.Code = _Product.Code;
                     _response.Price = _Product.Price;
-                    _response.Quantity = _Product.Quantity;
+                    _response.Quantity = _context.TbProductDetails.Where(c=>c.ProductId == _Product.Id).ToList().Sum(c=>c.Quantity);
                     _response.Status = _Product.Status;
                     _response.Description = _Product.Description;
                     _response.PriceNet = _Product.PriceNet;
                     _response.Vat = _Product.Vat;
                     _response.Warranty = _Product.Warranty;
-                    _response.Color = _Product.Color;
+                    //_response.Color = _Product.Color.ToString();
                     _response.Material = _Product.Material;
                     _response.Image = Image.FirstOrDefault();
                     //_response.CategoryName = _Product.Category.Name;
                     _response.PropertyID = PropertiesName;
                     _response.CategoryId = _Product.CategoryId;
+                    _response.ImageArray = _context.TbImages.Where(c => c.ProductId == _request.ID).Select(c=>c.Url).ToList();
+                    _response.RelatedProducts = _context.TbProducts.Where(c => c.CategoryId == _Product.CategoryId && 
+                    c.Id != _Product.Id && c.IsDelete != true).ToList();
                 }
             }
             catch (Exception)

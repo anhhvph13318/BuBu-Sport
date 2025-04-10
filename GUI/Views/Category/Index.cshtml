@@ -1,37 +1,79 @@
 ﻿@using GUI.Models.DTOs
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @{
-    ViewData["Title"] = "Quản lý danh mục";
+    ViewData["Title"] = "Quản Lý Danh Mục";
 }
 
-@model IEnumerable<CategoryDto>
+@model IEnumerable<CategoryDTO>
 
-<div class="container">
-    <div class="row">
-        <div class="col-6">
-            <input class="form-control" placeholder="Tên phân loại ..." id="categorySearch" />
+<div class="container-fluid px-4 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-collection-fill me-2"></i>Danh Sách Danh Mục
+        </h2>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="clear()">
+            <i class="bi bi-plus-circle me-1"></i>Tạo mới
+        </button>
+    </div>
+
+    <!-- Card tìm kiếm -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-search me-1"></i>
+            Tìm kiếm danh mục
         </div>
-        <div class="col-6">
-            <button class="btn btn-primary ms-1 me-1" onclick="search()">Tìm kiếm</button>
-            <button class="btn btn-danger ms-1 me-1" onclick="reset()">Reset</button>
+        <div class="card-body">
+            <form class="row g-3">
+                <div class="col-md-6">
+                    <label for="categorySearch" class="form-label">Tên danh mục</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                        <input type="text" class="form-control" id="categorySearch" placeholder="Nhập tên danh mục">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Trạng thái</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                        <select class="form-select" id="status">
+                            <option value="0">Tất cả</option>
+                            <option value="1">Hoạt động</option>
+                            <option value="2">Không hoạt động</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="button" class="btn btn-primary me-2" onclick="search()">
+                        <i class="bi bi-search me-1"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="reset()">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    <hr />
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="clear()">Thêm mới</button>
-    </div>
-    <div id="categoryTable">
-        @await Html.PartialAsync("_CategoryTable", Model)
+
+    <!-- Danh sách danh mục -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-table me-1"></i>
+            Kết quả tìm kiếm
+        </div>
+        <div class="card-body table-responsive" id="categoryTable">
+            @await Html.PartialAsync("_CategoryTable", Model)
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <span class="text-muted">Hiển thị @(Model?.Count() ?? 0) danh mục</span>
+            </div>
+        </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" id="modalContent">
-            @await Html.PartialAsync("_CategoryModal", new CategoryDto())
+            @await Html.PartialAsync("_CategoryModal", new CategoryDTO())
         </div>
     </div>
 </div>
@@ -39,4 +81,17 @@
 @section scripts {
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/category.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Hiệu ứng hover cho các hàng trong bảng
+            $('table tbody tr').hover(
+                function () {
+                    $(this).addClass('table-active');
+                },
+                function () {
+                    $(this).removeClass('table-active');
+                }
+            );
+        });
+    </script>
 }

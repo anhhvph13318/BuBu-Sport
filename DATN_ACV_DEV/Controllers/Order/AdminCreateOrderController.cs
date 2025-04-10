@@ -2,6 +2,7 @@
 using DATN_ACV_DEV.Model_DTO.Order_DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DATN_ACV_DEV.Controllers.Order
 {
@@ -33,7 +34,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             {
                 Id = Guid.NewGuid(),
                 TbOrderDetails = items.ToList(),
-                Status = payload.Status,
+                Status = payload.IsDraft == true ? 0 : payload.Status,
                 TotalAmount = payload.Payment.TotalAmount,
                 TotalAmountDiscount = payload.Payment.TotalDiscount,
                 AmountShip = payload.Payment.ShippingFee,
@@ -94,7 +95,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             // re-update product stock
             foreach (var item in payload.Items)
             {
-                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
+                var productID = _context.TbProductDetails.Where(c => c.Id == Guid.Parse(item.Id)).Select(c => c.ProductId).FirstOrDefault();
+                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == productID)
                     ?? throw new NullReferenceException();
 
                 if (product.Quantity <= 0)
@@ -108,9 +110,15 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             if(errors.Count == 0)
             {
-                await _context.TbOrders.AddAsync(order);
-                await _context.SaveChangesAsync();
-
+                try
+                {
+					await _context.TbOrders.AddAsync(order);
+					await _context.SaveChangesAsync();
+				}
+                catch (Exception ex)
+                {
+                    throw;
+                }
                 return Ok(new { Success = true });
             }
 
@@ -126,6 +134,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             [FromRoute] string id,
             [FromBody] UpdateOrder payload)
         {
+            var errors = new Dictionary<string, string>();
             var order = await _context.TbOrders
                 .Include(e => e.Customer)
                 .Include(e => e.AddressDelivery)
@@ -163,7 +172,7 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             // update customer info
             if (payload.Customer.Id != Guid.Empty)
-                order.CustomerId = payload.Customer.Id;
+                order.CustomerId = order.CustomerId == null ? payload.Customer.Id : order.CustomerId;
             else
             {
                 order.Customer = new TbCustomer
@@ -237,9 +246,41 @@ namespace DATN_ACV_DEV.Controllers.Order
 
                 order.TbOrderDetails.Remove(item);
             }
+            // re-update product stock
+            if (payload.Status == 1) // VANH
+            {
+                foreach (var item in payload.Items)
+                {
+                    var productId = _context.TbProductDetails.Where(c=>c.Id == Guid.Parse(item.Id)).Select(c=>c.ProductId).FirstOrDefault();
+                    var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == productId)
+                        ?? throw new NullReferenceException();
 
+                    if (product.Quantity <= 0)
+                    {
+                        errors.Add($"Product.{product.Id}", $"{product.Name} - Không đủ số lượng");
+                    }
+                    else
+                    {
+                        product.Quantity -= item.Quantity;
+                    }
+                }
+            }
             _context.TbOrders.Update(order);
-            await _context.SaveChangesAsync();
+            //_context.SaveChanges();
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Detail = ex.InnerException?.Message
+                });
+            }
 
             return Ok(new { Success = true });
         }

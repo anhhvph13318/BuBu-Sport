@@ -10,7 +10,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("vouchers")]
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 public class VoucherController : Controller
 {
     private const string URI = "http://localhost:5059";
@@ -22,11 +22,12 @@ public class VoucherController : Controller
         [FromQuery] string name,
         [FromQuery] DateTime? startDate,
         [FromQuery] DateTime? endDate,
-        [FromQuery] VoucherUnit? unit)
+        [FromQuery] VoucherUnit? unit,
+        [FromQuery] int? status)
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
-        var rawResponse = await httpClient.GetAsync($"/api/vouchers?code={code}&name={name}&startDate={startDate}&endDate={endDate}&unit={unit}");
+        var rawResponse = await httpClient.GetAsync($"/api/vouchers?code={code}&name={name}&startDate={startDate}&endDate={endDate}&unit={unit}&status={status}");
             
         if(rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
         {
@@ -82,42 +83,89 @@ public class VoucherController : Controller
     public async Task<IActionResult> Handle(VoucherFormModel model)
     {
         var validPeriod = model.Voucher.EndDate < model.Voucher.StartDate;
-        var validDiscount = model.Voucher.Unit == VoucherUnit.Percent && model.Voucher.Discount > 80;
-        if (!TryValidateModel(model.Voucher) || validPeriod || validDiscount)
+        var validStartDate = model.Voucher.StartDate < DateTime.Today;
+        var validDiscountPercent = model.Voucher.Unit == VoucherUnit.Percent && (model.Voucher.Discount < 5 || model.Voucher.Discount > 100);
+        var validDiscountMoney = model.Voucher.Unit == VoucherUnit.Money && model.Voucher.Discount < 1000;
+        var validCondition = model.Voucher.Condition < 5000;
+        var validConditionWithDiscount = model.Voucher.Unit == VoucherUnit.Money && model.Voucher.Condition <= model.Voucher.Discount;
+        var validMaxDiscount = model.Voucher.MaxDiscount < 5000;
+        var validMaxCondition = model.Voucher.Condition > 1000000000;
+        var validMinCondition = model.Voucher.Condition < 5000;
+        if (!ModelState.IsValid || validPeriod || validDiscountPercent || validStartDate || validCondition || validConditionWithDiscount || validMaxCondition || validDiscountMoney  || validMaxDiscount)
         {
-            if(validPeriod)
+            if (validPeriod)
                 ModelState.AddModelError("Voucher.EndDate", "Ngày kết thúc không thể nhỏ hơn ngày bắt đầu");
+            if (validStartDate)
+                ModelState.AddModelError("Voucher.StartDate", "Ngày bắt đầu không thể nhỏ hơn ngày hiện tại");
+            if (validDiscountPercent)
+                ModelState.AddModelError("Voucher.Discount", "Giá trị voucher phải nằm trong khoảng từ 5% đến 100%");
+            if (validDiscountMoney)
+                ModelState.AddModelError("Voucher.Discount", "Giá trị tối thiểu là 1000đ");
+            if (validCondition)
+                ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng không thể ít hơn 5000");
+            if (validConditionWithDiscount)
+                ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng phải lớn hơn giá trị giảm giá");
+            if (validMaxCondition)
+                ModelState.AddModelError("Voucher.Condition", "Giá trị tối thiểu của đơn hàng quá lớn");
+            if (validMaxDiscount)
+                ModelState.AddModelError("Voucher.MaxDiscount", "Giá trị tối thiểu không được ít hơn 5000đ");
 
-            if (validDiscount)
-                ModelState.AddModelError("Voucher.Discount", "Giá trị voucher không thể vượt quá 80%");
-
-            return model.IsEditMode
-                ? View("Detail", model)
-                : View("Create", model);
+            return model.IsEditMode ? View("Detail", model) : View("Create", model);
         }
 
         if (model.Voucher.Unit == VoucherUnit.Money)
             model.Voucher.MaxDiscount = model.Voucher.Discount;
 
-
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
 
         var response = model.IsEditMode
-            ? await httpClient.PatchAsJsonAsync($"/api/vouchers/{model.Voucher.Id}", model.Voucher)
+            ? await httpClient.PostAsJsonAsync("/api/editVoucher/Process", model.Voucher)
             : await httpClient.PostAsJsonAsync("/api/vouchers", model.Voucher);
 
-        if(response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
             return RedirectToAction("Index");
 
-        if(response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        // Debug: In ra thông tin phản hồi để kiểm tra
+        var errorContent = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Status Code: {response.StatusCode}");
+        Console.WriteLine($"Error Content: {errorContent}");
+
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            ModelState.AddModelError("Voucher.Code", "Mã voucher đã tồn tại");
-            return model.IsEditMode
-                ? View("Detail", model)
-                : View("Create", model);
+            try
+            {
+                var errorDetails = JsonConvert.DeserializeObject<dynamic>(errorContent);
+                string errorMessage = errorDetails?.message ?? "Mã voucher đã tồn tại hoặc dữ liệu không hợp lệ";
+                ModelState.AddModelError("Voucher.Code", errorMessage);
+            }
+            catch
+            {
+                ModelState.AddModelError("Voucher.Code", "Mã voucher đã tồn tại hoặc dữ liệu không hợp lệ");
+            }
+        }
+        else
+        {
+            string errorMessage;
+            try
+            {
+                var errorDetails = JsonConvert.DeserializeObject<dynamic>(errorContent);
+                errorMessage = errorDetails?.message ?? $"Lỗi từ server: {response.StatusCode}";
+            }
+            catch
+            {
+                errorMessage = $"Lỗi không xác định từ server: {response.StatusCode}. Chi tiết: {errorContent}";
+            }
+            ModelState.AddModelError("", errorMessage);
         }
 
-        throw new HttpRequestException("Have error when call api");
+        // Debug: Kiểm tra ModelState có lỗi không
+        Console.WriteLine("ModelState Errors:");
+        foreach (var error in ModelState)
+        {
+            Console.WriteLine($"{error.Key}: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
+        }
+
+        return model.IsEditMode ? View("Detail", model) : View("Create", model);
     }
 }

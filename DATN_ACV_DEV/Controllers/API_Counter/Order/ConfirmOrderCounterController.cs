@@ -143,7 +143,6 @@ namespace DATN_ACV_DEV.Controllers.API_Counter.Order
                             productName = model.Name,
                             productCode = model.Code,
                             price = model.Price,
-                            weight = model.Weight,
                             quantity = item.Quantity.Value,
                             url = image != null ? image.Url : ""
                         };

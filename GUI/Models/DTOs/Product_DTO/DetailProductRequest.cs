@@ -20,6 +20,7 @@
         public decimal? PriceNet { get; set; }
 
         public string Image { get; set; }
+        public Guid? ImageId { get; set; }
 
         public string CategoryName { get; set; }
 
