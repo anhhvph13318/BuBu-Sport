@@ -71,7 +71,7 @@ namespace GUI.Controllers
         }
 
         [Route("/Success")]
-        public IActionResult Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash) 
+        public async Task<IActionResult> Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash)
         {
             ViewBag.OrderId = vnp_TxnRef;
             var isGuid = Guid.TryParse(vnp_TxnRef, out var code);
@@ -86,7 +86,7 @@ namespace GUI.Controllers
                 };
                 var URL = _settings.APIAddress + "api/ConfirmPayment/Process";
                 var param = JsonConvert.SerializeObject(request);
-                httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             }
 
             var userId = Guid.Empty;
@@ -95,7 +95,7 @@ namespace GUI.Controllers
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = GetCartItemCount(userId); 
+            ViewBag.CartItemCount = await GetCartItemCount(userId); 
             return View();
         }
 
