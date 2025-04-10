@@ -330,6 +330,7 @@
                                             <input class="form-control order-item-quantity" min="1" value="${orderItem.Quantity}" type="number" />
                                         </td>
                                         <td>${itemTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                                        <td style="display: none" class="order-item-id">${orderItem.Id}</td>
                                         <td>
                                             <button class="btn btn-danger remove-item-btn" data-id="${orderItem.Id}">Xoá</button>
                                         </td>

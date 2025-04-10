@@ -191,6 +191,15 @@ public class OrderController : Controller
     public async Task<IActionResult> SaveOrder([FromBody] Checkout checkout)
     {
         var order = HttpContext.Session.GetCurrentOrder();
+        if (order.Items.Count == 0)
+        {
+            order.Items = checkout.OrderItems;
+            order.PaymentInfo.TotalAmount = order.Items.Sum(c => c.Price);
+        }
+        if (order.Items.Count < checkout.OrderItems.Count)
+        {
+            order.Items = checkout.OrderItems;
+        }
         if (order.Customer.Id == Guid.Empty)
             order.Customer = checkout.CustomerInfo;
 
