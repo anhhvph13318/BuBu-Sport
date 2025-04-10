@@ -1,8 +1,10 @@
 const productStorage = new ProductStorage();
 
 // toast setup
-toastr.options.timeOut = 3000;
+
+toastr.options.timeOut = 5000; 
 toastr.options.closeButton = true;
+toastr.options.progressBar = true; 
 
 // end toast setup
 
@@ -276,7 +278,7 @@ function clearOrder() {
 
 function saveOrder(isDraft) {
     if (!verify()) return;
-
+    $('#loading-overlay').css('display', 'flex');
     const customerInfo = {
         name: $('#customerName').val(),
         phoneNumber: $('#customerPhoneNumber').val(),
@@ -315,7 +317,23 @@ function saveOrder(isDraft) {
             changeResetButtonText(false);
             interactiveCartItemAndVoucherButton(false);
         })
-        .then(_ => toastr.success("Thành công!"))
+        .then(_ => {
+            if (isDraft) {
+                toastr.success("Lưu tạm hóa đơn thành công!");
+            } else {
+                toastr.success("Tạo hóa đơn thành công!");
+            }
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        })
+        .catch(err => {
+            console.error("Lỗi khi lưu hóa đơn:", err);
+            toastr.error("Có lỗi xảy ra khi lưu hóa đơn!");
+        })
+        .finally(() => {
+            $('#loading-overlay').css('display', 'none');
+        })
         .then(_ => clearOrder());
 }
 
