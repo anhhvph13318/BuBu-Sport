@@ -242,12 +242,6 @@ public class OrderController : Controller
 
         if (rawResponse.IsSuccessStatusCode)
         {
-            if (rawResponse.RequestMessage.Method == HttpMethod.Patch)
-            {
-                TempData["SuccessMessage"] = "Cập nhật hóa đơn thành công !!!";
-                return Redirect("http://localhost:5011/orders/create/instore");
-            }
-
             var orders = await FetchOrderList();
 
             try
