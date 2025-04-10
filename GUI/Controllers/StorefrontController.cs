@@ -400,11 +400,12 @@ namespace GUI.Controllers
             var param = JsonConvert.SerializeObject(req);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
+            Console.WriteLine("Response from API: " + res);
             if (result.Status == "200")
             {
                 return Ok(new { userId });
             }
-            return BadRequest();
+            return BadRequest(result);
         }
 
         [HttpPost("/BuyNow")]
