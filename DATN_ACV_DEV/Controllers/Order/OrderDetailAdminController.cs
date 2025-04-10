@@ -273,11 +273,16 @@ public class OrderDetailAdminController : ControllerBase
                     Status = e.Status ?? 0,
                     Items = e.TbOrderDetails.Select(d => new OrderItem()
                     {
-                        Id = d.ProductId,
-                        Price = d.Product.Price,
+                        Id = _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault(),
+                        Price = _context.TbProductDetails.Where(c => c.Id == _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault()).Select(c => c.Price).FirstOrDefault(),
                         Quantity = d.Quantity,
-                        ProductImage = d.Product.tb_Image != null ? d.Product.tb_Image.Url : "",
-                        ProductName = d.Product.Name
+                        ProductImage = _context.TbImages.Where(c => c.Id == _context.TbProductDetails.Where(a => a.Id == d.ProductId).Select(c => c.ImageId).FirstOrDefault()).Select(c => c.Url).FirstOrDefault(),
+                        ProductName = _context.TbProducts.Where(v=>v.Id == _context.TbProductDetails.Where(c => c.Id == 
+                        _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault()).Select(c => c.ProductId).FirstOrDefault()).Select(v=>v.Name).FirstOrDefault(),
+                        Code = _context.TbProducts.Where(v => v.Id == _context.TbProductDetails.Where(c => c.Id ==
+                        _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault()).Select(c => c.ProductId).FirstOrDefault()).Select(v => v.Code).FirstOrDefault(),
+                        Color = _context.TbColors.Where(c => c.Id == _context.TbProductDetails.Where(a => a.Id == d.ProductId).Select(c => c.ColorId).FirstOrDefault()).Select(c => c.Name).FirstOrDefault(),
+                        Size = _context.TbSizes.Where(c => c.Id == _context.TbProductDetails.Where(a => a.Id == d.ProductId).Select(c => c.SizeId).FirstOrDefault()).Select(c => c.SizeName).FirstOrDefault(),
                     }),
                     Created = e.CreateDate
                 })
