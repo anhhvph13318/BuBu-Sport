@@ -309,7 +309,11 @@ namespace GUI.Controllers
             ViewBag.CartItemCount = await GetCartItemCount(userId); 
             return View(model);
         }
-
+        [Route("/CancelOrder")]
+        public async Task<IActionResult> CancelOrder(string s)
+        {
+            return Ok();
+        }
         [Route("/OrderChecking")]
         public async Task<IActionResult> OrderChecking(string s)
         {
