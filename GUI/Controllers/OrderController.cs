@@ -231,12 +231,25 @@ public class OrderController : Controller
             Shipping = order.ShippingInfo,
             Payment = order.PaymentInfo,
         };
+        var updateRequest = new UpdateItemOrderRequest()
+        {
+            Items = payload.Items,
+            Status = checkout.Status
+        };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
-            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+            ? await httpClient.PatchAsJsonAsync($"api/orders/update/{order.Id}", updateRequest)
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
         if(rawResponse.IsSuccessStatusCode)
         {
+            if (rawResponse.RequestMessage.Method == HttpMethod.Patch)
+            {
+                // Hiển thị thông báo
+                TempData["SuccessMessage"] = "Cập nhật hóa đơn thành công !!!";
+
+                // Redirect về trang instore
+                return Redirect("http://localhost:5011/orders/create/instore");
+            }
             var orders = await FetchOrderList();
             foreach (var item in orders)
             {

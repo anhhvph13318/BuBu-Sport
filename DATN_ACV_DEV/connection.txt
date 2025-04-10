@@ -3,7 +3,7 @@ Scaffold-DbContext "Data Source=DESKTOP-I8QEIM8;Initial Catalog=DATABASE_ACV_13_
 
 VietAnh:         
 => optionsBuilder.UseSqlServer("Data Source=LAPTOP-J4T64IRF\MSSQLSERVER02;Initial Catalog=DB_BuBu_04_04;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
-=> optionsBuilder.UseSqlServer("Data Source=DESKTOP-I8QEIM8;Initial Catalog=DB_BuBu_18_01_bacpac;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
+=> optionsBuilder.UseSqlServer("Data Source=DESKTOP-I8QEIM8;Initial Catalog=DB_BuBu_18_01_bacpac;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;"); 
 
 Vu: Data Source=RATONLYNK;Initial Catalog=DB_SmartHouse;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
 

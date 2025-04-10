@@ -4,9 +4,7 @@
     Layout = "_LayoutStore";
 }
 <div class="section">
-    <!-- container -->
     <div class="container">
-        <!-- row -->
         <div class="row">
             <div class="col-md-12">
                 <div class="hot-deal">
@@ -18,51 +16,62 @@
                         </form>
                     </div>
                 </div>
+
                 @if (Model != null)
                 {
                     <p class="orders-header">Đơn hàng</p>
                     foreach (var order in Model)
                     {
                         <div class="order-title">Đơn hàng <strong>@order.Code</strong></div>
-                        <div class="order-title">@order.Id</div>
-                        <div class="order-info order-summary">
-                            <div class="order-col">
-                                <div>Sản phẩm</div>
-                                <div>
-                                    @foreach (var item in order.Items)
-                                    {
-                                        <p>@item.Quantity x @item.ProductName</p>
-                                        <p>@((item.Price * item.Quantity).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</p>
-
-                                        <br />
-                                    }
+                        <div class="order-info order-summary w-100">
+                            <div class="order-col w-100" style="width: 100%;">
+                                <div class="order-wrapper" style="width: 100%;">
+                                    <table class="order-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã SP</th>
+                                                <th>Sản phẩm</th>
+                                                <th>Màu sắc</th>
+                                                <th>Size</th>
+                                                <th>Đơn giá</th>
+                                                <th>Số lượng</th>
+                                                <th>Thành tiền</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in order.Items)
+                                            {
+                                                <tr>
+                                                    <td>@item.Code</td>
+                                                    <td>@item.ProductName</td>
+                                                    <td>@item.Color</td>
+                                                    <td>@item.Size</td>
+                                                    <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                                                    <td>@item.Quantity</td>
+                                                    <td>@((item.Price * item.Quantity).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            @if (order.ShippingInfo != null && !order.ShippingInfo.IsCustomerTakeYourSelf)
-                            {
-                                @* <div class="order-col">
-                                    <div>Phí giao hàng</div>
-                                    <div><p id="shipping-fee">30000</p></div>
-                                </div> *@
-                            }
+
                             @if (order.PaymentInfo.TotalDiscount > 0)
                             {
-                                <div class="order-col">
-                                    <div>Giảm giá</div>
-                                    <div><p id="shipping-fee">@order.PaymentInfo.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p></div>
+                                <div class="order-col mb-3">
+                                    <div class="order-label">Giảm giá</div>
+                                    <div class="order-value">@order.PaymentInfo.TotalDiscount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
                                 </div>
                             }
-                            <div class="order-col">
-                                <div>Tổng thanh toán</div>
-                                <div>
-                                    <p>
-                                        @((order.PaymentInfo.FinalAmount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
-                                    </p>
-                                </div>
+
+                            <div class="order-col mb-3">
+                                <div class="order-label">Tổng thanh toán</div>
+                                <div class="order-value">@order.PaymentInfo.FinalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
                             </div>
-                            <div class="order-col">
-                                <div>Thông tin khách hàng</div>
-                                <div>
+
+                            <div class="order-col mb-3">
+                                <div class="order-label">Thông tin khách hàng</div>
+                                <div class="order-value">
                                     @if (order.ShippingInfo != null && !string.IsNullOrEmpty(order.ShippingInfo.Name))
                                     {
                                         <p>@order.ShippingInfo.Name</p>
@@ -77,39 +86,31 @@
                                     }
                                 </div>
                             </div>
-                            <div class="order-col">
-                                <div>Phương thức thanh toán</div>
-                                <div>
-                                    <p>
-                                        @order.PaymentMethodName
-                                    </p>
-                                </div>
+
+                            <div class="order-col mb-3">
+                                <div class="order-label">Phương thức thanh toán</div>
+                                <div class="order-value">@order.PaymentMethodName</div>
                             </div>
-                            <div class="order-col">
-                                <div>Trạng thái thanh toán</div>
-                                <div>
-                                    <strong>
-                                        @order.PaymentInfo.PaymentStatus
-                                    </strong>
-                                </div>
+
+                            <div class="order-col mb-3">
+                                <div class="order-label">Trạng thái thanh toán</div>
+                                <div class="order-value text-success fw-bold">@order.PaymentInfo.PaymentStatus</div>
                             </div>
-                            <div class="order-col">
-                                <div>Trạng thái đơn hàng</div>
-                                <div>
-                                    <strong>
-                                        @order.StatusText
-                                    </strong>
-                                </div>
+
+                            <div class="order-col mb-3">
+                                <div class="order-label">Trạng thái đơn hàng</div>
+                                <div class="order-value fw-bold">@order.StatusText</div>
                             </div>
-                            <div class="order-col">
-                                <div>Thời gian đặt hàng</div>
-                                <div>
-                                    <strong>
-                                        @order.Created
-                                    </strong>
-                                </div>
-                            </div> @*VANH*@
+
+                            <div class="order-col mb-3">
+                                <div class="order-label">Thời gian đặt hàng</div>
+                                <div class="order-value">@order.Created.ToString("dd/MM/yyyy HH:mm")</div>
+                            </div>
                         </div>
+                        @if (@order.StatusText == "Chờ xác nhận")
+                        {
+                            <button class="btn btn-danger" action="CancelOrder">Hủy đơn hàng</button>
+                        }
                         <hr />
                     }
                 }
@@ -121,5 +122,54 @@
 <style>
     .order-summary .order-col > div:last-child {
         width: 300px;
+    }
+
+    .order-col {
+        margin-bottom: 1rem;
+    }
+
+    .order-label {
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 0.25rem;
+    }
+
+    .order-value {
+        color: #222;
+    }
+
+    .product-item {
+        background: #f9f9f9;
+    }
+
+    .order-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px; /* thêm để bảng không bị bóp */
+    }
+
+        .order-table th,
+        .order-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .order-table thead {
+            background-color: #f2f2f2;
+        }
+
+    .order-wrapper {
+        width: 100%;
+    }
+
+    .order-info, .order-col {
+        width: 100%;
+        display: block;
+    }
+
+    .order-info {
+        max-width: 79%;
+        margin: 15px auto;
     }
 </style>

@@ -70,7 +70,7 @@
                             <option value="" selected="@(string.IsNullOrEmpty(Context.Request.Query["orderCodePrefix"]))">-- Tất cả kiểu --</option>
                             <option value="OFF" selected="@(Context.Request.Query["orderCodePrefix"] == "OFF")">Tại quầy (OFF)</option>
                             <option value="ON" selected="@(Context.Request.Query["orderCodePrefix"] == "ON")">Online (ON)</option>
-                            <option value="ON" selected="@(Context.Request.Query["orderCodePrefix"] == "TEMP")">Hóa đơn chờ (TEMP)</option>
+                            <option value="TEMP" selected="@(Context.Request.Query["orderCodePrefix"] == "TEMP")">Hóa đơn chờ (TEMP)</option>
                         </select>
                     </div>
                 </div>
@@ -129,7 +129,8 @@
                         var index = 1;
                         @foreach (var order in sortedOrders)
                         {
-                            var orderType = order.code.StartsWith("OFF") ? "Tại quầy" : "Online";
+                            var orderType = (order.code.StartsWith("OFF") || order.code.StartsWith("TEMP")) ? "Tại quầy" : "Online";
+
                             var statusClass = order.status switch
                             {
                                 "Chờ xác nhận" => "bg-secondary",
