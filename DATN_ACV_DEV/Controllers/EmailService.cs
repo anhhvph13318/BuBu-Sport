@@ -32,6 +32,11 @@ namespace DATN_ACV_DEV.Controllers
 
         public async Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type)
         {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                Console.WriteLine("Email không hợp lệ, bỏ qua gửi email xác nhận.");
+                return;
+            }
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("BuBuSport", "sprtbubu@gmail.com"));
             message.To.Add(new MailboxAddress(customerName, email));

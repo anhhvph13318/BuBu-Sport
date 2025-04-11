@@ -30,6 +30,48 @@
     .table-lock-height > tbody {
         height: 200px;
     }
+
+    .loading-overlay {
+        display: none; 
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); 
+        z-index: 9999; 
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3; 
+        border-top: 5px solid #3498db; 
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0%
+
+    {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+
+    }
+
+    .loading-overlay p {
+        color: white;
+        font-size: 18px;
+        margin-top: 10px;
+    }
 </style>
 <link href="~/lib/toastr/toastr.css" rel="stylesheet" />
 
@@ -140,6 +182,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="productListSearchInput" class="form-control" placeholder="Tìm theo mã hoặc tên sản phẩm...">
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -186,20 +231,11 @@
         </div>
     </div>
 </div>
-
+<div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Đang xử lý...</p>
+</div>
 @section scripts {
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
-    }
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["ErrorMessage"]
-        </div>
-    }
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>
@@ -215,44 +251,73 @@
 
     <script>
         $(document).ready(function () {
+            let fullProductList = [];
+
             $('#btnShowProductList').on('click', function () {
                 fetch('/api/products')
                     .then(res => res.json())
                     .then(data => {
-                        const productListBody = $('#productListBody').empty();
-                        data.forEach((product, index) => {
-                            if (!product.image?.trim()) return;
-
-                            const row = `
-                                <tr>
-                                    <td></td>
-                                    <td><span class="badge bg-secondary">${product.code}</span></td>
-                                    <td>${product.name}</td>
-                                    <td><img src="${product.image}" style="width: 50px; height: 50px;" /></td>
-                                    <td>${product.price} VNĐ</td>
-                                    <td><button class="btn btn-info btn-detail" data-id="${product.id}">Chi tiết</button></td>
-                                </tr>`;
-                            productListBody.append(row);
-                            updateTableSTT('#productListModal table');
-                        });
+                        fullProductList = data;
+                        renderProductList(data);
                         $('#productListModal').modal('show');
                     });
             });
 
+            $('#productListModal').on('hidden.bs.modal', function () {
+                $('#productListSearchInput').val('');
+                renderProductList(fullProductList);
+            });
+
+            $('#productListSearchInput').on('input', function () {
+                const keyword = $(this).val().toLowerCase();
+                const filtered = fullProductList.filter(product =>
+                    product.name.toLowerCase().includes(keyword) ||
+                    product.code.toLowerCase().includes(keyword)
+                );
+                renderProductList(filtered);
+            });
+
+            function renderProductList(data) {
+                const productListBody = $('#productListBody').empty();
+                data.forEach((product, index) => {
+                    if (!product.image?.trim()) return;
+                    const row = `
+                        <tr>
+                            <td></td>
+                            <td><span class="badge bg-secondary">${product.code}</span></td>
+                            <td>${product.name}</td>
+                            <td><img src="${product.image}" style="width: 50px; height: 50px;" /></td>
+                            <td>${product.price} VNĐ</td>
+                            <td><button class="btn btn-info btn-detail" data-id="${product.id}" data-name="${product.name}">Chi tiết</button></td>
+                        </tr>`;
+                    productListBody.append(row);
+                });
+                updateTableSTT('#productListModal table');
+            }
+
+            let currentProductName = '';
+
             $(document).on('click', '.btn-detail', function () {
                 const productId = $(this).data('id');
+                currentProductName = $(this).data('name') || '';
                 fetch(`/api/products/${productId}/variants`)
                     .then(res => res.json())
                     .then(variants => {
                         const variantOptions = $('#variantOptions').empty();
                         variants.forEach(variant => {
+                            const isDisabled = variant.quantity <= 0;
                             const row = `
                                 <tr>
                                     <td></td>
-                                    <td>${variant.color}</td>
-                                    <td>${variant.size}</td>
-                                    <td><input type="number" class="form-control" min="1" max="${variant.quantity}" value="1" data-variant-id="${variant.id}" /></td>
-                                    <td><input type="checkbox" class="form-check-input" data-variant-id="${variant.id}" /></td>
+                                    <td class="color-cell">${variant.color}</td>
+                                    <td class="size-cell">${variant.size}</td>
+                                    <td>
+                                        <input type="number" class="form-control" min="1" max="${variant.quantity}" value="1"
+                                            data-variant-id="${variant.id}" ${isDisabled ? 'disabled' : ''} readonly />
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" class="form-check-input" data-variant-id="${variant.id}" ${isDisabled ? 'disabled' : ''} />
+                                    </td>
                                 </tr>`;
                             variantOptions.append(row);
                         });
@@ -265,13 +330,17 @@
                 let hasInvalidQuantity = false;
 
                 $('#variantOptions input[type="checkbox"]:checked').each(function () {
-                    const variantId = $(this).data('variant-id');
-                    const quantityInput = $(this).closest('tr').find('input[type="number"]');
+                    const checkbox = $(this);
+                    const row = checkbox.closest('tr');
+                    const variantId = checkbox.data('variant-id');
+                    const quantityInput = row.find('input[type="number"]');
                     const quantity = parseInt(quantityInput.val());
                     const max = parseInt(quantityInput.attr('max'));
 
                     if (isNaN(quantity) || quantity <= 0 || quantity > max) {
-                        toastr.warning("Số lượng không hợp lệ hoặc vượt quá tồn kho!");
+                        const color = row.find('.color-cell').text();
+                        const size = row.find('.size-cell').text();
+                        toastr.warning(`Sản phẩm "${currentProductName}" - Màu: ${color}, Size: ${size} có số lượng không hợp lệ hoặc vượt quá tồn kho!`);
                         hasInvalidQuantity = true;
                         return;
                     }
@@ -305,7 +374,7 @@
                                 const newQty = currentQty + orderItem.Quantity;
 
                                 if (newQty > max) {
-                                    toastr.error("Tổng số lượng vượt quá tồn kho.");
+                                    toastr.error(`Tổng số lượng cho "${orderItem.ProductName}" - Màu: ${orderItem.Color}, Size: ${orderItem.Size} vượt quá tồn kho.`);
                                     return;
                                 }
 
@@ -337,6 +406,7 @@
                                     </tr>
                                 `;
                                 $('#orderItemContainer tbody').append(row);
+                                updatePaymentInfoSummary();
                             }
 
                             updateTableSTT('#orderItemContainer table');
@@ -352,11 +422,37 @@
                 }
             });
 
-
             $(document).on('click', '.remove-item-btn', function () {
                 $(this).closest('tr').remove();
                 updateTableSTT('#orderItemContainer table');
+                updatePaymentInfoSummary();
             });
         });
+
+        function updateTableSTT(tableSelector) {
+            $(`${tableSelector} tbody tr`).each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+
+        function updatePaymentInfoSummary() {
+            let totalAmount = 0;
+
+            $('#orderItemContainer tbody tr').each(function () {
+                const quantity = parseInt($(this).find('.order-item-quantity').val()) || 0;
+                const priceText = $(this).find('td').eq(6).text();
+                const price = parseFloat(priceText.replace(/[^\d]/g, '')) || 0;
+                totalAmount += quantity * price;
+            });
+
+            const discountText = $('#discount-amount').text().replace(/[^\d]/g, '');
+            const totalDiscount = parseFloat(discountText) || 0;
+            const finalAmount = totalAmount - totalDiscount;
+
+            $('#total-amount').text(totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+            $('#discount-amount').text('- ' + totalDiscount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+            $('#orderPaymentInfoContainer p:contains("Thành tiền:")').next().text(finalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+        }
     </script>
+
 }

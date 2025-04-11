@@ -8,5 +8,9 @@
         {
             Messages = new List<Message>();
         }
+        public ACV_Exception(Message message)
+        {
+            Messages = new List<Message> { message };
+        }
     }
 }

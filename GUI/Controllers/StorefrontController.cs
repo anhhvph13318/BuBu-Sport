@@ -74,7 +74,7 @@ namespace GUI.Controllers
         }
 
         [Route("/Success")]
-        public IActionResult Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash) 
+        public async Task<IActionResult> Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash)
         {
             ViewBag.OrderId = vnp_TxnRef;
             var isGuid = Guid.TryParse(vnp_TxnRef, out var code);
@@ -89,7 +89,7 @@ namespace GUI.Controllers
                 };
                 var URL = _settings.APIAddress + "api/ConfirmPayment/Process";
                 var param = JsonConvert.SerializeObject(request);
-                httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             }
 
             var userId = Guid.Empty;
@@ -98,21 +98,27 @@ namespace GUI.Controllers
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = GetCartItemCount(userId); 
+            ViewBag.CartItemCount = await GetCartItemCount(userId); 
             return View();
         }
 
         [Route("/Store")]
-        public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max, string category)
+        public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max, string category, Guid? colorId = null, Guid? sizeId = null)
         {
             var model = new Models.DTOs.Product_DTO.Views.IndexObject();
             try
             {
-                var obj = new GetListProductRequest();
-                obj.Name = string.IsNullOrEmpty(s) ? "" : s;
-                obj.PriceFrom = min;
-                obj.PriceTo = max;
-                obj.Limit = t <= 0 ? null : t;
+                var obj = new GetListProductRequest()
+                {
+                    Name = string.IsNullOrEmpty(s) ? "" : s,
+                    PriceFrom = min,
+                    PriceTo = max,
+                    Limit = t <= 0 ? null : t,
+                    OffSet = t * p < 0 ? 0 : t * p,
+                    CategoryID = !string.IsNullOrEmpty(category) && Guid.TryParse(category, out var catId) ? catId : null,
+                    ColorId = colorId,
+                    SizeId = sizeId
+                };
                 var offset = t * p;
                 obj.OffSet = offset < 0 ? 0 : offset;
 
@@ -125,6 +131,15 @@ namespace GUI.Controllers
                 var param = JsonConvert.SerializeObject(obj);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
+                model.Data = result.Data;
+                if (result.Data != null && result.Data.LstProduct != null && result.Data.LstProduct.Any())
+                {
+                    ViewBag.MaxProductPrice = result.Data.LstProduct.Max(p => p.Price);
+                }
+                else
+                {
+                    ViewBag.MaxProductPrice = 10000000; 
+                }
                 t = t == 0 ? 20 : t;
                 var totalPages = ((result.Data.TotalCount) / t) - 1;
                 totalPages = totalPages > 0 ? totalPages : 0;
@@ -145,8 +160,8 @@ namespace GUI.Controllers
                 }
 
                 ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
-                ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
-                ViewBag.PriceTo = max ?? result.Data.HighestPrice;
+                ViewBag.PriceFrom = min ?? 0;
+                ViewBag.PriceTo = max ?? 100000000;
                 ViewBag.Take = t <= 0 ? 20 : t;
                 ViewBag.TakeOptions = new List<int>() { 15, 30, 45, 60 };
                 ViewBag.CurrentPage = p;
@@ -154,7 +169,9 @@ namespace GUI.Controllers
                 ViewBag.TotalPages = totalPages;
                 ViewBag.StartPage = startPage;
 
-                model.Data = result.Data;
+                ViewBag.CurrentColorId = colorId;
+                ViewBag.CurrentSizeId = sizeId;
+
                 var accountId = HttpContext.Session.GetString("CurrentUserId");
                 HttpContext.Session.Remove("CurrentUserId");
                 if (!string.IsNullOrEmpty(accountId))
@@ -201,7 +218,10 @@ namespace GUI.Controllers
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = await GetCartItemCount(userId); 
+            ViewBag.CartItemCount = await GetCartItemCount(userId);
+            ViewBag.Categories = await FetchCategory();
+            ViewBag.Colors = await FetchColor();
+            ViewBag.Sizes = await FetchSize();
             return View(model);
         }
 
@@ -459,11 +479,12 @@ namespace GUI.Controllers
             var param = JsonConvert.SerializeObject(req);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
+            Console.WriteLine("Response from API: " + res);
             if (result.Status == "200")
             {
                 return Ok(new { userId });
             }
-            return BadRequest();
+            return BadRequest(result);
         }
 
         [HttpPost("/BuyNow")]
