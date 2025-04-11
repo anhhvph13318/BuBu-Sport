@@ -36,6 +36,9 @@ using IndexObject = GUI.Models.DTOs.Product_DTO.Views.IndexObject;
 using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using DATN_ACV_DEV.Controllers;
 using System.Drawing;
+using DATN_ACV_DEV.Model_DTO.CancelOrder_DTO;
+using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace GUI.Controllers
 {
@@ -329,10 +332,66 @@ namespace GUI.Controllers
             ViewBag.CartItemCount = await GetCartItemCount(userId); 
             return View(model);
         }
-        [Route("/CancelOrder")]
-        public async Task<IActionResult> CancelOrder(string s)
+        public class RandomCodeGenerator
         {
-            return Ok();
+            private static readonly char[] chars =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
+
+            public static string GenerateRandomCode(int minLength = 6, int maxLength = 8)
+            {
+                var random = new Random();
+                int length = random.Next(minLength, maxLength + 1); // Độ dài ngẫu nhiên trong khoảng [6, 8]
+                var sb = new StringBuilder(length);
+
+                for (int i = 0; i < length; i++)
+                {
+                    sb.Append(chars[random.Next(chars.Length)]);
+                }
+
+                return sb.ToString();
+            }
+        }
+        [Route("/CancelOrder")]
+        public async Task<IActionResult> CancelOrder(string email, string name, string phone, string orderCode, string reasonCancel, string codeCancelOrder)
+        {
+            TbOrder tbOrder = new TbOrder();
+            tbOrder = _context.TbOrders.Where(c => c.Id == _context.TbOrders.Where(c => c.OrderCode == orderCode).Select(c => c.Id).FirstOrDefault()).FirstOrDefault();
+
+            if (reasonCancel == null && codeCancelOrder == null)
+            {
+                var codeCancel = RandomCodeGenerator.GenerateRandomCode();
+                tbOrder.OrderCodeGhn = codeCancel;
+                _context.SaveChanges();
+                await _emailService.SendOrderConfirmationAsync(email, orderCode, name, phone, codeCancel, "", 2);
+            }
+            if (reasonCancel != null && codeCancelOrder != null)
+            {
+                var req = new CancelOrderRequest();
+                req.Id = tbOrder.Id;
+                req.ReasonCancel = reasonCancel;
+                req.Code = codeCancelOrder;
+                var URL = _settings.APIAddress + "api/CancelOrder/Process";
+                var param = JsonConvert.SerializeObject(req);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
+                if (result.Messages != null && result.Messages.Count > 0)
+                {
+                    if (result.Messages.Count == 1)
+                    {
+                        ViewBag.CancelMessage = "Đơn hàng đã hủy thành công !!!";
+                        ViewBag.CancelMessageType = "success";
+                    }
+                    else
+                    {
+                        ViewBag.CancelMessage = "Mã hủy đơn không chính xác, vui lòng kiểm tra lại !!!";
+                        ViewBag.CancelMessageType = "error";
+                    }
+                }
+                TempData["OpenCancelModal"] = false;
+                return Redirect($"http://localhost:5011/OrderChecking?s={orderCode}");
+            }
+            TempData["OpenCancelModal"] = true;
+            return Redirect($"http://localhost:5011/OrderChecking?s={orderCode}");
         }
         [Route("/OrderChecking")]
         public async Task<IActionResult> OrderChecking(string s)

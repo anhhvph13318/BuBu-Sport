@@ -68,26 +68,30 @@
                                     <div class="order-label">Tổng thanh toán</div>
                                     <div class="order-value">@order.PaymentInfo.FinalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
                                 </div>
-                                <div class="order-col mb-3">
-                                    <div class="order-label">Thông tin khách hàng</div>
-                                    <div class="order-value">
-                                        @if (order.ShippingInfo != null && !string.IsNullOrEmpty(order.ShippingInfo.Name))
-                                        {
-                                            <div class="customer-info">
-                                                <p class="customer-name"><i class="fa-solid fa-user"></i> @order.ShippingInfo.Name</p>
-                                                <p class="customer-phone"><i class="fa-solid fa-phone"></i> @order.ShippingInfo.PhoneNumber</p>
-                                                <p class="customer-address"><i class="fa-solid fa-location-pin"></i> @order.ShippingInfo.Address</p>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div class="customer-info">
-                                                <p class="customer-name"><i class="fa-solid fa-user"></i> @order.Customer.Name</p>
-                                                <p class="customer-phone"><i class="fa-solid fa-phone"></i> @order.Customer.PhoneNumber</p>
-                                                <p class="customer-address"><i class="fa-solid fa-location-pin"></i> @order.Customer.Address</p>
-                                            </div>
-                                        }
-                                    </div>
+                            }
+
+                            <div class="order-col mb-3">
+                                <div class="order-label">Tổng thanh toán</div>
+                                <div class="order-value">@order.PaymentInfo.FinalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
+                            </div>
+
+                            <div class="order-col mb-3">
+                                <div class="order-label">Thông tin khách hàng</div>
+                                <div class="order-value">
+                                    @if (order.ShippingInfo != null && !string.IsNullOrEmpty(order.ShippingInfo.Name))
+                                    {
+                                        <p>@order.ShippingInfo.Name</p>
+                                        <p>@order.ShippingInfo.PhoneNumber</p>
+                                        <p>@order.ShippingInfo.Address</p>
+                                        <p>@order.Customer.Email</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@order.Customer.Name</p>
+                                        <p>@order.Customer.PhoneNumber</p>
+                                        <p>@order.Customer.Address</p>
+                                        <p>@order.Customer.Email</p>
+                                    }
                                 </div>
 
                                 <div class="order-col mb-3">
@@ -124,15 +128,53 @@
                                     <div class="order-value">@order.Created.ToString("dd/MM/yyyy HH:mm") <i class="fa-solid fa-clock"></i></div>
                                 </div>
                             </div>
-                            @if (@order.StatusText == "Chờ xác nhận")
-                            {
-                                <div class="text-center mt-4">
-                                    <button class="btn btn-danger" action="CancelOrder">Hủy đơn hàng</button>
+                        </div>
+                        @if (@order.StatusText == "Chờ xác nhận")
+                        {
+
+                            <!-- Nút mở modal -->
+                            <button id="openModal" class="btn btn-danger">Hủy đơn hàng</button>
+
+                            <!-- Modal -->
+                            <div id="cancelModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h2>Hủy đơn hàng</h2>
+
+                                    <!-- Form duy nhất dùng POST -->
+                                    <form id="cancelForm" method="post" action="/CancelOrder">
+                                        <!-- Trường ẩn chứa thông tin đơn hàng -->
+                                        <input type="hidden" name="email" value="@order.Customer.Email" />
+                                        <input type="hidden" name="name" value="@order.Customer.Name" />
+                                        <input type="hidden" name="phone" value="@order.Customer.PhoneNumber" />
+                                        <input type="hidden" name="orderCode" value="@order.Code" />
+
+                                        <!-- Nhập lý do và mã hủy -->
+                                        <label for="cancelReason">Lý do hủy:</label>
+                                        <textarea id="cancelReason" name="reasonCancel" rows="3" required></textarea>
+
+                                        <label for="cancelCode">Mã hủy đơn:</label>
+                                        <input type="text" id="cancelCode" name="codeCancelOrder" required />
+
+                                        <div class="modal-actions">
+                                            <button type="button" id="closeModal">Đóng</button>
+                                            <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+                                        </div>
+                                    </form>
+
+                                    <!-- Nút nhận mã hủy riêng, dùng GET -->
+                                    <form method="get" action="/CancelOrder" style="margin-top: 15px;">
+                                        <input type="hidden" name="email" value="@order.Customer.Email" />
+                                        <input type="hidden" name="name" value="@order.Customer.Name" />
+                                        <input type="hidden" name="phone" value="@order.Customer.PhoneNumber" />
+                                        <input type="hidden" name="orderCode" value="@order.Code" />
+
+                                        <button type="submit" class="btn btn-warning">Nhận mã hủy đơn</button>
+                                    </form>
                                 </div>
-                                
-                            }
-                                <hr />
-                            </div>  
+                            </div>
+                        }
+                        <hr />
                     }
                 }
             </div>
@@ -461,15 +503,91 @@ hr {
         font-size: 22px;
     }
 
-    .order-value {
-        font-size: 13px;
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.5);
     }
 
-    .btn-danger {
-        padding: 12px 25px;
-        font-size: 14px;
+    .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 400px;
+        position: relative;
     }
-}
 
+    .close {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        font-size: 24px;
+        cursor: pointer;
+    }
 
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    textarea, input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        padding: 6px 12px;
+    }
 </style>
+<script>
+    const modal = document.getElementById("cancelModal");
+    const openBtn = document.getElementById("openModal");
+    const closeBtn = document.getElementById("closeModal");
+    const spanClose = document.querySelector(".close");
+
+    openBtn.onclick = () => {
+        modal.style.display = "block";
+    };
+
+    closeBtn.onclick = () => {
+        modal.style.display = "none";
+    };
+
+    spanClose.onclick = () => {
+        modal.style.display = "none";
+    };
+
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+    window.addEventListener("DOMContentLoaded", () => {
+        const shouldOpenModal = '@(TempData["OpenCancelModal"]?.ToString().ToLower() ?? "false")';
+        if (shouldOpenModal === 'true') {
+            const modal = document.getElementById("cancelModal");
+            if (modal) {
+                modal.style.display = "block";
+            }
+        }
+    });
+    @if (ViewBag.CancelMessage != null)
+    {
+            <div class="alert @(ViewBag.CancelMessageType == "success" ? "alert-success" : "alert-danger")" >
+            @ViewBag.CancelMessage
+                </div>
+    }
+</script>
