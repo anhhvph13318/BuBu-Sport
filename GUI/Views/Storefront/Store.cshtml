@@ -35,7 +35,8 @@
                                 <span>-</span>
                                 <div class="input-number price-max">
                                     <input id="price-max" type="text" class="form-control filter-input"
-                                           value="@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.PriceTo ?? 100000000)" placeholder="Đến (đ)"/>
+                                           value="@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.PriceTo ?? ViewBag.MaxProductPrice ?? 100000000)" placeholder="Đến (đ)" />
+
                                 </div>
                             </div>
                         </div>
@@ -70,7 +71,7 @@
                                 @foreach (var color in ViewBag.Colors)
                                 {
                                     <label class="color-checkbox-wrapper" title="@color.Name">
-                                        <input type="checkbox" class="color-checkbox" value="@color.Name" />
+                                        <input type="radio" name="selectedColor" class="color-radio" data-color-id="@color.Id" @(ViewBag.CurrentColorId != null && (Guid)ViewBag.CurrentColorId == color.Id ? "checked" : "") />
                                         <span class="color-circle" style="background-color:@color.Name"></span>
                                     </label>
                                 }
@@ -84,7 +85,7 @@
                                 @foreach (var size in ViewBag.Sizes)
                                 {
                                     <label class="size-checkbox-wrapper">
-                                        <input type="checkbox" class="size-checkbox" value="@size.Id" />
+                                        <input type="radio" name="selectedSize" class="size-radio" data-size-id="@size.Id" @(ViewBag.CurrentSizeId != null && (Guid)ViewBag.CurrentSizeId == size.Id ? "checked" : "") />
                                         <span class="size-label">@size.SizeName</span>
                                     </label>
                                 }
@@ -369,112 +370,77 @@
             return parseInt(value.replace(/[^\d]/g, '')) || 0;
         }
 
-        document.getElementById('price-min').addEventListener('input', function (e) {
-            let raw = parseCurrencyVN(this.value);
-            this.value = formatCurrencyVN(raw);
+        document.getElementById('price-min').addEventListener('input', function () {
+            this.value = formatCurrencyVN(parseCurrencyVN(this.value));
         });
 
-        document.getElementById('price-max').addEventListener('input', function (e) {
-            let raw = parseCurrencyVN(this.value);
-            this.value = formatCurrencyVN(raw);
+        document.getElementById('price-max').addEventListener('input', function () {
+            this.value = formatCurrencyVN(parseCurrencyVN(this.value));
         });
 
+        // Reset tất cả filter
         function resetFilters() {
             document.getElementById('filter-name').value = '';
             document.getElementById('filter-status').value = '';
             document.getElementById('filter-category').value = '';
-
             document.getElementById('price-min').value = formatCurrencyVN(0);
-            document.getElementById('price-max').value = formatCurrencyVN(100000000);
+            document.getElementById('price-max').value = formatCurrencyVN(@(ViewBag.MaxProductPrice ?? 10000000));
 
-            document.querySelectorAll('.color-checkbox, .size-checkbox').forEach(cb => cb.checked = false);
 
-            filterProducts();
+            document.querySelectorAll('.color-radio, .size-radio').forEach(cb => cb.checked = false);
         }
 
-        function getCheckedValues(selector) {
-            return Array.from(document.querySelectorAll(selector + ':checked')).map(el => el.value);
-        }
-        function filterProducts() {
-            const nameFilter = document.getElementById('filter-name').value.trim().toLowerCase();
-            const statusFilter = document.getElementById('filter-status').value;
-            const categoryFilter = document.getElementById('filter-category').value;
-            const priceFrom = parseCurrencyVN(document.getElementById('price-min').value) || 0;
-            const priceTo = parseCurrencyVN(document.getElementById('price-max').value) || 100000000;
-
-            const selectedColors = getCheckedValues('.color-checkbox').map(c => c.replace(/\s+/g, '').toLowerCase());
-            const selectedSizes = getCheckedValues('.size-checkbox').map(s => s.replace(/\s+/g, '').toLowerCase());
-
-            const items = document.querySelectorAll('.product-item');
-            items.forEach(item => {
-                const name = item.getAttribute('data-name').toLowerCase();
-                const status = item.getAttribute('data-status');
-                const category = item.getAttribute('data-category');
-                const price = parseFloat(item.getAttribute('data-price'));
-
-                const itemColors = item.getAttribute('data-colors')
-                    ?.split(',')
-                    .map(c => c.trim().toLowerCase()) || [];
-
-                const itemSizes = item.getAttribute('data-sizes')
-                    ?.split(',')
-                    .map(s => s.trim().toLowerCase()) || [];
-
-                const matchesName = !nameFilter || name.includes(nameFilter);
-                const matchesStatus = !statusFilter || status === statusFilter;
-                const matchesCategory = !categoryFilter || category === categoryFilter;
-                const matchesPrice = price >= priceFrom && price <= priceTo;
-                const matchesColor = selectedColors.length === 0 || selectedColors.some(color => itemColors.includes(color));
-                const matchesSize = selectedSizes.length === 0 || selectedSizes.some(size => itemSizes.includes(size));
-
-                const show = matchesName && matchesStatus && matchesCategory && matchesPrice && matchesColor && matchesSize;
-
-                item.style.display = show ? '' : 'none';
-                item.style.opacity = show ? '1' : '0';
-            });
-        }
-
-        document.getElementById('btn-search').addEventListener('click', function () {
-             filterProducts();
-        });
-
-        const filterInputs = document.querySelectorAll('.filter-input');
-        filterInputs.forEach(input => {
-            input.addEventListener('input', filterProducts);
-        });
-
+        // Điều hướng đến trang chi tiết sản phẩm
         function redirectToDetail(productId) {
             window.location.href = `/productDetail?id=${productId}`;
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const minInput = document.getElementById('price-min');
             const maxInput = document.getElementById('price-max');
 
+            // Kiểm tra nếu không có giá trị thì set lại theo ViewBag
+            if (!parseCurrencyVN(maxInput.value)) {
+                maxInput.value = formatCurrencyVN(@(ViewBag.MaxProductPrice ?? 10000000));
+            }
+
             minInput.value = formatCurrencyVN(parseCurrencyVN(minInput.value));
             maxInput.value = formatCurrencyVN(parseCurrencyVN(maxInput.value));
-            document.querySelectorAll('.qty-up').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const input = this.parentElement.querySelector('input');
-                    input.value = parseInt(input.value) + 1;
-                    filterProducts();
-                });
-            });
 
-            document.querySelectorAll('.qty-down').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const input = this.parentElement.querySelector('input');
-                    if (parseInt(input.value) > 0) {
-                        input.value = parseInt(input.value) - 1;
-                        filterProducts();
-                    }
-                });
-            });
-            document.querySelectorAll('.color-checkbox, .size-checkbox').forEach(cb => {
-                cb.addEventListener('change', filterProducts);
+            // Gắn nút tìm kiếm
+            document.getElementById('btn-search').addEventListener('click', function () {
+                const currentUrl = new URL(window.location.href);
+                const params = new URLSearchParams();
+
+                const name = document.getElementById('filter-name').value.trim();
+                const priceMin = parseCurrencyVN(document.getElementById('price-min').value);
+                const priceMax = parseCurrencyVN(document.getElementById('price-max').value);
+                const status = document.getElementById('filter-status').value;
+                const category = document.getElementById('filter-category').value;
+
+                const selectedColor = document.querySelector('.color-radio:checked');
+                const colorId = selectedColor ? selectedColor.getAttribute('data-color-id') : null;
+
+                const selectedSize = document.querySelector('.size-radio:checked');
+                const sizeId = selectedSize ? selectedSize.getAttribute('data-size-id') : null;
+
+                if (name) params.set('s', name);
+                if (status) params.set('status', status);
+                if (category) params.set('category', category);
+                if (priceMin) params.set('min', priceMin);
+                if (priceMax) params.set('max', priceMax);
+                if (colorId) params.set('colorId', colorId);
+                if (sizeId) params.set('sizeId', sizeId);
+
+                params.set('p', '0'); // Reset page về 0
+                params.set('t', document.getElementById('page-display').value); // Số sản phẩm mỗi trang
+
+                window.location.href = `${currentUrl.pathname}?${params.toString()}`;
             });
         });
     </script>
+
+
 }
 else
 {
