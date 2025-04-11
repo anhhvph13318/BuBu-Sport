@@ -9,6 +9,7 @@ using DATN_ACV_DEV.Model_DTO.Product_DTO;
 using DATN_ACV_DEV.Model_DTO.Property_DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DATN_ACV_DEV.Controllers
 {
@@ -63,6 +64,24 @@ namespace DATN_ACV_DEV.Controllers
                 m.Category = category.Where(c => c.Id == m.CategoryId).FirstOrDefault();
                 m.tb_Image = image.Where(c => c.Id == m.ImageId).FirstOrDefault();
             });
+            var productDetails = _context.TbProductDetails
+            .Include(d => d.Color)
+            .Include(d => d.Size)
+            .ToList();
+
+            Model.ToList().ForEach(p =>
+            {
+                var details = productDetails.Where(d => d.ProductId == p.Id);
+                p.Color = string.Join(",", productDetails
+                .Where(d => d.ProductId == p.Id)
+                .Select(d => d.Color.Name)
+                .Distinct());
+                p.SizeName = string.Join(",", productDetails
+                .Where(d => d.ProductId == p.Id)
+                .Select(d => d.Size.SizeName)
+                .Distinct());
+            });
+
             _response.TotalCount = Model.Count();
             var query = _mapper.Map<List<HomePageModel>>(Model);
             _response.LstProduct = query;

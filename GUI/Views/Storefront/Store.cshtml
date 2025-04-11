@@ -28,20 +28,18 @@
                         <div class="filter-item">
                             <h4 class="filter-title">Giá</h4>
                             <div class="price-filter">
-                                <div id="price-slider"></div>
                                 <div class="input-number price-min">
-                                    <input id="price-min" type="number" name="min" data-value="@(Model?.Data?.LowestPrice ?? 0)" value="@ViewBag.PriceFrom" class="form-control filter-input">
-                                    <span class="qty-up">+</span>
-                                    <span class="qty-down">-</span>
+                                    <input id="price-min" type="text" class="form-control filter-input"
+                                           value="@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.PriceFrom ?? 0)" placeholder="Từ (đ)"/>
                                 </div>
                                 <span>-</span>
                                 <div class="input-number price-max">
-                                    <input id="price-max" type="number" name="max" data-value="@(Model?.Data?.HighestPrice ?? 0)" value="@ViewBag.PriceTo" class="form-control filter-input">
-                                    <span class="qty-up">+</span>
-                                    <span class="qty-down">-</span>
+                                    <input id="price-max" type="text" class="form-control filter-input"
+                                           value="@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.PriceTo ?? 100000000)" placeholder="Đến (đ)"/>
                                 </div>
                             </div>
                         </div>
+
 
                         <!-- Status filter -->
                         <div class="filter-item">
@@ -53,89 +51,53 @@
                             </select>
                         </div>
 
-                        @* <!-- Category filter -->
+                        <!-- Category filter -->
                         <div class="filter-item">
                             <h4 class="filter-title">Danh mục</h4>
                             <select id="filter-category" class="form-control filter-input">
                                 <option value="">Tất cả</option>
-                                @if (Model.Data.LstProduct != null)
+                                @foreach (var category in ViewBag.Categories)
                                 {
-                                    var categories = Model.Data.LstProduct.Select(p => p.CategoryName).Distinct();
-                                    foreach (var category in categories)
-                                    {
-                                        <option value="@category">@category</option>
-                                    }
+                                    <option value="@category.Name">@category.Name</option>
                                 }
                             </select>
-                        </div> *@
+                        </div>
 
-                        @* <!-- Size filter -->
-                        <div class="filter-item">
-                            <h4 class="filter-title">Kích thước</h4>
-                            <div class="size-filter">
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="size-s" class="filter-size" value="S">
-                                    <label for="size-s">
-                                        <span></span>S
-                                    </label>
-                                </div>
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="size-m" class="filter-size" value="M">
-                                    <label for="size-m">
-                                        <span></span>M
-                                    </label>
-                                </div>
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="size-l" class="filter-size" value="L">
-                                    <label for="size-l">
-                                        <span></span>L
-                                    </label>
-                                </div>
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="size-xl" class="filter-size" value="XL">
-                                    <label for="size-xl">
-                                        <span></span>XL
-                                    </label>
-                                </div>
-                            </div>
-                        </div> *@
-
-                        @* <!-- Color filter -->
+                        <!-- Color filter -->
                         <div class="filter-item">
                             <h4 class="filter-title">Màu sắc</h4>
-                            <div class="color-filter">
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="color-black" class="filter-color" value="Black">
-                                    <label for="color-black" style="background-color: #000">
-                                        <span></span>
+                            <div class="color-filter-wrapper">
+                                @foreach (var color in ViewBag.Colors)
+                                {
+                                    <label class="color-checkbox-wrapper" title="@color.Name">
+                                        <input type="checkbox" class="color-checkbox" value="@color.Name" />
+                                        <span class="color-circle" style="background-color:@color.Name"></span>
                                     </label>
-                                </div>
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="color-white" class="filter-color" value="White">
-                                    <label for="color-white" style="background-color: #fff; border: 1px solid #e4e7ed">
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="color-red" class="filter-color" value="Red">
-                                    <label for="color-red" style="background-color: #D10024">
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="color-blue" class="filter-color" value="Blue">
-                                    <label for="color-blue" style="background-color: #1E90FF">
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="input-checkbox">
-                                    <input type="checkbox" id="color-green" class="filter-color" value="Green">
-                                    <label for="color-green" style="background-color: #2E8B57">
-                                        <span></span>
-                                    </label>
-                                </div>
+                                }
                             </div>
-                        </div> *@
+                        </div>
+
+                        <!-- Size filter -->
+                        <div class="filter-item">
+                            <h4 class="filter-title">Kích cỡ</h4>
+                            <div class="size-filter-wrapper">
+                                @foreach (var size in ViewBag.Sizes)
+                                {
+                                    <label class="size-checkbox-wrapper">
+                                        <input type="checkbox" class="size-checkbox" value="@size.Id" />
+                                        <span class="size-label">@size.SizeName</span>
+                                    </label>
+                                }
+                            </div>
+
+                        </div>
+
+                        <div class="filter-item text-center mt-4">
+                            <button id="btn-search" class="btn btn-primary w-100">Tìm kiếm</button>
+                            <button class="btn btn-danger w-100" onclick="resetFilters()">Xoá bộ lọc</button>
+                        </div>
+
+
 
                         <!-- Display options -->
                         
@@ -174,8 +136,8 @@
                                  data-category="@item.CategoryName"
                                  data-status="@(item.Quantity > 0 ? "available" : "out-of-stock")"
                                  data-price="@item.Price"
-                                 data-sizes="S,M,L"
-                                 data-colors="Black,White,Red">
+                                 data-colors="@item.Color?.Replace(" ", "").ToLowerInvariant()"
+                                 data-sizes="@item.SizeName?.Replace(" ", "").ToLowerInvariant()">
                                 <div class="product">
                                     <div class="product-img">
                                         <img src="@item.Image" alt="" style="cursor: pointer" onclick="redirectToDetail('@item.Id')">
@@ -301,28 +263,147 @@
             padding-left: 0;
             margin-right: 10px;
         }
+
+        .color-filter-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .color-checkbox-wrapper {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .color-checkbox {
+            display: none; /* Ẩn checkbox gốc */
+        }
+
+        .color-circle {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 2px solid #ccc;
+            transition: 0.2s;
+        }
+
+        /* Khi checkbox được chọn */
+        .color-checkbox:checked + .color-circle {
+            border: 3px solid #000;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #000;
+        }
+
+        .color-label {
+            padding: 6px 12px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 14px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        input.color-checkbox:checked + .color-label {
+            background-color: #D10024;
+            color: white;
+            font-weight: bold;
+        }
+
+        .color-label:hover {
+            cursor: pointer;
+            background-color: #e6e6e6;
+        }
+
+        .size-filter-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-width: 100%;
+            margin-top: 8px;
+        }
+
+        .size-checkbox-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .size-checkbox {
+            display: none; 
+        }
+
+        .size-label:hover {
+            background-color: #e0e0e0;
+        }
+
+
+        .size-label {
+            padding: 6px 12px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 14px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .size-checkbox:checked + .size-label {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+
     </style>
 
     <script>
-        // Hàm lọc sản phẩm
+        function formatCurrencyVN(value) {
+            return value.toLocaleString('vi-VN');
+        }
+
+        function parseCurrencyVN(value) {
+            return parseInt(value.replace(/[^\d]/g, '')) || 0;
+        }
+
+        document.getElementById('price-min').addEventListener('input', function (e) {
+            let raw = parseCurrencyVN(this.value);
+            this.value = formatCurrencyVN(raw);
+        });
+
+        document.getElementById('price-max').addEventListener('input', function (e) {
+            let raw = parseCurrencyVN(this.value);
+            this.value = formatCurrencyVN(raw);
+        });
+
+        function resetFilters() {
+            document.getElementById('filter-name').value = '';
+            document.getElementById('filter-status').value = '';
+            document.getElementById('filter-category').value = '';
+
+            document.getElementById('price-min').value = formatCurrencyVN(0);
+            document.getElementById('price-max').value = formatCurrencyVN(100000000);
+
+            document.querySelectorAll('.color-checkbox, .size-checkbox').forEach(cb => cb.checked = false);
+
+            filterProducts();
+        }
+
+        function getCheckedValues(selector) {
+            return Array.from(document.querySelectorAll(selector + ':checked')).map(el => el.value);
+        }
         function filterProducts() {
-            const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+            const nameFilter = document.getElementById('filter-name').value.trim().toLowerCase();
             const statusFilter = document.getElementById('filter-status').value;
             const categoryFilter = document.getElementById('filter-category').value;
-            const priceFrom = parseFloat(document.getElementById('price-min').value) || 0;
-            const priceTo = parseFloat(document.getElementById('price-max').value) || Infinity;
+            const priceFrom = parseCurrencyVN(document.getElementById('price-min').value) || 0;
+            const priceTo = parseCurrencyVN(document.getElementById('price-max').value) || 100000000;
 
-            // Lấy sizes được chọn
-            const selectedSizes = [];
-            document.querySelectorAll('.filter-size:checked').forEach(checkbox => {
-                selectedSizes.push(checkbox.value);
-            });
-
-            // Lấy colors được chọn
-            const selectedColors = [];
-            document.querySelectorAll('.filter-color:checked').forEach(checkbox => {
-                selectedColors.push(checkbox.value);
-            });
+            const selectedColors = getCheckedValues('.color-checkbox').map(c => c.replace(/\s+/g, '').toLowerCase());
+            const selectedSizes = getCheckedValues('.size-checkbox').map(s => s.replace(/\s+/g, '').toLowerCase());
 
             const items = document.querySelectorAll('.product-item');
             items.forEach(item => {
@@ -330,59 +411,48 @@
                 const status = item.getAttribute('data-status');
                 const category = item.getAttribute('data-category');
                 const price = parseFloat(item.getAttribute('data-price'));
-                const itemSizes = item.getAttribute('data-sizes').split(',');
-                const itemColors = item.getAttribute('data-colors').split(',');
 
-                const matchesName = nameFilter ? name.includes(nameFilter) : true;
-                const matchesStatus = statusFilter ? status === statusFilter : true;
-                const matchesCategory = categoryFilter ? category === categoryFilter : true;
+                const itemColors = item.getAttribute('data-colors')
+                    ?.split(',')
+                    .map(c => c.trim().toLowerCase()) || [];
+
+                const itemSizes = item.getAttribute('data-sizes')
+                    ?.split(',')
+                    .map(s => s.trim().toLowerCase()) || [];
+
+                const matchesName = !nameFilter || name.includes(nameFilter);
+                const matchesStatus = !statusFilter || status === statusFilter;
+                const matchesCategory = !categoryFilter || category === categoryFilter;
                 const matchesPrice = price >= priceFrom && price <= priceTo;
+                const matchesColor = selectedColors.length === 0 || selectedColors.some(color => itemColors.includes(color));
+                const matchesSize = selectedSizes.length === 0 || selectedSizes.some(size => itemSizes.includes(size));
 
-                // Kiểm tra xem có size phù hợp không
-                let matchesSize = true;
-                if (selectedSizes.length > 0) {
-                    matchesSize = selectedSizes.some(size => itemSizes.includes(size));
-                }
+                const show = matchesName && matchesStatus && matchesCategory && matchesPrice && matchesColor && matchesSize;
 
-                // Kiểm tra xem có màu phù hợp không
-                let matchesColor = true;
-                if (selectedColors.length > 0) {
-                    matchesColor = selectedColors.some(color => itemColors.includes(color));
-                }
-
-                if (matchesName && matchesStatus && matchesCategory && matchesPrice && matchesSize && matchesColor) {
-                    item.style.display = '';
-                    // Thêm hiệu ứng fade in
-                    item.style.opacity = '0';
-                    setTimeout(() => {
-                        item.style.transition = 'opacity 0.5s ease';
-                        item.style.opacity = '1';
-                    }, 50);
-                } else {
-                    item.style.display = 'none';
-                    item.style.opacity = '0';
-                }
+                item.style.display = show ? '' : 'none';
+                item.style.opacity = show ? '1' : '0';
             });
         }
 
-        // Thêm sự kiện cho tất cả các filter input
-        const filterInputs = document.querySelectorAll('.filter-input, .filter-size, .filter-color');
-        filterInputs.forEach(input => {
-            if (input.type === 'checkbox') {
-                input.addEventListener('change', filterProducts);
-            } else {
-                input.addEventListener('input', filterProducts);
-            }
+        document.getElementById('btn-search').addEventListener('click', function () {
+             filterProducts();
         });
 
-        // Xử lý chuyển trang chi tiết sản phẩm
+        const filterInputs = document.querySelectorAll('.filter-input');
+        filterInputs.forEach(input => {
+            input.addEventListener('input', filterProducts);
+        });
+
         function redirectToDetail(productId) {
             window.location.href = `/productDetail?id=${productId}`;
         }
 
-        // Khởi tạo filter ban đầu
         document.addEventListener('DOMContentLoaded', function() {
-            // Đặt sự kiện cho nút +/- của price filters
+            const minInput = document.getElementById('price-min');
+            const maxInput = document.getElementById('price-max');
+
+            minInput.value = formatCurrencyVN(parseCurrencyVN(minInput.value));
+            maxInput.value = formatCurrencyVN(parseCurrencyVN(maxInput.value));
             document.querySelectorAll('.qty-up').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const input = this.parentElement.querySelector('input');
@@ -399,6 +469,9 @@
                         filterProducts();
                     }
                 });
+            });
+            document.querySelectorAll('.color-checkbox, .size-checkbox').forEach(cb => {
+                cb.addEventListener('change', filterProducts);
             });
         });
     </script>
