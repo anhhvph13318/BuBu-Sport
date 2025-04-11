@@ -23,7 +23,7 @@ namespace DATN_ACV_DEV.Controllers
         private string _apiCode = "AddToCart";
         private TbCart _Cart;
         private TbCartDetail _CartDetail;
-        private TbProduct _product;
+        private TbProductDetail _productDetail;
         private bool checkCart = false;
         private bool checkProduct = false;
         private string _conC01 = "C01";
@@ -115,7 +115,17 @@ namespace DATN_ACV_DEV.Controllers
         }
         public void GenerateObjects()
         {
-            var checkExistCart = _context.TbCarts.Where(c => c.AccountId == _request.UserId).FirstOrDefault();
+            _productDetail = _context.TbProductDetails
+                .FirstOrDefault(pd => pd.ProductId == _request.ProductId
+                                   && pd.ColorId == _request.ColorId
+                                   && pd.SizeId == _request.SizeId);
+
+            if (_productDetail == null)
+            {
+                throw new ACV_Exception(Message.CreateErrorMessage(_apiCode, "400", "Biến thể sản phẩm không tồn tại", "ProductVariant"));
+            }
+
+            var checkExistCart = _context.TbCarts.FirstOrDefault(c => c.AccountId == _request.UserId);
             if (checkExistCart == null)
             {
                 if (_request.AdminId != null)
@@ -126,37 +136,50 @@ namespace DATN_ACV_DEV.Controllers
                 {
                     AddCartCustomer();
                 }
-                checkExistCart = _context.TbCarts.Where(c => c.AccountId == _request.UserId).FirstOrDefault();
+                if (_request.Quantity > _productDetail.Quantity)
+                {
+                    throw new ACV_Exception(Message.CreateErrorMessage(_apiCode, "400", $"Số lượng tồn kho không đủ. Chỉ còn {_productDetail.Quantity} sản phẩm.", _conC02Field));
+                }
             }
             else
             {
-                try
-                {
-                    var LstproductID = _context.TbCartDetails.Where(c => c.CartId == checkExistCart.Id).ToList();
-                    var Product = LstproductID.Where(c => c.ProductId == _request.ProductId && c.ColorId == _request.ColorId && c.SizeId == _request.SizeId).FirstOrDefault();
-                    if (Product != null)
-                    {
-                        _CartDetail = Product;
+                var existingCartDetail = _context.TbCartDetails
+                    .FirstOrDefault(c => c.CartId == checkExistCart.Id
+                                      && c.ProductId == _request.ProductId
+                                      && c.ColorId == _request.ColorId
+                                      && c.SizeId == _request.SizeId);
 
-						if (_request.incre) Product.Quantity += _request.Quantity;
-                        else Product.Quantity = _request.Quantity;
-                    }
-                    else
-                    {
-                        _CartDetail = new TbCartDetail()
-                        {
-                            Id = Guid.NewGuid(),
-                            ProductId = _request.ProductId,
-                            Quantity = _request.Quantity,
-                            CartId = checkExistCart.Id,
-                            ColorId = _request.ColorId,
-                            SizeId = _request.SizeId,
-                        };
-                        checkProduct = true;
-                    }
-                }
-                catch (Exception)
+                if (existingCartDetail != null)
                 {
+                    _CartDetail = existingCartDetail;
+                    int newQuantity = _request.incre
+                        ? (existingCartDetail.Quantity.HasValue ? existingCartDetail.Quantity.Value + _request.Quantity : _request.Quantity)
+                        : _request.Quantity;
+
+                    if (newQuantity > _productDetail.Quantity)
+                    {
+                        throw new ACV_Exception(Message.CreateErrorMessage(_apiCode, "400", $"Số lượng tồn kho không đủ. Chỉ còn {_productDetail.Quantity} sản phẩm, trong giỏ đã có {existingCartDetail.Quantity}.", _conC02Field));
+                    }
+
+                    _CartDetail.Quantity = newQuantity;
+                }
+                else
+                {
+                    if (_request.Quantity > _productDetail.Quantity)
+                    {
+                        throw new ACV_Exception(Message.CreateErrorMessage(_apiCode, "400", $"Số lượng tồn kho không đủ. Chỉ còn {_productDetail.Quantity} sản phẩm.", _conC02Field));
+                    }
+
+                    _CartDetail = new TbCartDetail()
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = _request.ProductId,
+                        Quantity = _request.Quantity,
+                        CartId = checkExistCart.Id,
+                        ColorId = _request.ColorId,
+                        SizeId = _request.SizeId,
+                    };
+                    checkProduct = true;
                 }
             }
         }
@@ -170,6 +193,7 @@ namespace DATN_ACV_DEV.Controllers
             #region Số lượng sản phẩm không đủ 
             ConditionCart.AddToCart_C02(_context, _request, _apiCode, _conC02, _conC02Field);
             #endregion
+
         }
         [HttpPost]
         [Route("Process")]
@@ -179,7 +203,7 @@ namespace DATN_ACV_DEV.Controllers
             {
                 _request = request;
                 //CheckAuthorization();
-                //PreValidation();
+                PreValidation();
                 GenerateObjects();
                 //PostValidation();
                 AccessDatabase();

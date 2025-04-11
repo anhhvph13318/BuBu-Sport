@@ -1,8 +1,9 @@
 const productStorage = new ProductStorage();
 
 // toast setup
-toastr.options.timeOut = 3000;
+toastr.options.timeOut = 5000; 
 toastr.options.closeButton = true;
+toastr.options.progressBar = true;
 
 // end toast setup
 
@@ -276,7 +277,7 @@ function clearOrder() {
 
 function saveOrder(isDraft) {
     if (!verify()) return;
-
+    $('#loading-overlay').css('display', 'flex');
     const customerInfo = {
         name: $('#customerName').val(),
         phoneNumber: $('#customerPhoneNumber').val(),
@@ -287,16 +288,36 @@ function saveOrder(isDraft) {
         name: $('#receiverName').val(),
         phoneNumber: $('#receiverPhone').val(),
         address: $('#receiverAddress').val()
-    }
+    };
+
+    // 🟡 Lấy dữ liệu sản phẩm đang hiển thị trong bảng
+    const orderItems = [];
+    $('#orderItemContainer table tbody tr').each(function () {
+        const row = $(this);
+
+
+        orderItems.push({
+            id: row.find('.order-item-id').text().trim(),
+            code: row.find('td:nth-child(2)').text().trim(),
+            productImage: row.find('img').attr('src'),
+            productName: row.find('td:nth-child(4)').text().trim(),
+            color: row.find('td:nth-child(5)').text().trim(),
+            size: row.find('td:nth-child(6)').text().trim(),
+            price: parseFloat(row.find('td:nth-child(7)').text().replace(/[^\d]/g, '')),
+            quantity: parseInt(row.find('input.order-item-quantity').val())
+        });
+    });
+
 
     const payload = {
         isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
         isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
-        status: $('#orderStatus').val(),
+        status: parseInt($('#orderStatus').val()),
         customerInfo,
         shippingInfo,
         isDraft,
-    }
+        orderItems // 🔥 Thêm orderItems vào payload
+    };
 
     fetch(ORDER_TEMP_SAVE_API, {
         method: 'POST',
@@ -307,17 +328,31 @@ function saveOrder(isDraft) {
     })
         .then(res => res.json())
         .then(data => {
-            $('#orderTempSaveContainer').html('');
             $('#orderTempSaveContainer').html(data.orders);
-            $('#orderButtonActionContainer').html('');
             $('#orderButtonActionContainer').html(data.buttons);
-            
             changeResetButtonText(false);
             interactiveCartItemAndVoucherButton(false);
         })
-        .then(_ => toastr.success("Thành công!"))
+        .then(_ => {
+            if (isDraft) {
+                toastr.success("Lưu tạm hóa đơn thành công!");
+            } else {
+                toastr.success("Tạo hóa đơn thành công!");
+            }
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        })
+        .catch(err => {
+            console.error("Lỗi khi lưu hóa đơn:", err);
+            toastr.error("Có lỗi xảy ra khi lưu hóa đơn!");
+        })
+        .finally(() => {
+            $('#loading-overlay').css('display', 'none');
+        })
         .then(_ => clearOrder());
 }
+
 
 function removeDraft(id) {
     const isRemove = confirm("Bạn có chắc muốn xóa?")

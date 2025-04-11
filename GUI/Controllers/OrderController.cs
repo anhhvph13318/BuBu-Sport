@@ -191,6 +191,15 @@ public class OrderController : Controller
     public async Task<IActionResult> SaveOrder([FromBody] Checkout checkout)
     {
         var order = HttpContext.Session.GetCurrentOrder();
+        if (order.Items.Count == 0)
+        {
+            order.Items = checkout.OrderItems;
+            order.PaymentInfo.TotalAmount = order.Items.Sum(c => c.Price);
+        }
+        if (order.Items.Count < checkout.OrderItems.Count)
+        {
+            order.Items = checkout.OrderItems;
+        }
         if (order.Customer.Id == Guid.Empty)
             order.Customer = checkout.CustomerInfo;
 
@@ -206,7 +215,7 @@ public class OrderController : Controller
         order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
         order.Status = checkout.Status;
 
-        if(order.Id == Guid.Empty)
+        if (order.Id == Guid.Empty)
         {
             if (order.IsCustomerTakeYourSelf)
                 order.Status = 7; // set status to complete
@@ -231,23 +240,37 @@ public class OrderController : Controller
             Shipping = order.ShippingInfo,
             Payment = order.PaymentInfo,
         };
+        var updateRequest = new UpdateItemOrderRequest()
+        {
+            Items = payload.Items,
+            Status = checkout.Status
+        };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
-            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+            ? await httpClient.PatchAsJsonAsync($"api/orders/update/{order.Id}", updateRequest)
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
-        if(rawResponse.IsSuccessStatusCode)
+        if (rawResponse.IsSuccessStatusCode)
         {
             var orders = await FetchOrderList();
-            foreach (var item in orders)
+
+            try
             {
-                await _emailService.SendOrderConfirmationAsync(item.Customer.Email, item.Code, item.Customer.Name, item.Customer.PhoneNumber, item.StatusText, "", 1);
+                foreach (var item in orders)
+                {
+                    await _emailService.SendOrderConfirmationAsync(item.Customer.Email, item.Code, item.Customer.Name, item.Customer.PhoneNumber, item.StatusText, "", 1);
+                }
+                if (orders.Count() == 0 && order.Status == 7)
+                {
+                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1);
+                }
             }
-            if (orders.Count() == 0 && order.Status == 7)
+            catch (Exception ex)
             {
-                await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1);
+                Console.WriteLine($"Lỗi khi gửi email xác nhận: {ex.Message}");
             }
-            return Json(new 
-            { 
+
+            return Json(new
+            {
                 Orders = await RenderViewAsync(OrderListPartialView, orders),
                 Buttons = await RenderViewAsync(OrderButtonActionPartialView, 0)
             });

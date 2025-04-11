@@ -4,27 +4,25 @@
     Layout = "_LayoutStore";
 }
 
-@if (Model.Data is not null && Model.Data.LstProduct is not null && Model.Data.LstProduct.Any())
-{
-    <!-- SECTION -->
-    <div class="section">
-        <!-- container -->
-        <div class="container">
-            <!-- row -->
-            <div class="row">
-                <!-- ASIDE -->
-                <div id="aside" class="col-md-3" style="margin-top:75px;">
-                    <!-- aside Widget -->
-                    <div class="aside">
+<div class="container-fluid">
+    @if (Model.Data is not null && Model.Data.LstProduct is not null && Model.Data.LstProduct.Any())
+    {
+        <div class="section">
+            <div class="container">
+                <button id="toggle-filter" class="btn btn-primary mb-3">
+                    <i class="fas fa-filter"></i> Ẩn Bộ Lọc
+                </button>
+
+                <div class="flex-container" style="display: flex; gap: 20px;">
+                    <!-- Sidebar -->
+                    <div id="filter-sidebar" class="filter-sidebar">
                         <h3 class="aside-title">Lọc sản phẩm</h3>
 
-                        <!-- Tên sản phẩm filter -->
                         <div class="filter-item">
                             <h4 class="filter-title">Tên sản phẩm</h4>
                             <input id="filter-name" class="form-control" type="text" placeholder="Nhập tên sản phẩm">
                         </div>
 
-                        <!-- Price filter -->
                         <div class="filter-item">
                             <h4 class="filter-title">Giá</h4>
                             <div class="price-filter">
@@ -41,8 +39,6 @@
                             </div>
                         </div>
 
-
-                        <!-- Status filter -->
                         <div class="filter-item">
                             <h4 class="filter-title">Trạng thái</h4>
                             <select id="filter-status" class="form-control filter-input">
@@ -103,14 +99,11 @@
                         <!-- Display options -->
                         
                     </div>
-                    <!-- /aside Widget -->
-                </div>
-                <!-- /ASIDE -->
-                <div class="col-md-2">
-                    <div class="form-group d-flex flex-column h-100">
-                        <label for="page-display" class="filter-label mb-2">Hiển thị</label>
-                        <select id="page-display" class="form-control">
-                            @foreach (var item in ViewBag.TakeOptions)
+
+                    <!-- Store Content -->
+                    <div id="store" class="store-container">
+                        <div id="product-list" class="grid-container grid-3-cols">
+                            @foreach (var item in Model.Data.LstProduct)
                             {
                                 if (item == ViewBag.Take)
                                 {
@@ -157,105 +150,87 @@
                                         </h4>
                                         <div class="product-rating">
                                         </div>
-                                        <div class="product-btns">
-                                            <button class="quick-view" onclick="redirectToDetail('@item.Id')">
-                                                <i class="fa fa-eye"></i>
-                                                <span class="tooltipp">xem chi tiết</span>
-                                            </button>
+                                        <div class="product-body">
+                                            <p class="product-category">@item.CategoryName</p>
+                                            <h3 class="product-name"><a href="#" onclick="redirectToDetail('@item.Id')">@item.Name</a></h3>
+                                            <h4 class="product-price">@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</h4>
+                                            <div class="product-btns">
+                                                <button class="quick-view" onclick="redirectToDetail('@item.Id')">
+                                                    <i class="fa fa-eye"></i>
+                                                    <span class="tooltipp">xem chi tiết</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- /product -->
-                        }
-                    </div>
-                    <!-- /store products -->
-                    <!-- store bottom filter -->
-                    <div class="store-filter clearfix">
-                        <ul class="store-pagination">
-                            @if (ViewBag.CurrentPage != 0)
-                            {
-                                <li class="pagination-btn" data-page="@(ViewBag.CurrentPage - 1)"><a href="#"><i class="fa fa-angle-left"></i></a></li>
                             }
-                            @for (int i = ViewBag.StartPage; i <= ViewBag.TopPage; i++)
-                            {
-                                if (i >= 0 && i <= ViewBag.TotalPages)
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="store-filter clearfix">
+                            <ul class="store-pagination">
+                                @if (ViewBag.CurrentPage > 0)
                                 {
-                                    <li data-page="@i" class="pagination-btn @(i == ViewBag.CurrentPage ? "active" : "")">@(i + 1)</li>
+                                    <li class="pagination-btn" data-page="@(ViewBag.CurrentPage - 1)"><a href="#"><i class="fa fa-angle-left"></i></a></li>
                                 }
-                            }
-                            @if (ViewBag.TotalPages != ViewBag.CurrentPage)
-                            {
-                                <li class="pagination-btn" data-page="@(ViewBag.CurrentPage + 1)"><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                            }
-                        </ul>
+                                @for (int i = ViewBag.StartPage; i <= ViewBag.TopPage; i++)
+                                {
+                                    if (i >= 0 && i <= ViewBag.TotalPages)
+                                    {
+                                        <li data-page="@i" class="pagination-btn @(i == ViewBag.CurrentPage ? "active" : "")">@(i + 1)</li>
+                                    }
+                                }
+                                @if (ViewBag.TotalPages > ViewBag.CurrentPage)
+                                {
+                                    <li class="pagination-btn" data-page="@(ViewBag.CurrentPage + 1)"><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                }
+                            </ul>
+                        </div>
                     </div>
-                    <!-- /store bottom filter -->
                 </div>
-                <!-- /STORE -->
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
-    </div>
-    <!-- /SECTION -->
-    <!-- Thêm JavaScript và CSS -->
-    <style>
-        .product-img {
-            position: relative;
-            overflow: hidden;
-        }
 
-        .product:hover .product-label {
-            opacity: 1;
-        }
-
-        .filter-item {
-            margin-bottom: 20px;
-        }
-
-        .filter-title {
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 10px;
-            color: #444;
-        }
-
-        .filter-input {
-            border: 1px solid #ccc;
-            padding: 8px 12px;
-            font-size: 14px;
-            width: 100%;
-            height: 38px;
-            border-radius: 4px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-            .filter-input:focus {
-                border-color: #D10024;
-                box-shadow: 0 0 5px rgba(209, 0, 36, 0.3);
-                outline: none;
+        <style>
+            .filter-sidebar {
+                width: 250px;
+                background: #f4f4f4;
+                padding: 20px;
+                transition: all 0.3s ease-in-out;
             }
 
-        .color-filter {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+            .filter-sidebar.collapsed {
+                display: none;
+            }
 
-        .size-filter {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+            .store-container {
+                flex: 1;
+                transition: all 0.3s ease-in-out;
+            }
 
-        .input-checkbox label {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            padding-left: 30px;
-            margin-bottom: 0;
-        }
+            .grid-container {
+                display: grid;
+                gap: 20px;
+            }
+
+            .grid-3-cols {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .grid-5-cols {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .product-item {
+                background: #fff;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+
+            .product-img img {
+                width: 100%;
+                height: auto;
+            }
 
         .color-filter .input-checkbox label {
             width: 30px;
@@ -365,6 +340,97 @@
         function formatCurrencyVN(value) {
             return value.toLocaleString('vi-VN');
         }
+            .product-label {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.7);
+            }
+
+            .product-label span {
+                background: rgba(0, 0, 0, 0.6);
+                color: #fff;
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            /* Responsive */
+            @@media (max-width: 768px) {
+                .grid-3-cols,
+                .grid-5-cols {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .filter-sidebar {
+                    display: none !important;
+                }
+
+                #store {
+                    width: 100%;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                .grid-3-cols,
+                .grid-5-cols {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const toggleBtn = document.getElementById("toggle-filter");
+                const sidebar = document.getElementById("filter-sidebar");
+                const store = document.getElementById("store");
+                const productList = document.getElementById("product-list");
+
+                toggleBtn.addEventListener("click", function () {
+                    const isCollapsed = sidebar.classList.contains("collapsed");
+
+                    sidebar.classList.toggle("collapsed");
+                    store.classList.toggle("full-width");
+
+                    if (isCollapsed) {
+                        productList.classList.remove("grid-5-cols");
+                        productList.classList.add("grid-3-cols");
+                        toggleBtn.innerHTML = '<i class="fas fa-filter"></i> Ẩn Bộ Lọc';
+                    } else {
+                        productList.classList.remove("grid-3-cols");
+                        productList.classList.add("grid-5-cols");
+                        toggleBtn.innerHTML = '<i class="fas fa-filter"></i> Hiện Bộ Lọc';
+                    }
+                });
+            });
+        function toggleSidebar() {
+            const wrapper = document.querySelector('.store-wrapper');
+            wrapper.classList.toggle('hide-sidebar');
+        }
+        // Hàm lọc sản phẩm
+        function filterProducts() {
+            const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+            const categoryFilter = document.getElementById('filter-category').value;
+            const priceFrom = parseFloat(document.getElementById('price-min').value) || 0;
+            const priceTo = parseFloat(document.getElementById('price-max').value) || Infinity;
+
+            // Lấy sizes được chọn
+            const selectedSizes = [];
+            document.querySelectorAll('.filter-size:checked').forEach(checkbox => {
+                selectedSizes.push(checkbox.value);
+            });
+
+            // Lấy colors được chọn
+            const selectedColors = [];
+            document.querySelectorAll('.filter-color:checked').forEach(checkbox => {
+                selectedColors.push(checkbox.value);
+            });
+
 
         function parseCurrencyVN(value) {
             return parseInt(value.replace(/[^\d]/g, '')) || 0;
