@@ -142,8 +142,8 @@ namespace GUI.Controllers
                 }
 
                 ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
-                ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
-                ViewBag.PriceTo = max ?? result.Data.HighestPrice;
+                ViewBag.PriceFrom = min ?? 0;
+                ViewBag.PriceTo = max ?? 100000000;
                 ViewBag.Take = t <= 0 ? 20 : t;
                 ViewBag.TakeOptions = new List<int>() { 15, 30, 45, 60 };
                 ViewBag.CurrentPage = p;
@@ -198,7 +198,10 @@ namespace GUI.Controllers
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = await GetCartItemCount(userId); 
+            ViewBag.CartItemCount = await GetCartItemCount(userId);
+            ViewBag.Categories = await FetchCategory();
+            ViewBag.Colors = await FetchColor();
+            ViewBag.Sizes = await FetchSize();
             return View(model);
         }
 
