@@ -73,7 +73,7 @@ namespace DATN_ACV_DEV.Controllers
                     Hủy đơn hàng
                   </strong>
                 </p>
-                <p>Đây là mã để xác thực hành động hủy đơn hàng của bạn : {password}</p>
+                <p>Đây là mã để xác thực hành động hủy đơn hàng của bạn : {status}</p>
                 <p>Nếu bạn không thực hiên yêu cầu này vui lòng bỏ qua email này</p>
                 <p>Cảm ơn bạn đã tin tưởng sử dụng dịch vụ của chúng tôi !!!</p>
                 <p>Xin cảm ơn,</p>

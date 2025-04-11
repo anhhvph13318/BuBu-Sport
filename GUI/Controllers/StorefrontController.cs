@@ -38,6 +38,7 @@ using DATN_ACV_DEV.Controllers;
 using System.Drawing;
 using DATN_ACV_DEV.Model_DTO.CancelOrder_DTO;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace GUI.Controllers
 {
@@ -331,26 +332,46 @@ namespace GUI.Controllers
             }
         }
         [Route("/CancelOrder")]
-        public async Task<IActionResult> CancelOrder(Guid Id, string ReasonCancel, string email, string code, string name, string phone)
+        public async Task<IActionResult> CancelOrder(string email, string name, string phone, string orderCode, string reasonCancel, string codeCancelOrder)
         {
-            var codeCancel = RandomCodeGenerator.GenerateRandomCode();
-            email = "anhhv220402@gmail.com";
-            code = "ON20250409205436011";
-            name = "Vanh";
-            phone = "0988141323";
             TbOrder tbOrder = new TbOrder();
-            tbOrder = _context.TbOrders.Where(c=>c.Id == Guid.Parse("8B165723-4255-4296-83C6-199DADAD7C3C")).FirstOrDefault();
-            tbOrder.OrderCodeGhn = codeCancel;
-            _context.SaveChanges();
-            await _emailService.SendOrderConfirmationAsync(email, code, name, phone, codeCancel, "", 2);
-            var req = new CancelOrderRequest();
-            req.Id = Guid.NewGuid();
-            req.ReasonCancel = "Ko";
-            var URL = _settings.APIAddress + "api/CancelOrder/Process";
-            var param = JsonConvert.SerializeObject(req);
-            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-            var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
-            return Ok();
+            tbOrder = _context.TbOrders.Where(c => c.Id == _context.TbOrders.Where(c => c.OrderCode == orderCode).Select(c => c.Id).FirstOrDefault()).FirstOrDefault();
+
+            if (reasonCancel == null && codeCancelOrder == null)
+            {
+                var codeCancel = RandomCodeGenerator.GenerateRandomCode();
+                tbOrder.OrderCodeGhn = codeCancel;
+                _context.SaveChanges();
+                await _emailService.SendOrderConfirmationAsync(email, orderCode, name, phone, codeCancel, "", 2);
+            }
+            if (reasonCancel != null && codeCancelOrder != null)
+            {
+                var req = new CancelOrderRequest();
+                req.Id = tbOrder.Id;
+                req.ReasonCancel = reasonCancel;
+                req.Code = codeCancelOrder;
+                var URL = _settings.APIAddress + "api/CancelOrder/Process";
+                var param = JsonConvert.SerializeObject(req);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
+                if (result.Messages != null && result.Messages.Count > 0)
+                {
+                    if (result.Messages.Count == 1)
+                    {
+                        ViewBag.CancelMessage = "Đơn hàng đã hủy thành công !!!";
+                        ViewBag.CancelMessageType = "success";
+                    }
+                    else
+                    {
+                        ViewBag.CancelMessage = "Mã hủy đơn không chính xác, vui lòng kiểm tra lại !!!";
+                        ViewBag.CancelMessageType = "error";
+                    }
+                }
+                TempData["OpenCancelModal"] = false;
+                return Redirect($"http://localhost:5011/OrderChecking?s={orderCode}");
+            }
+            TempData["OpenCancelModal"] = true;
+            return Redirect($"http://localhost:5011/OrderChecking?s={orderCode}");
         }
         [Route("/OrderChecking")]
         public async Task<IActionResult> OrderChecking(string s)
