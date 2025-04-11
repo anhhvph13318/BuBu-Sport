@@ -282,6 +282,7 @@ function saveOrder(isDraft) {
         name: $('#customerName').val(),
         phoneNumber: $('#customerPhoneNumber').val(),
         address: $('#customerAddress').val(),
+        email: $('#customerEmail').val() 
     };
 
     const shippingInfo = {
@@ -449,6 +450,7 @@ function vnpayCheckout() {
         name: $('#customerName').val(),
         phoneNumber: $('#customerPhoneNumber').val(),
         address: $('#customerAddress').val(),
+        email: $('#customerEmail').val()
     };
 
     const shippingInfo = {
