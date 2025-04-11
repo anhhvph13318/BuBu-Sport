@@ -268,12 +268,14 @@
 
 	$('#order-submit').on('click', function (e) {
 		e.preventDefault();
-		let name = $('#order-name').val();
-		let phone = $('#order-phone').val();
-		let address = $('#order-address').val();
-		let district = $('#order-district').val();
-		let city = $('#order-city').val();
-		let email = $('#order-email').val();
+
+		let name = $('#order-name').val().trim();
+		let phone = $('#order-phone').val().trim();
+		let address = $('#order-address').val().trim();
+		let district = $('#order-district').val().trim();
+		let city = $('#order-city').val().trim();
+		let email = $('#order-email').val().trim();
+
 		let ids = [];
 		let items = $('.order-item');
 		$.each(items, function (i, obj) {
@@ -281,73 +283,168 @@
 			ids.push(id);
 		});
 
-		let COD = $('#payment-1').is(":checked");
+		let isVNP = $('#payment-2').is(":checked");
+
+		let isValid = true;
+		let errors = [];
 
 		if (!name) {
-			alert("Tên không được để trống");
-			return false;
+			errors.push("Họ tên không được để trống.");
+			isValid = false;
+		} else if (name.length < 2 || name.length > 50) {
+			errors.push("Họ tên phải từ 2 đến 50 ký tự.");
+			isValid = false;
+		} else if (!/^[a-zA-ZÀ-ỹ\s'-]+$/.test(name)) {
+			errors.push("Họ tên chỉ được chứa chữ cái, dấu cách, dấu gạch ngang hoặc dấu nháy đơn.");
+			isValid = false;
 		}
 
 		if (!phone) {
-			alert("Số điện thoại không được để trống");
-			return false;
+			errors.push("Số điện thoại không được để trống.");
+			isValid = false;
+		} else if (!ValidatePhone(phone)) {
+			errors.push("Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại 10 chữ số bắt đầu bằng 0 hoặc +84.");
+			isValid = false;
 		}
 
-		if (!ValidatePhone(phone)) {
-			alert("Số điện thoại không hợp lệ");
-			return false;
+		if (email && !ValidateEmail(email)) {
+			errors.push("Email không hợp lệ.");
+			isValid = false;
+		} else if (email.length > 100) {
+			errors.push("Email không được vượt quá 100 ký tự.");
+			isValid = false;
 		}
 
-		if (!address || !district || !city) {
-			alert("Địa chỉ không được để trống");
-			return false;
+		if (!address) {
+			errors.push("Số nhà/tên đường không được để trống.");
+			isValid = false;
+		} else if (address.length < 5 || address.length > 100) {
+			errors.push("Số nhà/tên đường phải từ 5 đến 100 ký tự.");
+			isValid = false;
 		}
 
-		if (ids.length) {
-      			Swal.fire({
-				title: 'Xác nhận đặt hàng',
-				text: 'Bạn có chắc chắn muốn đặt đơn hàng này?',
-				icon: 'question',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Đồng ý',
-				cancelButtonText: 'Hủy',
-				width: '600px', 
-				padding: '2em', 
+		if (!district) {
+			errors.push("Quận/huyện không được để trống.");
+			isValid = false;
+		} else if (district.length < 2 || district.length > 50) {
+			errors.push("Quận/huyện phải từ 2 đến 50 ký tự.");
+			isValid = false;
+		} else if (!/^[a-zA-Z0-9\sÀ-ỹ]+$/.test(district)) {
+			errors.push("Quận/huyện chỉ được chứa chữ cái, số và dấu cách.");
+			isValid = false;
+		}
+
+		if (!city) {
+			errors.push("Thành phố không được để trống.");
+			isValid = false;
+		} else if (city.length < 2 || city.length > 50) {
+			errors.push("Thành phố phải từ 2 đến 50 ký tự.");
+			isValid = false;
+		} else if (!/^[a-zA-Z0-9\sÀ-ỹ]+$/.test(city)) {
+			errors.push("Thành phố chỉ được chứa chữ cái, số và dấu cách.");
+			isValid = false;
+		}
+
+		if (!ids.length) {
+			errors.push("Không có sản phẩm nào được chọn để đặt hàng.");
+			isValid = false;
+		}
+
+		if (!isValid) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Lỗi nhập liệu',
+				html: errors.join('<br>'),
+				confirmButtonText: 'OK',
+				width: '600px',
+				padding: '2em',
 				customClass: {
 					popup: 'larger-swal'
 				}
-			}).then((result) => {
-				if (result.isConfirmed) {
-			$.post("/Buy", {
-				name: name,
-				phone: phone,
-				address: address,
-				district: district,
-				city: city,
-				email:email,
-				ids: ids,
-				getatstore: false,
-				isVNP: !COD
-			}, function (data) {
-				if (data.success) {
-					if (data.redirect) {
-						window.location.href = data.url;
-					} else {
-						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
-					}
-				} else
-				{
-					alert("Đã có lỗi xảy ra");
-				}
-					});
-				}
 			});
-		} else {
-			alert("Đã có lỗi xảy ra");
 			return false;
 		}
+
+		Swal.fire({
+			title: 'Xác nhận đặt hàng',
+			text: 'Bạn có chắc chắn muốn đặt đơn hàng này?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Đồng ý',
+			cancelButtonText: 'Hủy',
+			width: '600px',
+			padding: '2em',
+			customClass: {
+				popup: 'larger-swal'
+			}
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: "/Buy",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({
+						name: name,
+						phone: phone,
+						address: address,
+						district: district,
+						city: city,
+						email: email,
+						ids: ids,
+						getatstore: false,
+						isVNP: isVNP
+					}),
+					success: function (data) {
+						if (data.success) {
+							if (data.redirect) {
+								window.location.href = data.url;
+							} else {
+								Swal.fire({
+									icon: 'success',
+									title: 'Đặt hàng thành công',
+									text: `Mã đơn hàng: ${data.orderId}`,
+									confirmButtonText: 'OK',
+									width: '600px',
+									padding: '2em',
+									customClass: {
+										popup: 'larger-swal'
+									}
+								}).then(() => {
+									window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
+								});
+							}
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Lỗi',
+								text: 'Đã có lỗi xảy ra khi đặt hàng.',
+								confirmButtonText: 'OK',
+								width: '600px',
+								padding: '2em',
+								customClass: {
+									popup: 'larger-swal'
+								}
+							});
+						}
+					},
+					error: function () {
+						Swal.fire({
+							icon: 'error',
+							title: 'Lỗi',
+							text: 'Không thể kết nối đến server. Vui lòng thử lại.',
+							confirmButtonText: 'OK',
+							width: '600px',
+							padding: '2em',
+							customClass: {
+								popup: 'larger-swal'
+							}
+						});
+					}
+				});
+			}
+		});
 	});
 
 	let changeQuant;
