@@ -10,7 +10,6 @@
     <label>Số điện thoại</label>
     <input class="form-control"
            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-           onblur="checkCustomerHasBoughtSomething(event)"
            value="@Model.PhoneNumber"
            id="customerPhoneNumber"
            type="text"

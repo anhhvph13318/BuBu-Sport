@@ -288,16 +288,36 @@ function saveOrder(isDraft) {
         name: $('#receiverName').val(),
         phoneNumber: $('#receiverPhone').val(),
         address: $('#receiverAddress').val()
-    }
+    };
+
+    // 🟡 Lấy dữ liệu sản phẩm đang hiển thị trong bảng
+    const orderItems = [];
+    $('#orderItemContainer table tbody tr').each(function () {
+        const row = $(this);
+
+
+        orderItems.push({
+            id: row.find('.order-item-id').text().trim(),
+            code: row.find('td:nth-child(2)').text().trim(),
+            productImage: row.find('img').attr('src'),
+            productName: row.find('td:nth-child(4)').text().trim(),
+            color: row.find('td:nth-child(5)').text().trim(),
+            size: row.find('td:nth-child(6)').text().trim(),
+            price: parseFloat(row.find('td:nth-child(7)').text().replace(/[^\d]/g, '')),
+            quantity: parseInt(row.find('input.order-item-quantity').val())
+        });
+    });
+
 
     const payload = {
         isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
         isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
-        status: $('#orderStatus').val(),
+        status: parseInt($('#orderStatus').val()),
         customerInfo,
         shippingInfo,
         isDraft,
-    }
+        orderItems // 🔥 Thêm orderItems vào payload
+    };
 
     fetch(ORDER_TEMP_SAVE_API, {
         method: 'POST',
@@ -308,11 +328,8 @@ function saveOrder(isDraft) {
     })
         .then(res => res.json())
         .then(data => {
-            $('#orderTempSaveContainer').html('');
             $('#orderTempSaveContainer').html(data.orders);
-            $('#orderButtonActionContainer').html('');
             $('#orderButtonActionContainer').html(data.buttons);
-            
             changeResetButtonText(false);
             interactiveCartItemAndVoucherButton(false);
         })
@@ -335,6 +352,7 @@ function saveOrder(isDraft) {
         })
         .then(_ => clearOrder());
 }
+
 
 function removeDraft(id) {
     const isRemove = confirm("Bạn có chắc muốn xóa?")
