@@ -45,6 +45,7 @@
                         <input class="form-control order-item-quantity" min="1" value="@item.Quantity" type="number" onfocus="backupQuantityValue(event)" onchange="updateQuantity(event, '@item.Id')" />
                     </td>
                     <td>@itemTotal.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                    <td style="display: none" class="order-item-id">@item.Id</td> <!-- thêm dòng này -->
                     <td>
                         <button class="btn btn-danger remove-item-btn" onclick="removeItem('@item.Id')">Xoá</button>
                     </td>
