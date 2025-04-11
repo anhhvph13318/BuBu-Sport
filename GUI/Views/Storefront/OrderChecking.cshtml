@@ -18,6 +18,7 @@
                     </div>
                 </div>
 
+
                 @if (Model != null)
                 {
                     <p class="orders-header">Đơn hàng</p>
@@ -26,7 +27,7 @@
                         <div class="order-title">Đơn hàng @order.Code</div>
                         <div class="order-container ">
                             <div class="order-products ">
-                                <div class="order-wrapper" >
+                                <div class="order-wrapper">
                                     <table class="order-table">
                                         <thead>
                                             <tr>
@@ -68,30 +69,26 @@
                                     <div class="order-label">Tổng thanh toán</div>
                                     <div class="order-value">@order.PaymentInfo.FinalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
                                 </div>
-                            }
-
-                            <div class="order-col mb-3">
-                                <div class="order-label">Tổng thanh toán</div>
-                                <div class="order-value">@order.PaymentInfo.FinalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
-                            </div>
-
-                            <div class="order-col mb-3">
-                                <div class="order-label">Thông tin khách hàng</div>
-                                <div class="order-value">
-                                    @if (order.ShippingInfo != null && !string.IsNullOrEmpty(order.ShippingInfo.Name))
-                                    {
-                                        <p>@order.ShippingInfo.Name</p>
-                                        <p>@order.ShippingInfo.PhoneNumber</p>
-                                        <p>@order.ShippingInfo.Address</p>
-                                        <p>@order.Customer.Email</p>
-                                    }
-                                    else
-                                    {
-                                        <p>@order.Customer.Name</p>
-                                        <p>@order.Customer.PhoneNumber</p>
-                                        <p>@order.Customer.Address</p>
-                                        <p>@order.Customer.Email</p>
-                                    }
+                                <div class="order-col mb-3">
+                                    <div class="order-label">Thông tin khách hàng</div>
+                                    <div class="order-value">
+                                        @if (order.ShippingInfo != null && !string.IsNullOrEmpty(order.ShippingInfo.Name))
+                                        {
+                                            <div class="customer-info">
+                                                <p class="customer-name"><i class="fa-solid fa-user"></i> @order.ShippingInfo.Name</p>
+                                                <p class="customer-phone"><i class="fa-solid fa-phone"></i> @order.ShippingInfo.PhoneNumber</p>
+                                                <p class="customer-address"><i class="fa-solid fa-location-pin"></i> @order.ShippingInfo.Address</p>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="customer-info">
+                                                <p class="customer-name"><i class="fa-solid fa-user"></i> @order.Customer.Name</p>
+                                                <p class="customer-phone"><i class="fa-solid fa-phone"></i> @order.Customer.PhoneNumber</p>
+                                                <p class="customer-address"><i class="fa-solid fa-location-pin"></i> @order.Customer.Address</p>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
 
                                 <div class="order-col mb-3">
@@ -127,13 +124,17 @@
                                     <div class="order-label">Thời gian đặt hàng</div>
                                     <div class="order-value">@order.Created.ToString("dd/MM/yyyy HH:mm") <i class="fa-solid fa-clock"></i></div>
                                 </div>
+
                             </div>
-                        </div>
+
+                            </div> //
                         @if (@order.StatusText == "Chờ xác nhận")
                         {
 
                             <!-- Nút mở modal -->
-                            <button id="openModal" class="btn btn-danger">Hủy đơn hàng</button>
+                            <div class="text-end mt-2" style="text-align: right; margin-bottom: 15px;">
+                                <button id="openModal" class="btn btn-danger">Hủy đơn hàng</button>
+                            </div>
 
                             <!-- Modal -->
                             <div id="cancelModal" class="modal">
@@ -173,6 +174,7 @@
                                     </form>
                                 </div>
                             </div>
+                        
                         }
                         <hr />
                     }
@@ -183,6 +185,13 @@
 </div>
 
 <style>
+    .text-end {
+        text-align: right;
+    }
+
+    .mt-2 {
+        margin-top: 0.5rem;
+    }
     /* Overall header styling */
     .orders-header {
         text-align: center;
@@ -211,57 +220,59 @@
         transform: translateY(20px);
         animation: slideUp 0.8s ease-out forwards;
     }
+
     .order-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 40px;
-}
-
-.order-products {
-    flex: 2; /* Chiếm 2 phần */
-    min-width: 60%;
-}
-
-.order-details {
-    flex: 1; /* Chiếm 1 phần */
-    min-width: 35%;
-}
-
-@@media (max-width: 768px) {
-    .order-container {
-        flex-direction: column;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 40px;
     }
-    .order-products, .order-details {
-        min-width: 100%;
+
+    .order-products {
+        flex: 2; /* Chiếm 2 phần */
+        min-width: 60%;
     }
-}
+
+    .order-details {
+        flex: 1; /* Chiếm 1 phần */
+        min-width: 35%;
+    }
+
+    @@media (max-width: 768px) {
+        .order-container {
+            flex-direction: column;
+        }
+
+        .order-products, .order-details {
+            min-width: 100%;
+        }
+    }
 
     /* Order table styling */
-   /* Bảng đơn hàng */
-.order-table {
-    width: 100%;
-    border-collapse: collapse; /* Đảm bảo không có khoảng cách giữa các cell */
-    margin-top: 20px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-}
+    /* Bảng đơn hàng */
+    .order-table {
+        width: 100%;
+        border-collapse: collapse; /* Đảm bảo không có khoảng cách giữa các cell */
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+    }
 
-/* Tiêu đề bảng */
-.order-table th {
-    padding: 15px;
-    background-color: #1abc9c;
-    color: white;
-    font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    text-align: left;
-    border-bottom: 2px solid #16a085;
-}
+        /* Tiêu đề bảng */
+        .order-table th {
+            padding: 15px;
+            background-color: #1abc9c;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: left;
+            border-bottom: 2px solid #16a085;
+        }
 
-/* Dữ liệu bảng */
+    /* Dữ liệu bảng */
     ..order-table {
         width: 100%;
         border-collapse: collapse;
@@ -314,60 +325,60 @@
         }
     /* Thành tiền */
 
-/* Hiệu ứng hover cho dòng trong bảng */
+    /* Hiệu ứng hover cho dòng trong bảng */
 
 
-/* Thêm màu sắc cho dòng header */
-.order-table th {
-    background-color: #16a085;
-}
-
-/* Định dạng các cột dữ liệu */
-.order-table td {
-    background-color: #f8f8f8;
-}
-
-/* Hiệu ứng khi di chuột qua các ô dữ liệu */
-
-
-/* Cải thiện cho các phần tử khi di chuột */
-
-
-/* Cải thiện cho bảng ở màn hình nhỏ */
-@@media screen and (max-width: 768px) {
-    .order-table th, .order-table td {
-        font-size: 12px;
-        padding: 10px;
+    /* Thêm màu sắc cho dòng header */
+    .order-table th {
+        background-color: #16a085;
     }
 
-    .order-table td:nth-child(1), .order-table th:nth-child(1) {
-        width: 20%;
+    /* Định dạng các cột dữ liệu */
+    .order-table td {
+        background-color: #f8f8f8;
     }
 
-    .order-table td:nth-child(2), .order-table th:nth-child(2) {
-        width: 40%;
-    }
+    /* Hiệu ứng khi di chuột qua các ô dữ liệu */
 
-    .order-table td:nth-child(3), .order-table th:nth-child(3) {
-        width: 20%;
-    }
 
-    .order-table td:nth-child(4), .order-table th:nth-child(4) {
-        width: 20%;
-    }
+    /* Cải thiện cho các phần tử khi di chuột */
 
-    .order-table td:nth-child(5), .order-table th:nth-child(5) {
-        width: 25%;
-    }
 
-    .order-table td:nth-child(6), .order-table th:nth-child(6) {
-        width: 25%;
-    }
+    /* Cải thiện cho bảng ở màn hình nhỏ */
+    @@media screen and (max-width: 768px) {
+        .order-table th, .order-table td {
+            font-size: 12px;
+            padding: 10px;
+        }
 
-    .order-table td:nth-child(7), .order-table th:nth-child(7) {
-        width: 30%;
+            .order-table td:nth-child(1), .order-table th:nth-child(1) {
+                width: 20%;
+            }
+
+            .order-table td:nth-child(2), .order-table th:nth-child(2) {
+                width: 40%;
+            }
+
+            .order-table td:nth-child(3), .order-table th:nth-child(3) {
+                width: 20%;
+            }
+
+            .order-table td:nth-child(4), .order-table th:nth-child(4) {
+                width: 20%;
+            }
+
+            .order-table td:nth-child(5), .order-table th:nth-child(5) {
+                width: 25%;
+            }
+
+            .order-table td:nth-child(6), .order-table th:nth-child(6) {
+                width: 25%;
+            }
+
+            .order-table td:nth-child(7), .order-table th:nth-child(7) {
+                width: 30%;
+            }
     }
-}
 
 
     /* Column styling */
@@ -380,7 +391,6 @@
     /* Information Label */
     .order-label {
         font-weight: 600;
-        color: #34495e;
         font-size: 16px;
         margin-bottom: 10px;
         text-transform: uppercase;
@@ -397,7 +407,6 @@
     /* Customer info container */
     .customer-info {
         padding: 15px;
-        background-color: #ecf0f1;
         border-radius: 8px;
         margin-top: 10px;
     }
@@ -406,7 +415,6 @@
     .customer-name,
     .customer-phone,
     .customer-address {
-        margin: 5px 0;
         color: #34495e;
     }
 
@@ -421,7 +429,7 @@
 
     /* Stylize address */
     .customer-address {
-        color: #7f8c8d;
+        color: #34495e;
     }
 
     /* Add hover effect for customer info */
@@ -450,107 +458,206 @@
         }
 
     /* Payment status styling */
-     color: #2ecc71;
+    color: #2ecc71;
     font-weight: 700;
+    }
+
+    /* Bold text for order status */
+    .fw-bold {
+        font-weight: bold;
+    }
+
+    /* Horizontal divider */
+    hr {
+        border-top: 1px solid #ecf0f1;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    /* Animation for fade-in effect */
+    @@keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    /* Animation for slide-up effect */
+    @@keyframes slideUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Mobile responsiveness */
+    @@media screen and (max-width: 768px) {
+        .order-table th, .order-table td {
+            font-size: 13px;
+            padding: 14px;
+        }
+
+        .order-col {
+            margin-bottom: 25px;
+        }
+
+        .order-header {
+            font-size: 22px;
+        }
+
+        .order-value {
+            font-size: 13px;
+        }
+
+        .btn-danger {
+            padding: 12px 25px;
+            font-size: 14px;
+        }
+    }
+    /* Style cho modal */
+.modal {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Nền mờ */
 }
 
-/* Bold text for order status */
-.fw-bold {
+/* Nội dung modal */
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Nút đóng modal */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
 }
 
-/* Horizontal divider */
-hr {
-    border-top: 1px solid #ecf0f1;
-    margin-top: 40px;
-    margin-bottom: 40px;
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
 }
 
-/* Animation for fade-in effect */
-@@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+/* Tiêu đề modal */
+.modal-content h2 {
+    color: #d9534f;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
-/* Animation for slide-up effect */
-@@keyframes slideUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Form hủy đơn hàng */
+#cancelForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-/* Mobile responsiveness */
-@@media screen and (max-width: 768px) {
-    .order-table th, .order-table td {
-        font-size: 13px;
-        padding: 14px;
-    }
+/* Style cho các input và textarea */
+#cancelForm label {
+    font-weight: 600;
+    color: #555;
+}
 
-    .order-col {
-        margin-bottom: 25px;
-    }
+#cancelForm textarea,
+#cancelForm input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
 
-    .order-header {
-        font-size: 22px;
-    }
+#cancelForm textarea {
+    min-height: 100px;
+    resize: vertical;
+}
 
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.5);
-    }
+/* Nút trong modal */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
 
+.modal-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.modal-actions button[type="button"] {
+    background-color: #6c757d;
+    color: white;
+}
+
+.modal-actions button[type="submit"] {
+    background-color: #d9534f;
+    color: white;
+}
+
+.modal-actions button:hover {
+    opacity: 0.9;
+}
+
+/* Nút nhận mã hủy */
+form[method="get"] button {
+    width: 100%;
+    padding: 10px;
+    background-color: #f0ad4e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+form[method="get"] button:hover {
+    background-color: #ec971f;
+}
+
+/* Responsive cho mobile */
+@@media (max-width: 576px) {
     .modal-content {
-        background-color: #fff;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 400px;
-        position: relative;
+        width: 95%;
+        margin: 20% auto;
     }
-
-    .close {
-        position: absolute;
-        right: 15px;
-        top: 10px;
-        font-size: 24px;
-        cursor: pointer;
-    }
-
+    
     .modal-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 15px;
+        flex-direction: column;
     }
-
-    textarea, input {
+    
+    .modal-actions button {
         width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
     }
-
-    button {
-        padding: 6px 12px;
-    }
+}
 </style>
 <script>
     const modal = document.getElementById("cancelModal");
