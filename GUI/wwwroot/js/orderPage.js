@@ -356,16 +356,24 @@ function saveOrder(isDraft) {
 
 
 function removeDraft(id) {
-    const isRemove = confirm("Bạn có chắc muốn xóa?")
+    const isRemove = confirm("Bạn có chắc muốn xóa?");
     if (!isRemove) return;
 
     fetch(REMOVE_ORDER_TEMP_API(id), {
         method: 'DELETE'
     })
-        .then(res => res.json())
-        .then(data => {
-            $('#orderTempSaveContainer').html('');
-            $('#orderTempSaveContainer').html(data.orders);
+        .then(res => {
+            if (res.ok) {
+                location.reload();
+            } else {
+                return res.json().then(data => {
+                    throw new Error(data.message || "Xóa đơn hàng thất bại!");
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message || "Đã xảy ra lỗi khi xóa đơn hàng!");
         });
 }
 
