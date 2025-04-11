@@ -10,7 +10,7 @@
         <div class="section">
             <div class="container">
                 <button id="toggle-filter" class="btn btn-primary mb-3">
-                    <i class="fas fa-filter"></i> Ẩn Bộ Lọc
+                     Ẩn Bộ Lọc
                 </button>
 
                 <div class="flex-container" style="display: flex; gap: 20px;">
@@ -317,12 +317,12 @@
                         // Khi hiện bộ lọc (sidebar không collapsed)
                         productList.classList.remove("grid-5-cols");
                         productList.classList.add("row");
-                        toggleBtn.innerHTML = '<i class="fas fa-filter"></i> Ẩn Bộ Lọc';
+                        toggleBtn.innerHTML = ' Ẩn Bộ Lọc';
                     } else {
                         // Khi ẩn bộ lọc (sidebar collapsed)
                         productList.classList.remove("row");
                         productList.classList.add("grid-5-cols");
-                        toggleBtn.innerHTML = '<i class="fas fa-filter"></i> Hiện Bộ Lọc';
+                        toggleBtn.innerHTML = ' Hiện Bộ Lọc';
                     }
                 });
 
