@@ -1098,58 +1098,89 @@
                 }
             });
 
-            // Xử lý thêm vào giỏ hàng
-            $(".addCartDetailnew").on("click", function () {
-                let customerId = getCookie("user-id");
-                let quantity = parseInt($("#quantity").val()) || 1; // Lấy số lượng từ ô input
-                let selectedColor = $(".color-select:checked").val(); // Màu sắc
-                let selectedSize = $(".size-select:checked").val(); // Kích thước
-                let maxStock = parseInt($('#available-stock').text());
+        $(".addCartDetailnew").on("click", function () {
+            let customerId = getCookie("user-id");
+            let quantity = parseInt($("#quantity").val()) || 1;
+            let selectedColor = $(".color-select:checked").val();
+            let selectedSize = $(".size-select:checked").val();
+            let maxStock = parseInt($('#available-stock').text());
 
-                if (!selectedColor || !selectedSize) {
-                    // Sử dụng toastr để thông báo lỗi
-                    toastr.error("Vui lòng chọn màu sắc và kích thước!");
-                    return;
+            if (!selectedColor || !selectedSize) {
+                toastr.error("Vui lòng chọn màu sắc và kích thước!");
+                return;
+            }
+
+            if (quantity > maxStock) {
+                toastr.warning("Số lượng không được vượt quá " + maxStock);
+                $("#quantity").val(maxStock);
+                return;
+            }
+
+            if (quantity < 1) {
+                toastr.warning("Số lượng tối thiểu là 1");
+                $("#quantity").val(1);
+                return;
+            }
+
+            let productId = $(this).attr("data-prId");
+
+            $.post("/AddCart", {
+                prId: productId,
+                userId: customerId,
+                quantity: quantity,
+                colorId: selectedColor,
+                sizeId: selectedSize
+            }, function (data) {
+                if (!customerId) {
+                    setCookie("user-id", data.userId, 90);
                 }
+                toastr.success("Đã thêm sản phẩm vào giỏ hàng thành công!");
+                updateCartCount();
+                updateStockDisplay();
+            }).fail(function (xhr, status, error) {
+                console.log("Status:", status);
+                console.log("Error:", error);
+                console.log("Response:", xhr.responseText);
 
-                // Kiểm tra số lượng
-                if (quantity > maxStock) {
-                    toastr.warning("Số lượng không được vượt quá " + maxStock);
-                    $("#quantity").val(maxStock);
-                    return;
-                }
-
-                if (quantity < 1) {
-                    toastr.warning("Số lượng tối thiểu là 1");
-                    $("#quantity").val(1);
-                    return;
-                }
-
-                let productId = $(this).attr("data-prId");
-
-                $.post("/AddCart", {
-                    prId: productId,
-                    userId: customerId,
-                    quantity: quantity,
-                    colorId: selectedColor,
-                    sizeId: selectedSize
-                }, function (data) {
-                    if (!customerId) {
-                        setCookie("user-id", data.userId, 90);
+                if (xhr.status === 400 && xhr.responseJSON && xhr.responseJSON.messages) {
+                    let errorMessages = xhr.responseJSON.messages;
+                    if (errorMessages.length > 0) {
+                        let errorMessage = errorMessages[0].messageText || errorMessages[0].message || "Yêu cầu không hợp lệ!";
+                        toastr.error(errorMessage);
+                    } else {
+                        toastr.error("Yêu cầu không hợp lệ!");
                     }
-                    toastr.success("Đã thêm sản phẩm vào giỏ hàng thành công!");
-                    updateCartCount();
-                }).fail(function(error) {
-                    toastr.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!");
-                });
-            });
-            function updateCartCount() {
-                let userId = getCookie("user-id");
-                if (userId) {
-                    $.get("/CartCount", { userId: userId }, function (data) {
-                        $("#cart-count").text(data.count);
-                    });
+                } else {
+                    toastr.error("Lỗi: " + (xhr.responseText || "Không có thông tin lỗi từ server") + " (Status: " + xhr.status + ")");
                 }
+            });
+        });
+            function updateCartCount() {
+                    let userId = getCookie("user-id");
+                    if (userId) {
+                        $.get("/CartCount", { userId: userId }, function (data) {
+                            $("#cart-count").text(data.count);
+                        });
+                    }
+                }
+            function updateStockDisplay() {
+                let userId = getCookie("user-id");
+                let productId = $(".addCartDetailnew").attr("data-prId");
+                let selectedColor = $(".color-select:checked").val();
+                let selectedSize = $(".size-select:checked").val();
+
+                $.get("/api/CartItem/Process", { UserId: userId }, function (cartData) {
+                    let cartItem = cartData.data.cartItem.find(item =>
+                        item.productId === productId &&
+                        item.colorId === selectedColor &&
+                        item.sizeId === selectedSize
+                    );
+                    let currentCartQuantity = cartItem ? cartItem.quantity : 0;
+                    let totalStock = parseInt($('#available-stock').text()) + currentCartQuantity; 
+                    let remainingStock = totalStock - currentCartQuantity;
+                    $('#available-stock').text(remainingStock);
+                    $('#quantity').attr('max', remainingStock);
+                });
             }
             updateCartCount();
         });

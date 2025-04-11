@@ -178,12 +178,7 @@ namespace DATN_ACV_DEV.Controllers.Order
                 }
                 _context.TbOrders.Update(tbOrder); // Cập nhật đơn hàng
                 await _context.SaveChangesAsync();
-                return Ok(new
-                {
-                    Success = true,
-                    Message = "Cập nhật hóa đơn thành công !!!",
-                    RedirectUrl = "http://localhost:5011/orders/create/instore"
-                });
+                return Ok();
             }
             catch (Exception ex)
             {
