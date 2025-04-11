@@ -32,9 +32,18 @@ namespace DATN_ACV_DEV.Controllers.CancelOrder
         }
         public void AccessDatabase()
         {
-            _context.SaveChanges();
-            _response.Message = "Gửi yêu cầu thành công";
-            _res.Data = _response;
+            if (_Order.Status == 3)
+            {
+                _context.SaveChanges();
+                _res.Messages.Add(new Message
+                {
+                    MessageText = "Đơn hàng đã hủy thành công !!!",
+                });
+                _res.Data = _response;
+            }
+            else {
+                _res.Data = _response;
+            }
         }
 
         public void CheckAuthorization()
@@ -47,23 +56,11 @@ namespace DATN_ACV_DEV.Controllers.CancelOrder
             try
             {
                 _Order = _context.TbOrders.Where(c => c.Id == _request.Id).FirstOrDefault();
-                if (_Order != null)
+                if (_Order != null && _Order.OrderCodeGhn == _request.Code)
                 {
                     _Order.ReasionCancel = _request.ReasonCancel;
                     _Order.UpdateDate = DateTime.Now;
-                }
-                if (_request.UrlImage.Count > 1)
-                {
-                    #region Lưu ảnh danh mục
-                    foreach (var item in _request.UrlImage)
-                    {
-                        _requestImage.Url = item;
-                        _requestImage.Type = "3";
-                        _requestImage.ProductId = _Order.Id;
-                        var id = new CreateImageController(_context).Process(_requestImage);
-                        //_Order.ImageId = id.Data.ID;
-                    }
-                    #endregion
+                    _Order.Status = 3;
                 }
             }
             catch (Exception)
