@@ -35,7 +35,7 @@ namespace DATN_ACV_DEV.Controllers
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("BuBuSport", "sprtbubu@gmail.com"));
             message.To.Add(new MailboxAddress(customerName, email));
-            message.Subject = type == 0 ? $"Yêu cầu cấp lại mật khẩu BuBu Sport" : $"Cập nhật trạng thái đơn hàng #{orderCode}";
+            message.Subject = type == 0 ? $"Yêu cầu cấp lại mật khẩu BuBu Sport" : ( type == 2 ? $"Xác nhận hủy đơn hàng #{orderCode}" : $"Cập nhật trạng thái đơn hàng #{orderCode}");
             var resetpass = $@"
                 <h2>Yêu cầu cấp lại mật khẩu BuBu Sport</h2>
                 <p>Xin chào {customerName},</p>
@@ -62,8 +62,25 @@ namespace DATN_ACV_DEV.Controllers
                 <p>Xin cảm ơn,</p>
                 <p>Nhóm tài khoản BuBu Sport</p>
             ";
+            var cancelorder = $@"
+                <h2>Xác thực hủy đơn hàng BuBu Sport</h2>
+                <p>Xin chào {customerName},</p>
+                <p><strong>Số điện thoại:</strong> {phonenumber}</p>
+                <p><strong>Mã hóa đơn:</strong> {orderCode}</p>
+                <p>
+                  Chúng tôi xin thông báo đơn hàng của bạn đã được yêu cầu cập nhật trạng thái
+                  <strong style=""color: #d63384; background-color: #fce4ec; padding: 2px 6px; border-radius: 4px;"">
+                    Hủy đơn hàng
+                  </strong>
+                </p>
+                <p>Đây là mã để xác thực hành động hủy đơn hàng của bạn : {password}</p>
+                <p>Nếu bạn không thực hiên yêu cầu này vui lòng bỏ qua email này</p>
+                <p>Cảm ơn bạn đã tin tưởng sử dụng dịch vụ của chúng tôi !!!</p>
+                <p>Xin cảm ơn,</p>
+                <p>Nhóm tài khoản BuBu Sport</p>
+            ";
             var builder = new BodyBuilder();
-            builder.HtmlBody = type == 0 ? resetpass : orderstatus;
+            builder.HtmlBody = type == 0 ? resetpass : ( type == 2 ? cancelorder : orderstatus );
 
 
 

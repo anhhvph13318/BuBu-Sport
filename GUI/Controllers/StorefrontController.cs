@@ -36,6 +36,8 @@ using IndexObject = GUI.Models.DTOs.Product_DTO.Views.IndexObject;
 using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using DATN_ACV_DEV.Controllers;
 using System.Drawing;
+using DATN_ACV_DEV.Model_DTO.CancelOrder_DTO;
+using System.Text;
 
 namespace GUI.Controllers
 {
@@ -309,9 +311,45 @@ namespace GUI.Controllers
             ViewBag.CartItemCount = await GetCartItemCount(userId); 
             return View(model);
         }
-        [Route("/CancelOrder")]
-        public async Task<IActionResult> CancelOrder(string s)
+        public class RandomCodeGenerator
         {
+            private static readonly char[] chars =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
+
+            public static string GenerateRandomCode(int minLength = 6, int maxLength = 8)
+            {
+                var random = new Random();
+                int length = random.Next(minLength, maxLength + 1); // Độ dài ngẫu nhiên trong khoảng [6, 8]
+                var sb = new StringBuilder(length);
+
+                for (int i = 0; i < length; i++)
+                {
+                    sb.Append(chars[random.Next(chars.Length)]);
+                }
+
+                return sb.ToString();
+            }
+        }
+        [Route("/CancelOrder")]
+        public async Task<IActionResult> CancelOrder(Guid Id, string ReasonCancel, string email, string code, string name, string phone)
+        {
+            var codeCancel = RandomCodeGenerator.GenerateRandomCode();
+            email = "anhhv220402@gmail.com";
+            code = "ON20250409205436011";
+            name = "Vanh";
+            phone = "0988141323";
+            TbOrder tbOrder = new TbOrder();
+            tbOrder = _context.TbOrders.Where(c=>c.Id == Guid.Parse("8B165723-4255-4296-83C6-199DADAD7C3C")).FirstOrDefault();
+            tbOrder.OrderCodeGhn = codeCancel;
+            _context.SaveChanges();
+            await _emailService.SendOrderConfirmationAsync(email, code, name, phone, codeCancel, "", 2);
+            var req = new CancelOrderRequest();
+            req.Id = Guid.NewGuid();
+            req.ReasonCancel = "Ko";
+            var URL = _settings.APIAddress + "api/CancelOrder/Process";
+            var param = JsonConvert.SerializeObject(req);
+            var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+            var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
             return Ok();
         }
         [Route("/OrderChecking")]
