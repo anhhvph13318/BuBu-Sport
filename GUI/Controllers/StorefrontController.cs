@@ -36,6 +36,9 @@ using IndexObject = GUI.Models.DTOs.Product_DTO.Views.IndexObject;
 using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using DATN_ACV_DEV.Controllers;
 using System.Drawing;
+using DATN_ACV_DEV.Model_DTO.CancelOrder_DTO;
+using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace GUI.Controllers
 {
@@ -100,16 +103,22 @@ namespace GUI.Controllers
         }
 
         [Route("/Store")]
-        public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max, string category)
+        public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max, string category, Guid? colorId = null, Guid? sizeId = null)
         {
             var model = new Models.DTOs.Product_DTO.Views.IndexObject();
             try
             {
-                var obj = new GetListProductRequest();
-                obj.Name = string.IsNullOrEmpty(s) ? "" : s;
-                obj.PriceFrom = min;
-                obj.PriceTo = max;
-                obj.Limit = t <= 0 ? null : t;
+                var obj = new GetListProductRequest()
+                {
+                    Name = string.IsNullOrEmpty(s) ? "" : s,
+                    PriceFrom = min,
+                    PriceTo = max,
+                    Limit = t <= 0 ? null : t,
+                    OffSet = t * p < 0 ? 0 : t * p,
+                    CategoryID = !string.IsNullOrEmpty(category) && Guid.TryParse(category, out var catId) ? catId : null,
+                    ColorId = colorId,
+                    SizeId = sizeId
+                };
                 var offset = t * p;
                 obj.OffSet = offset < 0 ? 0 : offset;
 
@@ -122,6 +131,15 @@ namespace GUI.Controllers
                 var param = JsonConvert.SerializeObject(obj);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
+                model.Data = result.Data;
+                if (result.Data != null && result.Data.LstProduct != null && result.Data.LstProduct.Any())
+                {
+                    ViewBag.MaxProductPrice = result.Data.LstProduct.Max(p => p.Price);
+                }
+                else
+                {
+                    ViewBag.MaxProductPrice = 10000000; 
+                }
                 t = t == 0 ? 20 : t;
                 var totalPages = ((result.Data.TotalCount) / t) - 1;
                 totalPages = totalPages > 0 ? totalPages : 0;
@@ -142,8 +160,8 @@ namespace GUI.Controllers
                 }
 
                 ViewBag.SearchString = string.IsNullOrEmpty(s) ? "" : s;
-                ViewBag.PriceFrom = min ?? result.Data.LowestPrice;
-                ViewBag.PriceTo = max ?? result.Data.HighestPrice;
+                ViewBag.PriceFrom = min ?? 0;
+                ViewBag.PriceTo = max ?? 100000000;
                 ViewBag.Take = t <= 0 ? 20 : t;
                 ViewBag.TakeOptions = new List<int>() { 15, 30, 45, 60 };
                 ViewBag.CurrentPage = p;
@@ -151,7 +169,9 @@ namespace GUI.Controllers
                 ViewBag.TotalPages = totalPages;
                 ViewBag.StartPage = startPage;
 
-                model.Data = result.Data;
+                ViewBag.CurrentColorId = colorId;
+                ViewBag.CurrentSizeId = sizeId;
+
                 var accountId = HttpContext.Session.GetString("CurrentUserId");
                 HttpContext.Session.Remove("CurrentUserId");
                 if (!string.IsNullOrEmpty(accountId))
@@ -198,7 +218,10 @@ namespace GUI.Controllers
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = await GetCartItemCount(userId); 
+            ViewBag.CartItemCount = await GetCartItemCount(userId);
+            ViewBag.Categories = await FetchCategory();
+            ViewBag.Colors = await FetchColor();
+            ViewBag.Sizes = await FetchSize();
             return View(model);
         }
 
@@ -309,10 +332,66 @@ namespace GUI.Controllers
             ViewBag.CartItemCount = await GetCartItemCount(userId); 
             return View(model);
         }
-        [Route("/CancelOrder")]
-        public async Task<IActionResult> CancelOrder(string s)
+        public class RandomCodeGenerator
         {
-            return Ok();
+            private static readonly char[] chars =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
+
+            public static string GenerateRandomCode(int minLength = 6, int maxLength = 8)
+            {
+                var random = new Random();
+                int length = random.Next(minLength, maxLength + 1); // Độ dài ngẫu nhiên trong khoảng [6, 8]
+                var sb = new StringBuilder(length);
+
+                for (int i = 0; i < length; i++)
+                {
+                    sb.Append(chars[random.Next(chars.Length)]);
+                }
+
+                return sb.ToString();
+            }
+        }
+        [Route("/CancelOrder")]
+        public async Task<IActionResult> CancelOrder(string email, string name, string phone, string orderCode, string reasonCancel, string codeCancelOrder)
+        {
+            TbOrder tbOrder = new TbOrder();
+            tbOrder = _context.TbOrders.Where(c => c.Id == _context.TbOrders.Where(c => c.OrderCode == orderCode).Select(c => c.Id).FirstOrDefault()).FirstOrDefault();
+
+            if (reasonCancel == null && codeCancelOrder == null)
+            {
+                var codeCancel = RandomCodeGenerator.GenerateRandomCode();
+                tbOrder.OrderCodeGhn = codeCancel;
+                _context.SaveChanges();
+                await _emailService.SendOrderConfirmationAsync(email, orderCode, name, phone, codeCancel, "", 2);
+            }
+            if (reasonCancel != null && codeCancelOrder != null)
+            {
+                var req = new CancelOrderRequest();
+                req.Id = tbOrder.Id;
+                req.ReasonCancel = reasonCancel;
+                req.Code = codeCancelOrder;
+                var URL = _settings.APIAddress + "api/CancelOrder/Process";
+                var param = JsonConvert.SerializeObject(req);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<CartItemResponse>>(res) ?? new();
+                if (result.Messages != null && result.Messages.Count > 0)
+                {
+                    if (result.Messages.Count == 1)
+                    {
+                        ViewBag.CancelMessage = "Đơn hàng đã hủy thành công !!!";
+                        ViewBag.CancelMessageType = "success";
+                    }
+                    else
+                    {
+                        ViewBag.CancelMessage = "Mã hủy đơn không chính xác, vui lòng kiểm tra lại !!!";
+                        ViewBag.CancelMessageType = "error";
+                    }
+                }
+                TempData["OpenCancelModal"] = false;
+                return Redirect($"http://localhost:5011/OrderChecking?s={orderCode}");
+            }
+            TempData["OpenCancelModal"] = true;
+            return Redirect($"http://localhost:5011/OrderChecking?s={orderCode}");
         }
         [Route("/OrderChecking")]
         public async Task<IActionResult> OrderChecking(string s)

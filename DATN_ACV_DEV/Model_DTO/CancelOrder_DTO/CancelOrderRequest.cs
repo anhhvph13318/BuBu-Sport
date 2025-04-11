@@ -6,6 +6,6 @@
         public string ReasonCancel { get; set; }
         public int? Action { get; set; }
         public List<string>? UrlImage { get; set; }
-        public string? TypeImage { get; set; }
+        public string? Code { get; set; }
     }
 }

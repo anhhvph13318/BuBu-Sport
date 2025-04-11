@@ -229,7 +229,8 @@ public class OrderDetailAdminController : ControllerBase
                         Id = e.Customer.Id,
                         Name = e.Customer.Name,
                         Address = e.Customer.Adress,
-                        PhoneNumber = e.Customer.Phone
+                        PhoneNumber = e.Customer.Phone,
+                        Email = e.AddressDelivery.receiverEmail,
                     },
                     ShippingInfo = e.AddressDelivery == null ? new ShippingInfo
                     {
