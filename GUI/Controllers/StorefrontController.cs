@@ -397,32 +397,46 @@ namespace GUI.Controllers
         public async Task<IActionResult> OrderChecking(string s)
         {
             List<OrderDetail> model = null;
-            ViewBag.OrderSearch = s;
 
             if (!string.IsNullOrEmpty(s))
             {
                 using var httpClient = new HttpClient();
                 httpClient.BaseAddress = new Uri(_settings.APIAddress);
                 var rawResponse = await httpClient.GetAsync($"/api/storefront/orders/search/{s}");
+
                 try
                 {
-                    var response = JsonConvert.DeserializeObject<BaseResponse<List<OrderDetail>>>(await rawResponse.Content.ReadAsStringAsync());
+                    var raw = await rawResponse.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<BaseResponse<List<OrderDetail>>>(raw);
                     model = response.Data;
+
+                    // Nếu muốn tìm chính xác mã đơn hàng
+                    model = model?.Where(x => x.Code.Equals(s, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                    if (model == null || model.Count == 0)
+                    {
+                        ViewBag.OrderNotFound = true;
+                    }
                 }
                 catch (Exception)
                 {
+                    ViewBag.OrderNotFound = true;
                 }
-            }
 
+                ViewBag.OrderSearch = s;
+            }
             var userId = Guid.Empty;
             try
             {
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = await GetCartItemCount(userId); 
+
+            ViewBag.CartItemCount = await GetCartItemCount(userId);
+
             return View(model);
         }
+
 
         [HttpPost("/ConfirmCart")]
         public async Task<JsonResult> ConfirmCart(List<Guid> ids)
