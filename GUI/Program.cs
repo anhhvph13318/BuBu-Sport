@@ -5,6 +5,7 @@ using GUI.Hubs;
 using GUI.Shared.Common;
 using GUI.Shared.VNPay;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,8 +42,10 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    // Fix for CS1503: Convert 'app.Environment' to its 'ContentRootPath' property, which is a string.
     app.UseHsts();
 }
+RotativaConfiguration.Setup(app.Environment.ContentRootPath, "wwwroot/Rotativa");
 
 app.UseHttpsRedirection();
 
@@ -59,7 +62,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 app.UseAuthentication();
 
 app.UseAuthorization();
-
+app.UseRotativa();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

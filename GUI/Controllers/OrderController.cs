@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Globalization;
+using Rotativa.AspNetCore;
 using System.Net.WebSockets;
 using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
 
@@ -727,5 +728,29 @@ public class OrderController : Controller
 
         return JsonConvert.DeserializeObject<Stock>(await response.Content.ReadAsStringAsync())!;
     }
-    
+    [HttpGet]
+    [Route("{id}/export-pdf")]
+    public async Task<IActionResult> ExportInvoicePdf(string id)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{id}");
+        var response = JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(await rawResponse.Content.ReadAsStringAsync());
+
+        if (response == null || response.Data == null)
+        {
+            return NotFound("Không tìm thấy hóa đơn.");
+        }
+
+        var order = response.Data;
+        order.ReCalculatePaymentInfo();
+
+        return new ViewAsPdf("Invoice", order)
+        {
+            FileName = $"Invoice_{order.Code}.pdf",
+            PageSize = Rotativa.AspNetCore.Options.Size.Letter, 
+            PageMargins = new Rotativa.AspNetCore.Options.Margins(20, 15, 20, 15),
+            CustomSwitches = "--print-media-type --no-stop-slow-scripts --encoding UTF-8"
+        };
+    }
 }
