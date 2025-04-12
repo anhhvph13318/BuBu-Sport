@@ -239,6 +239,7 @@
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>
+    <script src="~/js/validation.js"></script>
     <script src="~/js/orderPage.js"></script>
 
     <script>
@@ -313,7 +314,7 @@
                                     <td class="size-cell">${variant.size}</td>
                                     <td>
                                         <input type="number" class="form-control" min="1" max="${variant.quantity}" value="1"
-                                            data-variant-id="${variant.id}" ${isDisabled ? 'disabled' : ''} readonly />
+                                            data-variant-id="${variant.id}" ${isDisabled ? 'disabled' : ''} />
                                     </td>
                                     <td>
                                         <input type="checkbox" class="form-check-input" data-variant-id="${variant.id}" ${isDisabled ? 'disabled' : ''} />
@@ -396,7 +397,7 @@
                                         <td>${orderItem.Size}</td>
                                         <td>${orderItem.Price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td>
-                                            <input class="form-control order-item-quantity" min="1" value="${orderItem.Quantity}" type="number" />
+                                            <input class="form-control order-item-quantity" min="1" value="${orderItem.Quantity}" type="number" disabled />
                                         </td>
                                         <td>${itemTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td style="display: none" class="order-item-id">${orderItem.Id}</td>
