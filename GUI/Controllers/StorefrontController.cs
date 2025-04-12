@@ -103,7 +103,7 @@ namespace GUI.Controllers
         }
 
         [Route("/Store")]
-        public async Task<IActionResult> Store(string s, int p, int t, decimal? min, decimal? max, string category, Guid? colorId = null, Guid? sizeId = null)
+        public async Task<IActionResult> Store(string s, int p, int t, string status, decimal? min, decimal? max, Guid? category, Guid? colorId = null, Guid? sizeId = null)
         {
             var model = new Models.DTOs.Product_DTO.Views.IndexObject();
             try
@@ -111,27 +111,87 @@ namespace GUI.Controllers
                 var obj = new GetListProductRequest()
                 {
                     Name = string.IsNullOrEmpty(s) ? "" : s,
-                    PriceFrom = min,
-                    PriceTo = max,
+                    PriceFrom = min/100,
+                    PriceTo = max/100,
                     Limit = t <= 0 ? null : t,
                     OffSet = t * p < 0 ? 0 : t * p,
-                    CategoryID = !string.IsNullOrEmpty(category) && Guid.TryParse(category, out var catId) ? catId : null,
+                    CategoryID = category == Guid.Empty ? null : category,
                     ColorId = colorId,
                     SizeId = sizeId
                 };
                 var offset = t * p;
-                obj.OffSet = offset < 0 ? 0 : offset;
-
-                if (!string.IsNullOrEmpty(category) && Guid.TryParse(category, out Guid categoryId))
-                {
-                    obj.CategoryID = categoryId;
-                }
+                obj.OffSet = offset < 0 ? 0 : offset;        
 
                 var URL = _settings.APIAddress + "api/HomePage/Process";
                 var param = JsonConvert.SerializeObject(obj);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListProductResponse>>(res) ?? new();
                 model.Data = result.Data;
+                if (colorId != null && sizeId == null) //lọc màu
+                {
+                    var productId = _context.TbProductDetails.Where(c => c.ColorId == colorId).Select(c => c.ProductId).ToList();
+                    var product = model.Data.LstProduct.Where(c => productId.Contains(c.Id)).ToList();
+                    model.Data.LstProduct = product.Select(p => new ProductModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        CategoryName = _context.TbCategories.Where(a=>a.Id == _context.TbProducts.Where(c=>c.Id == p.Id).Select(c=>c.CategoryId).FirstOrDefault()).Select(a=>a.Name).FirstOrDefault(), // hoặc p.CategoryName nếu có sẵn
+                        Price = p.Price,
+                        Quantity = p.Quantity,
+                        Status = p.Status.ToString(),
+                        PriceNet = p.PriceNet,
+                        Description = p.Description,
+                        Image = _context.TbImages.Where(c=>c.ProductId == p.Id).Select(c=>c.Url).FirstOrDefault(),
+                        Code = p.Code,
+                    }).ToList();
+                }
+                if (sizeId != null && colorId == null) //lọc size
+                {
+                    var productId = _context.TbProductDetails.Where(c => c.SizeId == sizeId).Select(c => c.ProductId).ToList();
+                    var product = model.Data.LstProduct.Where(c => productId.Contains(c.Id)).ToList();
+                    model.Data.LstProduct = product.Select(p => new ProductModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        CategoryName = _context.TbCategories.Where(a => a.Id == _context.TbProducts.Where(c => c.Id == p.Id).Select(c => c.CategoryId).FirstOrDefault()).Select(a => a.Name).FirstOrDefault(), // hoặc p.CategoryName nếu có sẵn
+                        Price = p.Price,
+                        Quantity = p.Quantity,
+                        Status = p.Status.ToString(),
+                        PriceNet = p.PriceNet,
+                        Description = p.Description,
+                        Image = _context.TbImages.Where(c => c.ProductId == p.Id).Select(c => c.Url).FirstOrDefault(),
+                        Code = p.Code,
+                    }).ToList();
+                }
+                if (sizeId != null && colorId != null) //lọc cả size và màu
+                {
+                    var productId = _context.TbProductDetails.Where(c => c.ColorId == colorId && c.SizeId == sizeId).Select(c => c.ProductId).ToList();
+                    var product = model.Data.LstProduct.Where(c => productId.Contains(c.Id)).ToList();
+                    model.Data.LstProduct = product.Select(p => new ProductModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        CategoryName = _context.TbCategories.Where(a => a.Id == _context.TbProducts.Where(c => c.Id == p.Id).Select(c => c.CategoryId).FirstOrDefault()).Select(a => a.Name).FirstOrDefault(), // hoặc p.CategoryName nếu có sẵn
+                        Price = p.Price,
+                        Quantity = p.Quantity,
+                        Status = p.Status.ToString(),
+                        PriceNet = p.PriceNet,
+                        Description = p.Description,
+                        Image = _context.TbImages.Where(c => c.ProductId == p.Id).Select(c => c.Url).FirstOrDefault(),
+                        Code = p.Code,
+                    }).ToList();
+                }
+                if (status != null)
+                {
+                    if (status == "out-of-stock")
+                    {
+                        model.Data.LstProduct = model.Data.LstProduct.Where(c => c.Quantity == 0).ToList();
+                    }
+                    else
+                    {
+                        model.Data.LstProduct = model.Data.LstProduct.Where(c => c.Quantity > 0).ToList();
+                    }
+                }
                 if (result.Data != null && result.Data.LstProduct != null && result.Data.LstProduct.Any())
                 {
                     ViewBag.MaxProductPrice = result.Data.LstProduct.Max(p => p.Price);
@@ -397,32 +457,46 @@ namespace GUI.Controllers
         public async Task<IActionResult> OrderChecking(string s)
         {
             List<OrderDetail> model = null;
-            ViewBag.OrderSearch = s;
 
             if (!string.IsNullOrEmpty(s))
             {
                 using var httpClient = new HttpClient();
                 httpClient.BaseAddress = new Uri(_settings.APIAddress);
                 var rawResponse = await httpClient.GetAsync($"/api/storefront/orders/search/{s}");
+
                 try
                 {
-                    var response = JsonConvert.DeserializeObject<BaseResponse<List<OrderDetail>>>(await rawResponse.Content.ReadAsStringAsync());
+                    var raw = await rawResponse.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<BaseResponse<List<OrderDetail>>>(raw);
                     model = response.Data;
+
+                    // Nếu muốn tìm chính xác mã đơn hàng
+                    model = model?.Where(x => x.Code.Equals(s, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                    if (model == null || model.Count == 0)
+                    {
+                        ViewBag.OrderNotFound = true;
+                    }
                 }
                 catch (Exception)
                 {
+                    ViewBag.OrderNotFound = true;
                 }
-            }
 
+                ViewBag.OrderSearch = s;
+            }
             var userId = Guid.Empty;
             try
             {
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = await GetCartItemCount(userId); 
+
+            ViewBag.CartItemCount = await GetCartItemCount(userId);
+
             return View(model);
         }
+
 
         [HttpPost("/ConfirmCart")]
         public async Task<JsonResult> ConfirmCart(List<Guid> ids)

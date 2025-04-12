@@ -333,7 +333,8 @@ else
             email: "@Model.Customer.Email",
             name: "@Html.Raw(Model.Customer.Name)",
             code: "@Model.Code",
-            phone: "@Model.Customer.PhoneNumber"
+            phone: "@Model.Customer.PhoneNumber",
+            products: @Html.Raw(Json.Serialize(Model.Items))
         };
 
         try {
