@@ -41,7 +41,16 @@ namespace DATN_ACV_DEV.Controllers.Order
 
         public void GenerateObjects()
         {
+            TbProductDetail tbProductDetail = new TbProductDetail();
             _Order = _context.TbOrders.Where(c => c.Id == _request.id).FirstOrDefault();
+            if (_request.products != null)
+            {
+                foreach (var item in _request.products)
+                {
+                    tbProductDetail = _context.TbProductDetails.Where(c => c.Id == item.Id).FirstOrDefault();
+                    tbProductDetail.Quantity -= item.Quantity;
+                }
+            }
             if (_Order != null)
             {
                 _Order.Status = _request.status;
