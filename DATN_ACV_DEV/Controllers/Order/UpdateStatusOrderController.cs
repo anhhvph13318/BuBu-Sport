@@ -48,7 +48,10 @@ namespace DATN_ACV_DEV.Controllers.Order
                 foreach (var item in _request.products)
                 {
                     tbProductDetail = _context.TbProductDetails.Where(c => c.Id == item.Id).FirstOrDefault();
-                    tbProductDetail.Quantity -= item.Quantity;
+                    if (tbProductDetail.Quantity > 0)
+                    {
+                        tbProductDetail.Quantity -= item.Quantity;
+                    }
                 }
             }
             if (_Order != null)
