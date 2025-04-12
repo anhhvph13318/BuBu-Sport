@@ -744,7 +744,10 @@ public class OrderController : Controller
 
         var order = response.Data;
         order.ReCalculatePaymentInfo();
-
+        if (order.Status != 7) 
+        {
+            return BadRequest("Chỉ có thể tải PDF cho hóa đơn ở trạng thái 'Hoàn thành'.");
+        }
         return new ViewAsPdf("Invoice", order)
         {
             FileName = $"Invoice_{order.Code}.pdf",

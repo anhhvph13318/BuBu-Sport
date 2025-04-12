@@ -168,7 +168,10 @@ else
 
         <div class="mb-3 mt-3">
             <a class="btn btn-primary" asp-controller="Order" asp-action="Index">Trở về</a>
-            <a class="btn btn-success" asp-controller="Order" asp-action="ExportInvoicePdf" asp-route-id="@Model.Id"><i class="bi bi-cloud-download-fill"></i> Tải PDF</a>
+            @if (Model.Status == 7) 
+            {
+                <a class="btn btn-success" asp-controller="Order" asp-action="ExportInvoicePdf" asp-route-id="@Model.Id"><i class="bi bi-cloud-download-fill"></i> Tải PDF</a>
+            }
         </div>
     </div>
 }
