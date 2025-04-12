@@ -26,14 +26,23 @@
                         <div class="filter-item">
                             <h4 class="filter-title">Giá</h4>
                             <div class="price-filter">
+                                <div id="price-slider"></div>
                                 <div class="input-number price-min">
-                                    <input id="price-min" type="text" class="form-control filter-input"
-                                           value="@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.PriceFrom ?? 0)" placeholder="Từ (đ)" />
+                                    <input id="price-min" type="number" name="min"
+                                           data-value="@(Model?.Data?.LowestPrice != null ? (int)Model.Data.LowestPrice : 0)"
+                                           value="@((int)(ViewBag.PriceFrom ?? 0))"
+                                           class="form-control filter-input">                                    
+                                    <span class="qty-up">+</span>
+                                    <span class="qty-down">-</span>
                                 </div>
                                 <span>-</span>
                                 <div class="input-number price-max">
-                                    <input id="price-max" type="text" class="form-control filter-input"
-                                           value="@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.PriceTo ?? ViewBag.MaxProductPrice ?? 100000000)" placeholder="Đến (đ)" />
+                                    <input id="price-max" type="number" name="max"
+                                           data-value="@(Model?.Data?.HighestPrice != null ? (int)Model.Data.HighestPrice : 0)"
+                                           value="@((int)(ViewBag.PriceTo ?? 0))"
+                                           class="form-control filter-input">
+                                    <span class="qty-up">+</span>
+                                    <span class="qty-down">-</span>
                                 </div>
                             </div>
                         </div>
@@ -334,14 +343,24 @@
                 function parseCurrencyVN(value) {
                     return parseInt(value.replace(/[^\d]/g, '')) || 0;
                 }
-
                 document.getElementById('price-min').addEventListener('input', function () {
-                    this.value = formatCurrencyVN(parseCurrencyVN(this.value));
+                    const raw = parseCurrencyVN(this.value);
+                    const scaled = raw / 100;
+                    this.value = formatCurrencyVN(scaled);
                 });
 
                 document.getElementById('price-max').addEventListener('input', function () {
-                    this.value = formatCurrencyVN(parseCurrencyVN(this.value));
+                    const raw = parseCurrencyVN(this.value);
+                    const scaled = raw / 100;
+                    this.value = formatCurrencyVN(scaled);
                 });
+                // document.getElementById('price-min').addEventListener('input', function () {
+                //     this.value = formatCurrencyVN(parseCurrencyVN(this.value));
+                // });
+
+                // document.getElementById('price-max').addEventListener('input', function () {
+                //     this.value = formatCurrencyVN(parseCurrencyVN(this.value));
+                // });
 
                 // Pagination click handler
                 document.querySelectorAll('.pagination-btn').forEach(btn => {
@@ -386,8 +405,6 @@
                 document.getElementById('filter-name').value = '';
                 document.getElementById('filter-status').value = '';
                 document.getElementById('filter-category').value = '';
-                document.getElementById('price-min').value = '0';
-                document.getElementById('price-max').value = '@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.MaxProductPrice ?? 100000000)';
 
                 document.querySelectorAll('.color-radio, .size-radio').forEach(cb => cb.checked = false);
             }
