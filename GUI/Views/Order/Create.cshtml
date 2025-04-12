@@ -479,36 +479,28 @@
         }
 
         function applyVoucher(voucherId) {
-            // Hiển thị loading
             $('#loading-overlay').css('display', 'flex');
 
-            // Gọi API để áp dụng voucher
             fetch(`/orders/apply-voucher?id=${voucherId}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Không thể áp dụng voucher.');
+                        return response.json().then(error => {
+                            throw new Error(error.Message || 'Không thể áp dụng Voucher.');
+                        });
                     }
                     return response.json();
                 })
                 .then(data => {
-                    // Cập nhật thông tin thanh toán
+                    console.log('Payment data:', data.Payment);
                     $('#orderPaymentInfoContainer').html(data.Payment);
-
-                    // Đóng modal
                     $('#voucherModal').modal('hide');
-
-                    // Thông báo thành công
-                    toastr.success('Áp dụng voucher thành công!');
-
-                    // Ẩn loading
+                    toastr.success('Áp dụng Voucher thành công!');
                     $('#loading-overlay').css('display', 'none');
-
-                    // Cập nhật nút voucher
                     $('#applyVoucherBtn').text('Huỷ áp mã').attr('onclick', 'cancelApplyVoucher()');
                 })
                 .catch(error => {
-                    console.error('Error applying voucher:', error);
-                    toastr.error('Không thể áp dụng voucher. Vui lòng thử lại sau.');
+                    console.error('Lỗi khi áp dụng Voucher:', error);
+                    toastr.error(error.message || 'Không thể áp dụng Voucher. Vui lòng thử lại sau.');
                     $('#loading-overlay').css('display', 'none');
                 });
         }

@@ -438,19 +438,21 @@ public class OrderController : Controller
         var voucher = await CheckCustomerCanUseVoucher(id, target);
 
         if (voucher is null)
-            return BadRequest();
+        {
+            return BadRequest(new { Message = "Mã Voucher không hợp lệ hoặc đơn hàng không đủ điều kiện tối thiểu." });
+        }
 
         order.Voucher = voucher;
-        order.PaymentInfo.VoucherId = order.Voucher.Id;
-        order.PaymentInfo.VoucherCode = order.Voucher.Code;
+        order.PaymentInfo.VoucherId = voucher.Id;
+        order.PaymentInfo.VoucherCode = voucher.Code;
 
         order.ReCalculatePaymentInfo();
-
+        Console.WriteLine($"TotalDiscount after apply: {order.PaymentInfo.TotalDiscount}");
         HttpContext.Session.SaveCurrentOrder(order);
 
         return Json(new
         {
-            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo)
         });
     }
 
@@ -474,7 +476,7 @@ public class OrderController : Controller
         });
     }
 
-    private static async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
+    private async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
@@ -483,10 +485,18 @@ public class OrderController : Controller
         if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
             return null;
 
-        return JsonConvert.DeserializeObject<VoucherDTO>(
-                await rawResponse.Content.ReadAsStringAsync());
-    }
+        var voucher = JsonConvert.DeserializeObject<VoucherDTO>(await rawResponse.Content.ReadAsStringAsync());
+        if (voucher == null)
+            return null;
 
+        var order = HttpContext.Session.GetCurrentOrder();
+        if (order.PaymentInfo.TotalAmount < voucher.Condition)
+        {
+            return null; 
+        }
+
+        return voucher;
+    }
     #endregion
 
     #region Online payment

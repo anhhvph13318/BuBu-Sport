@@ -2,13 +2,51 @@
 @using System.Globalization
 @model IEnumerable<VoucherDTO>
 
+<style>
+    .voucher-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .voucher-table th,
+        .voucher-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .voucher-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .voucher-table td:first-child {
+            text-align: left;
+        }
+
+    .btn-apply-voucher {
+        padding: 5px 10px;
+        background-color: aqua; 
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .btn-apply-voucher:hover {
+            background-color: aqua; 
+        }
+</style>
 <div class="container">
-    <table class="table table-stripped">
+    <table class="table voucher-table">
         <thead>
             <tr>
                 <th>Mã</th>
                 <th>Tên voucher</th>
-                <th>Số tiền giảm</th>
+                <th>Điều kiện</th>
+                <th>Giảm giá</th>
+                <th>Hạn dùng</th>
                 <th></th>
             </tr>
         </thead>
@@ -16,18 +54,26 @@
             @foreach (var voucher in Model)
             {
                 <tr>
-                    <td>@voucher.Code</td>
+                    <td><strong>@voucher.Code</strong></td>
                     <td>@voucher.Name</td>
-                    @if (voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent)
-                    {
-                        <td>@voucher.Discount %</td>
-                    }
-                    else
-                    {
-                        <td>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                    }
+                    <td>@voucher.Condition.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                     <td>
-                        <button class="btn btn-primary text-nowrap me-2 btn-apply-voucher" data-id="@voucher.Id">Áp dụng</button>
+                        @if (voucher.Unit == DATN_ACV_DEV.Entity.VoucherUnit.Percent)  
+                        {  
+                           <span>@voucher.Discount%</span>  
+                           @if (voucher.MaxDiscount > 0)  
+                           {  
+                               <br />  
+                               <small>(Tối đa: @voucher.MaxDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</small>  
+                           }  
+                        }  
+                        else  
+                        {  
+                           <span>@voucher.Discount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</span>  
+                        }
+                    <td>@voucher.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <button class="btn-apply-voucher primary-btn" data-id="@voucher.Id">Áp dụng</button>
                     </td>
                 </tr>
             }
