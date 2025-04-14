@@ -80,7 +80,7 @@ public class OrderController : Controller
                 orders = orders.Where(o => o.FinalAmount <= maxAmount.Value);
             }
 
-            return View(orders);
+            return View(orders.OrderByDescending(c=>c.CreateDate));
         }
         catch (Exception ex)
         {
