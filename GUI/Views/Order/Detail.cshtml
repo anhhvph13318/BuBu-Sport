@@ -43,6 +43,13 @@ else
             </div>
 
             <button type="button" class="btn btn-primary mt-3" onclick="saveOrderStatus()">Lưu</button>
+
+            @if (!string.IsNullOrEmpty(Model.ReasionCancel))
+            {
+                <div class="alert alert-danger mb-3 mt-3">
+                    <strong>Lý do hủy đơn hàng:</strong> @Model.ReasionCancel
+                </div>
+            }
         </div>
 
         <div class="row mb-3">
