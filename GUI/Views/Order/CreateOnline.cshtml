@@ -1,0 +1,135 @@
+﻿@using System.Globalization
+@using GUI.Models.DTOs.Order_DTO
+
+@{
+    Layout = "_Layout";
+    var orders = ViewData["Orders"] as List<OrderDetail>;
+}
+
+<style>
+    .table-fixed thead > tr,
+    .table-fixed tbody > tr {
+        display: flex;
+        justify-content: space-around;
+        flex: 0 0 auto;
+    }
+
+        .table-fixed thead > tr th,
+        .table-fixed tbody > tr th,
+        .table-fixed thead > tr td,
+        .table-fixed tbody > tr td {
+            flex: 1;
+        }
+
+    .table-fixed tbody {
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .table-lock-height > tbody {
+        height: 200px;
+    }
+</style>
+<link href="~/lib/toastr/toastr.css" rel="stylesheet">
+
+<div class="container-fluid" id="order-container">
+    <div class="row">
+        <div class="col-md-8 p-3">
+            <div class="mb-2 p-3 border">
+                <div class="accordion" id="accordionPanelsStayOpenExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                                    aria-controls="panelsStayOpen-collapseOne">
+                                Danh sách hoá đơn trực tuyến
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                            <div class="accordion-body" id="orderTempSaveContainer">
+                                @if (orders != null)
+                                {
+                                    var onlineOrders = orders.Where(order => order.OrderTypeName == "Online").ToList();
+                                    @await Html.PartialAsync("_OnlineOrderListPartialView", onlineOrders)
+                                }
+                                else
+                                {
+                                    <p class="text-center">Không có đơn hàng</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border p-3 h-75">
+                <form autocomplete="off" class="w-100" onsubmit="return false">
+                    <div class="mb-3 autocomplete w-100">
+                        <input placeholder="Tên, mã sản phẩm..." id="search" class="form-control">
+                        <div class="autocomplete-items" id="autocomplete-list"></div>
+                    </div>
+                </form>
+                <div class="d-flex justify-content-end">
+                    <div id="tempSaveButtonContainer" class="me-2">
+                        @await Html.PartialAsync("_TempSaveOrderButtonPartialView")
+                    </div>
+                    <button id="btnReset" class="btn btn-danger text-nowrap me-2" onclick="clearOrder()" type="button">Làm mới giỏ hàng</button>
+                </div>
+                <hr />
+                <div id="orderItemContainer">
+                    @await Html.PartialAsync("_OrderItemListPartialView", Array.Empty<OrderItem>())
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 p-3">
+            <div class="p-3 border mb-3">
+                <h5>Thông tin khách hàng</h5>
+                <hr />
+                <div id="customerInfoContainer">
+                    @await Html.PartialAsync("_OrderCustomerInfoPartialView", new CustomerInfo())
+                </div>
+            </div>
+            <div class="p-3 border mb-3">
+                <h5>Thông tin giao hàng</h5>
+                <hr />
+                <div id="shippingInfoContainer">
+                    @await Html.PartialAsync("_OrderShippingInfoPartialView", new ShippingInfo())
+                </div>
+            </div>
+            <div id="checkout-area-2" class="p-3 border">
+                <h5>Thông tin hoá đơn</h5>
+                <hr />
+                <div id="orderPaymentInfoContainer">
+                    @await Html.PartialAsync("_OrderPaymentInfoPartialView", new PaymentInfo())
+                </div>
+                <hr />
+                <div class="row" id="orderButtonActionContainer">
+                    @await Html.PartialAsync("_OrderButtonActionPartialView", 0)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="voucherModalLabel">Danh sách voucher khả dụng</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+    <script src="~/lib/toastr/toastr.min.js"></script>
+    <script src="~/js/product.js"></script>
+    <script src="~/js/orderPage.js"></script>
+}

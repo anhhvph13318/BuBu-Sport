@@ -100,13 +100,14 @@ namespace DATN_ACV_DEV.Controllers
         public void GenerateObjects()
         {
             customer = _context.TbCustomers.FirstOrDefault(c => c.Id == _request.UserId);
+            account = customer != null ? _context.TbAccounts.Where(c => c.CustomerId == customer.Id).FirstOrDefault() : null;
             if (customer == null)
             {
                 //var address = _context.TbAddressDeliveries.FirstOrDefault(c => c.Id == _request.addressDeliveryId);
                 customer = new TbCustomer { 
                     Id = _request.UserId,
                     Adress = _request.addressDelivery,
-                    GroupCustomerId = _request.UserId,
+                    //GroupCustomerId = _request.UserId,
                     Name = _request.name,
                     Phone = _request.phoneNummber,
 				};
@@ -117,6 +118,19 @@ namespace DATN_ACV_DEV.Controllers
             {
                 customer.Adress = _request.addressDelivery;
             }
+            if (customer != null && account == null)
+            {
+                //var address = _context.TbAddressDeliveries.FirstOrDefault(c => c.Id == _request.addressDeliveryId);
+                customer = new TbCustomer
+                {
+                    Id = Guid.NewGuid(),
+                    Adress = _request.addressDelivery,
+                    //GroupCustomerId = _request.UserId,
+                    Name = _request.name,
+                    Phone = _request.phoneNummber,
+                };
+                AddCustomer = true;
+            }    
             //_namePaymentMethod = _context.TbPaymentMethods.Where(c => c.Id == _request.paymentMethodId).Select(p => p.Name).FirstOrDefault();
 
             var voucherId = _request?.voucherID?.Any() == true ? _request?.voucherID?.First() : null;
@@ -128,15 +142,16 @@ namespace DATN_ACV_DEV.Controllers
                 TotalAmount = _request.totalAmount ?? 0m,
                 TotalAmountDiscount = _request.totalAmountDiscount ?? 0m,
 				Description = _request.name,
-                AccountId = _request.UserId,
+                AccountId = AddCustomer == true ? null : _request.UserId,
                 PaymentMethod = _request.paymentMethodId ?? 1,
                 PaymentStatus = (short)(_request.paymentMethodId == 2 ? 0 : 1),
                 //VoucherCode = _request.voucherCode != null ? string.Join(",", _request.voucherCode) : null,
                 AmountShip = _request.amountShip ?? 0,
                 CustomerId = customer == null ? null : customer.Id,
                 PhoneNumberCustomer = customer != null ? customer.Phone : _request.phoneNummber,
+                AddressCustomer = _request.addressDelivery,
                 AddressDeliveryId = _request.addressDeliveryId,
-                IsCustomerTakeYourself = _request.getAtStore == true,
+                IsCustomerTakeYourself = _request.getAtStore == false,
                 VoucherId = voucherId,
 
 				OrderCounter = false,
@@ -155,9 +170,10 @@ namespace DATN_ACV_DEV.Controllers
 					if (model != null)
 					{
 						var image = _context.TbImages.Where(i => i.Id == model.ImageId).FirstOrDefault();
+                        var productdetailId = _context.TbProductDetails.Where(c=>c.SizeId == item.SizeId && c.ColorId == item.ColorId && c.ProductId == item.ProductId).Select(c=>c.Id).FirstOrDefault();
 						OrderProduct product = new OrderProduct()
 						{
-							productId = model.Id,
+							productId = productdetailId,
 							categoryId = model.CategoryId,
 							productName = model.Name,
 							productCode = model.Code,

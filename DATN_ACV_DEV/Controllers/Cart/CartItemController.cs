@@ -4,12 +4,14 @@ using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.FileBase;
 using DATN_ACV_DEV.Model_DTO.Cart_DTO;
 using DATN_ACV_DEV.Model_DTO.Category_DTO;
+using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using DATN_ACV_DEV.Model_DTO.HomePage;
 using DATN_ACV_DEV.Model_DTO.Image_DTO;
 using DATN_ACV_DEV.Model_DTO.Product_DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Net.WebSockets;
 
 namespace DATN_ACV_DEV.Controllers
@@ -69,21 +71,40 @@ namespace DATN_ACV_DEV.Controllers
                                 var product = _context.TbProducts.Where(c => Model.Select(a => a.ProductId).Contains(c.Id)).Distinct().ToList();
                                 foreach (var item in product)
                                 {
-                                    var colorId = _context.TbProductDetails.Where(c=>c.ProductId == item.Id).Select(c=>c.ColorId).FirstOrDefault();
-                                    var sizeId = _context.TbProductDetails.Where(c=>c.ProductId == item.Id).Select(c=>c.SizeId).FirstOrDefault();
-                                    //item.Color = _context.TbColors.Where(c=>c.Id == colorId).Select(c=>c.Name).FirstOrDefault();
-                                    //item.Size = _context.TbSizes.Where(c=>c.Id == sizeId).Select(c=>c.SizeName).FirstOrDefault();
-                                    item.Color = "Green";
-                                    item.Size = 38;
+                                    var Color = Model.Where(c => c.CartId == _Cart.Id).Select(c => c.ColorId).FirstOrDefault();
+                                    var Size = Model.Where(c => c.CartId == _Cart.Id).Select(c => c.SizeId).FirstOrDefault();
+                                    
+                                    item.Color = _context.TbColors.Where(c => c.Id == Color).Select(c => c.Name).FirstOrDefault();
+                                    item.SizeName = _context.TbSizes.Where(c=>c.Id == Size).Select(c=>c.SizeName).FirstOrDefault();
                                 }
+
                                 var image = _context.TbImages.Where(i => product.Select(e => e.ImageId).Contains(i.Id)).Distinct().ToList();
                                 Model.ForEach(c =>
                                 {
+                                    //var Color = Model.Where(c => c.CartId == _Cart.Id).Select(c => c.ColorId).FirstOrDefault();
+
                                     c.tbProduct = product.Where(a => a.Id == c.ProductId).FirstOrDefault();
-                                    c.tbImage = image.Where(a => a.Id == c.tbProduct.ImageId).FirstOrDefault();
+                                    //var imageurl = _context.TbProductDetails.Where(s => s.ProductId == c.tbProduct.Id && s.ColorId == Color).Select(c => c.ImageId).FirstOrDefault();
+
+                                    //c.tbImage = image.Where(a => a.Id == imageurl).FirstOrDefault();
                                 });
+                                foreach (var value in Model) //image
+                                {
+                                    var imageurl = _context.TbProductDetails.Where(s => s.ProductId == value.ProductId && s.ColorId == value.ColorId && s.SizeId == value.SizeId).Select(c => c.ImageId).FirstOrDefault();
+                                    value.tbImage = _context.TbImages.Where(c => c.Id == imageurl).FirstOrDefault();
+                                }
+                                
                             }
+
                             LstCartItem = _mapper.Map<List<CartDTO>>(Model);
+                            foreach (var model in LstCartItem) //size && color
+                            {
+                                var colorId = _context.TbCartDetails.Where(c=>c.Id == model.CartDetailID).Select(c=>c.ColorId).FirstOrDefault();
+                                var productCode = _context.TbProducts.First(c => c.Code == model.ProductCode).Code;
+                                var sizeId = _context.TbCartDetails.Where(c => c.Id == model.CartDetailID).Select(c => c.SizeId).FirstOrDefault();
+                                model.SizeName = _context.TbSizes.First(c => c.Id == sizeId).SizeName;
+                                model.Color = _context.TbColors.First(c=>c.Id == colorId).Name;
+                            }
                             _response.CartItem = LstCartItem;
                         }
                         _Cart.EndDate = DateTime.Now.AddDays(5);
@@ -112,7 +133,24 @@ namespace DATN_ACV_DEV.Controllers
                         });
                     }
                     LstCartItem = _mapper.Map<List<CartDTO>>(Model);
-                    _response.CartItem = LstCartItem;
+					foreach (var model in LstCartItem) //size && color
+					{
+                        var cardId = _context.TbCartDetails.Where(c => c.Id == _request.id.First()).Select(c => c.CartId).FirstOrDefault();
+                        var customerid = _context.TbCarts.Where(c=>c.Id == cardId).Select(c=>c.AccountId).FirstOrDefault();                     
+                        var accountId = _context.TbAccounts.Where(c=>c.CustomerId == customerid).Select(c=>c.Id).FirstOrDefault();                     
+						var colorId = _context.TbCartDetails.Where(c => c.Id == model.CartDetailID).Select(c => c.ColorId).FirstOrDefault();
+						var productCode = _context.TbProducts.First(c => c.Code == model.ProductCode).Code;
+						var sizeId = _context.TbCartDetails.Where(c => c.Id == model.CartDetailID).Select(c => c.SizeId).FirstOrDefault();
+						model.SizeName = _context.TbSizes.First(c => c.Id == sizeId).SizeName;
+						model.Color = _context.TbColors.First(c => c.Id == colorId).Name;
+                        model.receiverName = _context.TbCustomers.Where(c => c.Id == _request.UserId).Select(c => c.Name).FirstOrDefault();
+                        model.receiverPhone = _context.TbCustomers.Where(c => c.Id == _request.UserId).Select(c => c.Name).FirstOrDefault();
+                        model.receiverEmail = _context.TbAccounts.Where(c => c.CustomerId == _request.UserId).Select(c => c.Email).FirstOrDefault();
+                        model.receiverWard = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.createDate).Select(c => c.WardName).FirstOrDefault();
+                        model.receiverDistrict = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.createDate).Select(c => c.DistrictName).FirstOrDefault();
+                        model.receiverProvince = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.createDate).Select(c => c.ProvinceName).FirstOrDefault();
+					}
+					_response.CartItem = LstCartItem;
                 }
 
             }

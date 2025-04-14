@@ -22,5 +22,6 @@ namespace GUI.Models.DTOs.Address
         public string receiverName { get; set; }
          [Required]
         public string receiverPhone { get; set; }
+        public string email { get; set; }
     }
 }

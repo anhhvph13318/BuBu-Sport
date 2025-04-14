@@ -21,5 +21,6 @@ namespace DATN_ACV_DEV.Model_DTO.AddressDelivery
         public string receiverName { get; set; }
          [Required]
         public string receiverPhone { get; set; }
+        public string email { get; set; }
     }
 }

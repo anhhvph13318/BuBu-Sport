@@ -191,4 +191,12 @@ public class CategoryController : ControllerSharedBase
 
         return writer.GetStringBuilder().ToString();
     }
+    //
+    [HttpGet]
+    [Route("list")]
+    public async Task<IActionResult> GetCategoryList()
+    {
+        var categories = await FetchCategory();
+        return Json(categories);
+    }
 }

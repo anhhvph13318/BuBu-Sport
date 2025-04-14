@@ -53,7 +53,7 @@ namespace DATN_ACV_DEV.Controllers
                     _response.PriceNet = _Product.PriceNet;
                     _response.Vat = _Product.Vat;
                     _response.Warranty = _Product.Warranty;
-                    _response.Color = _Product.Color;
+                    //_response.Color = _Product.Color.ToString();
                     _response.Material = _Product.Material;
                     _response.Image = Image.FirstOrDefault();
                     //_response.CategoryName = _Product.Category.Name;

@@ -1,7 +1,9 @@
 ﻿using DATN_ACV_DEV.Entity;
+using DATN_ACV_DEV.Model_DTO.GHN_DTO;
 using DATN_ACV_DEV.Model_DTO.Order_DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static DATN_ACV_DEV.Controllers.Order.AdminCreateOrderController;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DATN_ACV_DEV.Controllers.Order
@@ -34,7 +36,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             {
                 Id = Guid.NewGuid(),
                 TbOrderDetails = items.ToList(),
-                Status = payload.Status,
+                Status = payload.IsDraft == true ? 0 : payload.Status,
                 TotalAmount = payload.Payment.TotalAmount,
                 TotalAmountDiscount = payload.Payment.TotalDiscount,
                 AmountShip = payload.Payment.ShippingFee,
@@ -95,7 +97,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             // re-update product stock
             foreach (var item in payload.Items)
             {
-                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
+                var productID = _context.TbProductDetails.Where(c => c.Id == Guid.Parse(item.Id)).Select(c => c.ProductId).FirstOrDefault();
+                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == productID)
                     ?? throw new NullReferenceException();
 
                 if (product.Quantity <= 0)
@@ -109,9 +112,15 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             if(errors.Count == 0)
             {
-                await _context.TbOrders.AddAsync(order);
-                await _context.SaveChangesAsync();
-
+                try
+                {
+					await _context.TbOrders.AddAsync(order);
+					await _context.SaveChangesAsync();
+				}
+                catch (Exception ex)
+                {
+                    throw;
+                }
                 return Ok(new { Success = true });
             }
 
@@ -120,8 +129,70 @@ namespace DATN_ACV_DEV.Controllers.Order
                 errors
             });
         }
-
         [HttpPatch]
+        [Route("update/{id}")]
+        public async Task<IActionResult> UpdateItemOrder(
+        [FromRoute] string id,
+        [FromBody] UpdateItemOrderRequest payload)
+        {
+            List<OrderItem> productdetailid = new List<OrderItem>();
+            List<TbOrderDetail> newOrderDetails = new List<TbOrderDetail>();
+            TbOrder tbOrder = new TbOrder();
+            tbOrder = _context.TbOrders.Where(c => c.Id == Guid.Parse(id)).FirstOrDefault();
+
+            if (payload.Items.Select(c=>c.Status).FirstOrDefault() != payload.Status)
+            {
+                tbOrder.Status = 7;              
+            }
+
+            foreach (var item in payload.Items)
+            {
+                var existItem = _context.TbOrderDetails.Where(e => e.ProductId == Guid.Parse(item.Id) && e.OrderId == Guid.Parse(id)).FirstOrDefault();
+
+                if (existItem == null)
+                {
+                    productdetailid.Add(item);
+                }    
+            }
+            foreach (var item1 in productdetailid)
+            {
+                newOrderDetails.Add(new TbOrderDetail
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = Guid.Parse(item1.Id),
+                    OrderId = Guid.Parse(id),
+                    Quantity = item1.Quantity,
+                });
+            }
+            foreach (var item2 in productdetailid)
+            {
+                var productId = _context.TbProductDetails.Where(c => c.Id == Guid.Parse(item2.Id)).Select(c => c.ProductId).FirstOrDefault();
+                var price = _context.TbProducts.Where(c=>c.Id == productId).Select(c => c.Price).FirstOrDefault();
+                tbOrder.TotalAmount += price;
+            }
+            try
+            {
+                if (productdetailid.Count > 0)
+                {
+                    await _context.TbOrderDetails.AddRangeAsync(newOrderDetails);
+                }
+                _context.TbOrders.Update(tbOrder); // Cập nhật đơn hàng
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Detail = ex.InnerException?.Message
+                });
+            }
+
+            return Ok(new { Success = true });
+        }
+            [HttpPatch]
         [Route("{id}")]
         public async Task<IActionResult> Update(
             [FromRoute] string id,
@@ -165,7 +236,7 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             // update customer info
             if (payload.Customer.Id != Guid.Empty)
-                order.CustomerId = payload.Customer.Id;
+                order.CustomerId = order.CustomerId == null ? payload.Customer.Id : order.CustomerId;
             else
             {
                 order.Customer = new TbCustomer
@@ -244,7 +315,8 @@ namespace DATN_ACV_DEV.Controllers.Order
             {
                 foreach (var item in payload.Items)
                 {
-                    var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == Guid.Parse(item.Id))
+                    var productId = _context.TbProductDetails.Where(c=>c.Id == Guid.Parse(item.Id)).Select(c=>c.ProductId).FirstOrDefault();
+                    var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == productId)
                         ?? throw new NullReferenceException();
 
                     if (product.Quantity <= 0)
@@ -258,7 +330,21 @@ namespace DATN_ACV_DEV.Controllers.Order
                 }
             }
             _context.TbOrders.Update(order);
-            await _context.SaveChangesAsync();
+            //_context.SaveChanges();
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Detail = ex.InnerException?.Message
+                });
+            }
 
             return Ok(new { Success = true });
         }
@@ -276,19 +362,19 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             foreach (var item in order.TbOrderDetails)
             {
-                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == item.ProductId)
+                var productId = _context.TbProductDetails.Where(c => c.Id == item.ProductId).Select(c => c.ProductId).FirstOrDefault();
+                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == productId)
                     ?? throw new NullReferenceException();
 
                 product.Quantity += item.Quantity;
             }
-
             _context.TbOrders.Remove(order);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        public record OrderItem(string Id, int Quantity);
+        public record OrderItem(string Id, int Quantity, int Status);
         public record Order(CustomerInfo Customer,
             IEnumerable<OrderItem> Items,
             ShippingInfo Shipping,
@@ -320,5 +406,10 @@ namespace DATN_ACV_DEV.Controllers.Order
                 IsShippingAddressSameAsCustomerAddress,
                 IsCustomerTakeYourSelf,
                 PaymentMethod);
+        public class UpdateItemOrderRequest
+        {
+            public IList<OrderItem> Items { get; set; }
+            public int Status { get; set; }
+        }
     }
 }

@@ -10,5 +10,12 @@ namespace DATN_ACV_DEV.Model_DTO.ProductDetail_DTO
         public Guid? Color { get; set; }
         public Guid? SizeName { get; set; }
         public Guid? ProductID { get; set; }
+        public string? UrlImage { get; set; }
+        public List<SizeQuantityDto> SizesQuantities { get; set; }
+    }
+    public class SizeQuantityDto
+    {
+        public Guid IdSize { get; set; } // ID của Size
+        public int QuantitySize { get; set; } // Số lượng
     }
 }

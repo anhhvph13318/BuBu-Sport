@@ -1,8 +1,9 @@
 const productStorage = new ProductStorage();
 
 // toast setup
-toastr.options.timeOut = 3000;
+toastr.options.timeOut = 5000; 
 toastr.options.closeButton = true;
+toastr.options.progressBar = true;
 
 // end toast setup
 
@@ -40,29 +41,40 @@ $('#search').on('input', async function (e) {
 
     const value = e.target.value;
 
-    const products = await productStorage.filter(value);
+    try {
+        const products = await productStorage.filter(value);
 
-    for (let i = 0; i < products.length; i++) {
-        if(products[i].quantity <= 0) continue;
+        if (!Array.isArray(products)) {
+            console.warn("Sản phẩm trả về không phải mảng:", products);
+            return;
+        }
 
-        const item = document.createElement('a');
-        item.setAttribute('class', 'text-decoration-none');
-        const itemContent = `
-            <div class="d-flex">
-                <img class="img-thumbnail" style="min-width: 100px; height: 50px" src=${products[i].image} alrt=""/>
-                <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].name}</p>
-            </div>
-        `;
+        for (let i = 0; i < products.length; i++) {
+            if (products[i].quantity <= 0) continue;
 
-        item.onclick = function () {
-            const { id, name, price, image } = products[i]
-            handleItemSelect(id, name, price, image);
-        };
+            const item = document.createElement('a');
+            item.setAttribute('class', 'text-decoration-none');
+            const itemContent = `
+                <div class="d-flex">
+                    <img class="img-thumbnail" style="min-width: 100px; height: 50px" src=${products[i].image} alrt=""/>
+                    <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].name}</p>
+                    <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].color}</p>
+                    <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].size}</p>
+                </div>
+            `;
 
-        $(item).append(itemContent);
-        $(`#autocomplete-list`).append(item);
+            item.onclick = function () {
+                const { id, code , name, price, image ,color ,size} = products[i]
+                handleItemSelect(id, code, name, price, image, color, size);
+            };
+
+            $(item).append(itemContent);
+            $('#autocomplete-list').append(item);
+        }
+    } catch (error) {
+        console.error("Lỗi khi tìm kiếm sản phẩm:", error);
     }
-})
+});
 
 function isCustomerTakeYourSelfChange() {
     const shipping = $('#shippingLocation').val();
@@ -159,7 +171,7 @@ function show(id) {
         });
 }
 
-function handleItemSelect(id, name, price, image) {
+function handleItemSelect(id, code, name, price, image, color, size) {
     clearSearchResult();
 
     fetch(ORDER_ADD_ITEM, {
@@ -169,10 +181,13 @@ function handleItemSelect(id, name, price, image) {
         },
         body: JSON.stringify({
             id: id,
+            code: code,
             productName: name,
             quantity: 1,
             productImage: image,
-            price: price
+            price: price,
+            color: color,
+            size: size,
         })
     })
         .then(res => res.json())
@@ -262,27 +277,48 @@ function clearOrder() {
 
 function saveOrder(isDraft) {
     if (!verify()) return;
-
+    $('#loading-overlay').css('display', 'flex');
     const customerInfo = {
         name: $('#customerName').val(),
         phoneNumber: $('#customerPhoneNumber').val(),
         address: $('#customerAddress').val(),
+        email: $('#customerEmail').val() 
     };
 
     const shippingInfo = {
         name: $('#receiverName').val(),
         phoneNumber: $('#receiverPhone').val(),
         address: $('#receiverAddress').val()
-    }
+    };
+
+    // 🟡 Lấy dữ liệu sản phẩm đang hiển thị trong bảng
+    const orderItems = [];
+    $('#orderItemContainer table tbody tr').each(function () {
+        const row = $(this);
+
+
+        orderItems.push({
+            id: row.find('.order-item-id').text().trim(),
+            code: row.find('td:nth-child(2)').text().trim(),
+            productImage: row.find('img').attr('src'),
+            productName: row.find('td:nth-child(4)').text().trim(),
+            color: row.find('td:nth-child(5)').text().trim(),
+            size: row.find('td:nth-child(6)').text().trim(),
+            price: parseFloat(row.find('td:nth-child(7)').text().replace(/[^\d]/g, '')),
+            quantity: parseInt(row.find('input.order-item-quantity').val())
+        });
+    });
+
 
     const payload = {
         isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
         isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
-        status: $('#orderStatus').val(),
+        status: parseInt($('#orderStatus').val()),
         customerInfo,
         shippingInfo,
-        isDraft
-    }
+        isDraft,
+        orderItems // 🔥 Thêm orderItems vào payload
+    };
 
     fetch(ORDER_TEMP_SAVE_API, {
         method: 'POST',
@@ -293,29 +329,51 @@ function saveOrder(isDraft) {
     })
         .then(res => res.json())
         .then(data => {
-            $('#orderTempSaveContainer').html('');
             $('#orderTempSaveContainer').html(data.orders);
-            $('#orderButtonActionContainer').html('');
             $('#orderButtonActionContainer').html(data.buttons);
-            
             changeResetButtonText(false);
             interactiveCartItemAndVoucherButton(false);
         })
-        .then(_ => toastr.success("Thành công!"))
+        .then(_ => {
+            if (isDraft) {
+                toastr.success("Lưu tạm hóa đơn thành công!");
+            } else {
+                toastr.success("Tạo hóa đơn thành công!");
+            }
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        })
+        .catch(err => {
+            console.error("Lỗi khi lưu hóa đơn:", err);
+            toastr.error("Có lỗi xảy ra khi lưu hóa đơn!");
+        })
+        .finally(() => {
+            $('#loading-overlay').css('display', 'none');
+        })
         .then(_ => clearOrder());
 }
 
+
 function removeDraft(id) {
-    const isRemove = confirm("Bạn có chắc muốn xóa?")
+    const isRemove = confirm("Bạn có chắc muốn xóa?");
     if (!isRemove) return;
 
     fetch(REMOVE_ORDER_TEMP_API(id), {
         method: 'DELETE'
     })
-        .then(res => res.json())
-        .then(data => {
-            $('#orderTempSaveContainer').html('');
-            $('#orderTempSaveContainer').html(data.orders);
+        .then(res => {
+            if (res.ok) {
+                location.reload();
+            } else {
+                return res.json().then(data => {
+                    throw new Error(data.message || "Xóa đơn hàng thất bại!");
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message || "Đã xảy ra lỗi khi xóa đơn hàng!");
         });
 }
 
@@ -400,6 +458,7 @@ function vnpayCheckout() {
         name: $('#customerName').val(),
         phoneNumber: $('#customerPhoneNumber').val(),
         address: $('#customerAddress').val(),
+        email: $('#customerEmail').val()
     };
 
     const shippingInfo = {

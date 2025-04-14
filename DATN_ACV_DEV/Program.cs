@@ -1,6 +1,8 @@
-﻿using DATN_ACV_DEV;
+using DATN_ACV_DEV;
+using DATN_ACV_DEV.Controllers;
 using DATN_ACV_DEV.Entity;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,22 +11,13 @@ builder.Services.AddControllers(); // Hỗ trợ API
 builder.Services.AddDbContext<DBContext>(options =>
     options.UseSqlServer("Data Source=TRINH-KERIA\\KTRINH;Initial Catalog=DB_DraftBracnh_04_03;Integrated Security=True;Trust Server Certificate=True;Encrypt=False;"));
 
+builder.Services.AddControllers();
+builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer("Data Source=DEC\\SQLEXPRESS;Initial Catalog=DB_BuBu_06_04;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;"));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-// Thêm CORS để cho phép GUI (localhost:5001) gọi API
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowSpecificOrigins", builder =>
-    {
-        builder.WithOrigins("http://localhost:3000", "http://localhost:5001")
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
-});
-
+builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

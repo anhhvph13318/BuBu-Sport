@@ -71,6 +71,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <form asp-action="ForgotPassWord" enctype="multipart/form-data">
             <div class="modal-content">
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Lấy lại mật khẩu</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -132,6 +133,33 @@
 <script>
     document.body.style.overflow = 'hidden';
 </script>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        @if (TempData["Message"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: '@Html.Raw(TempData["Message"])'
+                    });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: '@Html.Raw(TempData["ErrorMessage"])'
+                    });
+            </text>
+        }
+                });
+    </script>
+}
 @* @if (TempData["SweetAlertMessage"] != null)
 {
     <script>

@@ -21,11 +21,13 @@
                                         <input type="checkbox" id="select-all" title="Chọn tất cả" />
                                     </th>
                                     <th>Ảnh</th>
-                                    <th>Sản phẩm</th>
+                                    <th>Mã Sản Phẩm</th>
+                                    <th>Tên Sản phẩm</th>            
                                     <th>Màu sắc</th>
                                     <th>Size</th>
                                     <th>Số lượng</th>
                                     <th>Giá</th>
+                                    <th>Tổng Tiền</th>
                                     <th>Xóa</th>
                                 </tr>
                             </thead>
@@ -36,27 +38,32 @@
                                         <td class="col-select">
                                             <input type="checkbox" class="chk-select-item" id="check-@item.CartDetailID" />
                                         </td>
+
                                         <td class="col-image">
                                             <img src="@item.Image" alt="Ảnh sản phẩm">
+                                        </td>
+                                        <td class="col-code">
+                                            <span class="product-code" title="@item.ProductCode">@item.ProductCode</span>
                                         </td>
                                         <td class="col-name">
                                             <span class="product-name" title="@item.NameProduct">@item.NameProduct</span>
                                         </td>
+                                        
                                         <td class="col-color">@item.Color</td>
-                                        <td class="col-size">@item.Size</td>
+                                        <td class="col-size">@item.sizeName</td>
                                         <td class="col-quantity">
                                             <div class="quantity-control">
-                                                <a class="change-quant cart-quant-down" data-itemId="@item.CartDetailID">-</a>
-                                                <input class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID"
+                                                <input disabled class="cart-input-quant item-quantity-modifier" id="quant-@item.CartDetailID "
                                                        data-value="@item.Quantity" value="@item.Quantity" />
-                                                <a class="change-quant cart-quant-up" data-itemId="@item.CartDetailID">+</a>
                                             </div>
                                         </td>
-                                        <td class="col-price sub-total" id="sub-@item.CartDetailID"
-                                            data-value="@(item.Quantity * item.Price)">
-                                            @((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                        <td class="col-price" >
+                                            @(item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
                                         </td>
-                                        <td class="col-remove">
+                                        <td class="col-total" id="sub-@item.CartDetailID"
+                                            data-value="@(item.Quantity * item.Price)" style="color: red">
+                                            @((item.Quantity * item.Price).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                        <td class="col-remove" style="color: red">
                                             <span class="remove-item" data-itemId="@item.CartDetailID">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                                      class="bi bi-trash" viewBox="0 0 16 16">
@@ -70,159 +77,189 @@
                             </tbody>
                             <tfoot>
                                 <tr class="order-footer">
-                                    <td colspan="6" class="text-right"><strong>TỔNG TẠM TÍNH</strong></td>
-                                    <td class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</td>
+                                    <td colspan="8" class="text-right"><strong>TỔNG TẠM TÍNH</strong></td>
+                                    <td style="color: red" class="cart-total">@(0.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
-                    <a id="cart-submit" class="primary-btn cart-submit" style="display:none">Thanh toán</a>
+                    <a id="cart-submit" class="primary-btn cart-submit">Thanh toán</a>
                 </div>
             </div>
         </div>
     </div>
 
     <style>
-        .order-summary {
-            background: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .cart-table {
+        /* Định dạng cho bảng giỏ hàng */
+        table.cart-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-            .cart-table th, .cart-table td {
-                padding: 10px;
-                border-bottom: 1px solid #f5f5f5;
-                vertical-align: middle;
-            }
+        /* Định dạng header của bảng */
+        .cart-table thead {
+            background-color: white;
+            font-weight: bold;
+        }
 
-            .cart-table thead th {
-                background: #f8f9fa;
-                font-weight: 600;
-                text-align: center;
-            }
-
-        .col-select {
-            width: 40px;
+        .cart-table th, .cart-table td {
+            padding: 12px;
             text-align: center;
-        }
-
-        #select-all {
-            cursor: pointer;
-        }
-
-        .col-image {
-            width: 80px;
-        }
-
-            .col-image img {
-                width: 60px;
-                height: 60px;
-                object-fit: cover;
-                border-radius: 4px;
-                display: block;
-                margin: 0 auto;
-            }
-
-        .col-name {
-            width: 250px;
-            text-align: center;
-        }
-
-        .product-name {
-            display: block;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .col-color, .col-size {
-            width: 100px;
-            text-align: center;
-        }
-
-        .col-quantity {
-            width: 120px;
-            text-align: center;
-        }
-
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .cart-input-quant {
-            width: 40px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 2px;
-        }
-
-        .change-quant {
-            width: 25px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            background: #f8f9fa;
-            text-decoration: none;
-            color: #333;
+            vertical-align: middle;
             font-size: 14px;
+            color: #333;
         }
 
-            .change-quant:hover {
-                background: #e9ecef;
+        /* Cấu trúc cho các ô (cell) trong bảng */
+        .cart-item {
+            background-color: white;
+            border-bottom: 1px solid white;
+        }
+
+            .cart-item:hover {
+                background-color: white;
             }
 
-        .col-price {
-            width: 120px;
-            text-align: right;
-            font-weight: 500;
-            color: #dc3545;
+        .cart-table td {
+            text-align: center;
         }
 
+        /* Các cột hình ảnh sản phẩm */
+        .col-image img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* Cột mã sản phẩm */
+        .col-code {
+            
+            font-size: 14px;
+            color: darkgrey;
+        }
+
+        /* Cột tên sản phẩm */
+        .col-name {
+            
+        }
+
+        /* Cột màu sắc và size */
+        .col-color, .col-size {
+
+            color: gray
+        }
+
+        /* Cột số lượng */
+        .col-quantity {
+            width: 150px;
+        }
+
+        /* Cột giá sản phẩm */
+        .col-price {
+            
+            color: red /* Màu đỏ cho giá */
+        }
+
+        /* Cột tổng tiền */
+        .col-total {
+            
+            color: red; /* Màu đỏ cho tổng tiền */
+        }
+
+        /* Cột xóa sản phẩm */
         .col-remove {
+            color: red
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+            col-remove:hover {
+                color: red
+            }
+
+        /* Kiểm soát checkbox */
+        .col-select input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        /* Định dạng cho các nút điều chỉnh số lượng */
+        .quantity-control input {
             width: 60px;
             text-align: center;
-            cursor: pointer;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            color: #333;
         }
-
-        .order-footer td {
-            padding: 15px 10px;
-        }
-
-        .text-right {
+        /* Định dạng footer */
+        .order-footer {
+            background-color: #f1f1f1;
+            font-weight: bold;
+            color: #333;
             text-align: right;
+            padding: 12px;
         }
 
         .cart-total {
-            font-weight: 600;
-            color: #dc3545;
+            font-size: 16px;
+            color: red; /* Màu đỏ cho tổng */
+        }
+        /* Checkbox 'Chọn tất cả' */
+        #select-all {
+            transform: scale(1.2);
+            cursor: pointer;
         }
 
-        .cart-submit {
-            display: block;
-            margin: 20px auto 0;
-            width: 200px;
-            text-align: center;
+        /* Hiệu ứng hover cho hàng sản phẩm */
+        .cart-item:hover .col-remove svg {
+            transform: scale(1.1);
+            transition: transform 0.3s;
         }
+
+        /* Định dạng biểu tượng thùng rác */
+        .cart-item .col-remove svg {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
     </style>
 
     <script src="~/storefront/js/jquery.min.js"></script>
     <script>
+        $(document).ready(function () 
+        {
+            // Lấy dữ liệu từ query parameters trong URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const colorId = urlParams.get("colorId");
+            const sizeId = urlParams.get("sizeId");
+
+            // Nếu colorId và sizeId có giá trị, thay thế vào các cột tương ứng trong bảng
+            if (colorId && sizeId) 
+            {
+                // Cập nhật cột màu sắc
+                $(".col-color").each(function () 
+                {
+                    $(this).text(colorData[colorId] || "Màu chưa xác định");
+                });
+
+                // Cập nhật cột kích thước
+                $(".col-size").each(function () 
+                {
+                    $(this).text(sizeData[sizeId] || "Kích thước chưa xác định");
+                });
+            }
+        });
         $(document).ready(function () {
             // Chọn tất cả
             $('#select-all').on('change', function () {

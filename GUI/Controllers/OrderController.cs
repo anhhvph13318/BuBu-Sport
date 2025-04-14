@@ -1,4 +1,6 @@
-﻿using GUI.FileBase;
+﻿using DATN_ACV_DEV.Controllers;
+using DATN_ACV_DEV.Model_DTO.GHN_DTO;
+using GUI.FileBase;
 using GUI.Hubs;
 using GUI.Models.DTOs.Order_DTO;
 using GUI.Models.DTOs.Voucher_DTO;
@@ -11,15 +13,18 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Globalization;
+using Rotativa.AspNetCore;
+using System.Net.WebSockets;
 using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
 
 namespace GUI.Controllers;
 
 [Controller]
 [Route("orders")]
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 public class OrderController : Controller
 {
+    private readonly IEmailService _emailService;
     private const string URI = "http://localhost:5059";
     //private const string URI = "https://localhost:44383";
     private const string OrderItemListPartialView = "_OrderItemListPartialView";
@@ -30,18 +35,59 @@ public class OrderController : Controller
     private const string OrderListPartialView = "_OrderListPartialView";
     private const string AvailableVoucherPartialView = "_AvailableVoucherPartialView";
     private const string TempSaveOrderButtonPartialView = "_TempSaveOrderButtonPartialView";
-
-    [HttpGet]
-    public async Task<IActionResult> Index(string? code = "", string? customerName = "", int status = 0)
+    public OrderController(IEmailService emailService)
     {
-        using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(URI);
-        var rawResponse = await httpClient.GetAsync($"/api/admin/orders?code={code}&customerName={customerName}&status={status}");
-        var response =
-            JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
-                await rawResponse.Content.ReadAsStringAsync());
+        _emailService = emailService;
+    }
+    [HttpGet]
+    public async Task<IActionResult> Index(
+    [FromQuery] string? code = "",
+    [FromQuery] string? customerName = "",
+    [FromQuery] int status = 0,
+    [FromQuery] decimal? minAmount = null,
+    [FromQuery] decimal? maxAmount = null,
+    [FromQuery] string? orderCodePrefix = "")
+    {
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(URI);
+            var query = $"/api/admin/orders?code={code}&customerName={customerName}&status={status}";
+            var rawResponse = await httpClient.GetAsync(query);
 
-        return View(response!.Data);
+            if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new HttpRequestException($"Có lỗi khi gọi API: {rawResponse.StatusCode}");
+            }
+
+            var response = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
+                await rawResponse.Content.ReadAsStringAsync());
+            
+            var orders = response!.Data;
+
+            // Lọc theo orderCodePrefix
+            if (!string.IsNullOrEmpty(orderCodePrefix))
+            {
+                orders = orders.Where(o => o.code.StartsWith(orderCodePrefix));
+            }
+
+            if (minAmount.HasValue)
+            {
+                orders = orders.Where(o => o.FinalAmount >= minAmount.Value);
+            }
+            if (maxAmount.HasValue)
+            {
+                orders = orders.Where(o => o.FinalAmount <= maxAmount.Value);
+            }
+
+            return View(orders);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi: {ex.Message}");
+            TempData["Error"] = "Có lỗi xảy ra khi tải danh sách hóa đơn.";
+            return View(new List<OrderListItem>());
+        }
     }
 
     [HttpGet]
@@ -74,7 +120,6 @@ public class OrderController : Controller
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
-
         var order = response!.Data;
         order.ReCalculatePaymentInfo();
 
@@ -119,15 +164,27 @@ public class OrderController : Controller
     }
 
     [HttpGet]
-    [Route("create")]
-    public async Task<IActionResult> Create()
+    [Route("create/online")]
+    public async Task<IActionResult> CreateOnline()
     {
-        var onlineOrders = await FetchOrderList();
+        var orders = await FetchOrderList();
 
         HttpContext.Session.GetCurrentOrder(clearFirst: true);
-        ViewData["Orders"] = onlineOrders;
+        ViewData["Orders"] = orders;
 
-        return View();
+        return View("CreateOnline");
+    }
+
+    [HttpGet]
+    [Route("create/instore")]
+    public async Task<IActionResult> CreateInStore()
+    {
+        var orders = await FetchOrderList();
+
+        HttpContext.Session.GetCurrentOrder(clearFirst: true);
+        ViewData["Orders"] = orders;
+
+        return View("Create");
     }
 
     [HttpPost]
@@ -135,6 +192,15 @@ public class OrderController : Controller
     public async Task<IActionResult> SaveOrder([FromBody] Checkout checkout)
     {
         var order = HttpContext.Session.GetCurrentOrder();
+        if (order.Items.Count == 0)
+        {
+            order.Items = checkout.OrderItems;
+            order.PaymentInfo.TotalAmount = order.Items.Sum(c => c.Price);
+        }
+        if (order.Items.Count < checkout.OrderItems.Count)
+        {
+            order.Items = checkout.OrderItems;
+        }
         if (order.Customer.Id == Guid.Empty)
             order.Customer = checkout.CustomerInfo;
 
@@ -150,7 +216,7 @@ public class OrderController : Controller
         order.IsSameAsCustomerAddress = checkout.IsShippingAddressSameAsCustomerAddress;
         order.Status = checkout.Status;
 
-        if(order.Id == Guid.Empty)
+        if (order.Id == Guid.Empty)
         {
             if (order.IsCustomerTakeYourSelf)
                 order.Status = 7; // set status to complete
@@ -158,7 +224,7 @@ public class OrderController : Controller
                 order.Status = 1; // set status to prepare
         }
 
-        order.PaymentInfo.ShippingFee = order.IsCustomerTakeYourSelf ? 0 : 30000;
+        order.PaymentInfo.ShippingFee = order.IsCustomerTakeYourSelf ? 0 : 0;
 
         // submit to database
         using var httpClient = new HttpClient();
@@ -175,15 +241,37 @@ public class OrderController : Controller
             Shipping = order.ShippingInfo,
             Payment = order.PaymentInfo,
         };
+        var updateRequest = new UpdateItemOrderRequest()
+        {
+            Items = payload.Items,
+            Status = checkout.Status
+        };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
-            ? await httpClient.PatchAsJsonAsync($"api/orders/{order.Id}", payload)
+            ? await httpClient.PatchAsJsonAsync($"api/orders/update/{order.Id}", updateRequest)
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
-        if(rawResponse.IsSuccessStatusCode)
+        if (rawResponse.IsSuccessStatusCode)
         {
             var orders = await FetchOrderList();
-            return Json(new 
-            { 
+
+            try
+            {
+                foreach (var item in orders)
+                {
+                    await _emailService.SendOrderConfirmationAsync(item.Customer.Email, item.Code, item.Customer.Name, item.Customer.PhoneNumber, item.StatusText, "", 1);
+                }
+                if (orders.Count() == 0 && order.Status == 7)
+                {
+                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi gửi email xác nhận: {ex.Message}");
+            }
+
+            return Json(new
+            {
                 Orders = await RenderViewAsync(OrderListPartialView, orders),
                 Buttons = await RenderViewAsync(OrderButtonActionPartialView, 0)
             });
@@ -214,8 +302,8 @@ public class OrderController : Controller
     {
         var order = HttpContext.Session.GetCurrentOrder();
         var stock = await GetProductStock(item.Id);
-        if (stock.Quantity < item.Quantity)
-            return BadRequest();
+        //if (stock.Quantity < item.Quantity)
+            //return BadRequest();
 
         var existItem = order.Items.FirstOrDefault(e => e.Id == item.Id);
         if (existItem is null)
@@ -351,19 +439,21 @@ public class OrderController : Controller
         var voucher = await CheckCustomerCanUseVoucher(id, target);
 
         if (voucher is null)
-            return BadRequest();
+        {
+            return BadRequest(new { Message = "Mã Voucher không hợp lệ hoặc đơn hàng không đủ điều kiện tối thiểu." });
+        }
 
         order.Voucher = voucher;
-        order.PaymentInfo.VoucherId = order.Voucher.Id;
-        order.PaymentInfo.VoucherCode = order.Voucher.Code;
+        order.PaymentInfo.VoucherId = voucher.Id;
+        order.PaymentInfo.VoucherCode = voucher.Code;
 
         order.ReCalculatePaymentInfo();
-
+        Console.WriteLine($"TotalDiscount after apply: {order.PaymentInfo.TotalDiscount}");
         HttpContext.Session.SaveCurrentOrder(order);
 
         return Json(new
         {
-            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo)
         });
     }
 
@@ -387,7 +477,7 @@ public class OrderController : Controller
         });
     }
 
-    private static async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
+    private async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
@@ -396,10 +486,18 @@ public class OrderController : Controller
         if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
             return null;
 
-        return JsonConvert.DeserializeObject<VoucherDTO>(
-                await rawResponse.Content.ReadAsStringAsync());
-    }
+        var voucher = JsonConvert.DeserializeObject<VoucherDTO>(await rawResponse.Content.ReadAsStringAsync());
+        if (voucher == null)
+            return null;
 
+        var order = HttpContext.Session.GetCurrentOrder();
+        if (order.PaymentInfo.TotalAmount < voucher.Condition)
+        {
+            return null; 
+        }
+
+        return voucher;
+    }
     #endregion
 
     #region Online payment
@@ -563,7 +661,7 @@ public class OrderController : Controller
         {
             order.IsCustomerTakeYourSelf = false;
             order.PaymentInfo.IsCustomerTakeYourSelf = false;
-            order.PaymentInfo.ShippingFee = 30000;
+            order.PaymentInfo.ShippingFee = 0;
             order.Status = 1;
         }
 
@@ -615,10 +713,9 @@ public class OrderController : Controller
             JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderDetail>>>(
                 await rawResponse.Content.ReadAsStringAsync());
 
-        var data = response!.Data;
-
-        foreach (var order in data)
-            order.ReCalculatePaymentInfo();
+        var data = response!.Data;   
+        //foreach (var order in data)
+        //    order.ReCalculatePaymentInfo();
 
         return data;
     }
@@ -631,5 +728,32 @@ public class OrderController : Controller
 
         return JsonConvert.DeserializeObject<Stock>(await response.Content.ReadAsStringAsync())!;
     }
-    
+    [HttpGet]
+    [Route("{id}/export-pdf")]
+    public async Task<IActionResult> ExportInvoicePdf(string id)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{id}");
+        var response = JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(await rawResponse.Content.ReadAsStringAsync());
+
+        if (response == null || response.Data == null)
+        {
+            return NotFound("Không tìm thấy hóa đơn.");
+        }
+
+        var order = response.Data;
+        order.ReCalculatePaymentInfo();
+        if (order.Status != 7) 
+        {
+            return BadRequest("Chỉ có thể tải PDF cho hóa đơn ở trạng thái 'Hoàn thành'.");
+        }
+        return new ViewAsPdf("Invoice", order)
+        {
+            FileName = $"Invoice_{order.Code}.pdf",
+            PageSize = Rotativa.AspNetCore.Options.Size.Letter, 
+            PageMargins = new Rotativa.AspNetCore.Options.Margins(20, 15, 20, 15),
+            CustomSwitches = "--print-media-type --no-stop-slow-scripts --encoding UTF-8"
+        };
+    }
 }

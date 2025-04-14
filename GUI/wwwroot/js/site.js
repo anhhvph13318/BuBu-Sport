@@ -6,7 +6,7 @@
 //const API_URL = "https://localhost:44383";
 const HOST_URL = "http://localhost:5011";
 
-const PRODUCT_FILTER_API = `${API_URL}/api/GetListProduct/Process`;
+const PRODUCT_FILTER_API = `${API_URL}/api/GetListProductDetail/Process`;
 const PRODUCT_SELECT_API = `${API_URL}/api/`;
 const PRODUCT_STOCK_API = (id) => `${API_URL}/api/products/${id}/stock`;
 
@@ -21,7 +21,7 @@ const REMOVE_ORDER_TEMP_API = (id) => `${HOST_URL}/orders/draft/${id}/remove`;
 
 const APPLY_VOUCHER = (id) => `${HOST_URL}/orders/apply-voucher?id=${id}`;
 const CANCEL_APPLY_VOUCHER =  `${HOST_URL}/orders/cancel-apply-voucher`;
-const GET_AVAILABLE_VOUCHER = (phone) => `${HOST_URL}/orders/vouchers?phone=${phone}`;
+const GET_AVAILABLE_VOUCHER = (phone) => `${HOST_URL}/api/vouchers/available?phoneNumber=${phone}`;
 
 const GET_BASIC_CUSTOMER_INFO = (phone) => `${HOST_URL}/orders/customers/${phone}`;
 

@@ -63,12 +63,13 @@ namespace DATN_ACV_DEV
             CreateMap<TbCartDetail, CartDTO>()
                .ForMember(dest => dest.CartDetailID, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductId))
+               .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.Product.Code))
                .ForMember(dest => dest.NameProduct, opt => opt.MapFrom(src => src.tbProduct.Name))
                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.tbImage.Url))
                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.tbProduct.Price))
                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.tbProduct.Color))
-               .ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.tbProduct.Size));
+               .ForMember(dest => dest.SizeName, opt => opt.MapFrom(src => src.tbProduct.SizeName));
 
             
 

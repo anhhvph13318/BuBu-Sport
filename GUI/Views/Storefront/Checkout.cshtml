@@ -3,6 +3,7 @@
 @{
 	Layout = "_LayoutStore";
 }
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- SECTION -->
 <div class="section">
 	<!-- container -->
@@ -10,18 +11,25 @@
 		<!-- row -->
 		<div class="row">
 
-			<div class="col-md-7">
+			<div class="col-md-5">
 				<!-- Billing Details -->
 				<div class="shipping-details active">
 					<div class="section-title">
 						<h3 class="title">Địa chỉ giao hàng</h3>
 					</div>
+					@{
+						var firstCart = Model?.FirstOrDefault();
+					}
+
 					<div class="form-group">
-						<input id="order-name" class="input" type="text" name="name" placeholder="Họ tên">
+						<input id="order-name"
+							   class="input"
+							   type="text"
+							   name="name"
+							   placeholder="Họ tên"
+							   value="@firstCart?.receiverName" />
 					</div>
-@* 					<div class="form-group">
-						<input class="input" type="text" name="last-name" placeholder="Last Name">
-					</div> *@
+
 					<div class="form-group">
 						<input id="order-phone"
 							   class="input"
@@ -30,76 +38,86 @@
 							   placeholder="Số điện thoại"
 							   maxlength="10"
 							   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
-							   required />
-					</div> @* VANH *@
-@* 					<div class="form-group">
-						<input class="input" type="email" name="email" placeholder="Email">
-					</div> *@
-					<div class="form-group">
-						<input id="order-address" class="input" type="text" name="address" placeholder="Địa chỉ">
+							   required
+							   value="@firstCart?.receiverPhone" />
 					</div>
+
 					<div class="form-group">
-						<input id="order-district" class="input" type="text" name="district" placeholder="Quận/huyện">
+						<input id="order-email"
+							   class="input"
+							   type="email"
+							   name="email"
+							   placeholder="Email"
+							   value="@firstCart?.receiverEmail" />
 					</div>
+
 					<div class="form-group">
-						<input id="order-city" class="input" type="text" name="city" placeholder="Thành phố">
+						<input id="order-address"
+							   class="input"
+							   type="text"
+							   name="address"
+							   placeholder="Số nhà/tên đường"
+							   value="@firstCart?.receiverWard" />
 					</div>
-					@* <div class="form-group">
-						<input id="order-code" class="input" type="text" name="zip-code" placeholder="ZIP Code">
-					</div> *@
-					@* <div class="form-group">
-						<div class="input-checkbox">
-							<input type="checkbox" id="create-account">
-							<label for="create-account">
-								<span></span>
-								Create Account?
-							</label>
-							<div class="caption">
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
-								<input class="input" type="password" name="password" placeholder="Enter Your Password">
-							</div>
-						</div>
-					</div> *@
+
+					<div class="form-group">
+						<input id="order-district"
+							   class="input"
+							   type="text"
+							   name="district"
+							   placeholder="Quận/huyện"
+							   value="@firstCart?.receiverDistrict" />
+					</div>
+
+					<div class="form-group">
+						<input id="order-city"
+							   class="input"
+							   type="text"
+							   name="city"
+							   placeholder="Thành phố"
+							   value="@firstCart?.receiverProvince" />
+					</div>
 				</div>
 				<!-- /Billing Details -->
 			</div>
 
 			<!-- Order Details -->
-			<div class="col-md-5 order-details">
+			<div class="col-md-7 order-details">
 				<div class="section-title text-center">
 					<h3 class="title">Đơn của bạn</h3>
 				</div>
 				<div class="order-summary">
 					<div class="order-col">
 						<div><strong>Sản phẩm</strong></div>
-						<div><strong>TỔNG</strong></div>
+						<div><strong>Màu</strong></div>
+						<div><strong>Size</strong></div>
+						<div><strong>Giá</strong></div>
+						<div><strong>TỔNG TIỀN</strong></div>
 					</div>
 					<div class="order-products">
 						@if (Model != null && Model.Any())
 						{
-							foreach(var item in Model)
+							foreach (var item in Model)
 							{
 								<div class="order-col order-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
 									<div>
-										@* <span class="remove-item" data-itemId="@item.CartDetailID" style="margin: 0 5px;">
-											<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-												<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
-												<path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
-											</svg>
-										</span> *@
 										@item.Quantity x @item.NameProduct
 									</div>
-@* 									<div>
-										<a class="change-quant quant-down" data-itemId="@item.CartDetailID">-</a><input class="input-quant item-quantity-modifier" id="quant-@item.CartDetailID" data-value="@item.Quantity" value="@item.Quantity" /><a class="change-quant quant-up" data-itemId="@item.CartDetailID">+</a>
-									</div> *@
-									<div class="sub-total" data-value="@((int)(item.Quantity * item.Price))" id="sub-@item.CartDetailID">@(((int)(item.Quantity * item.Price)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</div>
+									<div class="product-attributes">
+										<span class="product-color">@item.Color</span>
+									</div>
+									<div class="product-attributes">
+										<span class="product-size">@item.sizeName</span>
+									</div>
+									<div class="product-price">
+										@item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))
+									</div>
+									<div class="sub-total" data-value="@((int)(item.Quantity * item.Price))" id="sub-@item.CartDetailID">
+										@(((int)(item.Quantity * item.Price)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+									</div>
 								</div>
 							}
 						}
-					</div>
-					<div class="order-col">
-						<div>Phí giao hàng</div>
-						<div><strong id="shipping-fee">@(30000.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
 					</div>
 					<div class="order-col">
 						<div>Giảm giá</div>
@@ -107,7 +125,7 @@
 					</div>
 					<div class="order-col">
 						<div><strong>TỔNG</strong></div>
-						<div><strong class="order-total">@(((int)(ViewBag.Sum > 0 ? (ViewBag.Sum + 30000) : 0)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
+						<div><strong class="order-total">@(((int)(ViewBag.Sum > 0 ? (ViewBag.Sum) : 0)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
 					</div>
 				</div>
 				<div class="shipping-method">
@@ -121,13 +139,6 @@
 							Giao hàng tận nơi
 						</label>
 					</div>
-					@* <div class="input-radio">
-						<input type="radio" name="shipping" id="shipping-2" value="2">
-						<label for="shipping-2">
-							<span></span>
-							Nhận tại cửa hàng
-						</label>
-					</div> *@
 				</div>
 				<div class="payment-method">
 					<div class="order-col mb-2">
@@ -153,26 +164,6 @@
 							<p>Thẻ ngân hàng hoặc QR.</p>
 						</div>
 					</div>
-@* 					<div class="input-radio">
-						<input type="radio" name="payment" id="payment-2">
-						<label for="payment-2">
-							<span></span>
-							Cheque Payment
-						</label>
-						<div class="caption">
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-						</div>
-					</div>
-					<div class="input-radio">
-						<input type="radio" name="payment" id="payment-3">
-						<label for="payment-3">
-							<span></span>
-							Paypal System
-						</label>
-						<div class="caption">
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-						</div>
-					</div> *@
 				</div>
 				<div class="form-search">
 					<input class="input" name="s" id="voucherCode" placeholder="Mã giảm giá" value="" disabled>
@@ -180,13 +171,6 @@
 				</div>
 				@if (ViewBag.Sum > 0)
 				{
-@* 					<div class="input-checkbox">
-						<input type="checkbox" id="terms">
-						<label for="terms">
-							<span></span>
-							I've read and accept the <a href="#">terms & conditions</a>
-						</label>
-					</div> *@
 					<a id="order-submit" class="primary-btn order-submit">Đặt mua</a>
 				}
 			</div>
@@ -197,16 +181,34 @@
 	<!-- /container -->
 </div>
 <!-- /SECTION -->
-
+<!-- Voucher Modal -->
 <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<strong class="modal-title" id="voucherModalLabel">Danh sách voucher khả dụng</strong>
-				@* <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button> *@
 			</div>
 			<div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto">
+				<!-- Voucher table template -->
+				<table class="table voucher-table" id="voucher-table" style="display: none;">
+					<thead>
+						<tr>
+							<th>Tên voucher</th>
+							<th>Mã</th>
+							<th>Điều kiện</th>
+							<th>Giảm giá</th>
+							<th>Hạn dùng</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="voucher-table-body">
+						<!-- Voucher rows will be added here dynamically -->
+					</tbody>
+				</table>
+				<p id="no-vouchers-message" style="display: none;">Không có voucher khả dụng.</p>
+				<p id="no-eligible-vouchers-message" style="display: none;">Không có voucher thỏa mãn điều kiện áp dụng cho đơn hàng hiện tại.</p>
+				<p id="error-message" style="display: none;">Đã xảy ra lỗi khi tải danh sách voucher.</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -214,3 +216,316 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	/* Order Details */
+	/* CSS cho phần order details */
+	.order-details {
+		padding: 30px;
+		border: 1px solid #e6e6e6;
+		border-radius: 5px;
+	}
+
+	.larger-swal {
+		font-size: 1.5rem !important; 
+	}
+	.order-summary {
+		margin-bottom: 30px;
+	}
+
+	.order-col {
+		display: flex;
+		justify-content: space-between;
+		padding: 10px 0;
+		border-bottom: 1px solid #e6e6e6;
+		align-items: center;
+	}
+
+		.order-col > div {
+			flex: 1;
+			text-align: center;
+			padding: 0 5px;
+		}
+
+			.order-col > div:first-child {
+				flex: 2;
+				text-align: left;
+			}
+
+			.order-col > div:last-child {
+				text-align: right;
+			}
+
+	.order-products .order-col {
+		padding: 15px 0;
+	}
+
+	.order-products .order-item {
+		align-items: center;
+	}
+
+	.product-attributes {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.order-total {
+		font-weight: bold;
+		color: #D10024;
+		font-size: 18px;
+	}
+
+
+	.order-summary > .order-col:first-child {
+		font-weight: bold;
+		padding-bottom: 15px;
+		border-bottom: 2px solid #e6e6e6;
+	}
+
+	.form-search {
+		display: flex;
+		margin-bottom: 20px;
+	}
+
+		.form-search .input {
+			flex: 1;
+			padding: 10px;
+			border: 1px solid #e6e6e6;
+			border-radius: 4px 0 0 4px;
+		}
+	/* Nút đặt mua */
+	.primary-btn.order-submit {
+		display: block;
+		width: 100%;
+		padding: 12px;
+		text-align: center;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		font-weight: bold;
+		cursor: pointer;
+		transition: all 0.3s;
+	}
+	/* CSS cho phần shipping và payment method */
+	.shipping-method, .payment-method {
+		margin-bottom: 30px;
+		text-align: left; /* Căn trái toàn bộ nội dung */
+	}
+
+		.shipping-method .order-col,
+		.payment-method .order-col {
+			justify-content: flex-start; /* Đẩy tiêu đề sang trái */
+			padding-left: 0; /* Bỏ padding trái nếu có */
+		}
+
+			.shipping-method .order-col div,
+			.payment-method .order-col div {
+				text-align: left; /* Căn trái nội dung */
+				flex: none; /* Bỏ flex equal width */
+				width: auto; /* Chiều rộng tự nhiên */
+			}
+
+	.input-radio {
+		margin-bottom: 15px;
+		display: flex;
+		align-items: center;
+		text-align: left; /* Căn trái nội dung radio */
+	}
+
+		.input-radio label {
+			margin-left: 10px;
+			cursor: pointer;
+		}
+
+		.input-radio .caption {
+			margin-left: 28px; /* Căn lề bằng với radio button */
+			margin-top: 5px;
+			color: #666;
+			font-size: 14px;
+		}
+
+		/* Đảm bảo radio button và label thẳng hàng */
+		.input-radio input[type="radio"] {
+			margin: 0;
+		}
+	/* Add these styles to your existing CSS */
+	.voucher-table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+		.voucher-table th,
+		.voucher-table td {
+			padding: 10px;
+			text-align: center;
+			border-bottom: 1px solid #e6e6e6;
+		}
+
+		.voucher-table th {
+			background-color: #f8f9fa;
+			font-weight: bold;
+		}
+
+		.voucher-table td:first-child {
+			text-align: left;
+		}
+
+	.btn-apply-voucher {
+		padding: 5px 10px;
+		background-color: aqua;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: background-color 0.3s;
+	}
+
+		.btn-apply-voucher:hover {
+			background-color: aqua;
+		}
+
+	#voucherModal .modal-title {
+		font-size: 18px;
+	}
+
+	#voucher-list {
+		padding: 10px;
+	}
+</style>
+
+@section Scripts {
+	<script>
+		function convertVND(value) {
+			return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+		}
+
+		function getCookie(cname) {
+			let name = cname + "=";
+			let ca = document.cookie.split(';');
+			for (let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+
+		function updatePrice() {
+			let subTotals = $('.sub-total');
+			let total = 0;
+			$.each(subTotals, function (i, obj) {
+				let number = parseFloat($(obj).attr("data-value"));
+				if (number) {
+					total += number;
+				}
+			});
+
+			if (total > 0 && discount > 0) {
+				let discountAmount = 0;
+				if (maxDiscount > 0) {
+					discountAmount = total / 100 * discount;
+					discountAmount = discountAmount > maxDiscount ? maxDiscount : discountAmount;
+				} else {
+					discountAmount = discount;
+				}
+				$("#discount-value").text(convertVND(discountAmount));
+				total -= discountAmount;
+			}
+			$('.order-total').text(convertVND(total));
+		}
+
+		let discount = 0;
+		let maxDiscount = 0;
+
+		$(document).ready(function () {
+			$("#voucher-btn").on("click", function (e) {
+				const customerPhone = getCookie('cPhone');
+				if (!customerPhone) {
+					alert("Bạn chưa đăng nhập. Hãy đăng nhập để sử dụng voucher");
+					e.stopPropagation();
+					return false;
+				}
+
+				$("#voucher-table").hide();
+				$("#no-vouchers-message").hide();
+				$("#no-eligible-vouchers-message").hide();
+				$("#error-message").hide();
+
+				// lấy dữ liệu voucher
+				fetch(`http://localhost:5011/api/vouchers/available`)
+					.then(res => res.json())
+					.then(response => {
+						const vouchers = response.data.lstVoucher;
+						$("#voucher-table-body").empty();
+
+						if (vouchers && vouchers.length > 0) {
+							let currentTotal = 0;
+							$('.sub-total').each(function() {
+								currentTotal += parseFloat($(this).attr("data-value") || 0);
+							});
+
+							const eligibleVouchers = vouchers.filter(voucher =>
+								currentTotal >= voucher.condition
+							);
+
+							if (eligibleVouchers.length > 0) {
+								eligibleVouchers.forEach(voucher => {
+									const discountDisplay = voucher.discount <= 100
+										? `${voucher.discount}%`
+										: convertVND(voucher.discount);
+
+									const maxDiscountDisplay = voucher.maxDiscount
+										? `<br><small>(Tối đa: ${convertVND(voucher.maxDiscount)})</small>`
+										: '';
+
+									let row = $("<tr>");
+									row.append($("<td>").html(`<strong>${voucher.name}</strong>`));
+									row.append($("<td>").text(voucher.code));
+									row.append($("<td>").text(convertVND(voucher.condition)));
+									row.append($("<td>").html(`${discountDisplay}${maxDiscountDisplay}`));
+									row.append($("<td>").text(new Date(voucher.endDate).toLocaleDateString('vi-VN')));
+
+									let applyButton = $("<button>")
+										.addClass("btn-apply-voucher primary-btn")
+										.attr("data-id", voucher.id)
+										.text("Áp dụng");
+
+									row.append($("<td>").append(applyButton));
+									$("#voucher-table-body").append(row);
+								});
+
+								$("#voucher-table").show();
+							} else {
+								$("#no-eligible-vouchers-message").show();
+							}
+						} else {
+							$("#no-vouchers-message").show();
+						}
+					})
+					.catch(error => {
+						console.error('Lỗi khi lấy danh sách voucher:', error);
+						$("#error-message").show();
+					});
+			});
+
+			$(document).on("click", ".btn-apply-voucher", function() {
+				$.post("/ApplyVoucher", { vId: $(this).attr("data-id") }, (data) => {
+					if (data.success) {
+						discount = data.discount;
+						maxDiscount = data.maxDiscount;
+						$("#voucherCode").val(data.code);
+						updatePrice();
+						$(".modal-footer button").click();
+					} else {
+						alert("Không thể áp dụng voucher này.");
+					}
+				});
+			});
+		});
+	</script>
+}

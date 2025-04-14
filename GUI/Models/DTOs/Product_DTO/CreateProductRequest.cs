@@ -18,7 +18,7 @@
 
         public string? Warranty { get; set; }
 
-        public string? Color { get; set; }
+        public Guid? Color { get; set; }
 
         public string? Material { get; set; }
         public int Quantity {  get; set; }
@@ -30,5 +30,12 @@
         public List<string>? OpenAttribute { get; set; }
         public List<Guid>? PropertyID { get; set; }
         public string? TypeEditProperty { get; set; }
+        public List<SizeQuantityDto> SizesQuantities { get; set; }
+
+    }
+    public class SizeQuantityDto
+    {
+        public Guid IdSize { get; set; } // ID của Size
+        public int QuantitySize { get; set; } // Số lượng
     }
 }

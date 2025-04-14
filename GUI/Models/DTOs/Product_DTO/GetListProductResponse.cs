@@ -24,5 +24,8 @@
         public string? Description { get; set; }
         public string Image { get; set; }
         public string Code { get; set; }
+        public string Color { get; set; } = string.Empty;
+        public string SizeName { get; set; } = string.Empty;
+
     }
 }

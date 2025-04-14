@@ -13,5 +13,8 @@ namespace GUI.Models.DTOs.Product_DTO
         public DateTime? ToDate { get; set; }
         public int? OffSet { get; set; } = 0;
         public int? Limit { get; set; }
+        public Guid? ColorId { get; set; }
+        public Guid? SizeId { get; set; }
+
     }
 }

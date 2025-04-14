@@ -16,7 +16,11 @@ public class GetOrderAdminController : ControllerBase
     {
         _context = context;
     }
-
+    public class ProductNames
+    {
+        public Guid OrderId { get; set; }
+        public string ProductName { get; set; }
+    }
     [HttpGet]
     [Route("/api/admin/orders")]
     public async Task<IActionResult> Process(string? code = "", string? customerName = "", int status = 0)
@@ -36,11 +40,50 @@ public class GetOrderAdminController : ControllerBase
                 amountDiscount = e.TotalAmountDiscount,
                 amountShip = e.AmountShip,
                 id = e.Id,
-                nameCustomer = e.Customer.Name,
+                nameCustomer = _context.TbCustomers.Where(c=>c.Id == e.CustomerId).Select(c=>c.Name).FirstOrDefault() ,
                 status = Common.ConvertStatusOrder(e.Status ?? 0),
-                products = string.Join(", ", e.TbOrderDetails.Take(2).Select(e => e.Product.Name))
-            }).ToListAsync();
+                // Lấy tên sản phẩm từ ProductDetail → Product
+                products = "",
 
+            }).ToListAsync();
+            List<ProductNames> productNames = new List<ProductNames>();
+            foreach (var item in orders)
+            {
+                var productIds = _context.TbOrderDetails
+                    .Where(c => c.OrderId == item.id)
+                    .Select(c => c.ProductId)
+                    .ToList();
+
+                foreach (var productDetailId in productIds)
+                {
+                    var productName = (from pd in _context.TbProductDetails
+                                       join p in _context.TbProducts on pd.ProductId equals p.Id
+                                       where pd.Id == productDetailId
+                                       select p.Name).FirstOrDefault();
+
+                    if (!string.IsNullOrEmpty(productName))
+                    {
+                        productNames.Add(new ProductNames
+                        {
+                            OrderId = item.id,
+                            ProductName = productName
+                        });
+                    }
+                }
+            }
+        // Nhóm danh sách sản phẩm theo OrderId
+        var productNamesByOrder = productNames
+            .GroupBy(p => p.OrderId)
+            .ToDictionary(g => g.Key, g => string.Join(", ", g.Select(p => p.ProductName)));
+
+        // Gán lại giá trị products cho từng đơn hàng
+        foreach (var order in orders)
+        {
+            if (productNamesByOrder.TryGetValue(order.id, out var productList))
+            {
+                order.products = productList;
+            }
+        }
         return Ok(new BaseResponse<IEnumerable<OrderListItem>>()
         {
             Data = orders
@@ -71,9 +114,10 @@ public class GetOrderAdminController : ControllerBase
                 Customer = new CustomerInfo
                 {
                     Id = e.Id,
-                    Name = e.Customer.Name,
+                    Name = _context.TbCustomers.Where(c=>c.Id == e.CustomerId).Select(c=>c.Name).FirstOrDefault(),
                     Address = e.Customer.Adress,
-                    PhoneNumber = e.Customer.Phone
+                    PhoneNumber = e.Customer.Phone,
+                    Email = _context.TbAccounts.Where(c=>c.CustomerId == e.CustomerId).Select(c=>c.Email).FirstOrDefault()
                 },
                 PaymentInfo = new PaymentInfo
                 {

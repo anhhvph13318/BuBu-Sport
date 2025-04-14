@@ -1,9 +1,11 @@
-﻿using DATN_ACV_DEV.Entity;
+using DATN_ACV_DEV.Controllers;
+using DATN_ACV_DEV.Entity;
 using GUI;
 using GUI.Hubs;
 using GUI.Shared.Common;
 using GUI.Shared.VNPay;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,18 +37,20 @@ builder.Services.Configure<CommonSettings>(builder.Configuration.GetSection("Com
 builder.Services.AddSession();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<DBContext>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddTransient<VNPayService>();
 builder.Services.AddScoped<UserSession>();
-
-// Xây dựng ứng dụng
+builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 // Cấu hình pipeline HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    // Fix for CS1503: Convert 'app.Environment' to its 'ContentRootPath' property, which is a string.
     app.UseHsts();
 }
+RotativaConfiguration.Setup(app.Environment.ContentRootPath, "wwwroot/Rotativa");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -60,7 +64,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseRotativa();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

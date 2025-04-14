@@ -4,39 +4,48 @@
 
 @if (Model is null || Model.Count == 0)
 {
-    <p class="text-center">Trống</p>
+    <p class="text-center">Không có đơn hàng tại quầy</p>
 }
 else
 {
-    <table class="table table-fixed table-fixed table-lock-height">
-    <thead>
-        <tr>
-            <th>Mã hóa đơn</th>
-            <th>Khách hàng</th>
-            <th>Thành tiền</th>
-            <th>Kiểu</th>
-            <th>Trạng thái</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var order in Model)
-            {
+    var orders = Model.Where(order => order.OrderTypeName == "Tại quầy" || order.OrderTypeName == "Nháp").ToList();
+
+    @if (orders.Count == 0)
+    {
+        <p class="text-center">Không có đơn hàng tại quầy</p>
+    }
+    else
+    {
+        <table class="table table-fixed table-fixed table-lock-height">
+            <thead>
                 <tr>
-                    <td>@order.Code</td>
-                    <td>@order.Customer.Name</td>
-                    <td>@order.PaymentInfo.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                    <td>@order.OrderTypeName</td>
-                    <td>@order.StatusText</td>
-                    <td class="d-flex justify-content-between">
-                        <button class="btn btn-success" onclick="show('@order.Id')">Chi tiết</button>
-                        @if(order.AllowRemove())
-                        {
-                            <button class="btn btn-danger" onclick="removeDraft('@order.Id')">Xóa</button>
-                        }
-                    </td>
+                    <th>Mã hóa đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Thành tiền</th>
+                    <th>Kiểu</th>
+                    <th>Trạng thái</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Where(order => order.OrderTypeName == "Tại quầy" || order.OrderTypeName == "Nháp").ToList())
+                {
+                    <tr>
+                        <td>@order.Code</td>
+                        <td>@order.Customer.Name</td>
+                        <td>@order.PaymentInfo.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
+                        <td>@order.OrderTypeName</td>
+                        <td>@order.StatusText</td>
+                        <td class="d-flex justify-content-between">
+                            <button class="btn btn-success" onclick="show('@order.Id')">Chi tiết</button>
+                            @if (order.AllowRemove())
+                            {
+                                <button class="btn btn-danger" onclick="removeDraft('@order.Id')">Xóa</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
