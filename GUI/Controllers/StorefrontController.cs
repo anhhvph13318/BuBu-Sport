@@ -71,7 +71,7 @@ namespace GUI.Controllers
         }
 
         [Route("/Success")]
-        public IActionResult Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash) 
+        public async Task<IActionResult> Success(string vnp_TxnRef, string vnp_TransactionStatus, string vnp_SecureHash)
         {
             ViewBag.OrderId = vnp_TxnRef;
             var isGuid = Guid.TryParse(vnp_TxnRef, out var code);
@@ -86,7 +86,7 @@ namespace GUI.Controllers
                 };
                 var URL = _settings.APIAddress + "api/ConfirmPayment/Process";
                 var param = JsonConvert.SerializeObject(request);
-                httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             }
 
             var userId = Guid.Empty;
@@ -95,7 +95,7 @@ namespace GUI.Controllers
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = GetCartItemCount(userId); 
+            ViewBag.CartItemCount = await GetCartItemCount(userId); 
             return View();
         }
 
@@ -309,7 +309,11 @@ namespace GUI.Controllers
             ViewBag.CartItemCount = await GetCartItemCount(userId); 
             return View(model);
         }
-
+        [Route("/CancelOrder")]
+        public async Task<IActionResult> CancelOrder(string s)
+        {
+            return Ok();
+        }
         [Route("/OrderChecking")]
         public async Task<IActionResult> OrderChecking(string s)
         {
@@ -396,11 +400,12 @@ namespace GUI.Controllers
             var param = JsonConvert.SerializeObject(req);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<AddToCartResponse>>(res) ?? new();
+            Console.WriteLine("Response from API: " + res);
             if (result.Status == "200")
             {
                 return Ok(new { userId });
             }
-            return BadRequest();
+            return BadRequest(result);
         }
 
         [HttpPost("/BuyNow")]
