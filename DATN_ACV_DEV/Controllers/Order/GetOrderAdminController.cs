@@ -42,6 +42,7 @@ public class GetOrderAdminController : ControllerBase
                 id = e.Id,
                 nameCustomer = _context.TbCustomers.Where(c=>c.Id == e.CustomerId).Select(c=>c.Name).FirstOrDefault() ,
                 status = Common.ConvertStatusOrder(e.Status ?? 0),
+                CreateDate = e.CreateDate,
                 // Lấy tên sản phẩm từ ProductDetail → Product
                 products = "",
 

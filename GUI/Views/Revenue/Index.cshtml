@@ -29,6 +29,16 @@
         <p class="growth-positive">+@Model.GrowthThisMonth% so với tháng trước</p>
     </div>
 </div>
+<div class="order-stats-container">
+    <div class="stat-box"><h3>@Model.TotalOrders</h3><p>Tổng số đơn</p></div>
+    <div class="stat-box"><h3>@Model.ConfirmedOrders</h3><p>Đã xác nhận</p></div>
+    <div class="stat-box"><h3>@Model.WaitingOrders</h3><p>Chờ xác nhận</p></div>
+    <div class="stat-box"><h3>@Model.DeliveringOrders</h3><p>Đang giao hàng</p></div>
+    <div class="stat-box"><h3>@Model.CompletedOrders</h3><p>Hoàn thành</p></div>
+    <div class="stat-box"><h3>@Model.CancelledOrders</h3><p>Đã hủy</p></div>
+</div>
+
+
 
 <!-- Biểu đồ doanh thu -->
 <div class="chart-container">
@@ -114,6 +124,13 @@
     }
 
     .stats-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 40px;
+    }
+
+    .order-stats-container {
         display: flex;
         gap: 20px;
         justify-content: center;
