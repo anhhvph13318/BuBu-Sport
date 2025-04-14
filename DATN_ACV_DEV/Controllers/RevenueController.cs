@@ -59,7 +59,7 @@ namespace DATN_ACV_DEV.Controllers
 
                 // Doanh thu hôm nay
                 var revenueToday = await query
-                    .Where(o => o.CreateDate.Date == today && o.Status == 7)
+                    .Where(o => o.CreateDate.Date == today)
                     .SumAsync(o => o.TotalAmount);
 
                 // Doanh thu hôm qua

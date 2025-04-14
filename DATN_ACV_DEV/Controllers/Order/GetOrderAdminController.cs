@@ -23,15 +23,20 @@ public class GetOrderAdminController : ControllerBase
     }
     [HttpGet]
     [Route("/api/admin/orders")]
-    public async Task<IActionResult> Process(string? code = "", string? customerName = "", int status = 0)
+    public async Task<IActionResult> Process(string? code = "", string? customerName = "", int status = 0, DateTime? startDate = null, DateTime? endDate = null)
     {
         var orders = await _context.TbOrders.AsNoTracking()
             .Include(e => e.TbOrderDetails)
             .ThenInclude(e => e.Product)
             .Include(e => e.Customer)
-            .Where(e => (string.IsNullOrEmpty(code) || e.OrderCode == code)
-                        && (string.IsNullOrEmpty(customerName) || e.Customer.Name.StartsWith(customerName))
-                        && (status == 0 || e.Status == status))
+            .Where(e =>
+                (string.IsNullOrEmpty(code) || e.OrderCode == code) &&
+                (string.IsNullOrEmpty(customerName) || e.Customer.Name.StartsWith(customerName)) &&
+                (status == 0 || e.Status == status) &&
+                (!startDate.HasValue || e.CreateDate.Date >= startDate.Value.Date) && 
+                (!endDate.HasValue || e.CreateDate <= endDate.Value.Date.AddDays(1).AddTicks(-1))
+
+            )
             .OrderByDescending(e => e.CreateDate)
             .Select(e => new OrderListItem()
             {
@@ -47,6 +52,7 @@ public class GetOrderAdminController : ControllerBase
                 products = "",
 
             }).ToListAsync();
+
             List<ProductNames> productNames = new List<ProductNames>();
             foreach (var item in orders)
             {
