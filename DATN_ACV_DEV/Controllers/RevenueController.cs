@@ -44,7 +44,7 @@ namespace DATN_ACV_DEV.Controllers
 
                 // Truy vấn doanh thu (chỉ tính đơn hàng hoàn thành và không phải nháp)
                 var query = _context.TbOrders
-                    .Where(o => o.Status == 7 && !o.IsDraft); // Giả định Status = 1 là hoàn thành
+                    .Where(o => o.Status == 7); // Giả định Status = 1 là hoàn thành
 
                 // Lấy tất cả đơn hàng không phải bản nháp
                 var allOrders = await _context.TbOrders.ToListAsync();

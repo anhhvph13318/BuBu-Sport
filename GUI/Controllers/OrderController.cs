@@ -91,7 +91,7 @@ public class OrderController : Controller
             }
 
 
-            return View(orders);
+            return View(orders.OrderByDescending(c=>c.CreateDate));
         }
         catch (Exception ex)
         {
