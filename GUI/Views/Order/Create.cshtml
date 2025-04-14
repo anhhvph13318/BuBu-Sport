@@ -165,8 +165,7 @@
                 <h1 class="modal-title fs-5" id="voucherModalLabel">Danh sách voucher khả dụng</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto">
-            </div>
+            <div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
@@ -182,6 +181,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="productListSearchInput" class="form-control" placeholder="Tìm theo mã hoặc tên sản phẩm...">
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -236,6 +238,7 @@
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>
+    <script src="~/js/validation.js"></script>
     <script src="~/js/orderPage.js"></script>
 
     <script>
@@ -248,44 +251,73 @@
 
     <script>
         $(document).ready(function () {
+            let fullProductList = [];
+
             $('#btnShowProductList').on('click', function () {
                 fetch('/api/products')
                     .then(res => res.json())
                     .then(data => {
-                        const productListBody = $('#productListBody').empty();
-                        data.forEach((product, index) => {
-                            if (!product.image?.trim()) return;
-
-                            const row = `
-                                <tr>
-                                    <td></td>
-                                    <td><span class="badge bg-secondary">${product.code}</span></td>
-                                    <td>${product.name}</td>
-                                    <td><img src="${product.image}" style="width: 50px; height: 50px;" /></td>
-                                    <td>${product.price} VNĐ</td>
-                                    <td><button class="btn btn-info btn-detail" data-id="${product.id}">Chi tiết</button></td>
-                                </tr>`;
-                            productListBody.append(row);
-                            updateTableSTT('#productListModal table');
-                        });
+                        fullProductList = data;
+                        renderProductList(data);
                         $('#productListModal').modal('show');
                     });
             });
 
+            $('#productListModal').on('hidden.bs.modal', function () {
+                $('#productListSearchInput').val('');
+                renderProductList(fullProductList);
+            });
+
+            $('#productListSearchInput').on('input', function () {
+                const keyword = $(this).val().toLowerCase();
+                const filtered = fullProductList.filter(product =>
+                    product.name.toLowerCase().includes(keyword) ||
+                    product.code.toLowerCase().includes(keyword)
+                );
+                renderProductList(filtered);
+            });
+
+            function renderProductList(data) {
+                const productListBody = $('#productListBody').empty();
+                data.forEach((product, index) => {
+                    if (!product.image?.trim()) return;
+                    const row = `
+                        <tr>
+                            <td></td>
+                            <td><span class="badge bg-secondary">${product.code}</span></td>
+                            <td>${product.name}</td>
+                            <td><img src="${product.image}" style="width: 50px; height: 50px;" /></td>
+                            <td>${product.price} VNĐ</td>
+                            <td><button class="btn btn-info btn-detail" data-id="${product.id}" data-name="${product.name}">Chi tiết</button></td>
+                        </tr>`;
+                    productListBody.append(row);
+                });
+                updateTableSTT('#productListModal table');
+            }
+
+            let currentProductName = '';
+
             $(document).on('click', '.btn-detail', function () {
                 const productId = $(this).data('id');
+                currentProductName = $(this).data('name') || '';
                 fetch(`/api/products/${productId}/variants`)
                     .then(res => res.json())
                     .then(variants => {
                         const variantOptions = $('#variantOptions').empty();
                         variants.forEach(variant => {
+                            const isDisabled = variant.quantity <= 0;
                             const row = `
                                 <tr>
                                     <td></td>
-                                    <td>${variant.color}</td>
-                                    <td>${variant.size}</td>
-                                    <td><input type="number" class="form-control" min="1" max="${variant.quantity}" value="1" data-variant-id="${variant.id}" /></td>
-                                    <td><input type="checkbox" class="form-check-input" data-variant-id="${variant.id}" /></td>
+                                    <td class="color-cell">${variant.color}</td>
+                                    <td class="size-cell">${variant.size}</td>
+                                    <td>
+                                        <input type="number" class="form-control" min="1" max="${variant.quantity}" value="1"
+                                            data-variant-id="${variant.id}" ${isDisabled ? 'disabled' : ''} />
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" class="form-check-input" data-variant-id="${variant.id}" ${isDisabled ? 'disabled' : ''} />
+                                    </td>
                                 </tr>`;
                             variantOptions.append(row);
                         });
@@ -298,13 +330,17 @@
                 let hasInvalidQuantity = false;
 
                 $('#variantOptions input[type="checkbox"]:checked').each(function () {
-                    const variantId = $(this).data('variant-id');
-                    const quantityInput = $(this).closest('tr').find('input[type="number"]');
+                    const checkbox = $(this);
+                    const row = checkbox.closest('tr');
+                    const variantId = checkbox.data('variant-id');
+                    const quantityInput = row.find('input[type="number"]');
                     const quantity = parseInt(quantityInput.val());
                     const max = parseInt(quantityInput.attr('max'));
 
                     if (isNaN(quantity) || quantity <= 0 || quantity > max) {
-                        toastr.warning("Số lượng không hợp lệ hoặc vượt quá tồn kho!");
+                        const color = row.find('.color-cell').text();
+                        const size = row.find('.size-cell').text();
+                        toastr.warning(`Sản phẩm "${currentProductName}" - Màu: ${color}, Size: ${size} có số lượng không hợp lệ hoặc vượt quá tồn kho!`);
                         hasInvalidQuantity = true;
                         return;
                     }
@@ -338,7 +374,7 @@
                                 const newQty = currentQty + orderItem.Quantity;
 
                                 if (newQty > max) {
-                                    toastr.error("Tổng số lượng vượt quá tồn kho.");
+                                    toastr.error(`Tổng số lượng cho "${orderItem.ProductName}" - Màu: ${orderItem.Color}, Size: ${orderItem.Size} vượt quá tồn kho.`);
                                     return;
                                 }
 
@@ -360,7 +396,7 @@
                                         <td>${orderItem.Size}</td>
                                         <td>${orderItem.Price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td>
-                                            <input class="form-control order-item-quantity" min="1" value="${orderItem.Quantity}" type="number" />
+                                            <input class="form-control order-item-quantity" min="1" value="${orderItem.Quantity}" type="number" disabled />
                                         </td>
                                         <td>${itemTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td style="display: none" class="order-item-id">${orderItem.Id}</td>
@@ -370,6 +406,7 @@
                                     </tr>
                                 `;
                                 $('#orderItemContainer tbody').append(row);
+                                updatePaymentInfoSummary();
                             }
 
                             updateTableSTT('#orderItemContainer table');
@@ -385,11 +422,122 @@
                 }
             });
 
-
             $(document).on('click', '.remove-item-btn', function () {
                 $(this).closest('tr').remove();
                 updateTableSTT('#orderItemContainer table');
+                updatePaymentInfoSummary();
             });
         });
+
+        function updateTableSTT(tableSelector) {
+            $(`${tableSelector} tbody tr`).each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+
+        function updatePaymentInfoSummary() {
+            let totalAmount = 0;
+
+            $('#orderItemContainer tbody tr').each(function () {
+                const quantity = parseInt($(this).find('.order-item-quantity').val()) || 0;
+                const priceText = $(this).find('td').eq(6).text();
+                const price = parseFloat(priceText.replace(/[^\d]/g, '')) || 0;
+                totalAmount += quantity * price;
+            });
+
+            const discountText = $('#discount-amount').text().replace(/[^\d]/g, '');
+            const totalDiscount = parseFloat(discountText) || 0;
+            const finalAmount = totalAmount - totalDiscount;
+
+            $('#total-amount').text(totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+            $('#discount-amount').text('- ' + totalDiscount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+            $('#orderPaymentInfoContainer p:contains("Thành tiền:")').next().text(finalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+        }
+        function showAvailableVoucher() {
+            $('#loading-overlay').css('display', 'flex');
+            const customerPhone = $('#customer-phone').val();
+            fetch(`/orders/vouchers${customerPhone ? '?phone=' + customerPhone : ''}`)
+                .then(response => {
+                    console.log('API response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API response data:', data);
+                    $('#voucher-list').html(data.vouchers); 
+                    $('#voucherModal').modal('show');
+                    $('#loading-overlay').css('display', 'none');
+                    $('.btn-apply-voucher').on('click', function() {
+                        const voucherId = $(this).data('id'); 
+                        applyVoucher(voucherId);
+            });
+                })
+                .catch(error => {
+                    console.error('Error fetching vouchers:', error);
+                    toastr.error('Không thể tải danh sách voucher. Vui lòng thử lại sau.');
+                    $('#loading-overlay').css('display', 'none');
+                });
+        }
+
+        function applyVoucher(voucherId) {
+            $('#loading-overlay').css('display', 'flex');
+
+            fetch(`/orders/apply-voucher?id=${voucherId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.Message || 'Không thể áp dụng Voucher.');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Payment data:', data.Payment);
+                    $('#orderPaymentInfoContainer').html(data.Payment);
+                    $('#voucherModal').modal('hide');
+                    toastr.success('Áp dụng Voucher thành công!');
+                    $('#loading-overlay').css('display', 'none');
+                    $('#applyVoucherBtn').text('Huỷ áp mã').attr('onclick', 'cancelApplyVoucher()');
+                })
+                .catch(error => {
+                    console.error('Lỗi khi áp dụng Voucher:', error);
+                    toastr.error(error.message || 'Không thể áp dụng Voucher. Vui lòng thử lại sau.');
+                    $('#loading-overlay').css('display', 'none');
+                });
+        }
+
+        function cancelApplyVoucher() {
+            // Hiển thị loading
+            $('#loading-overlay').css('display', 'flex');
+
+            // Gọi API để hủy áp dụng voucher
+            fetch('/orders/cancel-apply-voucher', {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Không thể hủy áp dụng voucher.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Cập nhật thông tin thanh toán
+                    $('#orderPaymentInfoContainer').html(data.Payment);
+
+                    // Thông báo thành công
+                    toastr.success('Hủy áp dụng voucher thành công!');
+
+                    // Ẩn loading
+                    $('#loading-overlay').css('display', 'none');
+
+                    // Cập nhật nút voucher
+                    $('#applyVoucherBtn').text('Áp dụng').attr('onclick', 'showAvailableVoucher()');
+                })
+                .catch(error => {
+                    console.error('Error cancelling voucher:', error);
+                    toastr.error('Không thể hủy áp dụng voucher. Vui lòng thử lại sau.');
+                    $('#loading-overlay').css('display', 'none');
+                });
+        }
     </script>
+
 }

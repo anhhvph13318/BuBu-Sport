@@ -362,12 +362,12 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             foreach (var item in order.TbOrderDetails)
             {
-                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == item.ProductId)
+                var productId = _context.TbProductDetails.Where(c => c.Id == item.ProductId).Select(c => c.ProductId).FirstOrDefault();
+                var product = await _context.TbProducts.FirstOrDefaultAsync(e => e.Id == productId)
                     ?? throw new NullReferenceException();
 
                 product.Quantity += item.Quantity;
             }
-
             _context.TbOrders.Remove(order);
             await _context.SaveChangesAsync();
 

@@ -42,12 +42,21 @@ public class OrderDetail
         PaymentInfo.FinalAmount = PaymentInfo.TotalAmount + PaymentInfo.ShippingFee;
         PaymentInfo.Products = Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
 
-        if (Voucher != null && Voucher.Id == Guid.Empty)
+
+        Console.WriteLine($"TotalAmount: {PaymentInfo.TotalAmount}, Voucher.Condition: {Voucher?.Condition}");
+        if (Voucher == null || Voucher.Id == Guid.Empty)
         {
-            PaymentInfo.TotalDiscount = 0;
+            Console.WriteLine("Voucher is null or empty");
             return;
         }
-
+        if (PaymentInfo.TotalAmount < Voucher.Condition)
+        {
+            Console.WriteLine("TotalAmount is less than Voucher.Condition");
+            Voucher = new VoucherDTO();
+            PaymentInfo.VoucherId = Guid.Empty;
+            PaymentInfo.VoucherCode = string.Empty;
+            return;
+        }
         if (Voucher != null && Voucher.Unit == VoucherUnit.Percent)
         {
             var discount = PaymentInfo.TotalAmount * Voucher.Discount / 100;

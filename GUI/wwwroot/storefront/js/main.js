@@ -304,7 +304,7 @@
 		}
 
 		if (ids.length) {
-      			Swal.fire({
+			Swal.fire({
 				title: 'Xác nhận đặt hàng',
 				text: 'Bạn có chắc chắn muốn đặt đơn hàng này?',
 				icon: 'question',
@@ -313,34 +313,33 @@
 				cancelButtonColor: '#d33',
 				confirmButtonText: 'Đồng ý',
 				cancelButtonText: 'Hủy',
-				width: '600px', 
-				padding: '2em', 
+				width: '600px',
+				padding: '2em',
 				customClass: {
 					popup: 'larger-swal'
 				}
 			}).then((result) => {
 				if (result.isConfirmed) {
-			$.post("/Buy", {
-				name: name,
-				phone: phone,
-				address: address,
-				district: district,
-				city: city,
-				email:email,
-				ids: ids,
-				getatstore: false,
-				isVNP: !COD
-			}, function (data) {
-				if (data.success) {
-					if (data.redirect) {
-						window.location.href = data.url;
-					} else {
-						window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
-					}
-				} else
-				{
-					alert("Đã có lỗi xảy ra");
-				}
+					$.post("/Buy", {
+						name: name,
+						phone: phone,
+						address: address,
+						district: district,
+						city: city,
+						email: email,
+						ids: ids,
+						getatstore: false,
+						isVNP: !COD
+					}, function (data) {
+						if (data.success) {
+							if (data.redirect) {
+								window.location.href = data.url;
+							} else {
+								window.location.href = `/success?vnp_TxnRef=${data.orderId}`;
+							}
+						} else {
+							alert("Đã có lỗi xảy ra");
+						}
 					});
 				}
 			});

@@ -88,9 +88,8 @@ public class VoucherController : Controller
         var validDiscountMoney = model.Voucher.Unit == VoucherUnit.Money && model.Voucher.Discount < 1000;
         var validCondition = model.Voucher.Condition < 5000;
         var validConditionWithDiscount = model.Voucher.Unit == VoucherUnit.Money && model.Voucher.Condition <= model.Voucher.Discount;
-        var validMaxDiscount = model.Voucher.MaxDiscount < 5000;
+        var validMaxDiscount = model.Voucher.Unit == VoucherUnit.Percent && model.Voucher.MaxDiscount < 5000;
         var validMaxCondition = model.Voucher.Condition > 1000000000;
-        var validMinCondition = model.Voucher.Condition < 5000;
         if (!ModelState.IsValid || validPeriod || validDiscountPercent || validStartDate || validCondition || validConditionWithDiscount || validMaxCondition || validDiscountMoney  || validMaxDiscount)
         {
             if (validPeriod)
