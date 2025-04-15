@@ -1,0 +1,31 @@
+﻿<h2>Danh sách chương trình giảm giá</h2>
+
+<div style="margin-bottom: 16px;">
+    <a href="@Url.Action("Create", "Discount")" class="btn btn-primary">+ Tạo mới chương trình</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tên</th>
+            <th>Kiểu</th>
+            <th>Bắt đầu</th>
+            <th>Kết thúc</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var discount in Model.Discounts)
+        {
+            <tr>
+                <td>@discount.Name</td>
+                <td>@discount.DiscountType</td>
+                <td>@discount.StartDate.ToString("dd/MM/yyyy")</td>
+                <td>@discount.EndDate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a href="@Url.Action("Details", "Discount", new { id = discount.Id })">Chi tiết</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

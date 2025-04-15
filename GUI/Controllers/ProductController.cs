@@ -61,7 +61,21 @@ namespace GUI.Controllers
             // Tải danh sách danh mục để sử dụng trong dropdown filter
             var categories = await FetchCategory();
             ViewBag.Categories = categories;
-
+            var promotion = _context.TbDiscountProducts.ToList();
+            foreach (var item in promotion)
+            {
+                var discount = _context.TbDiscounts
+                    .Where(c => c.Id == item.DiscountId)
+                    .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+                    .FirstOrDefault();
+                foreach (var item1 in model.Data.LstProduct)
+                {
+                    if (item.ProductId == item1.Id)
+                    {
+                        item1.PriceSale = Convert.ToDecimal(item1.Price - discount);
+                    }
+                }
+            }
             return View(model);
         }
 

@@ -5,7 +5,6 @@ using DATN_ACV_DEV.Model_DTO.Product_DTO;
 using DATN_ACV_DEV.Entity;
 using Azure;
 using Microsoft.EntityFrameworkCore;
-using DATN_ACV_DEV.Controllers.Property;
 using DATN_ACV_DEV.Model_DTO.Image_DTO;
 using System.Net.WebSockets;
 

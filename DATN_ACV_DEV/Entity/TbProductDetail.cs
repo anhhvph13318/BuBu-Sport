@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DATN_ACV_DEV.Entity;
 
@@ -12,7 +13,7 @@ public partial class TbProductDetail
     public int Quantity { get; set; }
 
     public Guid? ImageId { get; set; }
-
+    [ForeignKey("Color")]
     public Guid? ColorId { get; set; }
 
     public Guid? SizeId { get; set; }

@@ -6,6 +6,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- SECTION -->
 <div class="section">
+	@using System.Globalization
+	@{
+		int total = 0;
+	}
 	<!-- container -->
 	<div class="container">
 		<!-- row -->
@@ -97,8 +101,10 @@
 					<div class="order-products">
 						@if (Model != null && Model.Any())
 						{
+
 							foreach (var item in Model)
 							{
+								total += (int)(item.Price * item.Quantity);
 								<div class="order-col order-item" id="item-@item.CartDetailID" data-itemId="@item.CartDetailID" data-price="@item.Price">
 									<div>
 										@item.Quantity x @item.NameProduct
@@ -125,7 +131,7 @@
 					</div>
 					<div class="order-col">
 						<div><strong>TỔNG</strong></div>
-						<div><strong class="order-total">@(((int)(ViewBag.Sum > 0 ? (ViewBag.Sum) : 0)).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</strong></div>
+						<div><strong class="order-total">@total.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</strong></div>
 					</div>
 				</div>
 				<div class="shipping-method">

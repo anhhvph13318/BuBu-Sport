@@ -29,6 +29,10 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbCustomer> TbCustomers { get; set; }
 
+    public virtual DbSet<TbDiscount> TbDiscounts { get; set; }
+
+    public virtual DbSet<TbDiscountProduct> TbDiscountProducts { get; set; }
+
     public virtual DbSet<TbImage> TbImages { get; set; }
 
     public virtual DbSet<TbMaterial> TbMaterials { get; set; }
@@ -41,8 +45,6 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<TbProductDetail> TbProductDetails { get; set; }
 
-    public virtual DbSet<TbProperty> TbProperties { get; set; }
-
     public virtual DbSet<TbSize> TbSizes { get; set; }
 
     public virtual DbSet<TbUser> TbUsers { get; set; }
@@ -51,9 +53,9 @@ public partial class DBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-    => optionsBuilder.UseSqlServer("Data Source=TW4NENH\\TUANANH;Initial Catalog=DB_BuBu_11_04;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
+        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-I8QEIM8;Initial Catalog=DB_BuBu_18_01_bacpac;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Latin1_General_CI_AS");
 
@@ -89,9 +91,13 @@ public partial class DBContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.AccountId).HasColumnName("accountId");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("datetime")
+                .HasColumnName("createDate");
             entity.Property(e => e.DistrictName).HasColumnName("districtName");
             entity.Property(e => e.IsDelete).HasColumnName("isDelete");
             entity.Property(e => e.ProvinceName).HasColumnName("provinceName");
+            entity.Property(e => e.ReceiverEmail).HasColumnName("receiverEmail");
             entity.Property(e => e.ReceiverName)
                 .HasMaxLength(255)
                 .HasColumnName("receiverName");
@@ -121,25 +127,21 @@ public partial class DBContext : DbContext
 
         modelBuilder.Entity<TbCartDetail>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK_tb_CartDetail12");
+
             entity.ToTable("tb_CartDetail");
-
-            entity.HasIndex(e => e.CartId, "IX_tb_CartDetail_CartID");
-
-            entity.HasIndex(e => e.ProductId, "IX_tb_CartDetail_ProductID");
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.CartId).HasColumnName("CartID");
+            entity.Property(e => e.ColorId).HasColumnName("ColorID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.SizeId).HasColumnName("SizeID");
 
             entity.HasOne(d => d.Cart).WithMany(p => p.TbCartDetails)
                 .HasForeignKey(d => d.CartId)
                 .HasConstraintName("FK_tb_CartDetail_tb_Cart");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.TbCartDetails)
-                .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK_tb_CartDetail_tb_Produst");
         });
 
         modelBuilder.Entity<TbCategory>(entity =>
@@ -188,6 +190,36 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(250);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.YearOfBirth).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<TbDiscount>(entity =>
+        {
+            entity.ToTable("tb_Discount");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.DiscountType).HasMaxLength(50);
+            entity.Property(e => e.DiscountValue).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.EndDate).HasColumnType("datetime");
+            entity.Property(e => e.MaxDiscountAmount).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<TbDiscountProduct>(entity =>
+        {
+            entity.ToTable("tb_DiscountProducts");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Discount).WithMany(p => p.TbDiscountProducts)
+                .HasForeignKey(d => d.DiscountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tb_DiscountProducts_tb_Discount");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.TbDiscountProducts)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tb_DiscountProducts_tb_Products");
         });
 
         modelBuilder.Entity<TbImage>(entity =>
@@ -248,7 +280,9 @@ public partial class DBContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.TbOrders).HasForeignKey(d => d.CustomerId);
 
-            entity.HasOne(d => d.Voucher).WithMany(p => p.Orders).HasForeignKey(d => d.VoucherId);
+            entity.HasOne(d => d.Voucher).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.VoucherId)
+                .HasConstraintName("FK_tb_Order_tb_Voucher");
         });
 
         modelBuilder.Entity<TbOrderDetail>(entity =>
@@ -267,12 +301,12 @@ public partial class DBContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.TbOrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK_tb_OrderDetail_tb_Order");
+                .HasConstraintName("FK_tb_OrderDetail_tb_Order1");
 
             entity.HasOne(d => d.Product).WithMany(p => p.TbOrderDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_OrderDetail_tb_Produst");
+                .HasConstraintName("FK_tb_OrderDetail_tb_ProductDetail");
         });
 
         modelBuilder.Entity<TbProduct>(entity =>
@@ -338,18 +372,6 @@ public partial class DBContext : DbContext
                 .HasConstraintName("FK_tb_ProductDetail_tb_Size");
         });
 
-        modelBuilder.Entity<TbProperty>(entity =>
-        {
-            entity.ToTable("tb_Properties");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
         modelBuilder.Entity<TbSize>(entity =>
         {
             entity.ToTable("tb_Size");
@@ -357,6 +379,7 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("ID");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.SizeName).HasMaxLength(50);
         });
 
@@ -390,11 +413,11 @@ public partial class DBContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.Code).HasMaxLength(50);
+            entity.Property(e => e.Condition).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.EndDate).HasColumnType("datetime");
             entity.Property(e => e.MaxDiscount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.Unit).HasMaxLength(50);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 

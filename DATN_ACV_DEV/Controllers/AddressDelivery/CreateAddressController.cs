@@ -64,11 +64,11 @@ namespace DATN_ACV_DEV.Controllers
                 WardName = _request.wardName,
                 Status = _request.status,
                 AccountId = acccountId != null && acccountId != Guid.Empty ? acccountId : null,
-                receiverEmail = _request.email,
+                ReceiverEmail = _request.email,
                 ReceiverName = string.IsNullOrEmpty(_request.receiverName) ? checkUser?.Name ?? "" : _request.receiverName,
                 ReceiverPhone = string.IsNullOrEmpty(_request.receiverPhone) ? checkUser?.Phone ?? "" : _request.receiverPhone,
                 IsDelete = false,
-                createDate = DateTime.Now,
+                CreateDate = DateTime.Now,
             };
         }
 
