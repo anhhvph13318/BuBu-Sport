@@ -20,6 +20,7 @@ public class OrderDetail
     public bool IsDraft { get; set; }
     public int PaymentMethod { get; set; }
     public DateTime? Created { get; set; }
+    public string? ReasionCancel { get; set; }
 }
 
 public class OrderItem

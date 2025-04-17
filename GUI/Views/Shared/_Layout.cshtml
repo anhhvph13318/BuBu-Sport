@@ -130,7 +130,7 @@
                     <i class="bi bi-people-fill"> Quản lý khách hàng </i>                  
                 </a> *@
                 <a class="nav-link" href="/revenue">
-                    <i class="bi bi-bar-chart-fill"></i><span>Thống kê</span>
+                    <i class="bi bi-bar-chart-fill"></i><span> Thống kê</span>
                 </a>
                 <a class="nav-link" href="/product">
                     <i class="bi bi-bag-fill"></i> <span>Quản lý sản phẩm</span>
@@ -154,7 +154,7 @@
                     <i class="bi bi-ticket-fill"></i> <span>Quản lý mã giảm giá</span>
                 </a>
                 <a class="nav-link" href="/Discount">
-                    <i class="bi bi-percent"></i> <span>Quản lý khuyến mãi</span>
+                    <i class="bi bi-percent"></i> <span>Quản lý khuyến mại</span>
                 </a>
                 <a class="nav-link" href="/categories">
                     <i class="fa-solid fa-list"></i> <span>Quản lý danh mục</span>
@@ -163,7 +163,7 @@
                     <i class="bi bi-person-bounding-box"></i> <span>Quản lý tài khoản</span>
                 </a>
 
-                <a class="nav-link" href="/SignIn">
+                <a class="nav-link" href="/SignIn" id="logout-link">
                     <i class="bi bi-door-open-fill"></i><span>Đăng xuất</span>
                 </a>
             </nav>
@@ -182,12 +182,38 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.getElementById("toggleSidebar").addEventListener("click", function () {
         document.querySelector(".sidebar").classList.toggle("collapsed");
     });
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutLink = document.getElementById("logout-link");
 
+        logoutLink.addEventListener("click", function (e) {
+            e.preventDefault(); // chặn chuyển trang ngay
 
+            Swal.fire({
+                title: 'Bạn chắc chắn muốn đăng xuất?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Đăng xuất',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                width: '600px',
+                padding: '2em',
+                customClass: {
+                    popup: 'larger-swal'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Chuyển hướng nếu người dùng đồng ý
+                    window.location.href = logoutLink.href;
+                }
+            });
+        });
+    });
 </script>
 
 </html>
