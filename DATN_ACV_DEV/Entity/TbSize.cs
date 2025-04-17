@@ -12,6 +12,7 @@ public partial class TbSize
     public double? FootLength { get; set; }
 
     public int? Quantity { get; set; }
+
     public DateTime? CreateDate { get; set; }
 
     public virtual ICollection<TbProductDetail> TbProductDetails { get; set; } = new List<TbProductDetail>();

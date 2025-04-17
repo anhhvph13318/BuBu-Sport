@@ -55,7 +55,7 @@ public class OrderDetailAdminController : ControllerBase
                 PhoneNumber = customer.Phone,
                 Email = _context.TbAccounts.Where(c=>c.CustomerId == customer.Id).Select(c=>c.Email).FirstOrDefault() != null ?
 				_context.TbAccounts.Where(c => c.CustomerId == customer.Id).Select(c => c.Email).FirstOrDefault():
-                _context.TbAddressDeliveries.Where(c=>c.Id == customer.TbOrders.Select(a=>a.AddressDeliveryId).FirstOrDefault()).Select(c=>c.receiverEmail).FirstOrDefault()
+                _context.TbAddressDeliveries.Where(c=>c.Id == customer.TbOrders.Select(a=>a.AddressDeliveryId).FirstOrDefault()).Select(c=>c.ReceiverEmail).FirstOrDefault()
 			},
             ShippingInfo = customer == null ? null : new ShippingInfo
             {
@@ -232,7 +232,7 @@ public class OrderDetailAdminController : ControllerBase
                         Name = e.Customer.Name,
                         Address = e.Customer.Adress,
                         PhoneNumber = e.Customer.Phone,
-                        Email = e.AddressDelivery.receiverEmail,
+                        Email = e.AddressDelivery.ReceiverEmail,
                     },
                     ShippingInfo = e.AddressDelivery == null ? new ShippingInfo
                     {

@@ -114,6 +114,8 @@
                             <button type="button" class="btn btn-sm btn-outline-primary rounded-circle" id="toggleSizeTable" title="Ẩn/hiện bảng size">
                                 <i class="bi bi-chevron-up" id="toggleIcon"></i>
                             </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="addSizeButton"><i class="fas fa-plus me-1"></i>Thêm size</button>
+
                         </label>
                         <div class="card border" id="sizeTableContainer">
                             <div class="card-body p-2">
@@ -171,7 +173,28 @@
         </div>
     </form>
 </div>
+<!-- Modal thêm size-->
+<input type="hidden" id="sizeValidation" name="sizeValidation" required>
 
+<div class="modal fade" id="addSizeModal" tabindex="-1" aria-labelledby="addSizeLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addSizeLabel"><i class="fas fa-ruler me-2"></i>Thêm size</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="newSizeName" class="form-label">Tên size</label>
+                <input type="text" id="newSizeName" class="form-control" placeholder="Nhập tên size">
+                <input type="hidden" id="modalProductIdSize" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Đóng</button>
+                <button type="button" class="btn btn-primary" id="saveNewSize"><i class="fas fa-save me-1"></i>Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal thêm màu sắc -->
 <div class="modal fade" id="addColorModal" tabindex="-1" aria-labelledby="addColorLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -220,6 +243,94 @@
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
+    // Lưu màu sắc mới
+    document.getElementById("saveNewColor").addEventListener("click", async function () {
+        const Name = document.getElementById("newColorName").value.trim();
+        if (!Name) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
+            return;
+        }
+
+        try {
+            const response = await fetch("/ProductDetail/CreateColorDetail", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: Name })
+            });
+            if (!response.ok) throw new Error("Thêm màu thất bại!");
+            const newColor = await response.json();
+            const select = document.getElementById("colorSelect");
+            const newOption = document.createElement("option");
+            newOption.value = newColor.id;
+            newOption.textContent = newColor.name;
+            newOption.selected = true;
+            select.insertBefore(newOption, select.lastElementChild);
+            bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
+            document.getElementById("newColorName").value = "";
+            window.location.reload();
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+        }
+    });
+    // Mở modal thêm kích thước
+    document.getElementById("addSizeButton").addEventListener("click", function () {
+        new bootstrap.Modal(document.getElementById('addSizeModal')).show();
+    });
+    // Lưu size mới
+    document.getElementById("saveNewSize").addEventListener("click", async function () {
+        const SizeName = document.getElementById("newSizeName").value.trim();
+        if (!SizeName) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên size' });
+            return;
+        }
+
+        try {
+            const response = await fetch("/ProductDetail/CreateSizeDetail", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ SizeName: SizeName })
+            });
+            if (!response.ok) throw new Error("Thêm size thất bại!");
+            const newSize = await response.json();
+            const tableBody = document.getElementById("sizeTableBody");
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                        <td class="align-middle">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
+                                <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
+                            </div>
+                        </td>
+                        <td class="align-middle text-center">
+                            <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
+                                   id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
+                            <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
+                        </td>
+                    `;
+            tableBody.insertBefore(newRow, tableBody.firstChild);
+
+            const newCheckbox = newRow.querySelector(".sizeCheckbox");
+            newCheckbox.addEventListener("change", function () {
+                const sizeId = this.getAttribute("data-size-id");
+                const quantityInput = document.getElementById(`quantity_${sizeId}`);
+                if (this.checked) {
+                    quantityInput.disabled = false;
+                    quantityInput.value = 1;
+                    quantityInput.focus();
+                } else {
+                    quantityInput.disabled = true;
+                    quantityInput.value = 0;
+                }
+                validateSizeSelection();
+            });
+
+            bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
+            document.getElementById("newSizeName").value = "";
+            window.location.reload();
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+        }
+    });
     document.addEventListener("DOMContentLoaded", function () {
         // Format hiển thị giá khi nhập
         const priceInput = document.getElementById('priceInput');

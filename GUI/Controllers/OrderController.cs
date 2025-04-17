@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Globalization;
+using Rotativa.AspNetCore;
 using System.Net.WebSockets;
 using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
 
@@ -45,7 +46,9 @@ public class OrderController : Controller
     [FromQuery] int status = 0,
     [FromQuery] decimal? minAmount = null,
     [FromQuery] decimal? maxAmount = null,
-    [FromQuery] string? orderCodePrefix = "")
+    [FromQuery] string? orderCodePrefix = "", 
+    DateTime? startDate = null, 
+    DateTime? endDate = null)
     {
         try
         {
@@ -78,8 +81,17 @@ public class OrderController : Controller
             {
                 orders = orders.Where(o => o.FinalAmount <= maxAmount.Value);
             }
+            if (startDate.HasValue)
+            {
+                orders = orders.Where(o => o.CreateDate >= startDate.Value.Date);
+            }
+            if (endDate.HasValue)
+            {
+                orders = orders.Where(o => o.CreateDate <= endDate.Value.Date.AddDays(1).AddTicks(-1));
+            }
 
-            return View(orders);
+
+            return View(orders.OrderByDescending(c=>c.CreateDate));
         }
         catch (Exception ex)
         {
@@ -438,19 +450,21 @@ public class OrderController : Controller
         var voucher = await CheckCustomerCanUseVoucher(id, target);
 
         if (voucher is null)
-            return BadRequest();
+        {
+            return BadRequest(new { Message = "Mã Voucher không hợp lệ hoặc đơn hàng không đủ điều kiện tối thiểu." });
+        }
 
         order.Voucher = voucher;
-        order.PaymentInfo.VoucherId = order.Voucher.Id;
-        order.PaymentInfo.VoucherCode = order.Voucher.Code;
+        order.PaymentInfo.VoucherId = voucher.Id;
+        order.PaymentInfo.VoucherCode = voucher.Code;
 
         order.ReCalculatePaymentInfo();
-
+        Console.WriteLine($"TotalDiscount after apply: {order.PaymentInfo.TotalDiscount}");
         HttpContext.Session.SaveCurrentOrder(order);
 
         return Json(new
         {
-            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo)
         });
     }
 
@@ -474,7 +488,7 @@ public class OrderController : Controller
         });
     }
 
-    private static async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
+    private async Task<VoucherDTO?> CheckCustomerCanUseVoucher(string id, string target = "")
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
@@ -483,10 +497,18 @@ public class OrderController : Controller
         if (rawResponse.StatusCode != System.Net.HttpStatusCode.OK)
             return null;
 
-        return JsonConvert.DeserializeObject<VoucherDTO>(
-                await rawResponse.Content.ReadAsStringAsync());
-    }
+        var voucher = JsonConvert.DeserializeObject<VoucherDTO>(await rawResponse.Content.ReadAsStringAsync());
+        if (voucher == null)
+            return null;
 
+        var order = HttpContext.Session.GetCurrentOrder();
+        if (order.PaymentInfo.TotalAmount < voucher.Condition)
+        {
+            return null; 
+        }
+
+        return voucher;
+    }
     #endregion
 
     #region Online payment
@@ -717,5 +739,32 @@ public class OrderController : Controller
 
         return JsonConvert.DeserializeObject<Stock>(await response.Content.ReadAsStringAsync())!;
     }
-    
+    [HttpGet]
+    [Route("{id}/export-pdf")]
+    public async Task<IActionResult> ExportInvoicePdf(string id)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(URI);
+        var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{id}");
+        var response = JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(await rawResponse.Content.ReadAsStringAsync());
+
+        if (response == null || response.Data == null)
+        {
+            return NotFound("Không tìm thấy hóa đơn.");
+        }
+
+        var order = response.Data;
+        order.ReCalculatePaymentInfo();
+        if (order.Status != 7) 
+        {
+            return BadRequest("Chỉ có thể tải PDF cho hóa đơn ở trạng thái 'Hoàn thành'.");
+        }
+        return new ViewAsPdf("Invoice", order)
+        {
+            FileName = $"Invoice_{order.Code}.pdf",
+            PageSize = Rotativa.AspNetCore.Options.Size.Letter, 
+            PageMargins = new Rotativa.AspNetCore.Options.Margins(20, 15, 20, 15),
+            CustomSwitches = "--print-media-type --no-stop-slow-scripts --encoding UTF-8"
+        };
+    }
 }

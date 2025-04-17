@@ -41,29 +41,29 @@ function updateCategory(id) {
         status: $('#categoryStatus').is(':checked') ? 0 : 1
     }
 
-    if(payload.name === '') {
-        $('#validate-message').css({'display': 'block'})
+    if (payload.name === '') {
+        $('#validate-message').css({ 'display': 'block' })
         return;
     }
 
-    fetch(`${CREATE_CATEGORY}/${id}`, {
+    fetch(UPDATE_CATEGORY, {
         headers: {
             'Content-Type': 'application/json'
         },
-        method: 'PATCH',
+        method: 'POST',
         body: JSON.stringify(payload)
     })
-    .then(res => res.json())
-    .then(data => {
-        $('#categoryTable').html('');
-        $('#categoryTable').html(data.table);
-        $('#modalContent').html(data.modal);
-        toastr.success("Cập nhật thành công");
-        $('#categoryModal').modal('hide');
-    }).catch(_ => {
-        $('#validate-message').html('Tên đã bị trùng');
-        $('#validate-message').css({'display': 'block'});
-    });
+        .then(res => res.json())
+        .then(data => {
+            $('#categoryTable').html('');
+            $('#categoryTable').html(data.table);
+            $('#modalContent').html(data.modal);
+            $('#categoryModal').modal('hide');
+            toastr.success("Cập nhật thành công");
+        }).catch(_ => {
+            $('#validate-message').html('Tên đã bị trùng');
+            $('#validate-message').css({ 'display': 'block' });
+        });
 }
 
 function showDeatail(id) {

@@ -26,14 +26,23 @@
                         <div class="filter-item">
                             <h4 class="filter-title">Giá</h4>
                             <div class="price-filter">
+                                <div id="price-slider"></div>
                                 <div class="input-number price-min">
-                                    <input id="price-min" type="text" class="form-control filter-input"
-                                           value="@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.PriceFrom ?? 0)" placeholder="Từ (đ)" />
+                                    <input id="price-min" type="number" name="min"
+                                           data-value="@(Model?.Data?.LowestPrice != null ? (int)Model.Data.LowestPrice : 0)"
+
+                                           class="form-control filter-input">                                    
+                                    <span class="qty-up">+</span>
+                                    <span class="qty-down">-</span>
                                 </div>
                                 <span>-</span>
                                 <div class="input-number price-max">
-                                    <input id="price-max" type="text" class="form-control filter-input"
-                                           value="@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.PriceTo ?? ViewBag.MaxProductPrice ?? 100000000)" placeholder="Đến (đ)" />
+                                    <input id="price-max" type="number" name="max"
+                                           data-value="@(Model?.Data?.HighestPrice != null ? (int)Model.Data.HighestPrice : 0)"
+
+                                           class="form-control filter-input">
+                                    <span class="qty-up">+</span>
+                                    <span class="qty-down">-</span>
                                 </div>
                             </div>
                         </div>
@@ -103,6 +112,7 @@
                                      data-category="@item.CategoryName"
                                      data-status="@(item.Quantity > 0 ? "available" : "out-of-stock")"
                                      data-price="@item.Price"
+                                     data-price="@item.PriceSale"
                                      data-colors="@item.Color?.Replace(" ", "").ToLowerInvariant()"
                                      data-sizes="@item.SizeName?.Replace(" ", "").ToLowerInvariant()">
                                     <div class="product">
@@ -119,7 +129,13 @@
                                             <p class="product-category">@item.CategoryName</p>
                                             <h3 class="product-name"><a href="#" onclick="redirectToDetail('@item.Id')">@item.Name</a></h3>
                                             <h4 class="product-price">
-                                                @(item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                                @item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))
+                                                @if (item.PriceSale > item.Price)
+                                                {
+                                                    <del class="product-old-price">
+                                                        @item.PriceSale.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))
+                                                    </del>
+                                                }
                                             </h4>
                                             <div class="product-btns">
                                                 <button class="quick-view" onclick="redirectToDetail('@item.Id')">
@@ -159,6 +175,11 @@
         </div>
 
         <style>
+            .product-old-price {
+                color: #999;
+                margin-left: 10px;
+                font-size: 0.9em;
+            }
             .filter-sidebar {
                 width: 250px;
                 background: #f4f4f4;
@@ -334,14 +355,24 @@
                 function parseCurrencyVN(value) {
                     return parseInt(value.replace(/[^\d]/g, '')) || 0;
                 }
-
                 document.getElementById('price-min').addEventListener('input', function () {
-                    this.value = formatCurrencyVN(parseCurrencyVN(this.value));
+                    const raw = parseCurrencyVN(this.value);
+                    const scaled = raw / 100;
+                    this.value = formatCurrencyVN(scaled);
                 });
 
                 document.getElementById('price-max').addEventListener('input', function () {
-                    this.value = formatCurrencyVN(parseCurrencyVN(this.value));
+                    const raw = parseCurrencyVN(this.value);
+                    const scaled = raw / 100;
+                    this.value = formatCurrencyVN(scaled);
                 });
+                // document.getElementById('price-min').addEventListener('input', function () {
+                //     this.value = formatCurrencyVN(parseCurrencyVN(this.value));
+                // });
+
+                // document.getElementById('price-max').addEventListener('input', function () {
+                //     this.value = formatCurrencyVN(parseCurrencyVN(this.value));
+                // });
 
                 // Pagination click handler
                 document.querySelectorAll('.pagination-btn').forEach(btn => {
@@ -386,8 +417,6 @@
                 document.getElementById('filter-name').value = '';
                 document.getElementById('filter-status').value = '';
                 document.getElementById('filter-category').value = '';
-                document.getElementById('price-min').value = '0';
-                document.getElementById('price-max').value = '@string.Format(new CultureInfo("vi-VN"), "{0:N0}", ViewBag.MaxProductPrice ?? 100000000)';
 
                 document.querySelectorAll('.color-radio, .size-radio').forEach(cb => cb.checked = false);
             }

@@ -1,0 +1,498 @@
+﻿@model GUI.Models.DTOs.Order_DTO.OrderDetail
+@using System.Globalization
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa đơn - @Model.Code</title>
+    <style>
+        @@font-face {
+            font-family: 'Roboto';
+            src: url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #2d3748;
+            background-color: #f7fafc;
+            padding: 0;
+            margin: 0;
+        }
+
+        .invoice-wrapper {
+            width: 210mm;
+            margin: 10px auto;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .invoice-container {
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Header Styles */
+        .invoice-header {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #2b6cb0;
+            padding-bottom: 8px;
+        }
+
+        .company-logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+            .company-logo img {
+                max-width: 150px;
+                height: auto;
+            }
+
+        .header-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .company-details {
+            font-size: 9pt;
+            color: #4a5568;
+        }
+
+            .company-details p {
+                margin: 1px 0;
+            }
+
+        .invoice-info {
+            text-align: right;
+        }
+
+        .invoice-title {
+            font-size: 16pt;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .invoice-details {
+            font-size: 9pt;
+            color: #4a5568;
+        }
+
+            .invoice-details p {
+                margin: 2px 0;
+            }
+
+            .invoice-details .invoice-id {
+                font-size: 10pt;
+                font-weight: 600;
+                color: #2d3748;
+            }
+
+        /* Content Sections */
+        .section {
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 11pt;
+            font-weight: 600;
+            color: #2b6cb0;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-content {
+            display: flex;
+            gap: 15px;
+        }
+
+        .info-group {
+            flex: 1;
+        }
+
+        .info-row {
+            margin-bottom: 3px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .info-label {
+            font-weight: 600;
+            width: 100px;
+            color: #4a5568;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #2d3748;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+
+        thead th {
+            background: linear-gradient(135deg, #2b6cb0, #4299e1);
+            color: white;
+            padding: 6px 8px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            tbody tr:hover {
+                background-color: #edf2f7;
+            }
+
+            tbody tr:nth-child(even) {
+                background-color: #f7fafc;
+            }
+
+        tbody td {
+            padding: 5px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .col-stt {
+            width: 5%;
+        }
+
+        .col-code {
+            width: 10%;
+        }
+
+        .col-product {
+            width: 25%;
+        }
+
+        .col-color, .col-size {
+            width: 10%;
+        }
+
+        .col-price, .col-qty, .col-total {
+            width: 13%;
+        }
+
+        /* Payment Summary */
+        .payment-summary {
+            margin-top: 10px;
+            float: right;
+            width: 280px;
+        }
+
+        .payment-table {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: #f7fafc;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+            .payment-table td {
+                padding: 5px 10px;
+                border: none;
+                color: #2d3748;
+            }
+
+            .payment-table .label {
+                font-weight: 600;
+                color: #4a5568;
+            }
+
+            .payment-table .total-row {
+                font-size: 11pt;
+                font-weight: 700;
+                color: #2b6cb0;
+                background: #e2e8f0;
+                border-top: 1px solid #2b6cb0;
+            }
+
+            .payment-table .discount {
+                color: #e53e3e;
+                font-weight: 600;
+            }
+
+        /* Footer */
+        .invoice-footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #718096;
+            font-size: 9pt;
+        }
+
+        .thank-you {
+            margin-bottom: 5px;
+            font-size: 11pt;
+            font-weight: 600;
+            color: #2b6cb0;
+        }
+
+        .footer-note {
+            margin-bottom: 3px;
+        }
+
+        /* Customer & Shipping Info Layout */
+        .customer-shipping-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .customer-info, .shipping-info {
+            flex: 1;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 8px;
+            background: #f7fafc;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #2b6cb0;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+            font-size: 10pt;
+        }
+
+        /* Print Styles */
+        @@media print {
+            body {
+                background-color: #fff;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .invoice-wrapper {
+                width: 100%;
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .invoice-container {
+                padding: 10px;
+                border: none;
+                box-shadow: none;
+            }
+
+            thead th {
+                background: #2b6cb0 !important;
+                color: white !important;
+            }
+
+            tbody tr:hover {
+                background-color: inherit;
+            }
+
+            .payment-table {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-wrapper">
+        <div class="invoice-container">
+            <!-- Header -->
+            <div class="invoice-header">
+                <div class="company-logo">
+                    <img src="/Image/LogoBuBu.png" alt="BuBu Shop Logo" />
+                </div>
+                <div class="header-details">
+                    <div class="company-details">
+                        <p><strong>BUBU SPORT</strong></p>
+                        <p>Tòa nhà FPT Polytechnic, Cổng số 2, 13 P. Trịnh Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội</p>
+                        <p>Điện thoại: (090) 1234567</p>
+                        <p>Email: sprtbubu@gmail.com</p>
+                    </div>
+                    <div class="invoice-info">
+                        <div class="invoice-title">HÓA ĐƠN BÁN HÀNG</div>
+                        <div class="invoice-details">
+                            <p class="invoice-id">Mã hóa đơn: @Model.Code</p>
+                            <p>Ngày tạo: @Model.Created.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p>Phương thức: @Model.PaymentMethodName</p>
+                            <p>Trạng thái: <span style="color: #38a169; font-weight: 600;">Đã thanh toán</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin khách hàng và giao hàng -->
+            <div class="customer-shipping-section">
+                <div class="customer-info">
+                    <div class="info-title">Thông tin khách hàng</div>
+                    <div class="info-row">
+                        <div class="info-label">Họ tên:</div>
+                        <div class="info-value">@Model.Customer.Name</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Số điện thoại:</div>
+                        <div class="info-value">@Model.Customer.PhoneNumber</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Email:</div>
+                        <div class="info-value">@Model.Customer.Email</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Địa chỉ:</div>
+                        <div class="info-value">@Model.Customer.Address</div>
+                    </div>
+                </div>
+
+                <div class="shipping-info">
+                    <div class="info-title">Thông tin giao hàng</div>
+                    @if (Model.IsCustomerTakeYourSelf)
+                    {
+                        <div class="info-row">
+                            <div class="info-value" style="font-weight: 600;">Khách hàng nhận tại cửa hàng</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Địa chỉ:</div>
+                            <div class="info-value">Tòa nhà FPT Polytechnic, Cổng số 2, 13 P. Trịnh Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội</div>
+                        </div>
+                    }
+                    else if (Model.IsSameAsCustomerAddress)
+                    {
+                        <div class="info-row">
+                            <div class="info-value" style="font-weight: 600;">Giống với thông tin khách hàng</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="info-row">
+                            <div class="info-label">Họ tên:</div>
+                            <div class="info-value">@Model.ShippingInfo.Name</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Số điện thoại:</div>
+                            <div class="info-value">@Model.ShippingInfo.PhoneNumber</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Địa chỉ:</div>
+                            <div class="info-value">@Model.ShippingInfo.Address</div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Danh sách sản phẩm -->
+            <div class="section">
+                <h3 class="section-title">Danh sách sản phẩm</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="col-stt text-center">STT</th>
+                                <th class="col-code">Mã SP</th>
+                                <th class="col-product">Tên sản phẩm</th>
+                                <th class="col-color">Màu sắc</th>
+                                <th class="col-size">Kích thước</th>
+                                <th class="col-price text-right">Đơn giá</th>
+                                <th class="col-qty text-center">SL</th>
+                                <th class="col-total text-right">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int productOrder = 1;
+                                decimal totalAmount = 0;
+                            }
+                            @foreach (var item in Model.Items)
+                            {
+                                var itemTotal = item.Price * item.Quantity;
+                                totalAmount += itemTotal;
+                                <tr>
+                                    <td class="text-center">@(productOrder++)</td>
+                                    <td>@item.Code</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.Color</td>
+                                    <td>@item.Size</td>
+                                    <td class="text-right">@item.Price.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))₫</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-right">@itemTotal.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))₫</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Thông tin thanh toán -->
+                <div class="payment-summary">
+                    <table class="payment-table">
+                        <tr>
+                            <td class="label">Tạm tính:</td>
+                            <td class="text-right">@Model.PaymentInfo.TotalAmount.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))₫</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Phí giao hàng:</td>
+                            <td class="text-right">@Model.PaymentInfo.ShippingFee.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))₫</td>
+                        </tr>
+                        @if (Model.PaymentInfo.TotalDiscount > 0)
+                        {
+                            <tr>
+                                <td class="label">Voucher giảm giá:</td>
+                                <td class="text-right discount">-@Model.PaymentInfo.TotalDiscount.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))₫</td>
+                            </tr>
+                        }
+                        <tr class="total-row">
+                            <td>TỔNG THANH TOÁN:</td>
+                            <td class="text-right">@((Model.PaymentInfo.TotalAmount + Model.PaymentInfo.ShippingFee - Model.PaymentInfo.TotalDiscount).ToString("N0", CultureInfo.GetCultureInfo("vi-VN")))₫</td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+
+            <!-- Footer -->
+            <div class="invoice-footer">
+                <div class="thank-you">Cảm ơn Quý khách đã mua hàng tại BUBU Sport!</div>
+                <p class="footer-note">Hóa đơn điện tử được tạo bởi hệ thống, không cần đóng dấu và chữ ký.</p>
+                <p class="footer-note">Mọi thắc mắc về hóa đơn, vui lòng liên hệ: <strong>sprtbubu@gmail.com</strong></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

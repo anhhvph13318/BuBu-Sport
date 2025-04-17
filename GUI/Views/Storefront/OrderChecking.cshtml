@@ -11,14 +11,13 @@
                 <div class="hot-deal">
                     <h2 class="text-uppercase">Tìm kiếm đơn hàng</h2>
                     <div class="header-search">
-                        <form action="OrderChecking">
-                            <input class="input" name="s" placeholder="Nhập mã đơn hàng hoặc số điện thoại" value="@(!string.IsNullOrEmpty(ViewBag.OrderSearch) ? ViewBag.OrderSearch : "")">
-                            <button class="search-btn">Tìm kiếm</button>
+                        <form id="orderSearchForm" action="OrderChecking">
+                            <input class="input" name="s" placeholder="Nhập mã đơn hàng"
+                                   value="@(!string.IsNullOrEmpty(ViewBag.OrderSearch) ? ViewBag.OrderSearch : "")">
+                            <button class="search-btn" type="submit">Tìm kiếm</button>
                         </form>
                     </div>
                 </div>
-
-
                 @if (Model != null)
                 {
                     <p class="orders-header">Đơn hàng</p>
@@ -78,6 +77,7 @@
                                                 <p class="customer-name"><i class="fa-solid fa-user"></i> @order.ShippingInfo.Name</p>
                                                 <p class="customer-phone"><i class="fa-solid fa-phone"></i> @order.ShippingInfo.PhoneNumber</p>
                                                 <p class="customer-address"><i class="fa-solid fa-location-pin"></i> @order.ShippingInfo.Address</p>
+                                                <p class="customer-email"><i class="fa-solid fa-envelope"></i> @order.Customer.Email</p>
                                             </div>
                                         }
                                         else
@@ -86,6 +86,7 @@
                                                 <p class="customer-name"><i class="fa-solid fa-user"></i> @order.Customer.Name</p>
                                                 <p class="customer-phone"><i class="fa-solid fa-phone"></i> @order.Customer.PhoneNumber</p>
                                                 <p class="customer-address"><i class="fa-solid fa-location-pin"></i> @order.Customer.Address</p>
+                                                <p class="customer-email"><i class="fa-solid fa-envelope"></i> @order.Customer.Email</p>
                                             </div>
                                         }
                                     </div>
@@ -167,18 +168,17 @@
 
                                         <div class="modal-actions">
                                             <button type="button" id="closeModal">Đóng</button>
-                                            <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+                                            <button type="button" class="btn btn-danger" id="submitCancelBtn">Xác nhận hủy</button>
                                         </div>
                                     </form>
 
                                     <!-- Nút nhận mã hủy riêng, dùng GET -->
-                                    <form method="get" action="/CancelOrder" style="margin-top: 15px;">
+                                    <form method="get" action="/CancelOrder" style="margin-top: 15px;" id="getCancelCodeForm">
                                         <input type="hidden" name="email" value="@order.Customer.Email" />
                                         <input type="hidden" name="name" value="@order.Customer.Name" />
                                         <input type="hidden" name="phone" value="@order.Customer.PhoneNumber" />
                                         <input type="hidden" name="orderCode" value="@order.Code" />
-
-                                        <button type="submit" class="btn btn-warning">Nhận mã hủy đơn</button>
+                                        <button type="submit" class="btn btn-warning" id="getCancelCodeBtn">Nhận mã hủy đơn</button>
                                     </form>
                                 </div>
                             </div>
@@ -191,8 +191,29 @@
         </div>
     </div>
 </div>
+@if (ViewBag.OrderNotFound == true && !string.IsNullOrEmpty(ViewBag.OrderSearch as string))
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            title: 'Không Tìm Thấy Đơn Hàng',
+            text: 'Vui Lòng Nhập Đúng Mã Đơn Hàng',
+            icon: 'error',
+            confirmButtonColor: '#33a9c4', 
+            confirmButtonText: 'Đồng ý',
+            width: '600px',
+            padding: '2em',
+            customClass: {
+                popup: 'larger-swal'
+            }
+        });
+    </script>
+}
 
 <style>
+    .swal2-container {
+        z-index: 9999 !important;
+    }
     .text-end {
         text-align: right;
     }
@@ -666,7 +687,12 @@ form[method="get"] button:hover {
         width: 100%;
     }
 }
+
+    .larger-swal {
+        font-size: 20px;
+    }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const modal = document.getElementById("cancelModal");
     const openBtn = document.getElementById("openModal");
@@ -705,4 +731,69 @@ form[method="get"] button:hover {
             @ViewBag.CancelMessage
                 </div>
     }
+        document.addEventListener("DOMContentLoaded", function () {
+            const btn = document.getElementById("getCancelCodeBtn");
+            const form = document.getElementById("getCancelCodeForm");
+
+            if (!btn || !form) {
+                console.error("Không tìm thấy nút hoặc form!");
+                return;
+            }
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Nhận mã xác thực thành công'
+                });
+
+                setTimeout(() => {
+                    form.submit();
+                }, 1500);
+            });
+        });
+    document.addEventListener("DOMContentLoaded", function () {
+        const cancelBtn = document.getElementById("submitCancelBtn");
+        const cancelForm = document.getElementById("cancelForm");
+
+        if (!cancelBtn || !cancelForm) {
+            console.error("Không tìm thấy nút hoặc form hủy đơn!");
+            return;
+        }
+
+        cancelBtn.addEventListener("click", function (e) {
+            Swal.fire({
+                title: 'Xác nhận hủy đơn',
+                text: 'Bạn có chắc chắn muốn hủy đặt đơn hàng này?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy',
+                width: '600px',
+                padding: '2em',
+                customClass: {
+                    popup: 'larger-swal'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    cancelForm.submit(); // Gửi form sau khi xác nhận
+                }
+            });
+        });
+    });
 </script>
+

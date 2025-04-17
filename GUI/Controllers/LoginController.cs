@@ -38,14 +38,26 @@ namespace GUI.Controllers
             httpService = new();
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateStatusONOrder([FromBody]UpdatStatusOrderRequest request)
+        public async Task<IActionResult> UpdateStatusONOrder([FromBody] UpdatStatusOrderRequest request)
         {
+            var orderUrl = _settings.APIAddress + $"api/admin/orders/{request.id}";
+            var orderResponse = await httpService.GetAsync(orderUrl);
+            var order = JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(orderResponse)?.Data;
+
+            if (order != null && order.Status == 3)
+            {
+                return BadRequest(new { success = false, message = "Không thể cập nhật trạng thái cho đơn hàng đã hủy." });
+            }
+
             request.statusText = request.status == 1 ? "Chuẩn bị hàng" : (request.status == 2 ? "Đang vận chuyển" : "Hoàn thành");
+
             var URL = _settings.APIAddress + "api/UpdateStatusONOrder/Process";
             var param = JsonConvert.SerializeObject(request);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<LoginResponse>>(res) ?? new();
-            await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone,request.statusText, "", 1);
+
+            await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 1);
+
             return Redirect($"/orders/{request.id}");
         }
         [Route("/SignIn")]

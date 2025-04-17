@@ -51,7 +51,8 @@ public class CategoryController : ControllerSharedBase
             {
                 Id = e.Id,
                 Name = e.Name,
-                Status = (int)e.Status!
+                Status = (int)e.Status!,
+                Description = "update"
             })
             .FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
         if (category is null) return BadRequest();
@@ -63,6 +64,7 @@ public class CategoryController : ControllerSharedBase
     }
 
     [HttpPost]
+    [Route("create")]
     public async Task<IActionResult> Create([FromBody] CategoryDTO request)
     {
         var category = await _context.TbCategories.FirstOrDefaultAsync(e => e.Name == request.Name);
@@ -74,7 +76,7 @@ public class CategoryController : ControllerSharedBase
             Id = Guid.NewGuid(),
             Name = request.Name,
             Status = (int)request.Status,
-            CreateBy = _session.UserId,
+            CreateBy = Guid.NewGuid(),
             CreateDate = DateTime.Now,
         };
 
@@ -88,9 +90,8 @@ public class CategoryController : ControllerSharedBase
             Modal = await RenderViewAsync("_CategoryModal", new CategoryDTO())
         });
     }
-
-    [HttpPatch]
-    [Route("{id}")]
+    //update category
+    [HttpPatch("create/{id}")]
     public async Task<IActionResult> Update([FromBody] CategoryDTO request, [FromRoute] string id)
     {
         var category = await _context.TbCategories.FirstOrDefaultAsync(e => e.Id == Guid.Parse(id));
@@ -101,7 +102,7 @@ public class CategoryController : ControllerSharedBase
         category.Name = request.Name;
         category.Status = (int)request.Status;
         category.UpdateDate = DateTime.Now;
-        category.UpdateBy = _session.UserId;
+        category.UpdateBy = Guid.NewGuid();
 
         await _context.SaveChangesAsync();
 

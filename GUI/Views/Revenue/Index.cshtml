@@ -1,0 +1,221 @@
+﻿@model GUI.Controllers.RevenueData
+
+@{
+    ViewData["Title"] = "Thống kê doanh thu";
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="title">Thống kê doanh thu</div>
+<div class="stats-container">
+    <div class="stat-box">
+        <h3>@Model.RevenueToday.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
+        <p>Doanh thu hôm nay</p>
+        <p class="growth-positive">+@Model.GrowthToday% so với @Model.CompareDate</p>
+    </div>
+    <div class="stat-box">
+        <h3>@Model.RevenueThisWeek.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
+        <p>Doanh thu tuần này</p>
+        <p class="growth-positive">+@Model.GrowthThisWeek% so với tuần trước</p>
+    </div>
+    <div class="stat-box">
+        <h3>@Model.RevenueThisMonth.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
+        <p>Doanh thu tháng này</p>
+        <p class="growth-positive">+@Model.GrowthThisMonth% so với tháng trước</p>
+    </div>
+</div>
+<div class="order-stats-container">
+    <div class="stat-box"><h3>@Model.TotalOrders</h3><p>Tổng số đơn</p></div>
+    <div class="stat-box"><h3>@Model.ConfirmedOrders</h3><p>Đã xác nhận</p></div>
+    <div class="stat-box"><h3>@Model.WaitingOrders</h3><p>Chờ xác nhận</p></div>
+    <div class="stat-box"><h3>@Model.DeliveringOrders</h3><p>Đang giao hàng</p></div>
+    <div class="stat-box"><h3>@Model.CompletedOrders</h3><p>Hoàn thành</p></div>
+    <div class="stat-box"><h3>@Model.CancelledOrders</h3><p>Đã hủy</p></div>
+</div>
+
+
+
+<!-- Biểu đồ doanh thu -->
+<div class="chart-container">
+    <div class="chart-header">
+        <h2>Doanh thu bán hàng</h2>
+        <div class="filter">
+            <select id="daysFilter" onchange="updateChart()">
+                <option value="7">7 ngày qua</option>
+                <option value="14">14 ngày qua</option>
+                <option value="30">30 ngày qua</option>
+            </select>
+        </div>
+    </div>
+    <canvas id="revenueChart" width="400" height="200"></canvas>
+    <p>Tổng doanh thu: @Model.TotalRevenuePeriod.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</p>
+</div>
+
+<!-- Thêm Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Đặt giá trị mặc định cho dropdown
+    const selectedDays = @ViewBag.SelectedDays;
+    document.getElementById('daysFilter').value = selectedDays;
+
+    // Dữ liệu từ Model
+    let dates = @Html.Raw(Json.Serialize(Model.Dates));
+    let dailyRevenues = @Html.Raw(Json.Serialize(Model.DailyRevenues));
+
+    // Vẽ biểu đồ ban đầu
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Doanh thu',
+                data: dailyRevenues, // Sử dụng dữ liệu thực tế (không chuẩn hóa)
+                backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 10000000, // Đặt giá trị tối đa cố định là 10,000,000
+                    ticks: {
+                        stepSize: 2500000, // Bước nhảy 2,500,000
+                        callback: function (value) {
+                            return value.toLocaleString('vi-VN'); // Định dạng số trên trục y
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // Ẩn legend
+                }
+            }
+        }
+    });
+
+    // Hàm cập nhật biểu đồ khi thay đổi bộ lọc
+    function updateChart() {
+        const days = document.getElementById('daysFilter').value;
+        window.location.href = `/Revenue?days=${days}`; // Chuyển hướng với tham số days
+    }
+</script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f5f7fa;
+        margin: 0;
+    }
+
+    .title {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .stats-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 40px;
+    }
+
+    .order-stats-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 40px;
+    }
+
+    .stat-box {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 20px;
+        border-radius: 8px;
+        width: 250px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .stat-box h3 {
+            margin: 0;
+            font-size: 28px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .stat-box p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+    .growth-positive {
+        color: #28a745;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .chart-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .chart-container h2 {
+        font-size: 18px;
+        color: #333;
+        margin: 0;
+    }
+
+    .chart-container p {
+        text-align: center;
+        color: #666;
+        margin-top: 10px;
+    }
+
+    .filter select {
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        cursor: pointer;
+        background-color: #fff;
+        min-width: 120px;
+    }
+
+        .filter select:focus {
+            outline: none;
+            border-color: #666;
+        }
+</style>
