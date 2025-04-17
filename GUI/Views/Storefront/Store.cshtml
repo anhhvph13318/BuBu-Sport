@@ -76,6 +76,7 @@
                                 {
                                     <label class="color-checkbox-wrapper" title="@color.Name">
                                         <input type="radio" name="selectedColor" class="color-radio" data-color-id="@color.Id" @(ViewBag.CurrentColorId != null && (Guid)ViewBag.CurrentColorId == color.Id ? "checked" : "") />
+                                        <span>@color.Name</span>
                                         <span class="color-circle" style="background-color:@color.Name"></span>
                                     </label>
                                 }
