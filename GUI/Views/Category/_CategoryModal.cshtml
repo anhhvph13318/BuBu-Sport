@@ -41,7 +41,7 @@
             Lưu
         </button>
     }
-    else
+    @if (Model.Id != Guid.Empty)
     {
         <button type="button" class="btn btn-primary" onclick="updateCategory('@Model.Id')">
             <i class="bi bi-save me-1"></i>
