@@ -46,7 +46,9 @@ public class OrderController : Controller
     [FromQuery] int status = 0,
     [FromQuery] decimal? minAmount = null,
     [FromQuery] decimal? maxAmount = null,
-    [FromQuery] string? orderCodePrefix = "")
+    [FromQuery] string? orderCodePrefix = "", 
+    DateTime? startDate = null, 
+    DateTime? endDate = null)
     {
         try
         {
@@ -79,8 +81,17 @@ public class OrderController : Controller
             {
                 orders = orders.Where(o => o.FinalAmount <= maxAmount.Value);
             }
+            if (startDate.HasValue)
+            {
+                orders = orders.Where(o => o.CreateDate >= startDate.Value.Date);
+            }
+            if (endDate.HasValue)
+            {
+                orders = orders.Where(o => o.CreateDate <= endDate.Value.Date.AddDays(1).AddTicks(-1));
+            }
 
-            return View(orders);
+
+            return View(orders.OrderByDescending(c=>c.CreateDate));
         }
         catch (Exception ex)
         {

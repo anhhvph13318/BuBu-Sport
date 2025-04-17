@@ -14,6 +14,7 @@ public class OrderListItem
     public string? products { get; set; }
     public string? ReasionCancel { get; set; }
     public List<string>? ImageForCancelOrder { get; set; }
+    public DateTime CreateDate { get; set; }
 
     public decimal FinalAmount => totalAmount - amountDiscount + amountShip;
 }
