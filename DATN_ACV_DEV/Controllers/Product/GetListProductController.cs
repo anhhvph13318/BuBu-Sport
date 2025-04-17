@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Azure.Core;
-using DATN_ACV_DEV.Controllers.Property;
 using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.FileBase;
 using DATN_ACV_DEV.Model_DTO.HomePage;

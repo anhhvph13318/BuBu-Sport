@@ -282,6 +282,22 @@ namespace GUI.Controllers
             ViewBag.Categories = await FetchCategory();
             ViewBag.Colors = await FetchColor();
             ViewBag.Sizes = await FetchSize();
+            var promotion = _context.TbDiscountProducts.ToList();
+            foreach (var item in promotion)
+            {
+                var discount = _context.TbDiscounts
+                    .Where(c => c.Id == item.DiscountId)
+                    .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+                    .FirstOrDefault();
+                foreach (var item1 in model.Data.LstProduct)
+                {
+                    if (item.ProductId == item1.Id)
+                    {
+                        item1.PriceSale = item1.Price;
+                        item1.Price = Convert.ToDecimal(item1.Price - discount);
+                    }
+                }
+            }
             return View(model);
         }
 
@@ -380,6 +396,16 @@ namespace GUI.Controllers
             foreach (var item in result.Data.DetailDataFinal)
             {
                 item.UrlImage = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
+            }
+            var promotion = _context.TbDiscountProducts.ToList();
+            var productId = _context.TbDiscountProducts.Where(c => c.ProductId == result.Data.Id).Select(c => c.DiscountId).FirstOrDefault();
+            var discount = _context.TbDiscounts
+               .Where(c => c.Id == productId)
+               .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+               .FirstOrDefault();
+            if (discount != null)
+            {
+                result.Data.Price = Convert.ToDecimal(result.Data.Price - discount);
             }
             var model = result.Data;
 
@@ -612,7 +638,20 @@ namespace GUI.Controllers
                         userId = new Guid(Request.Cookies["user-id"]);
                     }
                     catch (Exception) { }
-                    ViewBag.CartItemCount = await GetCartItemCount(userId); 
+                    ViewBag.CartItemCount = await GetCartItemCount(userId);
+                    var promotion = _context.TbDiscountProducts.ToList();
+                    foreach (var item in model)
+                    {
+                        var productId = _context.TbDiscountProducts.Where(c => c.ProductId == item.ProductID).Select(c => c.DiscountId).FirstOrDefault();
+                        var discount = _context.TbDiscounts
+                       .Where(c => c.Id == productId)
+                       .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+                       .FirstOrDefault();
+                        if (discount != null)
+                        {
+                            item.Price = Convert.ToDecimal(item.Price - discount);
+                        }
+                    }
                     return View(model);
                 }
             }
@@ -669,6 +708,21 @@ namespace GUI.Controllers
                 }
             }
             ViewBag.CartItemCount = cartItemCount;
+           
+            var promotion = _context.TbDiscountProducts.ToList();
+            foreach (var item in model)
+            {
+                var productId = _context.TbDiscountProducts.Where(c => c.ProductId == item.ProductID).Select(c => c.DiscountId).FirstOrDefault();
+                var discount = _context.TbDiscounts
+               .Where(c => c.Id == productId)
+               .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+               .FirstOrDefault();
+                if (discount != null)
+                {
+                    item.Price = Convert.ToDecimal(item.Price - discount);
+                }
+            }
+            
             return View(model);
         }
 

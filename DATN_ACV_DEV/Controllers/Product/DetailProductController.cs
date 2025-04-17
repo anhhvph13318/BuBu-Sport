@@ -38,8 +38,6 @@ namespace DATN_ACV_DEV.Controllers
             try
             {   
                 _Product = _context.TbProducts.Where(p => p.Id == _request.ID && p.IsDelete == false).FirstOrDefault();
-                var PrivateAtrtibute = _context.TbProperties.Where(c => c.ProductId == _request.ID).ToList();
-                var PropertiesName = _context.TbProperties.Where(a => PrivateAtrtibute.Select(x => x.Id).Contains(a.Id) && a.Active != false).Select(n => n.Id).ToList();
                 var Image = _context.TbImages.Where(i => i.Id == _Product.ImageId).Select(c=>c.Url).ToList();
                 if (_Product != null)
                 {
@@ -57,7 +55,6 @@ namespace DATN_ACV_DEV.Controllers
                     _response.Material = _Product.Material;
                     _response.Image = Image.FirstOrDefault();
                     //_response.CategoryName = _Product.Category.Name;
-                    _response.PropertyID = PropertiesName;
                     _response.CategoryId = _Product.CategoryId;
                     _response.ImageArray = _context.TbImages.Where(c => c.ProductId == _request.ID).Select(c=>c.Url).ToList();
                     _response.RelatedProducts = _context.TbProducts.Where(c => c.CategoryId == _Product.CategoryId && 

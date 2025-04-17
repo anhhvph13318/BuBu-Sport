@@ -49,7 +49,7 @@ namespace DATN_ACV_DEV.Controllers.Size
                 Id = Guid.NewGuid(),
                 SizeName = _request.SizeName,
                 FootLength = _request.FootLength,
-                Quantity = _request.Quantity,
+                Quantity = _request.Quantity != null ? _request.Quantity : null,
                 
             };
         }

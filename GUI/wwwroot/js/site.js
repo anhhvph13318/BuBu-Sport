@@ -31,5 +31,6 @@ const CHANGE_SHIPPING_METHOD = (method) => `${HOST_URL}/orders/shipping?method=$
 const GET_VNPAY_URL = `${HOST_URL}/orders/payments/vnpay`;
 
 // category
-const CREATE_CATEGORY = `${HOST_URL}/categories`;
+const CREATE_CATEGORY = `${HOST_URL}/categories/create`;
+const UPDATE_CATEGORY = `${HOST_URL}/categories/update`;
 const GET_CATEGORY_DETAIL = (id) => `${HOST_URL}/categories/${id}`;

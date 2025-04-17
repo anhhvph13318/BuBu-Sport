@@ -100,6 +100,7 @@
                         <th>Mã SP</th>
                         <th>Tên sản phẩm</th>
                         <th class="text-center">Số lượng</th>
+                        <th class="text-end">Giá Khuyến mãi</th>
                         <th class="text-end">Giá bán</th>
                         <th>Danh mục</th>
                         <th class="text-center">Trạng thái</th>
@@ -118,6 +119,7 @@
                                 <td><span class="badge bg-secondary">@item.Code</span></td>
                                 <td>@item.Name</td>
                                 <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">@item.PriceSale.ToString("N0") đ</td>
                                 <td class="text-end">@item.Price.ToString("N0") đ</td>
                                 <td>@item.CategoryName</td>
                                 <td class="text-center">

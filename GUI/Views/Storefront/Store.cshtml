@@ -30,7 +30,7 @@
                                 <div class="input-number price-min">
                                     <input id="price-min" type="number" name="min"
                                            data-value="@(Model?.Data?.LowestPrice != null ? (int)Model.Data.LowestPrice : 0)"
-                                           value="@((int)(ViewBag.PriceFrom ?? 0))"
+
                                            class="form-control filter-input">                                    
                                     <span class="qty-up">+</span>
                                     <span class="qty-down">-</span>
@@ -39,7 +39,7 @@
                                 <div class="input-number price-max">
                                     <input id="price-max" type="number" name="max"
                                            data-value="@(Model?.Data?.HighestPrice != null ? (int)Model.Data.HighestPrice : 0)"
-                                           value="@((int)(ViewBag.PriceTo ?? 0))"
+
                                            class="form-control filter-input">
                                     <span class="qty-up">+</span>
                                     <span class="qty-down">-</span>
@@ -112,6 +112,7 @@
                                      data-category="@item.CategoryName"
                                      data-status="@(item.Quantity > 0 ? "available" : "out-of-stock")"
                                      data-price="@item.Price"
+                                     data-price="@item.PriceSale"
                                      data-colors="@item.Color?.Replace(" ", "").ToLowerInvariant()"
                                      data-sizes="@item.SizeName?.Replace(" ", "").ToLowerInvariant()">
                                     <div class="product">
@@ -128,7 +129,13 @@
                                             <p class="product-category">@item.CategoryName</p>
                                             <h3 class="product-name"><a href="#" onclick="redirectToDetail('@item.Id')">@item.Name</a></h3>
                                             <h4 class="product-price">
-                                                @(item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
+                                                @item.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))
+                                                @if (item.PriceSale > item.Price)
+                                                {
+                                                    <del class="product-old-price">
+                                                        @item.PriceSale.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))
+                                                    </del>
+                                                }
                                             </h4>
                                             <div class="product-btns">
                                                 <button class="quick-view" onclick="redirectToDetail('@item.Id')">
@@ -168,6 +175,11 @@
         </div>
 
         <style>
+            .product-old-price {
+                color: #999;
+                margin-left: 10px;
+                font-size: 0.9em;
+            }
             .filter-sidebar {
                 width: 250px;
                 background: #f4f4f4;
