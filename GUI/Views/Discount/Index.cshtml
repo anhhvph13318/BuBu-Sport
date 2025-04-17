@@ -1,31 +1,143 @@
-﻿<h2>Danh sách chương trình giảm giá</h2>
+﻿@using GUI.Models.DTOs.Discount_DTO
+@using System.Globalization
+@model DiscountListViewModel
 
-<div style="margin-bottom: 16px;">
-    <a href="@Url.Action("Create", "Discount")" class="btn btn-primary">+ Tạo mới chương trình</a>
+<div class="container-fluid px-4 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            <i class="bi bi-tag-fill me-2"></i>Danh Sách Khuyến Mại
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>Tạo mới
+        </a>
+    </div>
+
+    <!-- Card tìm kiếm -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-search me-1"></i>
+            Tìm kiếm khuyến mại
+        </div>
+        <div class="card-body">
+            <form asp-controller="Discount" asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="searchName" class="form-label">Tên khuyến mại</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                        <input type="text" class="form-control" id="searchName" name="name" placeholder="Nhập tên khuyến mại...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="discountTypeFilter" class="form-label">Loại giảm giá</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                        <select class="form-select" id="discountTypeFilter" name="discountType">
+                            <option value="">-- Tất cả loại --</option>
+                            <option value="percent">Giảm theo %</option>
+                            <option value="fixed">Giảm cố định</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="statusFilter" class="form-label">Trạng thái</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                        <select class="form-select" id="statusFilter" name="status">
+                            <option value="">-- Tất cả --</option>
+                            <option value="1">Chưa bắt đầu</option>
+                            <option value="2">Hoạt động</option>
+                            <option value="3">Hết hiệu lực</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search me-1"></i> Tìm kiếm
+                    </button>
+                    <a href="@Url.Action("Index", "Discount")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách khuyến mại -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <i class="bi bi-table me-1"></i>
+            Kết quả tìm kiếm
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-primary">
+                    <tr>
+                        <th class="text-center" style="width: 50px;">STT</th>
+                        <th>Tên khuyến mại</th>
+                        <th class="text-center">Giá trị giảm</th>
+                        <th class="text-center">Ngày bắt đầu</th>
+                        <th class="text-center">Ngày kết thúc</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center" style="width: 150px;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Discounts != null && Model.Discounts.Any())
+                    {
+                        var index = 1;
+                        foreach (var discount in Model.Discounts)
+                        {
+                            var status = DateTime.Now < discount.StartDate
+                            ? "Chưa bắt đầu"
+                            : (DateTime.Now >= discount.StartDate && DateTime.Now <= discount.EndDate
+                            ? "Hoạt động"
+                            : "Hết hiệu lực");
+
+                            <tr>
+                                <td class="text-center">@index</td>
+                                <td>@discount.Name</td>
+                                <td class="text-center">
+                                    @if (discount.DiscountType == "percent")
+                                    {
+                                        @($"{discount.DiscountValue} %")
+                                    }
+                                    else
+                                    {
+                                        @discount.DiscountValue.Value.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))
+                                    }
+                                </td>
+                                <td class="text-center">@discount.StartDate.Value.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center">@discount.EndDate.Value.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center">@status</td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@discount.Id" class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="text-secondary">
+                                    <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
+                                    <p class="mt-2">Không tìm thấy khuyến mại nào.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <span class="text-muted">Hiển thị @(Model.Discounts?.Count() ?? 0) khuyến mại</span>
+            </div>
+        </div>
+    </div>
 </div>
-
-<table>
-    <thead>
-        <tr>
-            <th>Tên</th>
-            <th>Kiểu</th>
-            <th>Bắt đầu</th>
-            <th>Kết thúc</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var discount in Model.Discounts)
-        {
-            <tr>
-                <td>@discount.Name</td>
-                <td>@discount.DiscountType</td>
-                <td>@discount.StartDate.ToString("dd/MM/yyyy")</td>
-                <td>@discount.EndDate.ToString("dd/MM/yyyy")</td>
-                <td>
-                    <a href="@Url.Action("Details", "Discount", new { id = discount.Id })">Chi tiết</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

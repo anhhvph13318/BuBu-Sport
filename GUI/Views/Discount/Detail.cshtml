@@ -1,0 +1,13 @@
+﻿@using GUI.Models.DTOs.Discount_DTO
+@model CreateDiscountViewModel
+
+
+<div class="container">
+    <h3>Chỉnh sửa khuyến mại</h3>
+    <hr />
+    @await Html.PartialAsync("_DiscountForm", @Model)
+</div>
+
+@section Scripts {
+    <script src="~/js/discount.js"></script>
+}
