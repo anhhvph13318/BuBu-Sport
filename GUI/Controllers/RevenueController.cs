@@ -64,5 +64,12 @@ namespace GUI.Controllers
         public decimal[] DailyRevenues { get; set; }
         public string[] Dates { get; set; }
         public decimal TotalRevenuePeriod { get; set; } // Đổi tên để phản ánh khoảng thời gian tùy chỉnh
+        public int TotalOrders { get; set; }
+        public int ConfirmedOrders { get; set; }
+        public int WaitingOrders { get; set; }
+        public int DeliveringOrders { get; set; }
+        public int CompletedOrders { get; set; }
+        public int CancelledOrders { get; set; }
+
     }
 }

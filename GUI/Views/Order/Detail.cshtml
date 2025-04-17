@@ -29,12 +29,12 @@ else
                 @foreach (var item in OrderUtil.OrderStepProcessing)
                 {
                     var disabled = !(Model.Status == item.Key || i == currentIndex + 1);
-                    <div class="form-check col-3">
-                        <input class="form-check-input"
+                    <div class="form-check col-3" >
+                        <input class="form-check-input order-status-radio "
                                type="radio"
                                name="orderStatus"
                                value="@item.Key"
-                        @(Model.Status == item.Key ? "checked" : "")
+                        @(Model.Status == item.Key ? "checked" : "")    
                         @(disabled ? "disabled" : "") />
                         <label style="opacity: @(disabled ? "0.5" : "1")" class="form-check-label">@item.Value</label>
                     </div>
@@ -316,6 +316,7 @@ else
         <p class="loading-text">Đang cập nhật trạng thái...</p>
     </div>
 </div>
+
 <script>
     async function saveOrderStatus() {
         const selectedRadio = document.querySelector('input[name="orderStatus"]:checked');
@@ -369,7 +370,55 @@ else
             location.reload();
         }
     }
+
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+<script>
+    // confirm trạng thái đơn hàng
+    let previousCheckedRadio = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const radios = document.querySelectorAll(".order-status-radio");
+
+        // Lưu radio đang được chọn ban đầu
+        radios.forEach(radio => {
+            if (radio.checked) {
+                previousCheckedRadio = radio;
+            }
+
+            radio.addEventListener("change", function (e) {
+                const selectedLabel = e.target.nextElementSibling.textContent.trim(); // lấy label bên cạnh
+
+                Swal.fire({
+                    title: `Bạn chắc chắn muốn chuyển trạng thái sang "${selectedLabel}"?`,
+                    icon: 'warning',
+                    confirmButtonColor: '#33a9c4',
+                    confirmButtonText: 'Đồng ý',
+                    showCancelButton: true,
+                    cancelButtonText: 'Hủy',
+                    width: '600px',
+                    padding: '2em',
+                    customClass: {
+                        popup: 'larger-swal'
+                    }
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        // Quay lại radio cũ
+                        if (previousCheckedRadio) {
+                            previousCheckedRadio.checked = true;
+                        }
+                    } else {
+                        // Cập nhật radio hiện tại là cái đã chọn
+                        previousCheckedRadio = e.target;
+                    }
+                });
+            });
+        });
+    });
+</script>
+
 @section Scripts {
     <script defer>
         const confirmOrder = () => {
