@@ -165,8 +165,7 @@
                 <h1 class="modal-title fs-5" id="voucherModalLabel">Danh sách voucher khả dụng</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto">
-            </div>
+            <div class="modal-body" id="voucher-list" style="max-height: 300px; overflow-y: auto"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
@@ -453,6 +452,91 @@
             $('#total-amount').text(totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
             $('#discount-amount').text('- ' + totalDiscount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
             $('#orderPaymentInfoContainer p:contains("Thành tiền:")').next().text(finalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+        }
+        function showAvailableVoucher() {
+            $('#loading-overlay').css('display', 'flex');
+            const customerPhone = $('#customer-phone').val();
+            fetch(`/orders/vouchers${customerPhone ? '?phone=' + customerPhone : ''}`)
+                .then(response => {
+                    console.log('API response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API response data:', data);
+                    $('#voucher-list').html(data.vouchers); 
+                    $('#voucherModal').modal('show');
+                    $('#loading-overlay').css('display', 'none');
+                    $('.btn-apply-voucher').on('click', function() {
+                        const voucherId = $(this).data('id'); 
+                        applyVoucher(voucherId);
+            });
+                })
+                .catch(error => {
+                    console.error('Error fetching vouchers:', error);
+                    toastr.error('Không thể tải danh sách voucher. Vui lòng thử lại sau.');
+                    $('#loading-overlay').css('display', 'none');
+                });
+        }
+
+        function applyVoucher(voucherId) {
+            $('#loading-overlay').css('display', 'flex');
+
+            fetch(`/orders/apply-voucher?id=${voucherId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error.Message || 'Không thể áp dụng Voucher.');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Payment data:', data.Payment);
+                    $('#orderPaymentInfoContainer').html(data.Payment);
+                    $('#voucherModal').modal('hide');
+                    toastr.success('Áp dụng Voucher thành công!');
+                    $('#loading-overlay').css('display', 'none');
+                    $('#applyVoucherBtn').text('Huỷ áp mã').attr('onclick', 'cancelApplyVoucher()');
+                })
+                .catch(error => {
+                    console.error('Lỗi khi áp dụng Voucher:', error);
+                    toastr.error(error.message || 'Không thể áp dụng Voucher. Vui lòng thử lại sau.');
+                    $('#loading-overlay').css('display', 'none');
+                });
+        }
+
+        function cancelApplyVoucher() {
+            // Hiển thị loading
+            $('#loading-overlay').css('display', 'flex');
+
+            // Gọi API để hủy áp dụng voucher
+            fetch('/orders/cancel-apply-voucher', {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Không thể hủy áp dụng voucher.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Cập nhật thông tin thanh toán
+                    $('#orderPaymentInfoContainer').html(data.Payment);
+
+                    // Thông báo thành công
+                    toastr.success('Hủy áp dụng voucher thành công!');
+
+                    // Ẩn loading
+                    $('#loading-overlay').css('display', 'none');
+
+                    // Cập nhật nút voucher
+                    $('#applyVoucherBtn').text('Áp dụng').attr('onclick', 'showAvailableVoucher()');
+                })
+                .catch(error => {
+                    console.error('Error cancelling voucher:', error);
+                    toastr.error('Không thể hủy áp dụng voucher. Vui lòng thử lại sau.');
+                    $('#loading-overlay').css('display', 'none');
+                });
         }
     </script>
 
