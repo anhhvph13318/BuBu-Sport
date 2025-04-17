@@ -23,7 +23,7 @@ public class OrderDetail
     public string PaymentMethodName { get; set; } = string.Empty;
     public int PaymentMethod { get; set; }
     public short PaymentStatus { get; set; }
-    public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
+    public IList<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderItem> Items { get; set; } = new List<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderItem>();
     public DateTime TempOrderCreatedTime { get; set; }
     public DateTime Created { get; set; } //VANH
     public bool IsDraft { get; set; }

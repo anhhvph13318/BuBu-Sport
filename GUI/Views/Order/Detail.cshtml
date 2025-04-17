@@ -20,21 +20,39 @@ else
         <hr />
         <div class="mb-3 mt-3">
             <h5>Trạng thái đơn hàng</h5>
+            @{
+                var currentIndex = OrderUtil.OrderStepProcessing.Keys.ToList().IndexOf(Model.Status);
+                var keys = OrderUtil.OrderStepProcessing.Keys.ToList();
+                var i = 0;
+                var canceledKey = 3; // Key của trạng thái "Huỷ"
+                var isCanceled = Model.Status == canceledKey;
+            }
             <div class="border m-0 p-3 row" id="status-options">
-                @{
-                    var currentIndex = OrderUtil.OrderStepProcessing.Keys.ToList().IndexOf(Model.Status);
-                    var keys = OrderUtil.OrderStepProcessing.Keys.ToList();
-                    var i = 0;
-                }
                 @foreach (var item in OrderUtil.OrderStepProcessing)
                 {
-                    var disabled = !(Model.Status == item.Key || i == currentIndex + 1);
+                    var isCurrent = Model.Status == item.Key;
+                    var disabled = !(isCurrent || i == currentIndex + 1);
+
+                    // Nếu đang là trạng thái Huỷ => ẩn các trạng thái khác
+                    if (isCanceled && !isCurrent)
+                    {
+                        i++;
+                        continue;
+                    }
+
+                    // Nếu KHÔNG phải trạng thái Huỷ => ẩn trạng thái Huỷ
+                    if (!isCanceled && item.Key == canceledKey)
+                    {
+                        i++;
+                        continue;
+                    }
+
                     <div class="form-check col-3">
                         <input class="form-check-input"
                                type="radio"
                                name="orderStatus"
                                value="@item.Key"
-                        @(Model.Status == item.Key ? "checked" : "")
+                        @(isCurrent ? "checked" : "")
                         @(disabled ? "disabled" : "") />
                         <label style="opacity: @(disabled ? "0.5" : "1")" class="form-check-label">@item.Value</label>
                     </div>

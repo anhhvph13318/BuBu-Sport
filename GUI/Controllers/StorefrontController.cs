@@ -448,7 +448,7 @@ namespace GUI.Controllers
                 var codeCancel = RandomCodeGenerator.GenerateRandomCode();
                 tbOrder.OrderCodeGhn = codeCancel;
                 _context.SaveChanges();
-                await _emailService.SendOrderConfirmationAsync(email, orderCode, name, phone, codeCancel, "", 2);
+                await _emailService.SendOrderConfirmationAsync(email, orderCode, name, phone, codeCancel, "", 2, null, null);
             }
             if (reasonCancel != null && codeCancelOrder != null)
             {
@@ -895,7 +895,7 @@ namespace GUI.Controllers
                     }
                     else
                     {
-                        await _emailService.SendOrderConfirmationAsync(obj.email, result.Data.orderCode, result.Data.nameCustomer, result.Data.phoneNumber, "Chờ xác nhận", "", 1);
+                        await _emailService.SendOrderConfirmationAsync(obj.email, result.Data.orderCode, result.Data.nameCustomer, result.Data.phoneNumber, "Chờ xác nhận", "", 1,result.Data.products, null);
                         return Ok(new { success = true, redirect = false, orderId = result.Data.orderCode ?? result.Data.id.ToString() });
                     }
                 }

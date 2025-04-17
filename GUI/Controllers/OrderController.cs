@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using Rotativa.AspNetCore;
 using System.Net.WebSockets;
-using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
+using OrderItem = DATN_ACV_DEV.Model_DTO.Order_DTO.OrderItem;
 
 namespace GUI.Controllers;
 
@@ -269,11 +269,11 @@ public class OrderController : Controller
             {
                 foreach (var item in orders)
                 {
-                    await _emailService.SendOrderConfirmationAsync(item.Customer.Email, item.Code, item.Customer.Name, item.Customer.PhoneNumber, item.StatusText, "", 1);
+                    await _emailService.SendOrderConfirmationAsync(item.Customer.Email, item.Code, item.Customer.Name, item.Customer.PhoneNumber, item.StatusText, "", 1, null, item.Items);
                 }
                 if (orders.Count() == 0 && order.Status == 7)
                 {
-                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1);
+                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1, null, order.Items);
                 }
             }
             catch (Exception ex)

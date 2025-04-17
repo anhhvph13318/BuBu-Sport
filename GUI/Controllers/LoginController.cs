@@ -56,7 +56,7 @@ namespace GUI.Controllers
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<LoginResponse>>(res) ?? new();
 
-            await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 1);
+            await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 1,null, request.products);
 
             return Redirect($"/orders/{request.id}");
         }
@@ -163,7 +163,7 @@ namespace GUI.Controllers
                 var result = JsonConvert.DeserializeObject<BaseResponse<ContentEmailRespone>>(res) ?? new();
                 if (result != null && result.Messages.Count == 0 && result.Data.customerName != null)
                 {
-                    await _emailService.SendOrderConfirmationAsync(request.Email, "", result.Data.customerName, result.Data.phonenumber, "", result.Data.password, 0);
+                    await _emailService.SendOrderConfirmationAsync(request.Email, "", result.Data.customerName, result.Data.phonenumber, "", result.Data.password, 0, null, null);
                     TempData["Message"] = "Mật khẩu đã được gửi về tài khoản " + request.Email + " vui lòng kiểm tra lại mật khẩu gửi về email và đăng nhập lại hệ thống.";
                 }
                 else
