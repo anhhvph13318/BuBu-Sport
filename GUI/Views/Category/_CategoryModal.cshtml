@@ -36,7 +36,7 @@
 <div class="modal-footer bg-light">
     @if (Model.Id == Guid.Empty)
     {
-        <button type="button" class="btn btn-primary" onclick="createCategory()">
+        <button type="button" class="btn btn-primary" onclick="confirmCreateCategory()">
             <i class="bi bi-save me-1"></i>
             Lưu
         </button>
@@ -53,3 +53,27 @@
         Hủy bỏ
     </button>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmCreateCategory() {
+        const categoryName = document.getElementById('categoryName').value;
+        if (!categoryName) {
+            document.getElementById('validate-message').style.display = 'block';
+            return;
+        }
+
+        Swal.fire({
+            title: 'Xác nhận lưu danh mục',
+            text: "Bạn có chắc chắn muốn lưu danh mục này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                createCategory();
+            }
+        });
+    }
+</script>
