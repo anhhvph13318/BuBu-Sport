@@ -28,6 +28,7 @@ public class OrderDetail
     public DateTime Created { get; set; } //VANH
     public bool IsDraft { get; set; }
     public string OrderTypeName { get; set; } = string.Empty;
+    public string? ReasionCancel { get; set; }
     public bool AllowRemove()
     {
         if (IsDraft) return true;

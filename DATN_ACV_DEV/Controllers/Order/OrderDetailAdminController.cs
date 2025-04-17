@@ -44,6 +44,7 @@ public class OrderDetailAdminController : ControllerBase
         {
             Id = orderEntity.Id,
             Code = orderEntity.OrderCode,
+            ReasionCancel = orderEntity.ReasionCancel,
             IsDraft = orderEntity.IsDraft,
             PaymentMethod = orderEntity.PaymentMethod,
             Customer = customer == null ? null : new CustomerInfo
@@ -223,6 +224,7 @@ public class OrderDetailAdminController : ControllerBase
                 {
                     Id = e.Id,
                     Code = e.OrderCode,
+                    ReasionCancel = e.ReasionCancel,
                     IsDraft = e.IsDraft,
                     Customer = new CustomerInfo
                     {

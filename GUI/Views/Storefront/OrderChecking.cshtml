@@ -121,6 +121,14 @@
                                         }
                                     </div>
                                 </div>
+                                @if (!string.IsNullOrEmpty(order.ReasionCancel))
+                                {
+                                    <div class="order-col mb-3">
+                                        <div class="order-label text-danger">Lý do hủy đơn hàng</div>
+                                        <div class="order-value">@order.ReasionCancel</div>
+                                    </div>
+                                }
+
                                 <div class="order-col mb-3">
                                     <div class="order-label">Thời gian đặt hàng</div>
                                     <div class="order-value">@order.Created.ToString("dd/MM/yyyy HH:mm") <i class="fa-solid fa-clock"></i></div>

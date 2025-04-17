@@ -8,7 +8,7 @@ VietAnh:
 Vu: Data Source=RATONLYNK;Initial Catalog=DB_SmartHouse;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
 
 Quan: 
-optionsBuilder.UseSqlServer("Data Source=DEC\\SQLEXPRESS;Initial Catalog=DB_BuBu_09_04;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
+optionsBuilder.UseSqlServer("Data Source=DEC\\SQLEXPRESS;Initial Catalog=DB_BuBu_11_04;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;");
 
 
 Tuan Anh : Data Source=TW4NENH\TUANANH;Initial Catalog=DB_BuBu_26_03;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
