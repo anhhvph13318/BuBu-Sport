@@ -122,6 +122,7 @@ namespace GUI.Controllers
                 _context.SaveChanges();
             }
             // Điều hướng đến trang hiển thị danh sách giảm giá hoặc thông báo thành công
+            TempData["RegisterSuccess"] = "Thành công!";
             return RedirectToAction("Index");
         }
         [HttpGet]

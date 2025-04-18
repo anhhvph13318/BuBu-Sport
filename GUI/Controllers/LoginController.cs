@@ -125,11 +125,12 @@ namespace GUI.Controllers
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListUserResponse>>(res) ?? new();
                 if (result.Status == "200")
                 {
+                    TempData["RegisterSuccess"] = "Đăng ký thành công!";
                     return RedirectToAction("Login");
                 }
                 if (result.Status == "400")
                 {
-                    ModelState.AddModelError("UserName", result.Messages.FirstOrDefault().MessageText);
+                    TempData["RegisterError"] = result.Messages.FirstOrDefault().MessageText;
                     return RedirectToAction("Login");
                 }
                 return RedirectToAction(nameof(Index));

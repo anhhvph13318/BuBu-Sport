@@ -141,3 +141,18 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    @if (TempData["RegisterSuccess"] != null)
+    {
+        <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: '@Html.Raw(TempData["RegisterSuccess"])',
+                    confirmButtonText: 'OK'
+                });
+        </text>
+    }
+        });
+</script>

@@ -31,7 +31,8 @@
         <!-- Sign Up -->
         <div class="container__form container--signup">
             <div class="former">
-                <form asp-action="Register" enctype="multipart/form-data">
+                <form id="registerForm" asp-action="Register" enctype="multipart/form-data">
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                     <a href="/Store" class="home-button" title="Về trang cửa hàng">
                         <i class="fas fa-home"></i> Trang chủ
                     </a>
@@ -69,7 +70,7 @@
 <!-- Modal Forgot Password -->
 <div class="modal fade" id="forgotpassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form asp-action="ForgotPassWord" enctype="multipart/form-data">
+        <form id="forgotPasswordForm" asp-action="ForgotPassWord" enctype="multipart/form-data">
             <div class="modal-content">
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <div class="modal-header">
@@ -135,6 +136,52 @@
 </script>
 @section Scripts {
     <script>
+        // thông báo khi đăng ký thành công
+        document.addEventListener("DOMContentLoaded", function () {
+        @if (TempData["RegisterSuccess"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: '@Html.Raw(TempData["RegisterSuccess"])',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+
+            });
+        // thông báo khi đăng ký không thành công
+        document.addEventListener("DOMContentLoaded", function () {
+        @if (TempData["RegisterError"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi đăng ký',
+                        text: '@Html.Raw(TempData["RegisterError"])',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+            });
+        // kiểm tra để trống trường email trong quên mật khẩu
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("forgotPasswordForm");
+            const emailInput = document.getElementById("recipient-name");
+
+            form.addEventListener("submit", function (e) {
+                if (!emailInput.value.trim()) {
+                    e.preventDefault(); // Ngăn gửi form
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Thiếu thông tin',
+                        text: 'Vui lòng nhập email để lấy lại mật khẩu!',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
         document.addEventListener('DOMContentLoaded', function () {
         @if (TempData["Message"] != null)
         {
