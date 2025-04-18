@@ -286,17 +286,20 @@ namespace GUI.Controllers
             foreach (var item in promotion)
             {
                 var discount = _context.TbDiscounts
-                    .Where(c => c.Id == item.DiscountId)
+                    .Where(c => c.Id == item.DiscountId && c.EndDate >= DateTime.Now)
                     .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
                     .FirstOrDefault();
-                foreach (var item1 in model.Data.LstProduct)
+                if (discount != null)
                 {
-                    if (item.ProductId == item1.Id)
+                    foreach (var item1 in model.Data.LstProduct)
                     {
-                        item1.PriceSale = item1.Price;
-                        item1.Price = Convert.ToDecimal(item1.Price - discount);
+                        if (item.ProductId == item1.Id)
+                        {
+                            item1.PriceSale = item1.Price;
+                            item1.Price = Convert.ToDecimal(item1.Price - discount);
+                        }
                     }
-                }
+                }   
             }
             return View(model);
         }

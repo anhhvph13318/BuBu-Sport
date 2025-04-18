@@ -35,9 +35,9 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                         <select class="form-select" id="status">
-                            <option value="0">Tất cả</option>
-                            <option value="1">Hoạt động</option>
-                            <option value="2">Không hoạt động</option>
+                            <option value="2">Tất cả</option>
+                            <option value="0">Hoạt động</option>
+                            <option value="1">Không hoạt động</option>
                         </select>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                     <button type="button" class="btn btn-primary me-2" onclick="search()">
                         <i class="bi bi-search me-1"></i> Tìm kiếm
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="reset()">
+                    <button type="button" class="btn btn-secondary" onclick="resetSearch()">
                         <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
                     </button>
                 </div>
@@ -82,6 +82,21 @@
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/category.js"></script>
     <script>
+        function search() {
+            const keyword = $('#categorySearch').val();
+            const status = $('#status').val(); // ✅ lấy trạng thái
+            fetch(`${SEARCH_CATEGORY}/search?name=${keyword}&status=${status}`)
+                .then(res => res.json())
+                .then(data => {
+                    $('#categoryTable').html('');
+                    $('#categoryTable').html(data.table);
+                });
+        }
+        function resetSearch() {
+            $('#categorySearch').val('');
+            $('#status').val(2);
+            search();
+        }
         $(document).ready(function () {
             // Hiệu ứng hover cho các hàng trong bảng
             $('table tbody tr').hover(

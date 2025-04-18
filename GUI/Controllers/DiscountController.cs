@@ -164,10 +164,11 @@ namespace GUI.Controllers
         [Route("Discount/Create")]
         public IActionResult Create()
         {
-            var productIdList = _context.TbDiscountProducts.Select(c => c.ProductId).ToList();
+            var now = DateTime.Now;
 
             var products = _context.TbProducts
-                .Where(p => !productIdList.Contains(p.Id))
+                .Where(p => !_context.TbDiscountProducts.Any(dp => dp.ProductId == p.Id &&
+                              _context.TbDiscounts.Any(d => d.Id == dp.DiscountId && d.EndDate >= now)))
                 .ToList();
 
             var categories = _context.TbCategories.Select(c => new CategoryDTO
