@@ -109,6 +109,7 @@ public class CategoryController : ControllerSharedBase
         var categories = await FetchCategory();
         return Json(new
         {
+            Message = "Đăng ký thành công!",
             Table = await RenderViewAsync("_CategoryTable", categories),
             Modal = await RenderViewAsync("_CategoryModal", new CategoryDTO())
         });

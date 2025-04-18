@@ -90,7 +90,7 @@ public class VoucherController : Controller
         var validConditionWithDiscount = model.Voucher.Unit == VoucherUnit.Money && model.Voucher.Condition <= model.Voucher.Discount;
         var validMaxDiscount = model.Voucher.Unit == VoucherUnit.Percent && model.Voucher.MaxDiscount < 5000;
         var validMaxCondition = model.Voucher.Condition > 1000000000;
-        if (!ModelState.IsValid || validPeriod || validDiscountPercent || validStartDate || validCondition || validConditionWithDiscount || validMaxCondition || validDiscountMoney  || validMaxDiscount)
+        if (!ModelState.IsValid || validPeriod || validDiscountPercent || validStartDate || validCondition || validConditionWithDiscount || validMaxCondition || validDiscountMoney || validMaxDiscount)
         {
             if (validPeriod)
                 ModelState.AddModelError("Voucher.EndDate", "Ngày kết thúc không thể nhỏ hơn ngày bắt đầu");
@@ -123,7 +123,10 @@ public class VoucherController : Controller
             : await httpClient.PostAsJsonAsync("/api/vouchers", model.Voucher);
 
         if (response.IsSuccessStatusCode)
+        {
+            TempData["RegisterSuccess"] = "Thành công!";
             return RedirectToAction("Index");
+        }
 
         // Debug: In ra thông tin phản hồi để kiểm tra
         var errorContent = await response.Content.ReadAsStringAsync();

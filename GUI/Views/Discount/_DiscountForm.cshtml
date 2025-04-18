@@ -38,11 +38,11 @@
                 <div class="mb-2 row g-2">
                     <div class="col-6">
                         <label class="form-label">Bắt đầu</label>
-                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local" min="@currentDateTime" />
+                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local"/>
                     </div>
                     <div class="col-6">
                         <label class="form-label">Kết thúc</label>
-                        <input asp-for="EndDate" class="form-control form-control-sm" type="datetime-local" min="@currentDateTime" />
+                        <input asp-for="EndDate" class="form-control form-control-sm" type="datetime-local" />
                     </div>
                 </div>
                 <div class="mb-2">
@@ -141,12 +141,29 @@
 
     function confirmAction() {
         const actionType = document.querySelector('input[name="actionType"]').value;
-        if (actionType === "create") {
-            return confirm("Bạn có chắc chắn muốn tạo chương trình khuyến mại này?");
-        } else if (actionType === "update") {
-            return confirm("Bạn có chắc chắn muốn cập nhật chương trình khuyến mại này?");
+        if (!actionType) {
+            document.getElementById('validate-message').style.display = 'block';
+            return false; // Ngừng submit form nếu không có giá trị actionType
         }
-        return true;
+
+        // Ngừng submit form ngay lập tức
+        event.preventDefault();
+
+        Swal.fire({
+            title: 'Cảnh báo',
+            text: "Bạn có chắc chắn muốn cập nhật danh mục này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng chọn "Đồng ý", submit form
+                document.querySelector('form').submit(); // Submit form sau khi xác nhận
+            }
+        });
+
+        return false; // Ngừng submit form nếu chưa xác nhận
     }
 
     function filterProducts() {
