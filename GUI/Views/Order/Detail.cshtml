@@ -60,7 +60,7 @@ else
                 }
             </div>
 
-            <button type="button" class="btn btn-primary mt-3" onclick="saveOrderStatus()">Lưu</button>
+            <button type="button" class="btn btn-primary mt-3" onclick="confirmUpdateOrderStatus()">Lưu</button>
 
             @if (!string.IsNullOrEmpty(Model.ReasionCancel))
             {
@@ -343,6 +343,21 @@ else
 </div>
 
 <script>
+    function confirmUpdateOrderStatus() {
+
+        Swal.fire({
+            title: 'Xác nhận cập nhật trạng thái',
+            text: "Bạn có chắc chắn muốn cập nhật hóa đơn này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveOrderStatus();
+            }
+        });
+    }
     async function saveOrderStatus() {
         const selectedRadio = document.querySelector('input[name="orderStatus"]:checked');
         if (!selectedRadio) {
@@ -383,16 +398,28 @@ else
             const result = await response.json();
             document.getElementById('loadingOverlay').classList.remove('active');
             if (result.success) {
-                alert(result.message || "Cập nhật trạng thái thành công!");
-                location.reload();
+                Swal.fire({
+                    icon: "success",
+                    title: "Thành công!",
+                    text: result.message || "Cập nhật trạng thái thành công!",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    location.reload();
+                });
             } else {
                 alert(result.message || "Có lỗi khi cập nhật");
             }
         } catch (err) {
             console.error("Lỗi:", err);
             document.getElementById('loadingOverlay').classList.remove('active');
-            alert("Cập nhật trạng thái đơn hàng thành công!");
-            location.reload();
+            Swal.fire({
+                icon: "success",
+                title: "Thành công!",
+                text: "Cập nhật trạng thái thành công!",
+                confirmButtonText: "OK"
+            }).then(() => {
+                location.reload();
+            });
         }
     }
 

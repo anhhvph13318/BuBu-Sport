@@ -263,15 +263,12 @@ public class OrderController : Controller
 
         if (rawResponse.IsSuccessStatusCode)
         {
+
             var orders = await FetchOrderList();
 
             try
             {
-                foreach (var item in orders)
-                {
-                    await _emailService.SendOrderConfirmationAsync(item.Customer.Email, item.Code, item.Customer.Name, item.Customer.PhoneNumber, item.StatusText, "", 1, null, item.Items);
-                }
-                if (orders.Count() == 0 && order.Status == 7)
+                if (order.Customer.Email != "")
                 {
                     await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1, null, order.Items);
                 }
