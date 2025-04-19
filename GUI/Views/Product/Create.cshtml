@@ -166,7 +166,7 @@
                 <button type="button" class="btn btn-outline-secondary px-4 py-2" id="prevStep">
                     <i class="bi bi-arrow-left-circle me-2"></i>Quay lại
                 </button>
-                <button type="submit" class="btn btn-success px-4 py-2" id="submitButton">
+                <button type="button" class="btn btn-success px-4 py-2" id="submitButton" onclick="confirmAction()">
                     <i class="bi bi-plus-circle me-2"></i>Thêm mới
                 </button>
             </div>
@@ -243,33 +243,67 @@
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
+    function confirmAction() {
+
+        Swal.fire({
+            title: 'Cảnh báo',
+            text: "Bạn có chắc chắn muốn thực hiện hành động này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng chọn "Đồng ý", submit form
+                document.querySelector('form').submit(); // Submit form sau khi xác nhận
+            }
+        });
+
+        return false; // Ngừng submit form nếu chưa xác nhận
+    }
     // Lưu màu sắc mới
     document.getElementById("saveNewColor").addEventListener("click", async function () {
-        const Name = document.getElementById("newColorName").value.trim();
-        if (!Name) {
-            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
-            return;
-        }
+        Swal.fire({
+            title: 'Xác nhận thực hiện hành động',
+            text: "Bạn có chắc chắn muốn thực hiện hành động này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Sau khi xác nhận, thực hiện lưu màu sắc
+                saveNewColor();
+            }
+        });
 
-        try {
-            const response = await fetch("/ProductDetail/CreateColorDetail", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: Name })
-            });
-            if (!response.ok) throw new Error("Thêm màu thất bại!");
-            const newColor = await response.json();
-            const select = document.getElementById("colorSelect");
-            const newOption = document.createElement("option");
-            newOption.value = newColor.id;
-            newOption.textContent = newColor.name;
-            newOption.selected = true;
-            select.insertBefore(newOption, select.lastElementChild);
-            bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
-            document.getElementById("newColorName").value = "";
-            window.location.reload();
-        } catch (error) {
-            Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+        async function saveNewColor() {
+            const Name = document.getElementById("newColorName").value.trim();
+            if (!Name) {
+                Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
+                return;
+            }
+
+            try {
+                const response = await fetch("/ProductDetail/CreateColorDetail", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: Name })
+                });
+                if (!response.ok) throw new Error("Thêm màu thất bại!");
+                const newColor = await response.json();
+                const select = document.getElementById("colorSelect");
+                const newOption = document.createElement("option");
+                newOption.value = newColor.id;
+                newOption.textContent = newColor.name;
+                newOption.selected = true;
+                select.insertBefore(newOption, select.lastElementChild);
+                bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
+                document.getElementById("newColorName").value = "";
+                window.location.reload();
+            } catch (error) {
+                Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+            }
         }
     });
     // Mở modal thêm kích thước
@@ -278,57 +312,72 @@
     });
     // Lưu size mới
     document.getElementById("saveNewSize").addEventListener("click", async function () {
-        const SizeName = document.getElementById("newSizeName").value.trim();
-        if (!SizeName) {
-            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên size' });
-            return;
-        }
+        Swal.fire({
+            title: 'Xác nhận lưu size',
+            text: "Bạn có chắc chắn muốn lưu size này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveNewSize();
+            }
+        });
 
-        try {
-            const response = await fetch("/ProductDetail/CreateSizeDetail", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ SizeName: SizeName })
-            });
-            if (!response.ok) throw new Error("Thêm size thất bại!");
-            const newSize = await response.json();
-            const tableBody = document.getElementById("sizeTableBody");
-            const newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                        <td class="align-middle">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
-                                <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
-                            </div>
-                        </td>
-                        <td class="align-middle text-center">
-                            <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
-                                   id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
-                            <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
-                        </td>
-                    `;
-            tableBody.insertBefore(newRow, tableBody.firstChild);
+        async function saveNewSize() {
+            const SizeName = document.getElementById("newSizeName").value.trim();
+            if (!SizeName) {
+                Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên size' });
+                return;
+            }
 
-            const newCheckbox = newRow.querySelector(".sizeCheckbox");
-            newCheckbox.addEventListener("change", function () {
-                const sizeId = this.getAttribute("data-size-id");
-                const quantityInput = document.getElementById(`quantity_${sizeId}`);
-                if (this.checked) {
-                    quantityInput.disabled = false;
-                    quantityInput.value = 1;
-                    quantityInput.focus();
-                } else {
-                    quantityInput.disabled = true;
-                    quantityInput.value = 0;
-                }
-                validateSizeSelection();
-            });
+            try {
+                const response = await fetch("/ProductDetail/CreateSizeDetail", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ SizeName: SizeName })
+                });
+                if (!response.ok) throw new Error("Thêm size thất bại!");
+                const newSize = await response.json();
+                const tableBody = document.getElementById("sizeTableBody");
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                <td class="align-middle">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
+                        <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
+                    </div>
+                </td>
+                <td class="align-middle text-center">
+                    <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
+                           id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
+                    <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
+                </td>
+            `;
+                tableBody.insertBefore(newRow, tableBody.firstChild);
 
-            bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
-            document.getElementById("newSizeName").value = "";
-            window.location.reload();
-        } catch (error) {
-            Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+                const newCheckbox = newRow.querySelector(".sizeCheckbox");
+                newCheckbox.addEventListener("change", function () {
+                    const sizeId = this.getAttribute("data-size-id");
+                    const quantityInput = document.getElementById(`quantity_${sizeId}`);
+                    if (this.checked) {
+                        quantityInput.disabled = false;
+                        quantityInput.value = 1;
+                        quantityInput.focus();
+                    } else {
+                        quantityInput.disabled = true;
+                        quantityInput.value = 0;
+                    }
+                    validateSizeSelection();
+                });
+
+                bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
+                document.getElementById("newSizeName").value = "";
+                window.location.reload();
+            } catch (error) {
+                Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+            }
         }
     });
     document.addEventListener("DOMContentLoaded", function () {

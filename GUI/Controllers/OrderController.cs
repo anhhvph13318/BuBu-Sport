@@ -143,7 +143,19 @@ public class OrderController : Controller
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
+
         var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{id}");
+
+        if (!rawResponse.IsSuccessStatusCode)
+        {
+            var errorText = await rawResponse.Content.ReadAsStringAsync();
+            return StatusCode((int)rawResponse.StatusCode, new
+            {
+                success = false,
+                message = $"Không thể lấy đơn hàng. Lỗi từ API: {errorText}"
+            });
+        }
+
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
@@ -152,17 +164,28 @@ public class OrderController : Controller
 
         order.ShippingInfo.IsCustomerTakeYourSelf = order.IsCustomerTakeYourSelf;
         order.ShippingInfo.IsSameAsCustomerAddress = order.IsSameAsCustomerAddress;
-        order.PaymentInfo.Products = order.Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
+        order.PaymentInfo.Products = order.Items.Select(e =>
+            $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
 
         HttpContext.Session.SaveCurrentOrder(order);
 
         var tempOrderSaveButton = string.Empty;
-        if(order.IsDraft || order.Code.StartsWith("TEMP"))
+        if (order.IsDraft || order.Code.StartsWith("TEMP"))
             tempOrderSaveButton = await RenderViewAsync(TempSaveOrderButtonPartialView, default);
-
+        var mappedItems = order.Items.Select(x => new GUI.Models.DTOs.Order_DTO.OrderItem
+        {
+            ProductName = x.ProductName,
+            ProductImage = x.ProductImage,
+            Color = x.Color,
+            Size = x.Size,
+            Quantity = x.Quantity,
+            Price = x.Price,
+            Code = x.Code,
+            Id = x.Id
+        }).ToList();
         return Json(new
         {
-            Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
+            Items = await RenderViewAsync(OrderItemListPartialView, mappedItems),
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
@@ -423,10 +446,20 @@ public class OrderController : Controller
     public async Task<IActionResult> ClearOrder()
     {
         var order = HttpContext.Session.GetCurrentOrder(clearFirst: true);
-
+        var mappedItems = order.Items.Select(x => new GUI.Models.DTOs.Order_DTO.OrderItem
+        {
+            ProductName = x.ProductName,
+            ProductImage = x.ProductImage,
+            Color = x.Color,
+            Size = x.Size,
+            Quantity = x.Quantity,
+            Price = x.Price,
+            Code = x.Code,
+            Id = x.Id
+        }).ToList();
         return Json(new
         {
-            Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
+            Items = await RenderViewAsync(OrderItemListPartialView, mappedItems),
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),

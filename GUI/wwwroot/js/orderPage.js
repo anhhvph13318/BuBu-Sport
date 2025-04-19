@@ -155,19 +155,22 @@ function show(id) {
         .then(res => res.json())
         .then(data => {
             updateAllView(data);
+
+            // Cập nhật lại nội dung nút Lưu tạm
             $('#tempSaveButtonContainer').html('');
             $('#tempSaveButtonContainer').html(data.tempSaveButton);
+
+            // Ẩn lại nút Lưu tạm sau khi render
+            setTimeout(() => {
+                $('#tempSaveButton').hide(); // ẩn đúng nút
+            }, 0);
+
+            // Cập nhật các trường khác
             $('#shippingLocation').val(data.isCustomerTakeYourSelf ? '0' : '1');
             $('#orderStatus').val(data.status.toString());
             $('#shippingLocation').trigger('change');
             $('#orderStatus').trigger('change');
             $('#isSameAsCustomerAddress').trigger('change');
-
-            changeResetButtonText(true);
-
-            if (!data.isDraft) {
-                interactiveCartItemAndVoucherButton(true);
-            }
         });
 }
 
@@ -269,6 +272,8 @@ function clearOrder() {
             updateAllView(data);
             interactiveCartItemAndVoucherButton(false);
             changeResetButtonText(false);
+
+            // Hiển thị lại nút "Lưu tạm"
             $('#tempSaveButtonContainer').html('');
             $('#tempSaveButtonContainer').html(data.tempSaveButton);
         });
@@ -354,29 +359,36 @@ function saveOrder(isDraft) {
         .then(_ => clearOrder());
 }
 
-
 function removeDraft(id) {
-    const isRemove = confirm("Bạn có chắc muốn xóa?");
-    if (!isRemove) return;
-
-    fetch(REMOVE_ORDER_TEMP_API(id), {
-        method: 'DELETE'
-    })
-        .then(res => {
-            if (res.ok) {
-                location.reload();
-            } else {
-                return res.json().then(data => {
-                    throw new Error(data.message || "Xóa đơn hàng thất bại!");
+    Swal.fire({
+        title: 'Xác nhận xóa đơn hàng',
+        text: 'Bạn có chắc muốn xóa đơn hàng này không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Có, xóa!',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(REMOVE_ORDER_TEMP_API(id), {
+                method: 'DELETE'
+            })
+                .then(res => {
+                    if (res.ok) {
+                        toastr.success("Xóa đơn hàng thành công !");
+                        location.reload();
+                    } else {
+                        return res.json().then(data => {
+                            throw new Error(data.message || "Xóa đơn hàng thất bại!");
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toastr.error(error.message || "Đã xảy ra lỗi khi xóa đơn hàng!");
                 });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert(error.message || "Đã xảy ra lỗi khi xóa đơn hàng!");
-        });
+        }
+    });
 }
-
 function showAvailableVoucher() {
     const customerPhone = $('#customerPhoneNumber').val();
 

@@ -48,7 +48,7 @@
                 <!-- Nút điều hướng -->
                 <div class="form-group d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-outline-secondary">Quay trở lại</a>
-                    <button type="submit" class="btn btn-primary" id="saveButton">
+                    <button type="button" class="btn btn-primary" id="saveButton" onclick="confirmAction()">
                         <span class="spinner-border spinner-border-sm" id="spinner" role="status" aria-hidden="true" style="display:none;"></span>
                         Lưu thay đổi
                     </button>
@@ -162,6 +162,25 @@
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
+    //confirm button sửa sản phẩm 
+    function confirmAction() {
+
+        Swal.fire({
+            title: 'Cảnh báo',
+            text: "Bạn có chắc chắn muốn thực hiện hành động này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng chọn "Đồng ý", submit form
+                document.querySelector('form').submit(); // Submit form sau khi xác nhận
+            }
+        });
+
+        return false; // Ngừng submit form nếu chưa xác nhận
+    }
     // Upload ảnh lên Cloudinary
     (function ($) {
         $('#fileInput').on("change", function (e) {
@@ -214,15 +233,6 @@
         }
     }
 
-    // Xác nhận lưu form
-    document.getElementById('saveButton').addEventListener('click', function () {
-        if (confirm('Bạn có chắc muốn lưu thay đổi không?')) {
-            const spinner = document.getElementById('spinner');
-            spinner.style.display = 'inline-block';
-            this.closest('form').submit();
-        }
-    });
-
     // Xử lý bảng biến thể
     $(document).ready(function () {
         // Lọc bảng
@@ -254,34 +264,47 @@
 
         // Cập nhật số lượng
         $('.btn-save-quantity').on('click', function () {
-            const id = $(this).data('id');
-            const inputField = $(`.quantity-input[data-id='${id}']`);
-            const newQuantity = inputField.val();
+            Swal.fire({
+                title: 'Cảnh báo',
+                text: "Bạn có chắc chắn muốn thực hiện hành động này?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có, lưu lại!',
+                cancelButtonText: 'Không, hủy bỏ!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Nếu người dùng chọn "Đồng ý", submit form
+                    const id = $(this).data('id');
+                    const inputField = $(`.quantity-input[data-id='${id}']`);
+                    const newQuantity = inputField.val();
 
-            if (newQuantity < 0) {
-                alert('Số lượng không thể nhỏ hơn 0!');
-                return;
-            }
-
-            $.ajax({
-                url: '/Product/UpdateDetailQuantity',
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() },
-                contentType: 'application/json',
-                data: JSON.stringify({ id: id, quantity: newQuantity }),
-                success: function (data) {
-                    if (data.success) {
-                        alert('Cập nhật số lượng thành công!');
-                        inputField.prop('disabled', true); // Disable lại sau khi lưu thành công
-                    } else {
-                        alert('Cập nhật thất bại: ' + (data.message || 'Lỗi không xác định'));
+                    if (newQuantity < 0) {
+                        alert('Số lượng không thể nhỏ hơn 0!');
+                        return;
                     }
-                },
-                error: function (error) {
-                    console.error('Lỗi:', error);
-                    alert('Đã xảy ra lỗi khi cập nhật!');
+
+                    $.ajax({
+                        url: '/Product/UpdateDetailQuantity',
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() },
+                        contentType: 'application/json',
+                        data: JSON.stringify({ id: id, quantity: newQuantity }),
+                        success: function (data) {
+                            if (data.success) {
+                                alert('Cập nhật số lượng thành công!');
+                                inputField.prop('disabled', true); // Disable lại sau khi lưu thành công
+                            } else {
+                                alert('Cập nhật thất bại: ' + (data.message || 'Lỗi không xác định'));
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Lỗi:', error);
+                            alert('Đã xảy ra lỗi khi cập nhật!');
+                        }
+                    });
                 }
             });
+            
         });
     });
 </script>
