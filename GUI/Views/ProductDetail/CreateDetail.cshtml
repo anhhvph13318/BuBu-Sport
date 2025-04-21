@@ -408,14 +408,9 @@
                         <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
                     </div>
                 </td>
-                <td class="align-middle text-center">
-                    <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
-                           id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
-                    <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
-                </td>
+           
             `;
                 tableBody.insertBefore(newRow, tableBody.firstChild);
-
                 const newCheckbox = newRow.querySelector(".sizeCheckbox");
                 newCheckbox.addEventListener("change", function () {
                     const sizeId = this.getAttribute("data-size-id");
