@@ -75,6 +75,7 @@
 </style>
 <link href="~/lib/toastr/toastr.css" rel="stylesheet" />
 
+
 <div class="container-fluid" id="order-container">
     <div class="row">
         <div class="col-md-8 p-3">
@@ -106,16 +107,12 @@
             </div>
 
             <div class="border p-3 h-75">
-                <form autocomplete="off" class="w-100" onsubmit="return false">
-                    <div class="mb-3 autocomplete w-100">
-                        <input placeholder="Tên, mã sản phẩm..." id="search" class="form-control">
-                        <div class="autocomplete-items" id="autocomplete-list"></div>
-                    </div>
-                </form>
                 <div class="d-flex justify-content-end">
                     <button id="btnShowProductList" class="btn btn-primary me-2">Danh sách sản phẩm</button>
                     <div id="tempSaveButtonContainer" class="me-2">
-                        @await Html.PartialAsync("_TempSaveOrderButtonPartialView")
+                        <div id="tempSaveButtonWrapper">
+                            @await Html.PartialAsync("_TempSaveOrderButtonPartialView")
+                        </div>
                     </div>
                     <button id="btnReset" class="btn btn-danger text-nowrap me-2" onclick="clearOrder()" type="button">Làm mới giỏ hàng</button>
                 </div>
@@ -235,6 +232,7 @@
     <p>Đang xử lý...</p>
 </div>
 @section scripts {
+
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/product.js"></script>

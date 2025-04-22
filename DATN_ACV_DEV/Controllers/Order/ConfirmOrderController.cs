@@ -179,7 +179,7 @@ namespace DATN_ACV_DEV.Controllers
 							productCode = model.Code,
 							price = model.Price,
 							quantity = item.Quantity.Value,
-							url = image != null ? image.Url : ""
+							url = image != null ? _context.TbImages.Where(c=>c.Id == _context.TbProductDetails.Where(a=>a.Id == productdetailId).Select(a=>a.ImageId).FirstOrDefault()).Select(c=>c.Url).FirstOrDefault() : ""
 						};
                         //_order.TotalAmount += (model.Quantity * model.Price);
 						_listProduct.Add(product);

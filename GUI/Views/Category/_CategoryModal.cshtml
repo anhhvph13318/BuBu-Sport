@@ -36,14 +36,14 @@
 <div class="modal-footer bg-light">
     @if (Model.Id == Guid.Empty)
     {
-        <button type="button" class="btn btn-primary" onclick="createCategory()">
+        <button type="button" class="btn btn-primary" onclick="confirmCreateCategory()">
             <i class="bi bi-save me-1"></i>
             Lưu
         </button>
     }
     @if (Model.Id != Guid.Empty)
     {
-        <button type="button" class="btn btn-primary" onclick="updateCategory('@Model.Id')">
+        <button type="button" class="btn btn-primary" onclick="confirmUpdateCategory()">
             <i class="bi bi-save me-1"></i>
             Cập nhật
         </button>
@@ -53,3 +53,77 @@
         Hủy bỏ
     </button>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmCreateCategory() {
+        const categoryName = document.getElementById('categoryName').value;
+        if (!categoryName) {
+            document.getElementById('validate-message').style.display = 'block';
+            return;
+        }
+
+        Swal.fire({
+            title: 'Xác nhận lưu danh mục',
+            text: "Bạn có chắc chắn muốn lưu danh mục này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                createCategory();
+            }
+        });
+    }
+    function confirmUpdateCategory() {
+        const categoryName = document.getElementById('categoryName').value;
+        if (!categoryName) {
+            document.getElementById('validate-message').style.display = 'block';
+            return;
+        }
+
+        Swal.fire({
+            title: 'Xác nhận cập nhật danh mục',
+            text: "Bạn có chắc chắn muốn cập nhật danh mục này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                updateCategory('@Model.Id');
+            }
+        });
+    }
+    $.ajax({
+        url: `/Category/create/${id}`, // thay biến `id` thật vào đây
+        method: "PATCH",
+        contentType: "application/json",
+        data: JSON.stringify({
+            name: $('#NameInput').val(), // hoặc lấy đúng field trong CategoryDTO
+            status: $('#StatusInput').val()
+        }),
+        success: function (res) {
+            if (res.Message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: res.Message,
+                });
+            }
+
+            $('#tableContainer').html(res.Table);
+            $('#modalContainer').html(res.Modal);
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Cập nhật thất bại!',
+            });
+        }
+    });
+</script>

@@ -7,7 +7,8 @@
             { 0, "Chờ xác nhận" },
             { 1, "Chuẩn bị hàng" },
             { 2, "Đang giao hàng" },
-            { 7, "Hoàn thành" }
+            { 7, "Hoàn thành" },
+            { 3, "Đã hủy" }
         };
 
         public static IDictionary<int, string> NextOrderStepProcessing(int currentStep)

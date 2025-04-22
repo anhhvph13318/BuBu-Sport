@@ -55,3 +55,35 @@
         }
     </tbody>
 </table>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // thông báo khi đăng ký thành công
+    $.ajax({
+        url: `/Category/create/${id}`, // thay biến `id` thật vào đây
+        method: "PATCH",
+        contentType: "application/json",
+        data: JSON.stringify({
+            name: $('#NameInput').val(), // hoặc lấy đúng field trong CategoryDTO
+            status: $('#StatusInput').val()
+        }),
+        success: function (res) {
+            if (res.Message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: res.Message,
+                });
+            }
+
+            $('#tableContainer').html(res.Table);
+            $('#modalContainer').html(res.Modal);
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Cập nhật thất bại!',
+            });
+        }
+    });
+</script>

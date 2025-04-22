@@ -1,5 +1,6 @@
 ﻿using DATN_ACV_DEV.Entity;
 using GUI.Controllers.Shared;
+using GUI.Models.DTOs;
 using GUI.Models.DTOs.Discount_DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,15 +19,38 @@ namespace GUI.Controllers
             _session = session;
         }
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string name, string discountType, int? status)
         {
-            var Discounts = _context.TbDiscounts.ToList();
+            var query = _context.TbDiscounts.AsQueryable();
 
-            // Trả về View với Model là danh sách sản phẩm
+            if (!string.IsNullOrEmpty(name))
+                query = query.Where(d => d.Name.Contains(name));
+
+            if (!string.IsNullOrEmpty(discountType))
+                query = query.Where(d => d.DiscountType == discountType);
+
+            if (status.HasValue)
+            {
+                var now = DateTime.Now;
+                switch (status.Value)
+                {
+                    case 1: // Chưa bắt đầu
+                        query = query.Where(d => d.StartDate > now);
+                        break;
+                    case 2: // Hoạt động
+                        query = query.Where(d => d.StartDate <= now && d.EndDate >= now);
+                        break;
+                    case 3: // Hết hiệu lực
+                        query = query.Where(d => d.EndDate < now);
+                        break;
+                }
+            }
+
             var model = new DiscountListViewModel
             {
-                Discounts = Discounts
+                Discounts = query.ToList()
             };
+
             return View(model);
         }
         [HttpPost]
@@ -35,14 +59,34 @@ namespace GUI.Controllers
         {
             if (actionType == "update")
             {
-                TbDiscount tbDiscount = new TbDiscount();
-                tbDiscount = _context.TbDiscounts.Where(c => c.Id == model.Id).FirstOrDefault();
-                tbDiscount.Name = model.Name != null ? model.Name : tbDiscount.Name;
-                tbDiscount.DiscountType = model.DiscountType != null ? model.DiscountType : tbDiscount.DiscountType;
-                tbDiscount.DiscountValue = model.DiscountValue != null ? model.DiscountValue : tbDiscount.DiscountValue;
-                tbDiscount.MaxDiscountAmount = model.MaxDiscountAmount != null ? model.MaxDiscountAmount : tbDiscount.MaxDiscountAmount;
-                tbDiscount.StartDate = model.StartDate != null ? model.StartDate : tbDiscount.StartDate;
-                tbDiscount.EndDate = model.EndDate != null ? model.EndDate : tbDiscount.EndDate;
+                var tbDiscount = _context.TbDiscounts.FirstOrDefault(c => c.Id == model.Id);
+
+                if (tbDiscount == null)
+                {
+                    return NotFound("Không tìm thấy khuyến mại cần cập nhật.");
+                }
+
+                tbDiscount.Name = model.Name;
+                tbDiscount.DiscountType = model.DiscountType;
+                tbDiscount.DiscountValue = model.DiscountValue;
+                tbDiscount.MaxDiscountAmount = model.DiscountType == "percent" ? model.MaxDiscountAmount : null;
+                tbDiscount.StartDate = model.StartDate;
+                tbDiscount.EndDate = model.EndDate;
+
+                // Cập nhật lại các sản phẩm nếu cần:
+                var oldProducts = _context.TbDiscountProducts.Where(p => p.DiscountId == tbDiscount.Id);
+                _context.TbDiscountProducts.RemoveRange(oldProducts);
+
+                foreach (var productId in model.ProductIds)
+                {
+                    _context.TbDiscountProducts.Add(new TbDiscountProduct
+                    {
+                        Id = Guid.NewGuid(),
+                        DiscountId = tbDiscount.Id,
+                        ProductId = productId
+                    });
+                }
+
                 _context.SaveChanges();
             }
             else {
@@ -78,6 +122,7 @@ namespace GUI.Controllers
                 _context.SaveChanges();
             }
             // Điều hướng đến trang hiển thị danh sách giảm giá hoặc thông báo thành công
+            TempData["RegisterSuccess"] = "Thành công!";
             return RedirectToAction("Index");
         }
         [HttpGet]
@@ -94,8 +139,15 @@ namespace GUI.Controllers
 
             var products = _context.TbProducts.ToList();
 
+            var categories = _context.TbCategories.Select(c => new CategoryDTO
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+
             var model = new CreateDiscountViewModel
             {
+                Id = discount.Id,
                 Name = discount.Name,
                 DiscountType = discount.DiscountType,
                 DiscountValue = discount.DiscountValue,
@@ -103,25 +155,32 @@ namespace GUI.Controllers
                 StartDate = discount.StartDate,
                 EndDate = discount.EndDate,
                 Products = products,
-                ProductIds = selectedProductIds
+                ProductIds = selectedProductIds,
+                Categories = categories
             };
 
-            return View("Create", model); // Có thể dùng lại view tạo discount
+            return View("Detail", model); // Có thể dùng lại view tạo discount
         }
         [HttpGet]
         [Route("Discount/Create")]
         public IActionResult Create()
         {
-            var productIdList = _context.TbDiscountProducts.Select(c => c.ProductId).ToList();
+            var now = DateTime.Now;
 
             var products = _context.TbProducts
-                .Where(p => !productIdList.Contains(p.Id))
+                .Where(p => !_context.TbDiscountProducts.Any(dp => dp.ProductId == p.Id &&
+                              _context.TbDiscounts.Any(d => d.Id == dp.DiscountId && d.EndDate >= now)))
                 .ToList();
 
-            // Trả về View với Model là danh sách sản phẩm
+            var categories = _context.TbCategories.Select(c => new CategoryDTO
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
             var model = new CreateDiscountViewModel
             {
-                Products = products
+                Products = products,
+                Categories = categories
             };
 
             return View(model);

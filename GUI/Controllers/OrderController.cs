@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using Rotativa.AspNetCore;
 using System.Net.WebSockets;
-using OrderItem = GUI.Models.DTOs.Order_DTO.OrderItem;
+using OrderItem = DATN_ACV_DEV.Model_DTO.Order_DTO.OrderItem;
 
 namespace GUI.Controllers;
 
@@ -46,7 +46,9 @@ public class OrderController : Controller
     [FromQuery] int status = 0,
     [FromQuery] decimal? minAmount = null,
     [FromQuery] decimal? maxAmount = null,
-    [FromQuery] string? orderCodePrefix = "")
+    [FromQuery] string? orderCodePrefix = "", 
+    DateTime? startDate = null, 
+    DateTime? endDate = null)
     {
         try
         {
@@ -79,8 +81,17 @@ public class OrderController : Controller
             {
                 orders = orders.Where(o => o.FinalAmount <= maxAmount.Value);
             }
+            if (startDate.HasValue)
+            {
+                orders = orders.Where(o => o.CreateDate >= startDate.Value.Date);
+            }
+            if (endDate.HasValue)
+            {
+                orders = orders.Where(o => o.CreateDate <= endDate.Value.Date.AddDays(1).AddTicks(-1));
+            }
 
-            return View(orders);
+
+            return View(orders.OrderByDescending(c=>c.CreateDate));
         }
         catch (Exception ex)
         {
@@ -132,7 +143,19 @@ public class OrderController : Controller
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
+
         var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{id}");
+
+        if (!rawResponse.IsSuccessStatusCode)
+        {
+            var errorText = await rawResponse.Content.ReadAsStringAsync();
+            return StatusCode((int)rawResponse.StatusCode, new
+            {
+                success = false,
+                message = $"Không thể lấy đơn hàng. Lỗi từ API: {errorText}"
+            });
+        }
+
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
@@ -141,17 +164,28 @@ public class OrderController : Controller
 
         order.ShippingInfo.IsCustomerTakeYourSelf = order.IsCustomerTakeYourSelf;
         order.ShippingInfo.IsSameAsCustomerAddress = order.IsSameAsCustomerAddress;
-        order.PaymentInfo.Products = order.Items.Select(e => $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
+        order.PaymentInfo.Products = order.Items.Select(e =>
+            $"{e.ProductName} - {e.Price.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))}").ToArray();
 
         HttpContext.Session.SaveCurrentOrder(order);
 
         var tempOrderSaveButton = string.Empty;
-        if(order.IsDraft || order.Code.StartsWith("TEMP"))
+        if (order.IsDraft || order.Code.StartsWith("TEMP"))
             tempOrderSaveButton = await RenderViewAsync(TempSaveOrderButtonPartialView, default);
-
+        var mappedItems = order.Items.Select(x => new GUI.Models.DTOs.Order_DTO.OrderItem
+        {
+            ProductName = x.ProductName,
+            ProductImage = x.ProductImage,
+            Color = x.Color,
+            Size = x.Size,
+            Quantity = x.Quantity,
+            Price = x.Price,
+            Code = x.Code,
+            Id = x.Id
+        }).ToList();
         return Json(new
         {
-            Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
+            Items = await RenderViewAsync(OrderItemListPartialView, mappedItems),
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
@@ -252,17 +286,14 @@ public class OrderController : Controller
 
         if (rawResponse.IsSuccessStatusCode)
         {
+
             var orders = await FetchOrderList();
 
             try
             {
-                foreach (var item in orders)
+                if (order.Customer.Email != "")
                 {
-                    await _emailService.SendOrderConfirmationAsync(item.Customer.Email, item.Code, item.Customer.Name, item.Customer.PhoneNumber, item.StatusText, "", 1);
-                }
-                if (orders.Count() == 0 && order.Status == 7)
-                {
-                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1);
+                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1, null, order.Items);
                 }
             }
             catch (Exception ex)
@@ -415,10 +446,20 @@ public class OrderController : Controller
     public async Task<IActionResult> ClearOrder()
     {
         var order = HttpContext.Session.GetCurrentOrder(clearFirst: true);
-
+        var mappedItems = order.Items.Select(x => new GUI.Models.DTOs.Order_DTO.OrderItem
+        {
+            ProductName = x.ProductName,
+            ProductImage = x.ProductImage,
+            Color = x.Color,
+            Size = x.Size,
+            Quantity = x.Quantity,
+            Price = x.Price,
+            Code = x.Code,
+            Id = x.Id
+        }).ToList();
         return Json(new
         {
-            Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
+            Items = await RenderViewAsync(OrderItemListPartialView, mappedItems),
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),

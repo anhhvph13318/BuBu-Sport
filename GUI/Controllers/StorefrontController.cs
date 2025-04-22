@@ -286,17 +286,20 @@ namespace GUI.Controllers
             foreach (var item in promotion)
             {
                 var discount = _context.TbDiscounts
-                    .Where(c => c.Id == item.DiscountId)
+                    .Where(c => c.Id == item.DiscountId && c.EndDate >= DateTime.Now)
                     .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
                     .FirstOrDefault();
-                foreach (var item1 in model.Data.LstProduct)
+                if (discount != null)
                 {
-                    if (item.ProductId == item1.Id)
+                    foreach (var item1 in model.Data.LstProduct)
                     {
-                        item1.PriceSale = item1.Price;
-                        item1.Price = Convert.ToDecimal(item1.Price - discount);
+                        if (item.ProductId == item1.Id)
+                        {
+                            item1.PriceSale = item1.Price;
+                            item1.Price = Convert.ToDecimal(item1.Price - discount);
+                        }
                     }
-                }
+                }   
             }
             return View(model);
         }
@@ -448,7 +451,7 @@ namespace GUI.Controllers
                 var codeCancel = RandomCodeGenerator.GenerateRandomCode();
                 tbOrder.OrderCodeGhn = codeCancel;
                 _context.SaveChanges();
-                await _emailService.SendOrderConfirmationAsync(email, orderCode, name, phone, codeCancel, "", 2);
+                await _emailService.SendOrderConfirmationAsync(email, orderCode, name, phone, codeCancel, "", 2, null, null);
             }
             if (reasonCancel != null && codeCancelOrder != null)
             {
@@ -895,7 +898,7 @@ namespace GUI.Controllers
                     }
                     else
                     {
-                        await _emailService.SendOrderConfirmationAsync(obj.email, result.Data.orderCode, result.Data.nameCustomer, result.Data.phoneNumber, "Chờ xác nhận", "", 1);
+                        await _emailService.SendOrderConfirmationAsync(obj.email, result.Data.orderCode, result.Data.nameCustomer, result.Data.phoneNumber, "Chờ xác nhận", "", 1,result.Data.products, null);
                         return Ok(new { success = true, redirect = false, orderId = result.Data.orderCode ?? result.Data.id.ToString() });
                     }
                 }

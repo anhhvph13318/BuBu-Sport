@@ -109,6 +109,7 @@ public class CategoryController : ControllerSharedBase
         var categories = await FetchCategory();
         return Json(new
         {
+            Message = "Đăng ký thành công!",
             Table = await RenderViewAsync("_CategoryTable", categories),
             Modal = await RenderViewAsync("_CategoryModal", new CategoryDTO())
         });
@@ -116,9 +117,22 @@ public class CategoryController : ControllerSharedBase
 
     [HttpGet]
     [Route("search")]
-    public async Task<IActionResult> Search([FromQuery] string name = "")
-    {
+    public async Task<IActionResult> Search([FromQuery] string name = "", int status = 0)
+    {     
         var categories = await _context.TbCategories.AsNoTracking()
+            .Where(e => e.Name.StartsWith(name) && e.Status == status)
+            .Select(e => new CategoryDTO
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Status = (int)e.Status!,
+                CreateDate = e.CreateDate
+            })
+            .OrderBy(e => e.CreateDate)
+            .ToListAsync();
+        if (status == 2)
+        {
+            categories = await _context.TbCategories.AsNoTracking()
             .Where(e => e.Name.StartsWith(name))
             .Select(e => new CategoryDTO
             {
@@ -129,7 +143,7 @@ public class CategoryController : ControllerSharedBase
             })
             .OrderBy(e => e.CreateDate)
             .ToListAsync();
-
+        }
         return Json(new
         {
             Table = await RenderViewAsync("_CategoryTable", categories)

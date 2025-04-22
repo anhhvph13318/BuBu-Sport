@@ -4,9 +4,9 @@
     {
         public CreateOrderResponse()
         {
-            products = new List<OrderProduct>();
+            products = new List<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderProduct>();
         }
-        public List<OrderProduct> products { get; set; }
+        public List<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderProduct> products { get; set; }
         public List<Guid> cartDetailId { get; set; }
         public decimal? totalAmountDiscount { get; set; }
         public decimal? amountShip { get; set; }

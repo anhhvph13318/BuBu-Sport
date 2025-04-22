@@ -65,7 +65,7 @@ namespace GUI.Controllers
             foreach (var item in promotion)
             {
                 var discount = _context.TbDiscounts
-                    .Where(c => c.Id == item.DiscountId)
+                    .Where(c => c.Id == item.DiscountId && c.EndDate >= DateTime.Now)
                     .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
                     .FirstOrDefault();
                 foreach (var item1 in model.Data.LstProduct)

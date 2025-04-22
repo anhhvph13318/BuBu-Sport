@@ -18,6 +18,8 @@ namespace DATN_ACV_DEV.Model_DTO.Order_DTO
         public Guid categoryId { get; set; }
         public string productName { get; set; }
         public string productCode { get; set; }
+        public string sizeName { get; set; }
+        public string colorName { get; set; }
         public decimal? price { get; set; }
         public int? weight { get; set; }
         public string? url { get; set; }

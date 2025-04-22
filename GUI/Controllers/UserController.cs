@@ -79,6 +79,7 @@ public class UserController : ControllerSharedBase
                 ModelState.AddModelError("UserName", result.Messages.FirstOrDefault().MessageText);
                 return Empty;
             }
+            TempData["RegisterSuccess"] = "Đăng ký thành công!";
             return RedirectToAction(nameof(Index));
         }
         catch
@@ -111,6 +112,7 @@ public class UserController : ControllerSharedBase
             var param = JsonConvert.SerializeObject(user);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<DetailUserResponse>>(res) ?? new();
+            TempData["RegisterSuccess"] = "Cập nhật thành công!";
             return RedirectToAction(nameof(Index));
         }
         catch

@@ -76,21 +76,6 @@ function showDeatail(id) {
         });
 }
 
-function search() {
-    const keyword = $('#categorySearch').val();
-    fetch(`${CREATE_CATEGORY}/search?name=${keyword}`)
-        .then(res => res.json())
-        .then(data => {
-            $('#categoryTable').html('');
-            $('#categoryTable').html(data.table);
-        });
-}
-
-function reset() {
-    $('#categorySearch').val('');
-    search();
-}
-
 function clear() {
     $('#categoryName').val('');
     $('#categoryStatus').checked();

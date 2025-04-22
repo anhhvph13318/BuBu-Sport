@@ -295,18 +295,18 @@
             const tableBody = document.getElementById("sizeTableBody");
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-                        <td class="align-middle">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
-                                <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
-                            </div>
-                        </td>
-                        <td class="align-middle text-center">
-                            <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
-                                   id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
-                            <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
-                        </td>
-                    `;
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
+                                    <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
+                                </div>
+                            </td>
+                            <td class="align-middle text-center">
+                                <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
+                                       id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
+                                <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
+                            </td>
+                        `;
             tableBody.insertBefore(newRow, tableBody.firstChild);
 
             const newCheckbox = newRow.querySelector(".sizeCheckbox");
@@ -336,7 +336,7 @@
         const priceInput = document.getElementById('priceInput');
         const priceFormatted = document.getElementById('priceFormatted');
 
-        priceInput.addEventListener('input', function() {
+        priceInput.addEventListener('input', function () {
             // Hiển thị giá đã định dạng bên dưới ô input
             if (this.value) {
                 priceFormatted.textContent = parseInt(this.value).toLocaleString('vi-VN') + ' ₫';
@@ -348,7 +348,7 @@
         // Xử lý size checkbox và quantity input
         const sizeCheckboxes = document.querySelectorAll('.sizeCheckbox');
         sizeCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
+            checkbox.addEventListener('change', function () {
                 const sizeItem = this.closest('.size-item');
                 const quantityInput = sizeItem.querySelector('.quantityInput');
 
@@ -585,8 +585,8 @@
         setUniqueProductCode();
 
         // Xử lý thêm màu sắc
-        $('#categorySelect').on('change', function() {
-            if($(this).val() === 'add_new') {
+        $('#categorySelect').on('change', function () {
+            if ($(this).val() === 'add_new') {
                 $('#addColorModal').modal('show');
                 $(this).val(''); // Reset selection
             }

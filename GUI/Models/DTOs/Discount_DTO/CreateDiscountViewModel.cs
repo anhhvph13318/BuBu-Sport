@@ -14,5 +14,6 @@ namespace GUI.Models.DTOs.Discount_DTO
 
         public List<Guid> ProductIds { get; set; }   // Danh sách ID các sản phẩm được chọn
         public List<TbProduct> Products { get; set; } // Danh sách sản phẩm để hiển thị trong giao diện
+        public List<CategoryDTO> Categories { get; set; }
     }
 }

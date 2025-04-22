@@ -39,7 +39,7 @@ namespace GUI
                     ShippingInfo = new ShippingInfo(),
                     PaymentInfo = new PaymentInfo(),
                     Customer = new CustomerInfo(),
-                    Items = new List<OrderItem>()
+                    Items = new List<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderItem>()
                 };
 
                 session.SaveCurrentOrder(order);

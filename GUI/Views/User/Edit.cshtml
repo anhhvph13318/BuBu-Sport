@@ -64,22 +64,47 @@
                     <a asp-action="Index" class="btn btn-secondary">Quay trở lại</a>
                     <button type="button" class="btn btn-primary" id="saveButton">
                         <span class="spinner-border spinner-border-sm" id="spinner" role="status" aria-hidden="true" style="display:none;"></span>
-                        Save
+                        Cập nhật
                     </button>
                 </div>
             </div>
         </div>
     </form>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
     document.getElementById('saveButton').addEventListener('click', function () {
-        const isConfirmed = confirm('Bạn có chắc muốn lưu không?');
-        if (isConfirmed) {
-            const spinner = document.getElementById('spinner');
-            spinner.style.display = 'inline-block'; // Hiện spinner khi nhấn nút
-            this.closest('form').submit(); // Gửi form
-        }
+        Swal.fire({
+            title: 'Bạn có chắc muốn cập nhật không?',
+            text: "Thao tác này sẽ cập nhật dữ liệu!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('spinner').style.display = 'inline-block';
+                document.querySelector('form').submit(); // submit form HTML
+            }
+        });
     });
+    // thông báo khi đăng ký thành công
+    document.addEventListener("DOMContentLoaded", function () {
+    @if (TempData["RegisterSuccess"] != null)
+    {
+        <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: '@Html.Raw(TempData["RegisterSuccess"])',
+                    confirmButtonText: 'OK'
+                });
+        </text>
+    }
+
+                });
 </script>

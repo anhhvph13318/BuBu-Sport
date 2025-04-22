@@ -2,7 +2,7 @@
 {
     public class UpdateItemOrderRequest
     {
-        public IList<OrderItem> Items { get; set; }
+        public IList<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderItem> Items { get; set; }
         public int Status { get; set; }
     }
 }

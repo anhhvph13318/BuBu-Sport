@@ -1,1 +1,19 @@
-﻿<button class="btn btn-primary text-nowrap w-100" onclick="saveOrder(true)">Lưu tạm</button>
+﻿<button id="tempSaveButton" class="btn btn-primary text-nowrap w-100" onclick="confirmCreateOrderDraft()">Lưu tạm</button>
+<script>
+    function confirmCreateOrderDraft() {
+
+
+        Swal.fire({
+            title: 'Xác nhận tạo hóa đơn',
+            text: "Bạn có chắc chắn muốn tạo hóa đơn này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveOrder(true)
+            }
+        });
+    }
+</script>

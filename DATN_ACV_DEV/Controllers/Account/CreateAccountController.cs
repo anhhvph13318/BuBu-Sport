@@ -32,10 +32,13 @@ namespace DATN_ACV_DEV.Controllers.Account
         }
         public void AccessDatabase()
         {
-            _context.Add(_Account);
-            _context.SaveChanges();
-            _response.ID = _Account.Id;
-            _res.Data = _response;
+            if (_res.Status != "400")
+            {
+                _context.Add(_Account);
+                _context.SaveChanges();
+                _response.ID = _Account.Id;
+                _res.Data = _response;
+            }
         }
               
         public void CheckAuthorization()
@@ -46,7 +49,7 @@ namespace DATN_ACV_DEV.Controllers.Account
         public void GenerateObjects()
         {
             var phonecheck = _context.TbAccounts.Where(c => c.PhoneNumber == _request.PhoneNumber).Select(c => c.Id).FirstOrDefault();
-            if (phonecheck != null)
+            if (phonecheck == Guid.Empty)
             {
                 #region Tạo mới 1 bản ghi customer ngay khi khách hàng đăng ký
                 _requestCustomer.Name = _request.Name;
@@ -69,7 +72,10 @@ namespace DATN_ACV_DEV.Controllers.Account
             }
             else
             {
-                _response.Message = "Số điện thoại đăng ký đã được đăng ký, vui lòng đăng ký bằng số khác !!!";
+                _res.Status = StatusCodes.Status400BadRequest.ToString();
+                _res.Messages.Add(
+                    Message.CreateErrorMessage("400", "PhoneNumberExists", "Số điện thoại đã được đăng ký, vui lòng thử lại bằng số khác !!!", "PhoneNumber")
+                );
             }
         }
 

@@ -125,7 +125,7 @@
                 </div>
 
                 <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary" id="submitButton"><i class="fas fa-save me-1"></i>Lưu biến thể</button>
+                    <button type="button" class="btn btn-primary" id="submitButton"onclick="confirmAction()"><i class="fas fa-save me-1"></i>Lưu biến thể</button>
                     <a href="@Context.Request.Headers["Referer"]" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Quay lại</a>
                 </div>
             </div>
@@ -156,6 +156,24 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function confirmAction() {
+
+        Swal.fire({
+            title: 'Cảnh báo',
+            text: "Bạn có chắc chắn muốn thực hiện hành động này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var event = new Event('submit', { 'bubbles': true, 'cancelable': true });
+                document.querySelector('form').dispatchEvent(event);
+            }
+        });
+
+        return false; // Ngừng submit form nếu chưa xác nhận
+    }
     document.addEventListener("DOMContentLoaded", function () {
         // Xử lý checkbox kích thước
         document.querySelectorAll(".sizeCheckbox").forEach(checkbox => {
@@ -219,11 +237,13 @@
             const selectedSizes = [];
             document.querySelectorAll("#sizeTableBody tr").forEach(row => {
                 const checkbox = row.querySelector(".sizeCheckbox");
-                const quantityInput = row.querySelector(".quantityInput");
-                const sizeId = checkbox.getAttribute("data-size-id");
-                const quantity = parseInt(quantityInput.value);
-                if (checkbox.checked && quantity > 0) {
-                    selectedSizes.push({ sizeId, quantity });
+                if (checkbox && checkbox.checked) {
+                    const quantityInput = row.querySelector(".quantityInput");
+                    const sizeId = checkbox.getAttribute("data-size-id");
+                    const quantity = parseInt(quantityInput.value);
+                    if (quantity > 0) {
+                        selectedSizes.push({ sizeId, quantity });
+                    }
                 }
             });
 
@@ -251,26 +271,38 @@
                 return;
             }
 
-            // Xóa các input ẩn cũ
-            document.querySelectorAll('input[name^="SizesQuantities"]').forEach(input => input.remove());
+            const formData = new FormData();
 
-            // Thêm kích thước và số lượng đã chọn
+            formData.append("ProductID", document.getElementById("productId").value);
+            formData.append("Color", colorSelect.value);
+            formData.append("UrlImage", urlImage);
+
             selectedSizes.forEach((size, i) => {
-                const quantityInput = document.createElement('input');
-                quantityInput.type = 'hidden';
-                quantityInput.name = `SizesQuantities[${i}].QuantitySize`;
-                quantityInput.value = size.quantity;
-
-                const sizeIdInput = document.createElement('input');
-                sizeIdInput.type = 'hidden';
-                sizeIdInput.name = `SizesQuantities[${i}].IdSize`;
-                sizeIdInput.value = size.sizeId;
-
-                this.appendChild(quantityInput);
-                this.appendChild(sizeIdInput);
+                formData.append(`SizesQuantities[${i}].IdSize`, size.sizeId);
+                formData.append(`SizesQuantities[${i}].QuantitySize`, size.quantity);
             });
 
-            this.submit();
+            fetch(document.querySelector('form').action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                }
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.text();
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Đã xảy ra lỗi khi gửi dữ liệu: ' + error.message
+                });
+            });
         });
 
         // Thu gọn/bỏ thu gọn bảng kích thước
@@ -297,9 +329,25 @@
         });
 
         // Lưu màu sắc mới
-        document.getElementById("saveNewColor").addEventListener("click", async function () {
+        document.getElementById("saveNewColor").addEventListener("click", function () {
+            Swal.fire({
+                title: 'Xác nhận lưu màu sắc',
+                text: "Bạn có chắc chắn muốn lưu màu sắc này?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có, lưu lại!',
+                cancelButtonText: 'Không, hủy bỏ!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    saveColor();
+                }
+            });
+        });
+
+        async function saveColor() {
             const newColorName = document.getElementById("newColorName").value.trim();
             const productId = document.getElementById("modalProductId").value;
+
             if (!newColorName) {
                 Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
                 return;
@@ -311,7 +359,9 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name: newColorName, productId })
                 });
+
                 if (!response.ok) throw new Error("Thêm màu thất bại!");
+
                 const newColor = await response.json();
                 const select = document.getElementById("colorSelect");
                 const newOption = document.createElement("option");
@@ -319,18 +369,35 @@
                 newOption.textContent = newColor.name;
                 newOption.selected = true;
                 select.insertBefore(newOption, select.lastElementChild);
+
                 bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
                 document.getElementById("newColorName").value = "";
                 window.location.reload();
             } catch (error) {
                 Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
             }
-        });
+        }
 
         // Lưu kích thước mới
-        document.getElementById("saveNewSize").addEventListener("click", async function () {
+        document.getElementById("saveNewSize").addEventListener("click", function () {
+            Swal.fire({
+                title: 'Xác nhận lưu size',
+                text: "Bạn có chắc chắn muốn lưu size này?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có, lưu lại!',
+                cancelButtonText: 'Không, hủy bỏ!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    saveSize();
+                }
+            });
+        });
+
+        async function saveSize() {
             const newSizeName = document.getElementById("newSizeName").value.trim();
             const productId = document.getElementById("modalProductIdSize").value;
+
             if (!newSizeName) {
                 Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên size' });
                 return;
@@ -342,25 +409,22 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ SizeName: newSizeName, productId })
                 });
+
                 if (!response.ok) throw new Error("Thêm size thất bại!");
+
                 const newSize = await response.json();
                 const tableBody = document.getElementById("sizeTableBody");
                 const newRow = document.createElement("tr");
                 newRow.innerHTML = `
-                    <td class="align-middle">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
-                            <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
-                        </div>
-                    </td>
-                    <td class="align-middle text-center">
-                        <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
-                               id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
-                        <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
-                    </td>
-                `;
+                <td class="align-middle">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
+                        <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
+                    </div>
+                </td>
+           
+            `;
                 tableBody.insertBefore(newRow, tableBody.firstChild);
-
                 const newCheckbox = newRow.querySelector(".sizeCheckbox");
                 newCheckbox.addEventListener("change", function () {
                     const sizeId = this.getAttribute("data-size-id");
@@ -378,11 +442,15 @@
 
                 bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
                 document.getElementById("newSizeName").value = "";
+
+                // Hiển thị thông báo thành công
+                await Swal.fire({ icon: 'success', title: 'Thành công', text: 'Thêm size thành công!' });
+
                 window.location.reload();
             } catch (error) {
                 Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
             }
-        });
+        }
 
         // Xử lý tải ảnh
         $('#fileInput').on("change", function (e) {
