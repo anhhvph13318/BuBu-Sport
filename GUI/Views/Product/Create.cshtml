@@ -663,6 +663,14 @@
             });
         }
     });
+    document.getElementById('nextStep').addEventListener('click', function () {
+        // Save state when moving to section 2
+        localStorage.setItem("activeSection", "imageSection");
+
+        // Switch sections
+        document.getElementById('infoSection').style.display = 'none';
+        document.getElementById('imageSection').style.display = 'block';
+    });
     document.addEventListener("DOMContentLoaded", function () {
         // Format hiển thị giá khi nhập
         const priceInput = document.getElementById('priceInput');
