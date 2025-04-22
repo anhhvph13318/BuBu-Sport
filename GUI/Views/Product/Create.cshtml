@@ -243,33 +243,236 @@
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const sectionId = localStorage.getItem("scrollToSection");
+        if (sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            localStorage.removeItem("scrollToSection"); // cleanup
+        }
+    });
+</script>
+<script>
+    function saveSection1Data() {
+        // Lưu dữ liệu từ các trường trong section 1
+        localStorage.setItem("productCode", document.getElementById("productCode").value);
+        localStorage.setItem("productName", document.getElementById("Name").value);
+        localStorage.setItem("productPrice", document.getElementById("priceInput").value);
+        localStorage.setItem("productCategory", document.getElementById("CategoryId").value);
+        localStorage.setItem("productDescription", document.getElementById("Description").value);
+    }
+    function restoreSection1Data() {
+        // Khôi phục dữ liệu cho các trường trong section 1
+        const productCode = localStorage.getItem("productCode");
+        const productName = localStorage.getItem("productName");
+        const productPrice = localStorage.getItem("productPrice");
+        const productCategory = localStorage.getItem("productCategory");
+        const productDescription = localStorage.getItem("productDescription");
+
+        // Điền lại dữ liệu vào form nếu có
+        if (productCode) document.getElementById("productCode").value = productCode;
+        if (productName) document.getElementById("Name").value = productName;
+        if (productPrice) {
+            document.getElementById("priceInput").value = productPrice;
+            // Cập nhật lại định dạng giá (nếu có)
+            if (typeof updatePriceFormat === 'function') {
+                updatePriceFormat();
+            }
+        }
+        if (productCategory) document.getElementById("CategoryId").value = productCategory;
+        if (productDescription) document.getElementById("Description").value = productDescription;
+    }
+    function clearSection1Data() {
+        localStorage.removeItem("productCode");
+        localStorage.removeItem("productName");
+        localStorage.removeItem("productPrice");
+        localStorage.removeItem("productCategory");
+        localStorage.removeItem("productDescription");
+    }
+    function confirmAction() {
+
+        Swal.fire({
+            title: 'Cảnh báo',
+            text: "Bạn có chắc chắn muốn thực hiện hành động này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng chọn "Đồng ý", submit form
+                document.querySelector('form').submit(); // Submit form sau khi xác nhận
+            }
+        });
+
+        return false; // Ngừng submit form nếu chưa xác nhận
+    }
     // Lưu màu sắc mới
-    document.getElementById("saveNewColor").addEventListener("click", async function () {
+
+    async function saveNewColor() {
         const Name = document.getElementById("newColorName").value.trim();
         if (!Name) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
-            return;
+            return null;
         }
 
         try {
+            // Set the active section BEFORE making the request
+            saveSection1Data();
+            localStorage.setItem("activeSection", "imageSection");
+
             const response = await fetch("/ProductDetail/CreateColorDetail", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name: Name })
             });
+
             if (!response.ok) throw new Error("Thêm màu thất bại!");
+
             const newColor = await response.json();
-            const select = document.getElementById("colorSelect");
-            const newOption = document.createElement("option");
-            newOption.value = newColor.id;
-            newOption.textContent = newColor.name;
-            newOption.selected = true;
-            select.insertBefore(newOption, select.lastElementChild);
-            bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
             document.getElementById("newColorName").value = "";
+            bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
+
+            // Reload page while preserving section state
             window.location.reload();
+            return newColor;
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+            return null;
+        }
+    }
+
+    // Color confirmation click handler
+    document.getElementById("saveNewColor").addEventListener("click", async function () {
+        const result = await Swal.fire({
+            title: 'Xác nhận thực hiện hành động',
+            text: "Bạn có chắc chắn muốn thực hiện hành động này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        });
+
+        if (result.isConfirmed) {
+            await saveNewColor(); // This now correctly saves section state
+        }
+    });
+
+    // DOMContentLoaded event handler
+    document.addEventListener("DOMContentLoaded", function () {
+        const infoSection = document.getElementById("infoSection");
+        const imageSection = document.getElementById("imageSection");
+        const section = localStorage.getItem("activeSection");
+
+        // Kiểm tra URL hiện tại để xác định nếu đang ở trang thêm mới sản phẩm
+        const currentUrl = window.location.pathname.toLowerCase();
+        const isAddNewProductPage = currentUrl.includes("create") || currentUrl.includes("add");
+        if (isAddNewProductPage) {
+            restoreSection1Data();
+        }
+        // Nếu là trang thêm mới sản phẩm và KHÔNG có thao tác thêm màu/size trước đó
+        // thì luôn hiển thị section 1 (mặc định)
+        if (isAddNewProductPage && !section) {
+            // Xóa activeSection trong localStorage nếu có
+            localStorage.removeItem("activeSection");
+
+            // Hiển thị section 1, ẩn section 2
+            if (infoSection && imageSection) {
+                infoSection.style.display = "block";
+                imageSection.style.display = "none";
+            }
+        }
+        // Nếu có localStorage activeSection (do thêm màu/size) thì giữ đúng section đó
+        else if (section === "imageSection") {
+            // Hiển thị section 2, ẩn section 1
+            if (infoSection && imageSection) {
+                infoSection.style.display = "none";
+                imageSection.style.display = "block";
+            }
+        }
+        // Mặc định khác hoặc khi không có activeSection
+        else {
+            // Hiển thị section 1, ẩn section 2
+            if (infoSection && imageSection) {
+                infoSection.style.display = "block";
+                imageSection.style.display = "none";
+            }
+        }
+    });
+
+    // Xử lý khi click nút next
+    document.getElementById('nextStep').addEventListener('click', function () {
+        // Lưu trạng thái khi chuyển sang section 2
+        localStorage.setItem("activeSection", "imageSection");
+
+        // Hiển thị section 2, ẩn section 1
+        document.getElementById('infoSection').style.display = 'none';
+        document.getElementById('imageSection').style.display = 'block';
+    });
+
+    // Xử lý khi click nút quay lại
+    document.getElementById('prevStep').addEventListener('click', function () {
+        // Xóa trạng thái khi quay lại section 1
+        localStorage.removeItem("activeSection");
+
+        // Hiển thị section 1, ẩn section 2
+        document.getElementById('infoSection').style.display = 'block';
+        document.getElementById('imageSection').style.display = 'none';
+    });
+
+    // THÊM MỚI: Xử lý khi submit form thêm sản phẩm
+    document.addEventListener("DOMContentLoaded", function () {
+        // Tìm form thêm sản phẩm
+        const productForm = document.querySelector("form");
+
+        if (productForm) {
+            productForm.addEventListener("submit", function (event) {
+                // Không ngăn form submit mặc định vì chúng ta vẫn muốn nó được xử lý
+
+                // Reset activeSection trong localStorage khi form được submit
+                localStorage.removeItem("activeSection");
+                clearSection1Data();
+
+                // Có thể thêm code xử lý khác nếu cần
+                console.log("Form submitted, activeSection has been reset");
+
+                // Form tiếp tục submit bình thường
+            });
+        }
+
+        // Nếu có thông báo thành công từ controller (có thể kiểm tra qua query string hoặc TempData)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success') || sessionStorage.getItem('productAddedSuccessfully')) {
+            // Xóa thông báo thành công nếu dùng sessionStorage
+            sessionStorage.removeItem('productAddedSuccessfully');
+
+            // Đảm bảo xóa activeSection
+            localStorage.removeItem("activeSection");
+
+            // Hiển thị thông báo thành công nếu cần
+            if (urlParams.has('success')) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Sản phẩm đã được thêm thành công.'
+                });
+            }
+        }
+    });
+
+    // THÊM MỚI: Thêm listener cho nút submit
+    document.addEventListener("DOMContentLoaded", function () {
+        const submitButton = document.getElementById("submitButton");
+
+        if (submitButton) {
+            submitButton.addEventListener("click", function () {
+                // Đảm bảo xóa trạng thái section và dữ liệu section 1 trước khi form submit
+                localStorage.removeItem("activeSection");
+                // Không xóa dữ liệu section 1 ở đây vì nếu validate fail, dữ liệu sẽ bị mất
+                // Chỉ xóa dữ liệu sau khi submit thành công
+            });
         }
     });
     // Mở modal thêm kích thước
@@ -278,6 +481,22 @@
     });
     // Lưu size mới
     document.getElementById("saveNewSize").addEventListener("click", async function () {
+        Swal.fire({
+            title: 'Xác nhận lưu size',
+            text: "Bạn có chắc chắn muốn lưu size này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveNewSize();
+            }
+        });
+    });
+
+    // Save New Size Function
+    async function saveNewSize() {
         const SizeName = document.getElementById("newSizeName").value.trim();
         if (!SizeName) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên size' });
@@ -285,29 +504,29 @@
         }
 
         try {
+            saveSection1Data();
+            // Set the active section BEFORE making the request
+            localStorage.setItem("activeSection", "imageSection");
+
             const response = await fetch("/ProductDetail/CreateSizeDetail", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ SizeName: SizeName })
             });
+
             if (!response.ok) throw new Error("Thêm size thất bại!");
+
             const newSize = await response.json();
             const tableBody = document.getElementById("sizeTableBody");
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-                            <td class="align-middle">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
-                                    <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
-                                </div>
-                            </td>
-                            <td class="align-middle text-center">
-                                <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
-                                       id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
-                                <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
-                            </td>
-                        `;
-            tableBody.insertBefore(newRow, tableBody.firstChild);
+                    <td class="align-middle">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
+                            <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
+                        </div>
+                    </td>
+                `;
 
             const newCheckbox = newRow.querySelector(".sizeCheckbox");
             newCheckbox.addEventListener("change", function () {
@@ -326,9 +545,122 @@
 
             bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
             document.getElementById("newSizeName").value = "";
+
+            // Reload page while preserving section state
             window.location.reload();
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+        }
+    }
+
+    // DOMContentLoaded event handler with default state
+    document.addEventListener("DOMContentLoaded", function () {
+        const infoSection = document.getElementById("infoSection");
+        const imageSection = document.getElementById("imageSection");
+        const section = localStorage.getItem("activeSection");
+
+        // Kiểm tra URL hiện tại để xác định nếu đang ở trang thêm mới sản phẩm
+        const currentUrl = window.location.pathname.toLowerCase();
+        const isAddNewProductPage = currentUrl.includes("create") || currentUrl.includes("add");
+
+        // Nếu là trang thêm mới sản phẩm và KHÔNG có thao tác thêm màu/size trước đó
+        // thì luôn hiển thị section 1 (mặc định)
+        if (isAddNewProductPage && !section) {
+            // Xóa activeSection trong localStorage nếu có
+            localStorage.removeItem("activeSection");
+
+            // Hiển thị section 1, ẩn section 2
+            if (infoSection && imageSection) {
+                infoSection.style.display = "block";
+                imageSection.style.display = "none";
+            }
+        }
+        // Nếu có localStorage activeSection (do thêm màu/size) thì giữ đúng section đó
+        else if (section === "imageSection") {
+            // Hiển thị section 2, ẩn section 1
+            if (infoSection && imageSection) {
+                infoSection.style.display = "none";
+                imageSection.style.display = "block";
+            }
+        }
+        // Mặc định khác hoặc khi không có activeSection
+        else {
+            // Hiển thị section 1, ẩn section 2
+            if (infoSection && imageSection) {
+                infoSection.style.display = "block";
+                imageSection.style.display = "none";
+            }
+        }
+    });
+
+    // Xử lý khi click nút next
+    document.getElementById('nextStep').addEventListener('click', function () {
+        // Lưu trạng thái khi chuyển sang section 2
+        localStorage.setItem("activeSection", "imageSection");
+
+        // Hiển thị section 2, ẩn section 1
+        document.getElementById('infoSection').style.display = 'none';
+        document.getElementById('imageSection').style.display = 'block';
+    });
+
+    // Xử lý khi click nút quay lại
+    document.getElementById('prevStep').addEventListener('click', function () {
+        // Xóa trạng thái khi quay lại section 1
+        localStorage.removeItem("activeSection");
+
+        // Hiển thị section 1, ẩn section 2
+        document.getElementById('infoSection').style.display = 'block';
+        document.getElementById('imageSection').style.display = 'none';
+    });
+
+    // THÊM MỚI: Xử lý khi submit form thêm sản phẩm
+    document.addEventListener("DOMContentLoaded", function () {
+        // Tìm form thêm sản phẩm
+        const productForm = document.querySelector("form");
+
+        if (productForm) {
+            productForm.addEventListener("submit", function (event) {
+                // Không ngăn form submit mặc định vì chúng ta vẫn muốn nó được xử lý
+
+                // Reset activeSection trong localStorage khi form được submit
+                localStorage.removeItem("activeSection");
+
+                // Có thể thêm code xử lý khác nếu cần
+                console.log("Form submitted, activeSection has been reset");
+
+                // Form tiếp tục submit bình thường
+            });
+        }
+
+        // Nếu có thông báo thành công từ controller (có thể kiểm tra qua query string hoặc TempData)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success') || sessionStorage.getItem('productAddedSuccessfully')) {
+            // Xóa thông báo thành công nếu dùng sessionStorage
+            sessionStorage.removeItem('productAddedSuccessfully');
+
+            // Đảm bảo xóa activeSection
+            localStorage.removeItem("activeSection");
+
+            // Hiển thị thông báo thành công nếu cần
+            if (urlParams.has('success')) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Sản phẩm đã được thêm thành công.'
+                });
+            }
+        }
+    });
+
+    // THÊM MỚI: Thêm listener cho nút submit
+    document.addEventListener("DOMContentLoaded", function () {
+        const submitButton = document.getElementById("submitButton");
+
+        if (submitButton) {
+            submitButton.addEventListener("click", function () {
+                // Đảm bảo xóa trạng thái section trước khi form submit
+                localStorage.removeItem("activeSection");
+            });
         }
     });
     document.addEventListener("DOMContentLoaded", function () {

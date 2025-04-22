@@ -1,3 +1,4 @@
+
 const productStorage = new ProductStorage();
 
 // toast setup
@@ -360,6 +361,8 @@ function saveOrder(isDraft) {
 }
 
 function removeDraft(id) {
+    console.log("Bắt đầu hàm removeDraft với id:", id); // Debug: Kiểm tra id truyền vào
+
     Swal.fire({
         title: 'Xác nhận xóa đơn hàng',
         text: 'Bạn có chắc muốn xóa đơn hàng này không?',
@@ -368,24 +371,69 @@ function removeDraft(id) {
         confirmButtonText: 'Có, xóa!',
         cancelButtonText: 'Hủy'
     }).then((result) => {
+        console.log("Kết quả confirm dialog:", result); // Debug: Kiểm tra kết quả confirm
+
         if (result.isConfirmed) {
+            console.log("Người dùng đã xác nhận xóa"); // Debug: Xác nhận người dùng đồng ý
+
+            // Hiển thị trạng thái loading
+            Swal.fire({
+                title: 'Đang xóa...',
+                text: 'Vui lòng chờ trong giây lát',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    console.log("Đang hiển thị loading..."); // Debug: Kiểm tra loading
+                }
+            });
+
+            console.log("Gọi API xóa đơn hàng:", REMOVE_ORDER_TEMP_API(id)); // Debug: Kiểm tra API endpoint
+
             fetch(REMOVE_ORDER_TEMP_API(id), {
                 method: 'DELETE'
             })
                 .then(res => {
-                    if (res.ok) {
-                        toastr.success("Xóa đơn hàng thành công !");
-                        location.reload();
-                    } else {
+                    console.log("Phản hồi từ API:", res); // Debug: Kiểm tra response
+
+                    if (!res.ok) {
                         return res.json().then(data => {
+                            console.error("Lỗi từ API:", data); // Debug: Log lỗi chi tiết
                             throw new Error(data.message || "Xóa đơn hàng thất bại!");
                         });
                     }
+                    return res.json().catch(() => ({})); // Trả về object rỗng nếu không có dữ liệu JSON
+                })
+                .then(() => {
+                    console.log("Xóa thành công, hiển thị thông báo"); // Debug: Kiểm tra bước thành công
+
+                    // Hiển thị thông báo thành công
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: 'Đơn hàng đã được xóa thành công',
+                        icon: 'success',
+                        confirmButtonText: 'Đóng'
+                    }).then(() => {
+                        console.log("Người dùng đóng thông báo, reload trang"); // Debug: Kiểm tra reload
+                        location.reload();
+                    });
+
+                    console.log("Xóa đơn hàng thành công!"); // Thay thế toastr.success
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    toastr.error(error.message || "Đã xảy ra lỗi khi xóa đơn hàng!");
+                    console.error("Lỗi trong quá trình xóa:", error); // Debug: Log lỗi đầy đủ
+
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: error.message || "Đã xảy ra lỗi khi xóa đơn hàng!",
+                        icon: 'error',
+                        confirmButtonText: 'Đóng'
+                    });
+
+                    console.error("Lỗi khi xóa đơn hàng:", error.message || "Đã xảy ra lỗi!"); // Thay thế toastr.error
                 });
+        } else {
+            console.log("Người dùng đã hủy xóa"); // Debug: Kiểm tra trường hợp hủy
         }
     });
 }
