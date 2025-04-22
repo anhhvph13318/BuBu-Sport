@@ -50,17 +50,22 @@
                             }
                         </select>
 
-                        <input type="text" id="productSearch" class="form-control form-control-sm w-auto" placeholder="Tìm theo tên..." onkeyup="filterProducts()" />
+                        <input type="text" id="codeSearch" class="form-control form-control-sm w-auto" placeholder="Tìm theo mã..." onkeyup="filterProducts()" />
+                        <input type="text" id="nameSearch" class="form-control form-control-sm w-auto" placeholder="Tìm theo tên..." onkeyup="filterProducts()" />
                     </div>
 
                     <div class="overflow-auto border rounded p-2" style="max-height: 200px;">
                         @foreach (var product in Model.Products)
                         {
-                            <div class="form-check" data-category="@product.CategoryId">
+                            <div class="form-check" data-category="@product.CategoryId" data-code="@product.Code" data-name="@product.Name">
                                 <input class="form-check-input" type="checkbox"
                                        name="ProductIds" value="@product.Id"
                                 @(Model.ProductIds != null && Model.ProductIds.Contains(product.Id) ? "checked" : "") />
-                                <label class="form-check-label">@product.Name (@product.Price.ToString("N0") đ)</label>
+                                <label class="form-check-label">
+                                    <span class="fw-medium">[@product.Code]</span> @product.Name -
+                                    <span class="text-primary">@product.Price.ToString("N0") đ</span>
+                                    <span class="ms-2 text-muted">(Số lượng: @product.Quantity)</span>
+                                </label>
                             </div>
                         }
 
@@ -155,18 +160,21 @@
 
     function filterProducts() {
         const categoryId = document.getElementById("categoryFilter").value;
-        const searchTerm = document.getElementById("productSearch").value.toLowerCase();
+        const codeSearch = document.getElementById("codeSearch").value.toLowerCase();
+        const nameSearch = document.getElementById("nameSearch").value.toLowerCase();
         const items = document.querySelectorAll(".form-check[data-category]");
         let visibleCount = 0;
 
         items.forEach(item => {
-            const label = item.querySelector("label").textContent.toLowerCase();
+            const itemCode = item.getAttribute("data-code").toLowerCase();
+            const itemName = item.getAttribute("data-name").toLowerCase();
             const itemCat = item.getAttribute("data-category");
 
             const matchCategory = !categoryId || itemCat === categoryId;
-            const matchName = label.includes(searchTerm);
+            const matchCode = !codeSearch || itemCode.includes(codeSearch);
+            const matchName = !nameSearch || itemName.includes(nameSearch);
 
-            if (matchCategory && matchName) {
+            if (matchCategory && matchCode && matchName) {
                 item.style.display = "block";
                 visibleCount++;
             } else {
