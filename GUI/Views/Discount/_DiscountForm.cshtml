@@ -4,6 +4,7 @@
     <form asp-controller="Discount" asp-action="CreateDiscount" method="post" onsubmit="return confirmAction()">
         <input type="hidden" name="Id" value="@Model.Id" />
         <input type="hidden" name="actionType" value="@(Model.Id != Guid.Empty ? "update" : "create")" />
+        <input type="hidden" asp-for="DiscountType" value="percent" />
 
         <div class="row g-3">
             <!-- Cột trái -->
@@ -14,18 +15,11 @@
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Kiểu giảm giá</label>
-                    <select asp-for="DiscountType" class="form-select form-select-sm" onchange="toggleMaxDiscount()" id="discountType">
-                        <option value="percent">Giảm theo %</option>
-                        <option value="fixed">Giảm cố định</option>
-                    </select>
+                    <div class="form-control form-control-sm">Giảm theo %</div>
                 </div>
                 <div class="mb-2">
-                    <label class="form-label">Giá trị giảm</label>
-                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" />
-                </div>
-                <div class="mb-2" id="maxDiscountAmountDiv">
-                    <label class="form-label">Giảm tối đa</label>
-                    <input asp-for="MaxDiscountAmount" class="form-control form-control-sm" type="number" />
+                    <label class="form-label">Giá trị giảm (%)</label>
+                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" max="100" />
                 </div>
             </div>
 
@@ -38,7 +32,7 @@
                 <div class="mb-2 row g-2">
                     <div class="col-6">
                         <label class="form-label">Bắt đầu</label>
-                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local"/>
+                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local" />
                     </div>
                     <div class="col-6">
                         <label class="form-label">Kết thúc</label>
@@ -121,23 +115,16 @@
     @if (TempData["RegisterSuccess"] != null)
     {
         <text>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Thành công!',
-                    text: '@Html.Raw(TempData["RegisterSuccess"])',
-                    confirmButtonText: 'OK'
-                });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: '@Html.Raw(TempData["RegisterSuccess"])',
+                        confirmButtonText: 'OK'
+                    });
         </text>
     }
-        });
-    function toggleMaxDiscount() {
-        const selected = document.getElementById("discountType").value;
-        document.getElementById("maxDiscountAmountDiv").style.display = selected === "percent" ? "block" : "none";
-    }
-    window.onload = function () {
-        toggleMaxDiscount();
-        filterProducts(); // Gọi luôn lọc khi load nếu có giá trị sẵn
-    };
+        filterProducts(); // Khởi tạo lọc sản phẩm
+    });
 
     function confirmAction() {
         const actionType = document.querySelector('input[name="actionType"]').value;
@@ -190,4 +177,3 @@
         document.getElementById("noProductMessage").style.display = visibleCount === 0 ? "block" : "none";
     }
 </script>
-

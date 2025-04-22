@@ -111,7 +111,7 @@
                                      data-name="@item.Name"
                                      data-category="@item.CategoryName"
                                      data-status="@(item.Quantity > 0 ? "available" : "out-of-stock")"
-                                     data-price="@item.Price"
+                                     data-price="@item.Price"*
                                      data-price="@item.PriceSale"
                                      data-colors="@item.Color?.Replace(" ", "").ToLowerInvariant()"
                                      data-sizes="@item.SizeName?.Replace(" ", "").ToLowerInvariant()">

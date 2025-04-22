@@ -287,7 +287,7 @@ namespace GUI.Controllers
             {
                 var discount = _context.TbDiscounts
                     .Where(c => c.Id == item.DiscountId && c.EndDate >= DateTime.Now)
-                    .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+                    .Select(c => c.DiscountValue)
                     .FirstOrDefault();
                 if (discount != null)
                 {
@@ -296,7 +296,7 @@ namespace GUI.Controllers
                         if (item.ProductId == item1.Id)
                         {
                             item1.PriceSale = item1.Price;
-                            item1.Price = Convert.ToDecimal(item1.Price - discount);
+                            item1.Price = Convert.ToDecimal(item1.Price - (item1.Price * discount / 100));
                         }
                     }
                 }   
@@ -404,11 +404,11 @@ namespace GUI.Controllers
             var productId = _context.TbDiscountProducts.Where(c => c.ProductId == result.Data.Id).Select(c => c.DiscountId).FirstOrDefault();
             var discount = _context.TbDiscounts
                .Where(c => c.Id == productId)
-               .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+               .Select(c => c.DiscountValue)
                .FirstOrDefault();
             if (discount != null)
             {
-                result.Data.Price = Convert.ToDecimal(result.Data.Price - discount);
+                result.Data.Price = Convert.ToDecimal(result.Data.Price - (result.Data.Price * discount / 100));
             }
             var model = result.Data;
 
@@ -648,11 +648,11 @@ namespace GUI.Controllers
                         var productId = _context.TbDiscountProducts.Where(c => c.ProductId == item.ProductID).Select(c => c.DiscountId).FirstOrDefault();
                         var discount = _context.TbDiscounts
                        .Where(c => c.Id == productId)
-                       .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+                       .Select(c => c.DiscountValue)
                        .FirstOrDefault();
                         if (discount != null)
                         {
-                            item.Price = Convert.ToDecimal(item.Price - discount);
+                            item.Price = Convert.ToDecimal(item.Price - (item.Price * discount / 100));
                         }
                     }
                     return View(model);
@@ -718,11 +718,11 @@ namespace GUI.Controllers
                 var productId = _context.TbDiscountProducts.Where(c => c.ProductId == item.ProductID).Select(c => c.DiscountId).FirstOrDefault();
                 var discount = _context.TbDiscounts
                .Where(c => c.Id == productId)
-               .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+               .Select(c => c.DiscountValue)
                .FirstOrDefault();
                 if (discount != null)
                 {
-                    item.Price = Convert.ToDecimal(item.Price - discount);
+                    item.Price = Convert.ToDecimal(item.Price - (item.Price * discount / 100));
                 }
             }
             
