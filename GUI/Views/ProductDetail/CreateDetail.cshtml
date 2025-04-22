@@ -167,8 +167,8 @@
             cancelButtonText: 'Không, hủy bỏ!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Nếu người dùng chọn "Đồng ý", submit form
-                document.querySelector('form').submit(); // Submit form sau khi xác nhận
+                var event = new Event('submit', { 'bubbles': true, 'cancelable': true });
+                document.querySelector('form').dispatchEvent(event);
             }
         });
 
@@ -237,11 +237,13 @@
             const selectedSizes = [];
             document.querySelectorAll("#sizeTableBody tr").forEach(row => {
                 const checkbox = row.querySelector(".sizeCheckbox");
-                const quantityInput = row.querySelector(".quantityInput");
-                const sizeId = checkbox.getAttribute("data-size-id");
-                const quantity = parseInt(quantityInput.value);
-                if (checkbox.checked && quantity > 0) {
-                    selectedSizes.push({ sizeId, quantity });
+                if (checkbox && checkbox.checked) {
+                    const quantityInput = row.querySelector(".quantityInput");
+                    const sizeId = checkbox.getAttribute("data-size-id");
+                    const quantity = parseInt(quantityInput.value);
+                    if (quantity > 0) {
+                        selectedSizes.push({ sizeId, quantity });
+                    }
                 }
             });
 
@@ -269,26 +271,38 @@
                 return;
             }
 
-            // Xóa các input ẩn cũ
-            document.querySelectorAll('input[name^="SizesQuantities"]').forEach(input => input.remove());
+            const formData = new FormData();
 
-            // Thêm kích thước và số lượng đã chọn
+            formData.append("ProductID", document.getElementById("productId").value);
+            formData.append("Color", colorSelect.value);
+            formData.append("UrlImage", urlImage);
+
             selectedSizes.forEach((size, i) => {
-                const quantityInput = document.createElement('input');
-                quantityInput.type = 'hidden';
-                quantityInput.name = `SizesQuantities[${i}].QuantitySize`;
-                quantityInput.value = size.quantity;
-
-                const sizeIdInput = document.createElement('input');
-                sizeIdInput.type = 'hidden';
-                sizeIdInput.name = `SizesQuantities[${i}].IdSize`;
-                sizeIdInput.value = size.sizeId;
-
-                this.appendChild(quantityInput);
-                this.appendChild(sizeIdInput);
+                formData.append(`SizesQuantities[${i}].IdSize`, size.sizeId);
+                formData.append(`SizesQuantities[${i}].QuantitySize`, size.quantity);
             });
 
-            this.submit();
+            fetch(document.querySelector('form').action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                }
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.text();
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Đã xảy ra lỗi khi gửi dữ liệu: ' + error.message
+                });
+            });
         });
 
         // Thu gọn/bỏ thu gọn bảng kích thước
