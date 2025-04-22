@@ -1,114 +1,137 @@
 ﻿@model GUI.Models.DTOs.Discount_DTO.CreateDiscountViewModel
 
-<div class="p-4 bg-light rounded-3 shadow-sm">
+<div class="p-4 bg-white rounded-lg shadow-md">
     <form asp-controller="Discount" asp-action="CreateDiscount" method="post" onsubmit="return confirmAction()">
         <input type="hidden" name="Id" value="@Model.Id" />
         <input type="hidden" name="actionType" value="@(Model.Id != Guid.Empty ? "update" : "create")" />
         <input type="hidden" asp-for="DiscountType" value="percent" />
 
-        <div class="row g-3">
-            <!-- Cột trái -->
-            <div class="col-md-6">
-                <div class="mb-2">
-                    <label class="form-label">Tên chương trình</label>
-                    <input asp-for="Name" class="form-control form-control-sm" required />
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">Kiểu giảm giá</label>
-                    <div class="form-control form-control-sm">Giảm theo %</div>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">Giá trị giảm (%)</label>
-                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" max="100" />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-1">
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <h3 class="font-medium text-gray-700 mb-2">Thông tin chương trình</h3>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700">Tên chương trình</label>
+                        <input asp-for="Name" class="mt-1 w-full p-1.5 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700">Kiểu giảm giá</label>
+                        <div class="mt-1 p-1.5 border border-gray-300 rounded-md bg-gray-100 text-sm">Giảm theo %</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700">Giá trị giảm (%)</label>
+                        <input asp-for="DiscountValue" class="mt-1 w-full p-1.5 border border-gray-300 rounded-md text-sm" type="number" min="1" max="100" required />
+                    </div>
+
+                    @{
+                        var currentDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+                    }
+                    <div class="mb-3 grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Bắt đầu</label>
+                            <input asp-for="StartDate" class="mt-1 w-full p-1.5 border border-gray-300 rounded-md text-sm" type="datetime-local" required />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Kết thúc</label>
+                            <input asp-for="EndDate" class="mt-1 w-full p-1.5 border border-gray-300 rounded-md text-sm" type="datetime-local" required />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Cột phải -->
-            <div class="col-md-6">
-                @{
-                    var currentDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
-                }
-
-                <div class="mb-2 row g-2">
-                    <div class="col-6">
-                        <label class="form-label">Bắt đầu</label>
-                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local" />
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">Kết thúc</label>
-                        <input asp-for="EndDate" class="form-control form-control-sm" type="datetime-local" />
-                    </div>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label">Sản phẩm áp dụng</label>
-                    <div class="d-flex flex-wrap gap-2 mb-2">
-                        <select class="form-select form-select-sm w-auto" id="categoryFilter" onchange="filterProducts()">
-                            <option value="">-- Tất cả danh mục --</option>
-                            @foreach (var cat in Model.Categories)
-                            {
-                                <option value="@cat.Id">@cat.Name</option>
-                            }
-                        </select>
-
-                        <input type="text" id="productSearch" class="form-control form-control-sm w-auto" placeholder="Tìm theo tên..." onkeyup="filterProducts()" />
-                    </div>
-
-                    <div class="overflow-auto border rounded p-2" style="max-height: 200px;">
-                        @foreach (var product in Model.Products)
-                        {
-                            <div class="form-check" data-category="@product.CategoryId">
-                                <input class="form-check-input" type="checkbox"
-                                       name="ProductIds" value="@product.Id"
-                                @(Model.ProductIds != null && Model.ProductIds.Contains(product.Id) ? "checked" : "") />
-                                <label class="form-check-label">@product.Name (@product.Price.ToString("N0") đ)</label>
+            <div class="md:col-span-2">
+                <div class="bg-gray-50 p-3 rounded-lg h-full">
+                    <h3 class="font-medium text-gray-700 mb-2">Sản phẩm áp dụng</h3>
+                    <div class="mb-3 bg-white p-3 rounded-lg shadow-sm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Danh mục</label>
+                                <select class="w-full p-1.5 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm" id="categoryFilter">
+                                    <option value="">-- Tất cả danh mục --</option>
+                                    @foreach (var cat in Model.Categories)
+                                    {
+                                        <option value="@cat.Id">@cat.Name</option>
+                                    }
+                                </select>
                             </div>
-                        }
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Mã sản phẩm</label>
+                                <input type="text" id="codeFilter" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Nhập mã sản phẩm..." />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Tên sản phẩm</label>
+                                <input type="text" id="productSearch" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Nhập tên sản phẩm..." />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Giá tối thiểu</label>
+                                <input type="number" id="priceFilter" class="w-full p-1.5 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Nhập giá tối thiểu..." />
+                            </div>
+                            <div class="flex items-end">
+                                <button type="button" id="searchButton" class="w-full p-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 text-sm flex items-center justify-center" onclick="filterProducts()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    Tìm kiếm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                        <div id="noProductMessage" class="text-muted small text-center mt-2" style="display:none;">
-                            Không có sản phẩm nào phù hợp.
+                    <div class="border rounded-lg overflow-auto bg-white" style="height: 350px;">
+                        <table class="w-full text-sm text-left text-gray-700">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="p-2 w-5">
+                                        <input type="checkbox" id="selectAll" onclick="toggleSelectAll()" />
+                                    </th>
+                                    <th class="p-2 w-20">Mã</th>
+                                    <th class="p-2 w-30">Tên sản phẩm</th>
+                                    <th class="p-2 w-20">Giá</th>
+                                    <th class="p-2 w-15">Số lượng</th>
+                                    <th class="p-2 w-25">Danh mục</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model.Products)
+                                {
+                                    var category = Model.Categories.FirstOrDefault(c => c.Id == product.CategoryId);
+                                    <tr class="product-row border-b hover:bg-gray-50"
+                                        data-category="@product.CategoryId"
+                                        data-name="@product.Name.ToLower()"
+                                        data-code="@(product.Code?.ToLower() ?? "")"
+                                        data-price="@product.Price">
+                                        <td class="p-2">
+                                            <input class="form-check-input product-checkbox" type="checkbox" name="ProductIds" value="@product.Id" @(Model.ProductIds != null && Model.ProductIds.Contains(product.Id) ? "checked" : "") />
+                                        </td>
+                                        <td class="p-2">@(product.Code ?? "N/A")</td>
+                                        <td class="p-2">@product.Name</td>
+                                        <td class="p-2">@product.Price.ToString("N0") đ</td>
+                                        <td class="p-2">@(product.Quantity > 0 ? product.Quantity.ToString() : "Hết hàng")</td>
+                                        <td class="p-2">@(category?.Name ?? "Không có danh mục")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div id="noProductMessage" class="text-muted text-center p-4 hidden">
+                            Không có sản phẩm nào phù hợp với điều kiện tìm kiếm.
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="d-flex justify-content-end mt-3">
-            <button type="submit" class="btn btn-sm me-2 @(Model.Id != Guid.Empty ? "btn-success" : "btn-primary")">
+        <div class="flex justify-end mt-3 gap-2">
+            <button type="submit" class="px-3 py-1.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-200 text-sm @(Model.Id != Guid.Empty ? "bg-green-600 hover:bg-green-700" : "")">
                 @(Model.Id != Guid.Empty ? "Cập nhật" : "Tạo")
             </button>
-            <a class="btn btn-sm btn-danger" asp-action="Index">Quay lại</a>
+            <a class="px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 text-sm" asp-action="Index">Quay lại</a>
         </div>
     </form>
 </div>
 
-<style>
-    .btn-sm {
-        padding: 0.35rem 1rem;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-        .btn-sm:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-    .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-</style>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -123,57 +146,93 @@
                     });
         </text>
     }
-        filterProducts(); // Khởi tạo lọc sản phẩm
+
+        const searchInputs = ["categoryFilter", "codeFilter", "productSearch", "priceFilter"];
+        searchInputs.forEach(id => {
+            document.getElementById(id).addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    filterProducts();
+                }
+            });
+        });
+
+        filterProducts();
     });
 
     function confirmAction() {
         const actionType = document.querySelector('input[name="actionType"]').value;
         if (!actionType) {
-            document.getElementById('validate-message').style.display = 'block';
-            return false; // Ngừng submit form nếu không có giá trị actionType
+            document.getElementById('validate-message')?.style.display = 'block';
+            return false;
         }
 
-        // Ngừng submit form ngay lập tức
         event.preventDefault();
-
         Swal.fire({
-            title: 'Cảnh báo',
-            text: "Bạn có chắc chắn muốn cập nhật khuyến mại này?",
+            title: 'Xác nhận',
+            text: "Bạn có chắc chắn muốn lưu chương trình khuyến mại này?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Có, lưu lại!',
             cancelButtonText: 'Không, hủy bỏ!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Nếu người dùng chọn "Đồng ý", submit form
-                document.querySelector('form').submit(); // Submit form sau khi xác nhận
+                document.querySelector('form').submit();
             }
         });
-
-        return false; // Ngừng submit form nếu chưa xác nhận
+        return false;
     }
 
     function filterProducts() {
         const categoryId = document.getElementById("categoryFilter").value;
         const searchTerm = document.getElementById("productSearch").value.toLowerCase();
-        const items = document.querySelectorAll(".form-check[data-category]");
+        const codeFilter = document.getElementById("codeFilter").value.toLowerCase();
+        const priceFilter = parseFloat(document.getElementById("priceFilter").value) || 0;
+        const rows = document.querySelectorAll(".product-row");
         let visibleCount = 0;
 
-        items.forEach(item => {
-            const label = item.querySelector("label").textContent.toLowerCase();
-            const itemCat = item.getAttribute("data-category");
+        rows.forEach(row => {
+            const rowCat = row.getAttribute("data-category");
+            const rowName = row.getAttribute("data-name");
+            const rowCode = row.getAttribute("data-code");
+            const rowPrice = parseFloat(row.getAttribute("data-price"));
 
-            const matchCategory = !categoryId || itemCat === categoryId;
-            const matchName = label.includes(searchTerm);
+            const matchCategory = !categoryId || rowCat === categoryId;
+            const matchName = rowName.includes(searchTerm);
+            const matchCode = rowCode.includes(codeFilter);
+            const matchPrice = priceFilter === 0 || rowPrice >= priceFilter;
 
-            if (matchCategory && matchName) {
-                item.style.display = "block";
+            if (matchCategory && matchName && matchCode && matchPrice) {
+                row.style.display = "";
                 visibleCount++;
             } else {
-                item.style.display = "none";
+                row.style.display = "none";
             }
         });
 
         document.getElementById("noProductMessage").style.display = visibleCount === 0 ? "block" : "none";
+
+        updateSelectAllStatus();
+    }
+
+    function updateSelectAllStatus() {
+        const visibleCheckboxes = Array.from(document.querySelectorAll(".product-row:not([style*='display: none']) .product-checkbox"));
+        const checkedVisibleCheckboxes = visibleCheckboxes.filter(cb => cb.checked);
+
+        if (visibleCheckboxes.length > 0) {
+            document.getElementById("selectAll").checked = visibleCheckboxes.length === checkedVisibleCheckboxes.length;
+            document.getElementById("selectAll").indeterminate = checkedVisibleCheckboxes.length > 0 && checkedVisibleCheckboxes.length < visibleCheckboxes.length;
+        } else {
+            document.getElementById("selectAll").checked = false;
+            document.getElementById("selectAll").indeterminate = false;
+        }
+    }
+
+    function toggleSelectAll() {
+        const selectAllCheckbox = document.getElementById("selectAll");
+        const productCheckboxes = document.querySelectorAll(".product-row:not([style*='display: none']) .product-checkbox");
+        productCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
     }
 </script>
