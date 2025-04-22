@@ -252,6 +252,9 @@
         }
 
         try {
+            // Set the active section BEFORE making the request
+            localStorage.setItem("activeSection", "imageSection");
+
             const response = await fetch("/ProductDetail/CreateColorDetail", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -266,11 +269,59 @@
             newOption.selected = true;
             select.insertBefore(newOption, select.lastElementChild);
             bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
-            document.getElementById("newColorName").value = "";
+
+            // Reload page while preserving section state
             window.location.reload();
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
         }
+    }
+
+    // Color confirmation click handler
+    document.getElementById("saveNewColor").addEventListener("click", async function () {
+        const result = await Swal.fire({
+            title: 'Xác nhận thực hiện hành động',
+            text: "Bạn có chắc chắn muốn thực hiện hành động này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        });
+
+        if (result.isConfirmed) {
+            await saveNewColor(); // This now correctly saves section state
+        }
+    });
+
+    // DOMContentLoaded event handler
+    document.addEventListener("DOMContentLoaded", function () {
+        const section = localStorage.getItem("activeSection");
+        const infoSection = document.getElementById("infoSection");
+        const imageSection = document.getElementById("imageSection");
+
+        if (section === "imageSection") {
+            // Show section 2, hide section 1
+            if (infoSection && imageSection) {
+                infoSection.style.display = "none";
+                imageSection.style.display = "block";
+            }
+        } else {
+            // Default state: Show section 1, hide section 2
+            if (infoSection && imageSection) {
+                infoSection.style.display = "block";
+                imageSection.style.display = "none";
+            }
+        }
+    });
+
+    // Next step button handler
+    document.getElementById('nextStep').addEventListener('click', function () {
+        // Save state when moving to section 2
+        localStorage.setItem("activeSection", "imageSection");
+
+        // Switch sections
+        document.getElementById('infoSection').style.display = 'none';
+        document.getElementById('imageSection').style.display = 'block';
     });
     // Mở modal thêm kích thước
     document.getElementById("addSizeButton").addEventListener("click", function () {
@@ -278,6 +329,22 @@
     });
     // Lưu size mới
     document.getElementById("saveNewSize").addEventListener("click", async function () {
+        Swal.fire({
+            title: 'Xác nhận lưu size',
+            text: "Bạn có chắc chắn muốn lưu size này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, lưu lại!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveNewSize();
+            }
+        });
+    });
+
+    // Save New Size Function
+    async function saveNewSize() {
         const SizeName = document.getElementById("newSizeName").value.trim();
         if (!SizeName) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên size' });
@@ -285,29 +352,28 @@
         }
 
         try {
+            // Set the active section BEFORE making the request
+            localStorage.setItem("activeSection", "imageSection");
+
             const response = await fetch("/ProductDetail/CreateSizeDetail", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ SizeName: SizeName })
             });
+
             if (!response.ok) throw new Error("Thêm size thất bại!");
+
             const newSize = await response.json();
             const tableBody = document.getElementById("sizeTableBody");
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-                            <td class="align-middle">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
-                                    <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
-                                </div>
-                            </td>
-                            <td class="align-middle text-center">
-                                <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
-                                       id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
-                                <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
-                            </td>
-                        `;
-            tableBody.insertBefore(newRow, tableBody.firstChild);
+                <td class="align-middle">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
+                        <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
+                    </div>
+                </td>
+            `;
 
             const newCheckbox = newRow.querySelector(".sizeCheckbox");
             newCheckbox.addEventListener("change", function () {
@@ -326,10 +392,41 @@
 
             bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
             document.getElementById("newSizeName").value = "";
+
+            // Reload page while preserving section state
             window.location.reload();
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
         }
+    }
+
+    // DOMContentLoaded event handler with default state
+    document.addEventListener("DOMContentLoaded", function () {
+        const section = localStorage.getItem("activeSection");
+        const infoSection = document.getElementById("infoSection");
+        const imageSection = document.getElementById("imageSection");
+
+        if (section === "imageSection") {
+            // Show section 2, hide section 1
+            if (infoSection && imageSection) {
+                infoSection.style.display = "none";
+                imageSection.style.display = "block";
+            }
+        } else {
+            // Default state: Show section 1, hide section 2
+            if (infoSection && imageSection) {
+                infoSection.style.display = "block";
+                imageSection.style.display = "none";
+            }
+        }
+    });
+    document.getElementById('nextStep').addEventListener('click', function () {
+        // Save state when moving to section 2
+        localStorage.setItem("activeSection", "imageSection");
+
+        // Switch sections
+        document.getElementById('infoSection').style.display = 'none';
+        document.getElementById('imageSection').style.display = 'block';
     });
     document.addEventListener("DOMContentLoaded", function () {
         // Format hiển thị giá khi nhập
