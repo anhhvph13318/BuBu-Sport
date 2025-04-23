@@ -70,6 +70,9 @@ else
                 </div>
             }
         </div>
+        <div style="font-weight: bold; color: #2c3e50; font-size: 16px;">
+            <h5>Ngày tạo hóa đơn : @Model.Created.ToString("dd/MM/yyyy HH:mm")</h5>
+        </div>
 
         <div class="row mb-3">
             <h5>Thông tin khách hàng</h5>
@@ -353,14 +356,23 @@ else
 </div>
 
 <script>
+    const currentStatusLabel = @Html.Raw(Json.Serialize(Model.Status switch
+        {
+            0 => "chờ xác nhận",
+            1 => "chuẩn bị hàng",
+            2 => "đang vận chuyển",
+            4 => "xác nhận",
+            7 => "hoàn thành",
+            _ => "không xác định"
+        }));
+
     function confirmUpdateOrderStatus() {
         const selectedRadio = document.querySelector('input[name="orderStatus"]:checked');
-
         const selectedLabel = selectedRadio.nextElementSibling.textContent.trim();
 
         Swal.fire({
             title: 'Xác nhận cập nhật trạng thái',
-            text: `Bạn có chắc chắn muốn cập nhật trạng thái "${selectedLabel}" không?`,
+            text: `Bạn có chắc chắn muốn cập nhật từ trạng thái "${currentStatusLabel}" sang trạng thái "${selectedLabel}" không?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Có, lưu lại!',

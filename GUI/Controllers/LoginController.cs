@@ -49,7 +49,13 @@ namespace GUI.Controllers
                 return BadRequest(new { success = false, message = "Không thể cập nhật trạng thái cho đơn hàng đã hủy." });
             }
 
-            request.statusText = request.status == 1 ? "Chuẩn bị hàng" : (request.status == 2 ? "Đang vận chuyển" : "Hoàn thành");
+            request.statusText = request.status == 1
+                ? "Chuẩn bị hàng"
+                : request.status == 2
+                    ? "Đang vận chuyển"
+                    : request.status == 4
+                        ? "Xác nhận"
+                        : "Hoàn thành";
 
             var URL = _settings.APIAddress + "api/UpdateStatusONOrder/Process";
             var param = JsonConvert.SerializeObject(request);
