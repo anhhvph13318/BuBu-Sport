@@ -5,11 +5,13 @@
         public static IDictionary<int, string> OrderStepProcessing = new Dictionary<int, string>()
         {
             { 0, "Chờ xác nhận" },
+            { 4, "Xác nhận" }, 
             { 1, "Chuẩn bị hàng" },
             { 2, "Đang giao hàng" },
             { 7, "Hoàn thành" },
             { 3, "Đã hủy" }
         };
+
 
         public static IDictionary<int, string> NextOrderStepProcessing(int currentStep)
         {
@@ -30,7 +32,10 @@
             switch(currentStep)
             {
                 case 0:
-                    steps.Add(1, OrderStepProcessing[1]);
+                    steps.Add(4, OrderStepProcessing[4]);
+                    break;
+                case 4:
+                    steps.Add(1, OrderStepProcessing[1]); 
                     break;
                 case 1:
                     steps.Add(2, OrderStepProcessing[2]);

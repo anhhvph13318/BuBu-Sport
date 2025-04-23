@@ -213,9 +213,10 @@ namespace DATN_ACV_DEV.Utility
             if (status == 1) return Utility.ORDER_STATUS_PREPARE_GOODS_TEXT;
             else if (status == 2) return Utility.ORDER_STATUS_SHIPPED_TEXT;
             else if (status == 3) return Utility.ORDER_STATUS_CANCELLED_TEXT;
-            else if (status == 4) return Utility.ORDER_STATUS_RETURNS_PRODUCT_TEXT;
-            else if (status == 5) return Utility.ORDER_STATUS_PARTIAL_REFUND_TEXT;
-            else if (status == 6) return Utility.ORDER_DURING_THE_RETURN_PERIOD_TEXT;
+            else if (status == 4) return Utility.ORDER_STATUS_CONFIRMED_TEXT;
+            else if (status == 5) return Utility.ORDER_STATUS_RETURNS_PRODUCT_TEXT;
+            else if (status == 6) return Utility.ORDER_STATUS_PARTIAL_REFUND_TEXT;
+            else if (status == 8) return Utility.ORDER_DURING_THE_RETURN_PERIOD_TEXT;
             else if (status == 0) return Utility.ORDER_STATUS_WAIT_CONFIRM_TEXT;
             else return Utility.ORDER_STATUS_DONE_TEXT;
         }

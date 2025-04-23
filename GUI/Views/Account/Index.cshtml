@@ -78,10 +78,10 @@
                     <tr>
                         <th class="text-center" style="width: 50px;">STT</th>
                         <th>Mã tài khoản</th>
+                        <th>Họ và tên</th>
                         <th>Email</th>
                         <th>Số điện thoại</th>
                         <th>Vai trò</th>
-                        <th class="text-center">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,16 +93,11 @@
                             <tr class="account-row" data-role="@account.Role" data-status="@((account.Status == "True" || account.Status == "Active") ? "Active" : "Inactive")">
                                 <td class="text-center">@index</td>
                                 <td><span class="badge bg-secondary">@account.AccountCode</span></td>
+                                <td>@account.FullName</td>
                                 <td>@account.Email</td>
                                 <td>@account.PhoneNumber</td>
                                 <td>
                                     <span class="badge bg-info">@account.Role</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge @((account.Status == "True" || account.Status == "Active") ? "bg-success" : "bg-danger")">
-                                        <i class="bi @((account.Status == "True" || account.Status == "Active") ? "bi-check-circle" : "bi-x-circle") me-1"></i>
-                                        @((account.Status == "True" || account.Status == "Active") ? "Đang hoạt động" : "Không hoạt động")
-                                    </span>
                                 </td>
                             </tr>
                             index++;

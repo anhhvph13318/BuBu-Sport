@@ -24,43 +24,44 @@ else
                 var currentIndex = OrderUtil.OrderStepProcessing.Keys.ToList().IndexOf(Model.Status);
                 var keys = OrderUtil.OrderStepProcessing.Keys.ToList();
                 var i = 0;
-                var canceledKey = 3; // Key của trạng thái "Huỷ"
+                var canceledKey = 3; 
                 var isCanceled = Model.Status == canceledKey;
             }
-            <div class="border m-0 p-3 row" id="status-options">
+            <div class="d-flex flex-wrap justify-content-between gap-2 border m-0 p-3" id="status-options" style="flex-wrap: wrap;">
                 @foreach (var item in OrderUtil.OrderStepProcessing)
                 {
                     var isCurrent = Model.Status == item.Key;
                     var disabled = !(isCurrent || i == currentIndex + 1);
 
-                    // Nếu đang là trạng thái Huỷ => ẩn các trạng thái khác
-                    if (isCanceled && !isCurrent)
+                    if (item.Key == canceledKey && !isCanceled)
                     {
-                        i++;
-                        continue;
+                        disabled = true;
                     }
 
-                    // Nếu KHÔNG phải trạng thái Huỷ => ẩn trạng thái Huỷ
-                    if (!isCanceled && item.Key == canceledKey)
-                    {
-                        i++;
-                        continue;
-                    }
-
-                    <div class="form-check col-3">
-                        <input class="form-check-input"
+                    <div class="form-check flex-fill text-center" style="min-width: 16%;">
+                        <input class="form-check-input d-none order-status-radio"
                                type="radio"
                                name="orderStatus"
                                value="@item.Key"
+                               id="status_@item.Key"
                         @(isCurrent ? "checked" : "")
                         @(disabled ? "disabled" : "") />
-                        <label style="opacity: @(disabled ? "0.5" : "1")" class="form-check-label">@item.Value</label>
+
+                        <label for="status_@item.Key"
+                               class="custom-check-label @(isCurrent ? "active" : "") @(disabled ? "disabled" : "")"
+                               style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; opacity: @(disabled ? "0.5" : "1")">
+                            <span class="check-icon">@(isCurrent ? "✔️" : "⬜")</span>
+                            @item.Value
+                        </label>
                     </div>
                     i++;
                 }
             </div>
 
-            <button type="button" class="btn btn-primary mt-3" onclick="confirmUpdateOrderStatus()">Lưu</button>
+            @if (Model.Status != 7)
+            {
+                <button type="button" class="btn btn-primary mt-3" onclick="confirmUpdateOrderStatus()">Lưu</button>
+            }
 
             @if (!string.IsNullOrEmpty(Model.ReasionCancel))
             {
@@ -68,6 +69,9 @@ else
                     <strong>Lý do hủy đơn hàng:</strong> @Model.ReasionCancel
                 </div>
             }
+        </div>
+        <div style="font-weight: bold; color: #2c3e50; font-size: 16px;">
+            <h5>Ngày tạo hóa đơn : @Model.Created.ToString("dd/MM/yyyy HH:mm")</h5>
         </div>
 
         <div class="row mb-3">
@@ -183,8 +187,8 @@ else
                     </tr>
                     <tr>
                         <td style="text-decoration: underline;">Thành tiền</td>
-                        <td colspan="3" style="color: red; font-weight: bold;" class="pe-2 text-end">  
-                           @((Model.PaymentInfo.TotalAmount - Model.PaymentInfo.TotalDiscount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))  
+                        <td colspan="3" style="color: red; font-weight: bold;" class="pe-2 text-end">
+                            @((Model.PaymentInfo.TotalAmount - Model.PaymentInfo.TotalDiscount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))
                         </td>
                     </tr>
                 </tbody>
@@ -193,7 +197,7 @@ else
 
         <div class="mb-3 mt-3">
             <a class="btn btn-primary" asp-controller="Order" asp-action="Index">Trở về</a>
-            @if (Model.Status == 7) 
+            @if (Model.Status == 7)
             {
                 <a class="btn btn-success" asp-controller="Order" asp-action="ExportInvoicePdf" asp-route-id="@Model.Id"><i class="bi bi-cloud-download-fill"></i> Tải PDF</a>
             }
@@ -309,16 +313,13 @@ else
             }
 
     @@keyframes loading-spinner {
-        0%, 100%
+        0%, 100% {
+            opacity: 1;
+        }
 
-    {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.3;
-    }
-
+        50% {
+            opacity: 0.3;
+        }
     }
 
     .loading-text {
@@ -327,6 +328,18 @@ else
         font-size: 16px;
         font-weight: 500;
         margin: 0;
+    }
+
+    .custom-check-label.disabled {
+        pointer-events: none;
+    }
+
+    .custom-check-label.active .check-icon {
+        content: "✔️";
+    }
+
+    .custom-check-label .check-icon {
+        font-size: 1.2rem;
     }
 </style>
 
@@ -343,11 +356,23 @@ else
 </div>
 
 <script>
+    const currentStatusLabel = @Html.Raw(Json.Serialize(Model.Status switch
+        {
+            0 => "chờ xác nhận",
+            1 => "chuẩn bị hàng",
+            2 => "đang vận chuyển",
+            4 => "xác nhận",
+            7 => "hoàn thành",
+            _ => "không xác định"
+        }));
+
     function confirmUpdateOrderStatus() {
+        const selectedRadio = document.querySelector('input[name="orderStatus"]:checked');
+        const selectedLabel = selectedRadio.nextElementSibling.textContent.trim();
 
         Swal.fire({
             title: 'Xác nhận cập nhật trạng thái',
-            text: "Bạn có chắc chắn muốn cập nhật hóa đơn này?",
+            text: `Bạn có chắc chắn muốn cập nhật từ trạng thái "${currentStatusLabel}" sang trạng thái "${selectedLabel}" không?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Có, lưu lại!',
@@ -358,6 +383,7 @@ else
             }
         });
     }
+
     async function saveOrderStatus() {
         const selectedRadio = document.querySelector('input[name="orderStatus"]:checked');
         if (!selectedRadio) {
@@ -426,50 +452,27 @@ else
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
+
 <script>
-    // confirm trạng thái đơn hàng
-    let previousCheckedRadio = null;
-
     document.addEventListener("DOMContentLoaded", function () {
-        const radios = document.querySelectorAll(".order-status-radio");
+        const radios = document.querySelectorAll("input[name='orderStatus']");
+        const labels = document.querySelectorAll(".custom-check-label");
 
-        // Lưu radio đang được chọn ban đầu
         radios.forEach(radio => {
-            if (radio.checked) {
-                previousCheckedRadio = radio;
-            }
-
-            radio.addEventListener("change", function (e) {
-                const selectedLabel = e.target.nextElementSibling.textContent.trim(); // lấy label bên cạnh
-
-                Swal.fire({
-                    title: `Bạn chắc chắn muốn chuyển trạng thái sang "${selectedLabel}"?`,
-                    icon: 'warning',
-                    confirmButtonColor: '#33a9c4',
-                    confirmButtonText: 'Đồng ý',
-                    showCancelButton: true,
-                    cancelButtonText: 'Hủy',
-                    width: '600px',
-                    padding: '2em',
-                    customClass: {
-                        popup: 'larger-swal'
-                    }
-                }).then((result) => {
-                    if (!result.isConfirmed) {
-                        // Quay lại radio cũ
-                        if (previousCheckedRadio) {
-                            previousCheckedRadio.checked = true;
-                        }
-                    } else {
-                        // Cập nhật radio hiện tại là cái đã chọn
-                        previousCheckedRadio = e.target;
-                    }
+            radio.addEventListener("change", function () {
+                labels.forEach(label => {
+                    label.classList.remove("active");
+                    label.querySelector(".check-icon").textContent = "⬜";
                 });
+
+                const selectedLabel = document.querySelector(`label[for='${radio.id}']`);
+                selectedLabel.classList.add("active");
+                selectedLabel.querySelector(".check-icon").textContent = "✔️";
             });
         });
     });
 </script>
+
 
 @section Scripts {
     <script defer>

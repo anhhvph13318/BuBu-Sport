@@ -78,7 +78,6 @@
                         <th>Số điện thoại</th>
                         <th>Địa chỉ</th>
                         <th class="text-center">Giới tính</th>
-                        <th class="text-center">Trạng thái</th>
                         @* <th class="text-center" style="width: 150px;">Hành động</th> *@
                     </tr>
                 </thead>
@@ -93,12 +92,6 @@
                                 <td>@customer.c.Phone</td>
                                 <td>@customer.c.Address</td>
                                 <td class="text-center">@(customer.c.Sex == 1 ? "Nam" : "Nữ")</td>
-                                <td class="text-center">
-                                    <span class="badge @(customer.c.Status == "Active" ? "bg-success" : "bg-danger")">
-                                        <i class="bi @(customer.c.Status == "Active" ? "bi-check-circle" : "bi-x-circle") me-1"></i>
-                                        @(customer.c.Status == "Active" ? "Hoạt động" : "Ngừng hoạt động")
-                                    </span>
-                                </td>
                                 @* <td class="text-center">
                                     <div class="btn-group">
                                         <a asp-action="Edit" asp-route-id="@customer.c.Id" class="btn btn-outline-warning btn-sm">

@@ -10,14 +10,16 @@
         return o.status switch
         {
             "Chờ xác nhận" => 1,
-            "Chuẩn bị hàng" => 2,
-            "Đang vận chuyển" => 3,
-            "Đã hủy" => 4,
-            "Hoàn thành đơn hàng" => 5,
-            _ => 6
+            "Xác nhận" => 2,
+            "Chuẩn bị hàng" => 3,
+            "Đang vận chuyển" => 4,
+            "Đã hủy" => 5,
+            "Hoàn thành đơn hàng" => 6,
+            _ => 7
         };
     })
     .ThenByDescending(o => o.id);
+
 }
 
 <div class="container-fluid px-4 mt-3">
@@ -55,10 +57,12 @@
                         <select class="form-select" id="statusFilter" name="status">
                             <option value="0" selected="@(Context.Request.Query["status"].ToString() == "0")">-- Tất cả trạng thái --</option>
                             <option value="5" selected="@(Context.Request.Query["status"].ToString() == "5")">Chờ xác nhận</option>
+                            <option value="4" selected="@(Context.Request.Query["status"].ToString() == "4")">Xác nhận</option>
                             <option value="1" selected="@(Context.Request.Query["status"].ToString() == "1")">Chuẩn bị hàng</option>
                             <option value="2" selected="@(Context.Request.Query["status"].ToString() == "2")">Đang vận chuyển</option>
                             <option value="3" selected="@(Context.Request.Query["status"].ToString() == "3")">Đã hủy</option>
                             <option value="7" selected="@(Context.Request.Query["status"].ToString() == "7")">Hoàn thành</option>
+
                         </select>
                     </div>
                 </div>
@@ -150,6 +154,7 @@
                             var statusClass = order.status switch
                             {
                                 "Chờ xác nhận" => "bg-secondary",
+                                "Xác nhận" => "bg-primary",
                                 "Chuẩn bị hàng" => "bg-warning",
                                 "Đang vận chuyển" => "bg-info",
                                 "Đã hủy" => "bg-danger",
