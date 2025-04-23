@@ -40,7 +40,12 @@ namespace GUI.Controllers
 				{
 					Id = a.Id,
 					AccountCode = a.AccountCode,
-					Email = a.Email,
+                    FullName = a.Role == 0
+					? a.Customer != null ? a.Customer.Name : null
+					: a.EmployeeId != null
+						? _context.TbUsers.Where(u => u.Id == a.EmployeeId).Select(u => u.FullName).FirstOrDefault()
+						: null,
+                    Email = a.Email,
 					PhoneNumber = a.PhoneNumber,
 					Role = a.Role == 0 ? "Khách hàng" : "Nhân viên",
 					Status = a.CustomerId != null
