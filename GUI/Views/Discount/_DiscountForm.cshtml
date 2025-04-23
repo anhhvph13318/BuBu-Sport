@@ -1,6 +1,12 @@
 ﻿@model GUI.Models.DTOs.Discount_DTO.CreateDiscountViewModel
 
 <div class="p-4 bg-light rounded-3 shadow-sm">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mb-3">
+            @Html.Raw(TempData["ErrorMessage"])
+        </div>
+    }
     <form asp-controller="Discount" asp-action="CreateDiscount" method="post" onsubmit="return confirmAction()">
         <input type="hidden" name="Id" value="@Model.Id" />
         <input type="hidden" name="actionType" value="@(Model.Id != Guid.Empty ? "update" : "create")" />
@@ -8,7 +14,7 @@
 
         <div class="row g-3">
             <!-- Cột trái -->
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="mb-2">
                     <label class="form-label">Tên chương trình</label>
                     <input asp-for="Name" class="form-control form-control-sm" required />
@@ -24,7 +30,7 @@
             </div>
 
             <!-- Cột phải -->
-            <div class="col-md-6">
+            <div class="col-md-9">
                 @{
                     var currentDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
                 }
@@ -65,6 +71,10 @@
                                     <span class="fw-medium">[@product.Code]</span> @product.Name -
                                     <span class="text-primary">@product.Price.ToString("N0") đ</span>
                                     <span class="ms-2 text-muted">(Số lượng: @product.Quantity)</span>
+                                    @if (Model.ProductsInOtherDiscounts != null && Model.ProductsInOtherDiscounts.Contains(product.Id))
+                                    {
+                                        <span class="badge badge-warning ms-2">Đã thuộc chương trình khác</span>
+                                    }
                                 </label>
                             </div>
                         }
@@ -407,4 +417,46 @@
 
         tableBody.innerHTML = html;
     }
+    function loadProductDiscountInfo() {
+        const productsWithInfo = document.querySelectorAll(".form-check input[type='checkbox']");
+
+        productsWithInfo.forEach(checkbox => {
+            if (checkbox.closest('.form-check').querySelector('.badge-warning')) {
+                const productId = checkbox.value;
+
+                fetch(`/Discount/GetProductDiscountInfo?productId=${productId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const infoElement = document.createElement('span');
+                            infoElement.className = 'ms-2 text-info product-discount-info';
+                            infoElement.setAttribute('data-bs-toggle', 'tooltip');
+                            infoElement.setAttribute('data-bs-html', 'true');
+
+                            let tooltipContent = 'Thuộc các chương trình:<br/>';
+                            data.forEach(info => {
+                                const start = new Date(info.startDate);
+                                const end = new Date(info.endDate);
+                                tooltipContent += `- ${info.discountName}: ${formatDateTime(start)} - ${formatDateTime(end)}<br/>`;
+                            });
+
+                            infoElement.setAttribute('title', tooltipContent);
+                            infoElement.innerHTML = '<i class="bi bi-info-circle"></i>';
+
+                            checkbox.closest('.form-check').querySelector('.badge-warning').after(infoElement);
+
+                            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                return new bootstrap.Tooltip(tooltipTriggerEl);
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error loading product discount info:', error));
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadProductDiscountInfo();
+    });
 </script>
