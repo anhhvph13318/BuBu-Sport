@@ -26,7 +26,6 @@ namespace GUI.Controllers
             httpService = new();
             _context = context;
         }
-
         [Route("/product")]
         public async Task<ActionResult> Index(string? name = "", Guid? categoryId = null, decimal? priceFrom = null, decimal? priceTo = null, int status = 0)
         {
@@ -61,21 +60,27 @@ namespace GUI.Controllers
             // Tải danh sách danh mục để sử dụng trong dropdown filter
             var categories = await FetchCategory();
             ViewBag.Categories = categories;
+
+            // Xử lý khuyến mãi
             var promotion = _context.TbDiscountProducts.ToList();
             foreach (var item in promotion)
             {
                 var discount = _context.TbDiscounts
                     .Where(c => c.Id == item.DiscountId && c.EndDate >= DateTime.Now)
-                    .Select(c => c.DiscountType == "percent" ? c.MaxDiscountAmount : c.DiscountValue)
+                    .Select(c => c.DiscountValue)
                     .FirstOrDefault();
-                foreach (var item1 in model.Data.LstProduct)
+                if (discount != null)
                 {
-                    if (item.ProductId == item1.Id)
+                    foreach (var item1 in model.Data.LstProduct)
                     {
-                        item1.PriceSale = Convert.ToDecimal(item1.Price - discount);
+                        if (item.ProductId == item1.Id)
+                        {
+                            item1.PriceSale = Convert.ToDecimal(item1.Price - (item1.Price * discount / 100));
+                        }
                     }
                 }
             }
+
             return View(model);
         }
 
