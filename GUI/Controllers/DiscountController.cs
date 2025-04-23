@@ -132,12 +132,20 @@ namespace GUI.Controllers
             var discount = _context.TbDiscounts.FirstOrDefault(d => d.Id == id);
             if (discount == null) return NotFound();
 
+            var now = DateTime.Now;
+
             var selectedProductIds = _context.TbDiscountProducts
                 .Where(dp => dp.DiscountId == id)
                 .Select(dp => dp.ProductId)
                 .ToList();
 
-            var products = _context.TbProducts.ToList();
+            var products = _context.TbProducts
+                .Where(p => !_context.TbDiscountProducts.Any(dp =>
+                    dp.ProductId == p.Id &&
+                    dp.DiscountId != id && 
+                    _context.TbDiscounts.Any(d => d.Id == dp.DiscountId && d.EndDate >= now)) 
+                    || selectedProductIds.Contains(p.Id)) 
+                .ToList();
 
             var categories = _context.TbCategories.Select(c => new CategoryDTO
             {
@@ -159,7 +167,7 @@ namespace GUI.Controllers
                 Categories = categories
             };
 
-            return View("Detail", model); // Có thể dùng lại view tạo discount
+            return View("Detail", model);
         }
         [HttpGet]
         [Route("Discount/Create")]
@@ -184,6 +192,73 @@ namespace GUI.Controllers
             };
 
             return View(model);
+        }
+        [HttpGet]
+        [Route("GetDiscountedProducts")]
+        public IActionResult GetDiscountedProducts(Guid? discountId = null, string productCode = "", string productName = "")
+        {
+            var now = DateTime.Now;
+
+            var query = _context.TbDiscountProducts
+                .Join(_context.TbDiscounts,
+                    dp => dp.DiscountId,
+                    d => d.Id,
+                    (dp, d) => new { DiscountProduct = dp, Discount = d })
+                .Join(_context.TbProducts,
+                    joined => joined.DiscountProduct.ProductId,
+                    p => p.Id,
+                    (joined, p) => new {
+                        ProductId = p.Id,
+                        ProductCode = p.Code,
+                        ProductName = p.Name,
+                        ProductPrice = p.Price,
+                        DiscountId = joined.Discount.Id,
+                        DiscountName = joined.Discount.Name,
+                        DiscountType = joined.Discount.DiscountType,
+                        DiscountValue = joined.Discount.DiscountValue,
+                        MaxDiscountAmount = joined.Discount.MaxDiscountAmount,
+                        StartDate = joined.Discount.StartDate,
+                        EndDate = joined.Discount.EndDate
+                    }).AsQueryable(); 
+
+            if (discountId.HasValue && discountId != Guid.Empty)
+            {
+                query = query.Where(x => x.DiscountId == discountId.Value);
+            }
+
+            if (!string.IsNullOrEmpty(productCode))
+            {
+                query = query.Where(x => x.ProductCode.Contains(productCode));
+            }
+
+            if (!string.IsNullOrEmpty(productName))
+            {
+                query = query.Where(x => x.ProductName.Contains(productName));
+            }
+
+            var result = query.ToList();
+            return Json(result);
+        }
+
+        [HttpGet]
+        [Route("GetDiscounts")]
+        public IActionResult GetDiscounts()
+        {
+            try
+            {
+                var discounts = _context.TbDiscounts
+                    .Select(d => new {
+                        Id = d.Id,
+                        Name = d.Name
+                    })
+                    .ToList();
+
+                return Json(discounts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
     }
 }
