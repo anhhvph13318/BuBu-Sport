@@ -60,6 +60,29 @@ namespace GUI.Controllers
             var startDate = model.StartDate;
             var endDate = model.EndDate;
 
+            if (endDate < startDate)
+            {
+                TempData["ErrorMessage"] = "Ngày kết thúc không thể trước ngày bắt đầu. Vui lòng điều chỉnh thời gian!";
+                var products = _context.TbProducts.ToList();
+                var categories = _context.TbCategories.Select(c => new CategoryDTO { Id = c.Id, Name = c.Name }).ToList();
+                var now = DateTime.Now;
+
+                var productsInOtherDiscounts = _context.TbDiscountProducts
+                    .Where(dp => (actionType != "update" || dp.DiscountId != model.Id) &&
+                                _context.TbDiscounts.Any(d => d.Id == dp.DiscountId && d.EndDate >= now))
+                    .Select(dp => dp.ProductId)
+                    .ToList();
+
+                model.Products = products;
+                model.Categories = categories;
+                model.ProductsInOtherDiscounts = productsInOtherDiscounts;
+
+                if (actionType == "update")
+                    return View("Detail", model);
+                else
+                    return View("Create", model);
+            }
+
             // Danh sách sản phẩm trùng lặp
             var conflictingProducts = new List<(Guid ProductId, string ProductName, string DiscountName)>();
 
