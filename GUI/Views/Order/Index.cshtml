@@ -82,18 +82,20 @@
                     <label for="minAmount" class="form-label">Giá tối thiểu</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
-                        <input type="text" class="form-control number-input" id="minAmount" name="minAmount"
+                        <input type="text" class="form-control number-input positive-only" id="minAmount" name="minAmount"
                                value="@(Context.Request.Query["minAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["minAmount"], out var min) ? min.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")"
                                placeholder="Nhập giá tối thiểu...">
+                        <div class="invalid-feedback">Giá trị không được âm</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <label for="maxAmount" class="form-label">Giá tối đa</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
-                        <input type="text" class="form-control number-input" id="maxAmount" name="maxAmount"
+                        <input type="text" class="form-control number-input positive-only" id="maxAmount" name="maxAmount"
                                value="@(Context.Request.Query["maxAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["maxAmount"], out var max) ? max.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")"
                                placeholder="Nhập giá tối đa...">
+                        <div class="invalid-feedback">Giá trị không được âm</div>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -224,12 +226,49 @@
                 }
             });
 
+            // Kiểm tra giá trị không âm cho các trường giá
+            $('.positive-only').on('input', function() {
+                let value = $(this).val().replace(/\./g, ''); // Xóa dấu chấm để xử lý số
+                
+                // Kiểm tra nếu giá trị là số âm
+                if (value.startsWith('-')) {
+                    // Xóa dấu trừ
+                    value = value.substring(1);
+                    // Hiển thị thông báo lỗi
+                    $(this).addClass('is-invalid');
+                    setTimeout(() => {
+                        $(this).removeClass('is-invalid');
+                    }, 2000);
+                }
+                
+                // Cập nhật giá trị đã xử lý
+                if (value && !isNaN(value)) {
+                    $(this).val(Number(value).toLocaleString('vi-VN'));
+                }
+            });
+
             // Xử lý khi submit form để gửi giá trị số thô (không có dấu chấm)
-            $('#searchForm').on('submit', function () {
+            $('#searchForm').on('submit', function (e) {
+                let hasNegativeValues = false;
+                
                 $('.number-input').each(function () {
                     let value = $(this).val().replace(/\./g, ''); // Xóa dấu chấm trước khi gửi
+                    
+                    // Kiểm tra giá trị âm trước khi submit
+                    if (value.startsWith('-')) {
+                        $(this).addClass('is-invalid');
+                        hasNegativeValues = true;
+                        return false; // Ngừng vòng lặp
+                    }
+                    
                     $(this).val(value);
                 });
+                
+                // Ngăn chặn submit nếu có giá trị âm
+                if (hasNegativeValues) {
+                    e.preventDefault();
+                    return false;
+                }
             });
         });
     </script>

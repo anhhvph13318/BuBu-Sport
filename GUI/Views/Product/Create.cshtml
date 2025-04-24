@@ -92,7 +92,12 @@
                 <!-- Cột trái: Màu sắc và Size -->
                 <div class="col-md-6">
                     <div class="form-group mb-4">
-                        <label asp-for="Color" class="form-label fw-semibold">Màu sắc</label>
+                        <label asp-for="Color" class="form-label fw-semibold d-flex justify-content-between align-items-center">
+                            <span>Màu sắc</span>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="addColorButton">
+                                <i class="fas fa-plus me-1"></i>Thêm màu sắc
+                            </button>
+                        </label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-palette"></i></span>
                             <select id="categorySelect" asp-for="Color" class="form-select">
@@ -101,7 +106,6 @@
                                 {
                                     <option value="@item.Id">@item.Name</option>
                                 }
-                                <option value="add_new">➕ Thêm màu sắc</option>
                             </select>
                         </div>
                         <span asp-validation-for="Color" class="text-danger"></span>
@@ -663,6 +667,11 @@
             });
         }
     });
+
+    document.getElementById("addColorButton").addEventListener("click", function() {
+        new bootstrap.Modal(document.getElementById('addColorModal')).show();
+    });
+
     document.getElementById('nextStep').addEventListener('click', function () {
         // Save state when moving to section 2
         localStorage.setItem("activeSection", "imageSection");
@@ -812,11 +821,19 @@
                 return;
             }
 
-            // Kiểm tra section 2 (file ảnh)
+            // Kiểm tra section 2 (file ảnh và màu sắc)
             const fileInput = document.getElementById('fileInput');
+            const colorSelect = document.getElementById('categorySelect');
+
             if (!fileInput.files || fileInput.files.length === 0) {
                 fileInput.classList.add('is-invalid');
                 alert("Vui lòng chọn ảnh sản phẩm");
+                return;
+            }
+
+            if (!colorSelect.value) {
+                colorSelect.classList.add('is-invalid');
+                alert("Vui lòng chọn màu sắc");
                 return;
             }
 
