@@ -30,7 +30,7 @@ else
             <tbody>
                 @foreach (var order in Model.Where(order => order.OrderTypeName == "Tại quầy" || order.OrderTypeName == "Nháp").ToList())
                 {
-                    <tr>
+                    <tr id="order-row-@order.Id" class="order-row">
                         <td>@order.Code</td>
                         <td>@order.Customer.Name</td>
                         <td>@order.PaymentInfo.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
@@ -48,12 +48,18 @@ else
             </tbody>
         </table>
     }
-    
+
 }
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+<style>
+    .highlighted-order {
+        background-color: #e3f2fd; /* Màu xanh nhạt */
+        transition: background-color 0.3s ease;
+    }
+</style>
 <script>
 
     const productStorage = new ProductStorage();
@@ -113,13 +119,13 @@ else
                 const item = document.createElement('a');
                 item.setAttribute('class', 'text-decoration-none');
                 const itemContent = `
-                    <div class="d-flex">
-                        <img class="img-thumbnail" style="min-width: 100px; height: 50px" src=${products[i].image} alrt=""/>
-                        <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].name}</p>
-                        <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].color}</p>
-                        <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].size}</p>
-                    </div>
-                `;
+                            <div class="d-flex">
+                                <img class="img-thumbnail" style="min-width: 100px; height: 50px" src=${products[i].image} alrt=""/>
+                                <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].name}</p>
+                                <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].color}</p>
+                                <p class="fs-bold ms-3 text-decoration-none text-black nav-link">${products[i].size}</p>
+                            </div>
+                        `;
 
                 item.onclick = function () {
                     const { id, code, name, price, image, color, size } = products[i]
@@ -208,7 +214,18 @@ else
         toastr.error("Có lỗi xảy ra! Số lượng sản phẩm không đủ")
     }
 
+    // Hàm để xóa highlight từ tất cả các hàng đơn hàng
+    function clearHighlightedOrders() {
+        $('.order-row').removeClass('highlighted-order');
+    }
+
     function show(id) {
+        // Xóa highlight từ tất cả các hàng đơn hàng trước
+        clearHighlightedOrders();
+
+        // Thêm highlight cho hàng đơn hàng hiện tại
+        $(`#order-row-${id}`).addClass('highlighted-order');
+
         fetch(SHOW_ORDER_API(id))
             .then(res => res.json())
             .then(data => {
@@ -322,6 +339,9 @@ else
     }
 
     function clearOrder() {
+        // Xóa highlight từ tất cả các hàng đơn hàng khi làm mới đơn hàng
+        clearHighlightedOrders();
+
         fetch(ORDER_CLEAR_API, {
             method: 'DELETE'
         })
@@ -396,6 +416,9 @@ else
                 $('#orderButtonActionContainer').html(data.buttons);
                 changeResetButtonText(false);
                 interactiveCartItemAndVoucherButton(false);
+
+                // Xóa highlight khi lưu đơn hàng
+                clearHighlightedOrders();
             })
             .then(_ => {
                 if (isDraft) {
@@ -567,8 +590,6 @@ else
     }
 
     function vnpayCheckout() {
-
-
         if (!verify()) return;
 
         const customerInfo = {
@@ -648,8 +669,11 @@ else
         $('#orderPaymentInfoContainer').html(data.Payment);
         $('#orderButtonActionContainer').html(data.Buttons);
 
+        // Xóa highlight khi thanh toán thành công
+        clearHighlightedOrders();
+
         interactiveCartItemAndVoucherButton(false);
-        hangeResetButtonText(false);
+        changeResetButtonText(false);
         $('#tempSaveButtonContainer').html('');
         $('#tempSaveButtonContainer').html(data.TempSaveButton);
     });

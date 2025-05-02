@@ -22,35 +22,25 @@
         </div>
         <div class="card-body">
             <form asp-controller="Customer" asp-action="Index" method="get" class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label for="searchQuery" class="form-label">Tên/SĐT khách hàng</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person"></i></span>
                         <input type="text" class="form-control" id="searchQuery" name="searchQuery" value="@Context.Request.Query["searchQuery"]" placeholder="Nhập tên hoặc số điện thoại...">
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label for="sexFilter" class="form-label">Giới tính</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
                         <select class="form-select" id="sexFilter" name="sexFilter">
                             <option value="">-- Tất cả giới tính --</option>
-                            <option value="1" >Nam</option>
-                            <option value="0" >Nữ</option>
+                            <option value="1">Nam</option>
+                            <option value="0">Nữ</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <label for="statusFilter" class="form-label">Trạng thái</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
-                        <select class="form-select" id="statusFilter" name="statusFilter">
-                            <option value="">Tất cả</option>
-                            <option value="Active">Hoạt động</option>
-                            <option value="Inactive">Ngừng hoạt động</option>
-                        </select>
-                    </div>
-                </div>
+
                 <div class="col-12 mt-3">
                     <button type="submit" class="btn btn-primary me-2">
                         <i class="bi bi-search me-1"></i> Tìm kiếm
@@ -93,18 +83,18 @@
                                 <td>@customer.c.Address</td>
                                 <td class="text-center">@(customer.c.Sex == 1 ? "Nam" : "Nữ")</td>
                                 @* <td class="text-center">
-                                    <div class="btn-group">
-                                        <a asp-action="Edit" asp-route-id="@customer.c.Id" class="btn btn-outline-warning btn-sm">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <a asp-action="Details" asp-route-id="@customer.c.Id" class="btn btn-outline-info btn-sm">
-                                            <i class="bi bi-info-circle"></i>
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@customer.c.Id" class="btn btn-outline-danger btn-sm">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </div>
-                                </td> *@
+                        <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@customer.c.Id" class="btn btn-outline-warning btn-sm">
+                        <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@customer.c.Id" class="btn btn-outline-info btn-sm">
+                        <i class="bi bi-info-circle"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@customer.c.Id" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-trash"></i>
+                        </a>
+                        </div>
+                        </td> *@
                             </tr>
                         }
                     }
