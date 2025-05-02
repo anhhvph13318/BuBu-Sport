@@ -154,9 +154,8 @@
                                                 }
                                             </h4>
                                             <div class="product-btns">
-                                                <button class="quick-view" onclick="redirectToDetail('@item.Id')">
-                                                    <i class="fa fa-eye"></i>
-                                                    <span class="tooltipp">xem chi tiết</span>
+                                                <button class="detail-btn" onclick="redirectToDetail('@item.Id')">
+                                                    XEM CHI TIẾT
                                                 </button>
                                             </div>
                                         </div>
@@ -191,6 +190,54 @@
         </div>
 
         <style>
+            .product-btns .btn {
+                padding: 5px 10px;
+                font-size: 12px;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .detail-btn {
+                display: inline-block;
+                min-width: 120px;
+                padding: 8px 15px;
+                background-color: #0066cc !important; /* Thêm !important để đảm bảo màu nền */
+                color: #fff !important; /* Đổi màu text thành trắng để dễ đọc trên nền xanh */
+                border: 2px solid #0066cc !important; /* Thêm !important */
+                font-weight: bold;
+                text-transform: uppercase;
+                font-size: 12px;
+                text-align: center;
+                cursor: pointer;
+                margin-top: 10px;
+                line-height: 1.5 !important; /* Thay đổi line-height để căn giữa text */
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                transition: none !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                vertical-align: middle !important; /* Thêm để căn giữa text */
+                border-radius: 10px !important;
+            }
+
+                .detail-btn:hover {
+                    background-color: #0066cc !important; /* Thêm !important */
+                    color: #fff !important; /* Giữ màu text trắng khi hover */
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                    border: 2px solid #0066cc !important;
+                    border-radius: 10px !important;
+                }
+            /* Nếu muốn nút rộng hơn */
+            .product-btns {
+                text-align: center; /* Căn giữa nút */
+            }
+
+            /* Đảm bảo text luôn hiển thị */
+            .detail-btn span,
+            .detail-btn::before,
+            .detail-btn::after {
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
 .product-old-price {
     color: #999;
     margin-left: 10px;
