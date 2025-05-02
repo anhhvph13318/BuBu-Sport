@@ -10,7 +10,7 @@ else
 {
     var orders = Model.Where(order => order.OrderTypeName == "Tại quầy" || order.OrderTypeName == "Nháp").ToList();
 
-    @if (orders.Count == 0)
+    if (orders.Count == 0)
     {
         <p class="text-center">Không có đơn hàng tại quầy</p>
     }
@@ -142,12 +142,18 @@ else
 
     function isCustomerTakeYourSelfChange() {
         const shipping = $('#shippingLocation').val();
+        console.log("isCustomerTakeYourSelfChange được gọi với shipping =", shipping);
 
-        if (shipping == "1") {
+        if (shipping == "1") { // Giao hàng
             $('#shippingLocationInfo').css({ 'display': 'block' });
-        } else {
+        } else { // Khách nhận tại quầy
             $('#shippingLocationInfo').css({ 'display': 'none' });
+            // Ẩn tất cả thông báo lỗi khi chuyển sang khách nhận tại quầy
+            $('.text-danger').css('display', 'none');
         }
+
+        // Cập nhật yêu cầu nhập liệu
+        updateRequiredFields();
 
         fetch(CHANGE_SHIPPING_METHOD(shipping))
             .then(res => res.json())
@@ -299,7 +305,9 @@ else
             .then(data => updateItemAndPaymentView(data));
     }
 
-    function verify() {
+    function verify(isDraft = false) {
+        console.log("verify được gọi với isDraft =", isDraft);
+
         let isValid = true;
         const displayErrorMessage = { 'display': 'block' };
         const hideErrorMessage = { 'display': 'none' };
@@ -312,20 +320,29 @@ else
             return isValid;
         }
 
-        if ($('#shippingLocation').val() != "1") return isValid;
+        // Bỏ qua việc kiểm tra thông tin khi lưu tạm hoặc khách nhận tại quầy
+        if (isDraft || $('#shippingLocation').val() === "0") {
+            console.log("Bỏ qua kiểm tra thông tin khách hàng");
+            return true;
+        }
 
-        // validate shipping info
-        if ($('#isSameAsCustomerAddress').is(':checked') == false) {
-            for (const [key, value] of Object.entries(shippingField)) {
-                if ($(key).val().trim() === "") {
-                    isValid = false;
-                    $(value).css(displayErrorMessage);
-                } else {
-                    $(value).css(hideErrorMessage);
-                }
+        console.log("Tiếp tục kiểm tra thông tin khách hàng/giao hàng");
+
+        // Kiểm tra thông tin khách hàng - chỉ áp dụng cho trường hợp "Giao hàng"
+        for (const [key, value] of Object.entries(customerInfoField)) {
+            if (key === '#customerEmail') continue; // Bỏ qua email
+
+            if ($(key).val().trim() === "") {
+                isValid = false;
+                $(value).css(displayErrorMessage);
+            } else {
+                $(value).css(hideErrorMessage);
             }
-        } else {
-            for (const [key, value] of Object.entries(customerInfoField)) {
+        }
+
+        // Kiểm tra thông tin người nhận nếu không giống với khách hàng
+        if ($('#isSameAsCustomerAddress').is(':checked') === false) {
+            for (const [key, value] of Object.entries(shippingField)) {
                 if ($(key).val().trim() === "") {
                     isValid = false;
                     $(value).css(displayErrorMessage);
@@ -335,8 +352,44 @@ else
             }
         }
 
+        console.log("Kết quả kiểm tra:", isValid);
         return isValid;
     }
+    function updateRequiredFields() {
+        const shippingType = $('#shippingLocation').val();
+        console.log("updateRequiredFields được gọi với shippingType =", shippingType);
+
+        const customerInfoFields = [
+            '#customerName', '#customerPhoneNumber', '#customerAddress', '#customerEmail'
+        ];
+
+        // Lấy tất cả các phần tử hiển thị lỗi
+        const errorMessages = [
+            '#order-customer-name', '#order-customer-phone', '#order-customer-address'
+        ];
+
+        if (shippingType === "0") { // Khách nhận tại quầy
+            // Xóa thuộc tính required và ẩn thông báo lỗi
+            customerInfoFields.forEach(field => {
+                $(field).removeAttr('required');
+            });
+
+            errorMessages.forEach(errorMsg => {
+                $(errorMsg).css('display', 'none');
+            });
+
+            // Ẩn các thông báo "Vui lòng nhập..."
+            $('.text-danger').css('display', 'none');
+        } else { // Giao hàng
+            // Thêm thuộc tính required cho các trường bắt buộc
+            customerInfoFields.forEach(field => {
+                if (field !== '#customerEmail') { // Email có thể không bắt buộc
+                    $(field).attr('required', 'required');
+                }
+            });
+        }
+    }
+
 
     function clearOrder() {
         // Xóa highlight từ tất cả các hàng đơn hàng khi làm mới đơn hàng
@@ -356,29 +409,55 @@ else
                 $('#tempSaveButtonContainer').html(data.tempSaveButton);
             });
     }
+    $(document).ready(function () {
+        // Khởi tạo trạng thái required ban đầu
+        updateRequiredFields();
 
+        // Đăng ký sự kiện thay đổi phương thức nhận hàng
+        $('#shippingLocation').on('change', function () {
+            const value = $(this).val();
+            console.log("shippingLocation đã thay đổi thành:", value);
+            updateRequiredFields();
+            isCustomerTakeYourSelfChange();
+        });
+    });
 
     function saveOrder(isDraft) {
-        if (!verify()) return;
+        console.log("saveOrder được gọi với isDraft =", isDraft);
+
+        // Kiểm tra giỏ hàng có sản phẩm không
+        const items = $('#orderItemContainer table tbody tr').length;
+        if (items === 0) {
+            alert("Giỏ hàng đang không có sản phẩm nào!");
+            return;
+        }
+
+        // Bỏ qua verify nếu là nhận tại quầy hoặc lưu tạm
+        const isTakeAway = $('#shippingLocation').val() === "0";
+        if (!isDraft && !isTakeAway && !verify(false)) {
+            return;
+        }
+
         $('#loading-overlay').css('display', 'flex');
+
+        // Chuẩn bị dữ liệu khách hàng
         const customerInfo = {
-            name: $('#customerName').val(),
-            phoneNumber: $('#customerPhoneNumber').val(),
-            address: $('#customerAddress').val(),
-            email: $('#customerEmail').val()
+            name: $('#customerName').val() || "Khách vãng lai", // Mặc định là "Khách lẻ" nếu trống
+            phoneNumber: $('#customerPhoneNumber').val() || "",
+            address: $('#customerAddress').val() || "",
+            email: $('#customerEmail').val() || ""
         };
 
         const shippingInfo = {
-            name: $('#receiverName').val(),
-            phoneNumber: $('#receiverPhone').val(),
-            address: $('#receiverAddress').val()
+            name: $('#receiverName').val() || customerInfo.name,
+            phoneNumber: $('#receiverPhone').val() || customerInfo.phoneNumber,
+            address: $('#receiverAddress').val() || customerInfo.address
         };
 
-        // 🟡 Lấy dữ liệu sản phẩm đang hiển thị trong bảng
+        // Lấy dữ liệu sản phẩm đang hiển thị trong bảng
         const orderItems = [];
         $('#orderItemContainer table tbody tr').each(function () {
             const row = $(this);
-
 
             orderItems.push({
                 id: row.find('.order-item-id').text().trim(),
@@ -392,17 +471,26 @@ else
             });
         });
 
-
         const payload = {
             isCustomerTakeYourSelf: $('#shippingLocation').val() === "0",
             isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
             status: parseInt($('#orderStatus').val()),
-            customerInfo,
-            shippingInfo,
+            customerInfo: {
+                name: isTakeAway ? "Khách tại quầy" : ($('#customerName').val() || "Khách vãng lai"),
+                phoneNumber: isTakeAway ? "" : ($('#customerPhoneNumber').val() || ""),
+                address: isTakeAway ? "" : ($('#customerAddress').val() || ""),
+                email: isTakeAway ? "" : ($('#customerEmail').val() || "")
+            },
+            shippingInfo: {
+                name: isTakeAway ? "" : ($('#receiverName').val() || customerInfo.name),
+                phoneNumber: isTakeAway ? "" : ($('#receiverPhone').val() || customerInfo.phoneNumber),
+                address: isTakeAway ? "" : ($('#receiverAddress').val() || customerInfo.address)
+            },
             isDraft,
-            orderItems // 🔥 Thêm orderItems vào payload
+            orderItems
         };
 
+        // Tiếp tục với quá trình lưu đơn hàng
         fetch(ORDER_TEMP_SAVE_API, {
             method: 'POST',
             headers: {
