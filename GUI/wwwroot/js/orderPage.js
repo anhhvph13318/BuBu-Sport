@@ -152,7 +152,7 @@ function showOutOfStockToastMessage() {
 }
 
 function show(id) {
-    fetch(SHOW_ORDER_API(id))
+    fetch(SHOW_ORDER_APII(id))
         .then(res => res.json())
         .then(data => {
             updateAllView(data);
