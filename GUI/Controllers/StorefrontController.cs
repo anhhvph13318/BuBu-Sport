@@ -742,21 +742,25 @@ namespace GUI.Controllers
                 }
             }
             ViewBag.CartItemCount = cartItemCount;
-           
+
             var promotion = _context.TbDiscountProducts.ToList();
             foreach (var item in model)
             {
                 var productId = _context.TbDiscountProducts.Where(c => c.ProductId == item.ProductID).Select(c => c.DiscountId).FirstOrDefault();
                 var discount = _context.TbDiscounts
-               .Where(c => c.Id == productId)
-               .Select(c => c.DiscountValue)
-               .FirstOrDefault();
+                    .Where(c => c.Id == productId
+                           && c.StartDate <= DateTime.Now  
+                           && c.EndDate >= DateTime.Now)   
+                    .Select(c => c.DiscountValue)
+                    .FirstOrDefault();
+
                 if (discount != null)
                 {
+                    item.PriceSale = item.Price;
                     item.Price = Convert.ToDecimal(item.Price - (item.Price * discount / 100));
                 }
             }
-            
+
             return View(model);
         }
 

@@ -23,9 +23,21 @@
                     <p class="orders-header">Đơn hàng</p>
                     foreach (var order in Model)
                     {
+                        decimal totalAmount = 0;
+                        foreach (var item in order.Items)
+                        {
+                            totalAmount += item.Price * item.Quantity;
+                        }
+
+                        decimal finalTotal = totalAmount;
+                        if (order.PaymentInfo.TotalDiscount > 0)
+                        {
+                            finalTotal -= order.PaymentInfo.TotalDiscount;
+                        }
+
                         <div class="order-title">Đơn hàng @order.Code</div>
-                        <div class="order-container ">
-                            <div class="order-products ">
+                        <div class="order-container">
+                            <div class="order-products">
                                 <div class="order-wrapper">
                                     <table class="order-table">
                                         <thead>
@@ -57,16 +69,9 @@
                                 </div>
                             </div>
                             <div class="order-details">
-                                @if (order.PaymentInfo.TotalDiscount > 0)
-                                {
-                                    <div class="order-col mb-3">
-                                        <div class="order-label">Giảm giá</div>
-                                        <div class="order-value">@order.PaymentInfo.TotalDiscount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
-                                    </div>
-                                }
                                 <div class="order-col mb-3">
                                     <div class="order-label">Tổng thanh toán</div>
-                                    <div class="order-value">@order.PaymentInfo.FinalAmount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
+                                    <div class="order-value">@finalTotal.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
                                 </div>
                                 <div class="order-col mb-3">
                                     <div class="order-label">Thông tin khách hàng</div>
@@ -136,7 +141,7 @@
 
                             </div>
 
-                            </div> //
+                        </div>
                         @if (@order.StatusText == "Chờ xác nhận")
                         {
 
@@ -182,7 +187,7 @@
                                     </form>
                                 </div>
                             </div>
-                        
+
                         }
                         <hr />
                     }
@@ -199,7 +204,7 @@
             title: 'Không Tìm Thấy Đơn Hàng',
             text: 'Vui Lòng Nhập Đúng Mã Đơn Hàng',
             icon: 'error',
-            confirmButtonColor: '#33a9c4', 
+            confirmButtonColor: '#33a9c4',
             confirmButtonText: 'Đồng ý',
             width: '600px',
             padding: '2em',
@@ -214,6 +219,7 @@
     .swal2-container {
         z-index: 9999 !important;
     }
+
     .text-end {
         text-align: right;
     }
@@ -552,141 +558,141 @@
         }
     }
     /* Style cho modal */
-.modal {
-    display: none; /* Ẩn modal mặc định */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4); /* Nền mờ */
-}
-
-/* Nội dung modal */
-.modal-content {
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Nút đóng modal */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-}
-
-/* Tiêu đề modal */
-.modal-content h2 {
-    color: #d9534f;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-/* Form hủy đơn hàng */
-#cancelForm {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Style cho các input và textarea */
-#cancelForm label {
-    font-weight: 600;
-    color: #555;
-}
-
-#cancelForm textarea,
-#cancelForm input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-#cancelForm textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-/* Nút trong modal */
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.modal-actions button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.modal-actions button[type="button"] {
-    background-color: #6c757d;
-    color: white;
-}
-
-.modal-actions button[type="submit"] {
-    background-color: #d9534f;
-    color: white;
-}
-
-.modal-actions button:hover {
-    opacity: 0.9;
-}
-
-/* Nút nhận mã hủy */
-form[method="get"] button {
-    width: 100%;
-    padding: 10px;
-    background-color: #f0ad4e;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-form[method="get"] button:hover {
-    background-color: #ec971f;
-}
-
-/* Responsive cho mobile */
-@@media (max-width: 576px) {
-    .modal-content {
-        width: 95%;
-        margin: 20% auto;
-    }
-    
-    .modal-actions {
-        flex-direction: column;
-    }
-    
-    .modal-actions button {
+    .modal {
+        display: none; /* Ẩn modal mặc định */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
         width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4); /* Nền mờ */
     }
-}
+
+    /* Nội dung modal */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Nút đóng modal */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+    /* Tiêu đề modal */
+    .modal-content h2 {
+        color: #d9534f;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* Form hủy đơn hàng */
+    #cancelForm {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+        /* Style cho các input và textarea */
+        #cancelForm label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        #cancelForm textarea,
+        #cancelForm input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #cancelForm textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+    /* Nút trong modal */
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+        .modal-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+            .modal-actions button[type="button"] {
+                background-color: #6c757d;
+                color: white;
+            }
+
+            .modal-actions button[type="submit"] {
+                background-color: #d9534f;
+                color: white;
+            }
+
+            .modal-actions button:hover {
+                opacity: 0.9;
+            }
+
+    /* Nút nhận mã hủy */
+    form[method="get"] button {
+        width: 100%;
+        padding: 10px;
+        background-color: #f0ad4e;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+        form[method="get"] button:hover {
+            background-color: #ec971f;
+        }
+
+    /* Responsive cho mobile */
+    @@media (max-width: 576px) {
+        .modal-content {
+            width: 95%;
+            margin: 20% auto;
+        }
+
+        .modal-actions {
+            flex-direction: column;
+        }
+
+            .modal-actions button {
+                width: 100%;
+            }
+    }
 
     .larger-swal {
         font-size: 20px;
@@ -727,9 +733,9 @@ form[method="get"] button:hover {
     });
     @if (ViewBag.CancelMessage != null)
     {
-            <div class="alert @(ViewBag.CancelMessageType == "success" ? "alert-success" : "alert-danger")" >
+                <div class="alert @(ViewBag.CancelMessageType == "success" ? "alert-success" : "alert-danger")" >
             @ViewBag.CancelMessage
-                </div>
+                    </div>
     }
         document.addEventListener("DOMContentLoaded", function () {
             const btn = document.getElementById("getCancelCodeBtn");
@@ -796,4 +802,3 @@ form[method="get"] button:hover {
         });
     });
 </script>
-
