@@ -11,49 +11,49 @@
     </div>
 }
 
-<div class="title">Thống kê doanh thu</div>
-<div class="stats-container">
-    <div class="stat-box">
-        <h3>@Model.RevenueToday.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
-        <p>Doanh thu hôm nay</p>
-        <p class="growth-positive">+@Model.GrowthToday% so với @Model.CompareDate</p>
-    </div>
-    <div class="stat-box">
-        <h3>@Model.RevenueThisWeek.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
-        <p>Doanh thu tuần này</p>
-        <p class="growth-positive">+@Model.GrowthThisWeek% so với tuần trước</p>
-    </div>
-    <div class="stat-box">
-        <h3>@Model.RevenueThisMonth.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
-        <p>Doanh thu tháng này</p>
-        <p class="growth-positive">+@Model.GrowthThisMonth% so với tháng trước</p>
-    </div>
-</div>
-<div class="order-stats-container">
-    <div class="stat-box"><h3>@Model.TotalOrders</h3><p>Tổng số đơn</p></div>
-    <div class="stat-box"><h3>@Model.ConfirmedOrders</h3><p>Đã xác nhận</p></div>
-    <div class="stat-box"><h3>@Model.WaitingOrders</h3><p>Chờ xác nhận</p></div>
-    <div class="stat-box"><h3>@Model.DeliveringOrders</h3><p>Đang giao hàng</p></div>
-    <div class="stat-box"><h3>@Model.CompletedOrders</h3><p>Hoàn thành</p></div>
-    <div class="stat-box"><h3>@Model.CancelledOrders</h3><p>Đã hủy</p></div>
-</div>
-
-
-
-<!-- Biểu đồ doanh thu -->
-<div class="chart-container">
-    <div class="chart-header">
-        <h2>Doanh thu bán hàng</h2>
-        <div class="filter">
-            <select id="daysFilter" onchange="updateChart()">
-                <option value="7">7 ngày qua</option>
-                <option value="14">14 ngày qua</option>
-                <option value="30">30 ngày qua</option>
-            </select>
+<div class="revenue-dashboard">
+    <div class="title">Thống kê doanh thu</div>
+    <div class="stats-container">
+        <div class="stat-box">
+            <h3>@Model.RevenueToday.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
+            <p>Doanh thu hôm nay</p>
+            <p class="growth-positive">+@Model.GrowthToday% so với @Model.CompareDate</p>
+        </div>
+        <div class="stat-box">
+            <h3>@Model.RevenueThisWeek.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
+            <p>Doanh thu tuần này</p>
+            <p class="growth-positive">+@Model.GrowthThisWeek% so với tuần trước</p>
+        </div>
+        <div class="stat-box">
+            <h3>@Model.RevenueThisMonth.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
+            <p>Doanh thu tháng này</p>
+            <p class="growth-positive">+@Model.GrowthThisMonth% so với tháng trước</p>
         </div>
     </div>
-    <canvas id="revenueChart" width="400" height="200"></canvas>
-    <p>Tổng doanh thu: @Model.TotalRevenuePeriod.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</p>
+    <div class="order-stats-container">
+        <div class="stat-box"><h3>@Model.TotalOrders</h3><p>Tổng số đơn</p></div>
+        <div class="stat-box"><h3>@Model.ConfirmedOrders</h3><p>Đã xác nhận</p></div>
+        <div class="stat-box"><h3>@Model.WaitingOrders</h3><p>Chờ xác nhận</p></div>
+        <div class="stat-box"><h3>@Model.DeliveringOrders</h3><p>Đang giao hàng</p></div>
+        <div class="stat-box"><h3>@Model.CompletedOrders</h3><p>Hoàn thành</p></div>
+        <div class="stat-box"><h3>@Model.CancelledOrders</h3><p>Đã hủy</p></div>
+    </div>
+
+    <!-- Biểu đồ doanh thu -->
+    <div class="chart-container">
+        <div class="chart-header">
+            <h2>Doanh thu bán hàng</h2>
+            <div class="filter">
+                <select id="daysFilter" onchange="updateChart()">
+                    <option value="7">7 ngày qua</option>
+                    <option value="14">14 ngày qua</option>
+                    <option value="30">30 ngày qua</option>
+                </select>
+            </div>
+        </div>
+        <canvas id="revenueChart" width="400" height="200"></canvas>
+        <p>Tổng doanh thu: @Model.TotalRevenuePeriod.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</p>
+    </div>
 </div>
 
 <!-- Thêm Chart.js -->
@@ -110,34 +110,34 @@
 </script>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
+    .revenue-dashboard {
         padding: 20px;
-        background-color: #f5f7fa;
-        margin: 0;
+        background-color: #ffffff;
     }
 
-    .title {
+    .revenue-dashboard .title {
         color: #666;
         font-size: 16px;
         margin-bottom: 20px;
     }
 
-    .stats-container {
+    .revenue-dashboard .stats-container {
         display: flex;
         gap: 20px;
         justify-content: center;
         margin-bottom: 40px;
+        flex-wrap: wrap;
     }
 
-    .order-stats-container {
+    .revenue-dashboard .order-stats-container {
         display: flex;
         gap: 20px;
         justify-content: center;
         margin-bottom: 40px;
+        flex-wrap: wrap;
     }
 
-    .stat-box {
+    .revenue-dashboard .stat-box {
         background-color: #fff;
         border: 1px solid #e0e0e0;
         padding: 20px;
@@ -147,26 +147,26 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-        .stat-box h3 {
-            margin: 0;
-            font-size: 28px;
-            color: #333;
-            font-weight: bold;
-        }
+    .revenue-dashboard .stat-box h3 {
+        margin: 0;
+        font-size: 28px;
+        color: #333;
+        font-weight: bold;
+    }
 
-        .stat-box p {
-            margin: 5px 0;
-            color: #666;
-            font-size: 14px;
-        }
+    .revenue-dashboard .stat-box p {
+        margin: 5px 0;
+        color: #666;
+        font-size: 14px;
+    }
 
-    .growth-positive {
+    .revenue-dashboard .growth-positive {
         color: #28a745;
         font-weight: bold;
         font-size: 14px;
     }
 
-    .alert-danger {
+    .revenue-dashboard .alert-danger {
         color: #721c24;
         background-color: #f8d7da;
         border-color: #f5c6cb;
@@ -176,7 +176,7 @@
         border-radius: 4px;
     }
 
-    .chart-container {
+    .revenue-dashboard .chart-container {
         max-width: 800px;
         margin: 0 auto;
         padding: 20px;
@@ -185,26 +185,26 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .chart-header {
+    .revenue-dashboard .chart-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
     }
 
-    .chart-container h2 {
+    .revenue-dashboard .chart-container h2 {
         font-size: 18px;
         color: #333;
         margin: 0;
     }
 
-    .chart-container p {
+    .revenue-dashboard .chart-container p {
         text-align: center;
         color: #666;
         margin-top: 10px;
     }
 
-    .filter select {
+    .revenue-dashboard .filter select {
         padding: 5px 10px;
         border-radius: 4px;
         border: 1px solid #ccc;
@@ -214,8 +214,22 @@
         min-width: 120px;
     }
 
-        .filter select:focus {
-            outline: none;
-            border-color: #666;
+    .revenue-dashboard .filter select:focus {
+        outline: none;
+        border-color: #666;
+    }
+
+    /* Media queries for responsiveness */
+    @@media (max-width: 768px) {
+        .revenue-dashboard .stats-container,
+        .revenue-dashboard .order-stats-container {
+            flex-direction: column;
+            align-items: center;
         }
+        
+        .revenue-dashboard .stat-box {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
 </style>

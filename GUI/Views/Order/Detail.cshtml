@@ -356,6 +356,12 @@ else
 </div>
 
 <script>
+    window.onload = function () {
+        var auto = '@(ViewBag.AutoUpdate?.ToString().ToLower())';
+        if (auto === 'true') {
+            confirmUpdateOrderStatus(); // Gọi nút "Lưu" tự động
+        }
+    };
     const currentStatusLabel = @Html.Raw(Json.Serialize(Model.Status switch
         {
             0 => "chờ xác nhận",
@@ -368,7 +374,17 @@ else
 
     function confirmUpdateOrderStatus() {
         const selectedRadio = document.querySelector('input[name="orderStatus"]:checked');
+        if (!selectedRadio) return;
+
         const selectedLabel = selectedRadio.nextElementSibling.textContent.trim();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const autoUpdate = urlParams.get('autoUpdate');
+
+        if (autoUpdate === 'true') {
+            saveOrderStatus(); // Gọi luôn không hiển thị Swal
+            return;
+        }
 
         Swal.fire({
             title: 'Xác nhận cập nhật trạng thái',
@@ -383,6 +399,7 @@ else
             }
         });
     }
+
 
     async function saveOrderStatus() {
         const selectedRadio = document.querySelector('input[name="orderStatus"]:checked');
@@ -405,7 +422,7 @@ else
         };
 
         try {
-            const response = await fetch("/Login/UpdateStatusONOrder", {
+            const response = await fetch("/Login/UpdateStatusONOrder?autoUpdate=false", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -448,7 +465,14 @@ else
             });
         }
     }
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const autoUpdate = urlParams.get('autoUpdate');
 
+        if (autoUpdate === 'true') {
+            confirmUpdateOrderStatus(); // Gọi hàm khi trang tải xong
+        }
+    };
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

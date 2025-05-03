@@ -40,6 +40,8 @@ namespace GUI.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateStatusONOrder([FromBody] UpdatStatusOrderRequest request)
         {
+            var autoUpdate = Request.Query["autoUpdate"].ToString() == "true";
+
             var orderUrl = _settings.APIAddress + $"api/admin/orders/{request.id}";
             var orderResponse = await httpService.GetAsync(orderUrl);
             var order = JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(orderResponse)?.Data;
@@ -56,15 +58,35 @@ namespace GUI.Controllers
                     : request.status == 4
                         ? "Xác nhận"
                         : "Hoàn thành";
-
+            if (autoUpdate == true)
+            {
+                request.isCancel = 1;
+            }
             var URL = _settings.APIAddress + "api/UpdateStatusONOrder/Process";
             var param = JsonConvert.SerializeObject(request);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
-            var result = JsonConvert.DeserializeObject<BaseResponse<LoginResponse>>(res) ?? new();
-
-            await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 1,null, request.products);
-
-            return Redirect($"/orders/{request.id}");
+            var result = JsonConvert.DeserializeObject<BaseResponse<UpdatStatusOrderResponse>>(res) ?? new();
+            if (result.Data.products != null)
+            {
+                await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 3, null, request.products, result.Data.products);
+                return Json(new
+                {
+                    success = true,
+                    redirectUrl = $"/orders/{request.id}",
+                    message = "Thông tin đơn hàng đã được gửi cho khách hàng, đơn hàng sẽ được chuyển qua danh sách chờ"
+                });
+            }
+            if (result.Data.products == null)
+            {
+                await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 1, null, request.products,null);
+            }
+            return Json(new
+            {
+                success = true,
+                redirectUrl = $"/orders/{request.id}",
+                message = "Đơn hàng đã được cập nhật thành công"
+            });
+            //return Redirect($"/orders/{request.id}");
         }
         [Route("/SignIn")]
         public async Task<IActionResult> Login([FromQuery] int? action)
@@ -170,7 +192,7 @@ namespace GUI.Controllers
                 var result = JsonConvert.DeserializeObject<BaseResponse<ContentEmailRespone>>(res) ?? new();
                 if (result != null && result.Messages.Count == 0 && result.Data.customerName != null)
                 {
-                    await _emailService.SendOrderConfirmationAsync(request.Email, "", result.Data.customerName, result.Data.phonenumber, "", result.Data.password, 0, null, null);
+                    await _emailService.SendOrderConfirmationAsync(request.Email, "", result.Data.customerName, result.Data.phonenumber, "", result.Data.password, 0, null, null, null);
                     TempData["Message"] = "Mật khẩu đã được gửi về tài khoản " + request.Email + " vui lòng kiểm tra lại mật khẩu gửi về email và đăng nhập lại hệ thống.";
                 }
                 else

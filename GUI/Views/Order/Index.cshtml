@@ -20,6 +20,14 @@
     })
     .ThenByDescending(o => o.id);
 
+
+    int totalCount = Model?.Count() ?? 0;
+    int confirmedCount = Model?.Count(o => o.status == "Xác nhận") ?? 0;
+    int pendingCount = Model?.Count(o => o.status == "Chờ xác nhận") ?? 0;
+    int preparingCount = Model?.Count(o => o.status == "Chuẩn bị hàng") ?? 0;
+    int shippingCount = Model?.Count(o => o.status == "Đang vận chuyển") ?? 0;
+    int completedCount = Model?.Count(o => o.status == "Hoàn thành đơn hàng") ?? 0;
+    int cancelledCount = Model?.Count(o => o.status == "Đã hủy") ?? 0;
 }
 
 <div class="container-fluid px-4 mt-3">
@@ -55,14 +63,13 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                         <select class="form-select" id="statusFilter" name="status">
-                            <option value="0" selected="@(Context.Request.Query["status"].ToString() == "0")">-- Tất cả trạng thái --</option>
-                            <option value="5" selected="@(Context.Request.Query["status"].ToString() == "5")">Chờ xác nhận</option>
+                            <option value="-1" selected="@(Context.Request.Query["status"].ToString() == "-1")">-- Tất cả trạng thái --</option>
+                            <option value="0" selected="@(Context.Request.Query["status"].ToString() == "0")">Chờ xác nhận</option>
                             <option value="4" selected="@(Context.Request.Query["status"].ToString() == "4")">Xác nhận</option>
                             <option value="1" selected="@(Context.Request.Query["status"].ToString() == "1")">Chuẩn bị hàng</option>
                             <option value="2" selected="@(Context.Request.Query["status"].ToString() == "2")">Đang vận chuyển</option>
                             <option value="3" selected="@(Context.Request.Query["status"].ToString() == "3")">Đã hủy</option>
                             <option value="7" selected="@(Context.Request.Query["status"].ToString() == "7")">Hoàn thành</option>
-
                         </select>
                     </div>
                 </div>
@@ -82,18 +89,20 @@
                     <label for="minAmount" class="form-label">Giá tối thiểu</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
-                        <input type="text" class="form-control number-input" id="minAmount" name="minAmount"
+                        <input type="text" class="form-control number-input positive-only" id="minAmount" name="minAmount"
                                value="@(Context.Request.Query["minAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["minAmount"], out var min) ? min.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")"
                                placeholder="Nhập giá tối thiểu...">
+                        <div class="invalid-feedback">Giá trị không được âm</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <label for="maxAmount" class="form-label">Giá tối đa</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
-                        <input type="text" class="form-control number-input" id="maxAmount" name="maxAmount"
+                        <input type="text" class="form-control number-input positive-only" id="maxAmount" name="maxAmount"
                                value="@(Context.Request.Query["maxAmount"].ToString() != "" && decimal.TryParse(Context.Request.Query["maxAmount"], out var max) ? max.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) : "")"
                                placeholder="Nhập giá tối đa...">
+                        <div class="invalid-feedback">Giá trị không được âm</div>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -120,6 +129,37 @@
                     </a>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-4">
+        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="-1" style="flex: 1; max-width: 14%; margin: 0 4px;">
+            <i class="bi bi-grid me-2"></i>
+            <span class="fw-medium">Tổng số đơn (@totalCount)</span>
+        </div>
+        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="0" style="flex: 1; max-width: 14%; margin: 0 4px;">
+            <i class="bi bi-clock-history me-2"></i>
+            <span class="fw-medium">Chờ xác nhận (@pendingCount)</span>
+        </div>
+        <div class="order-filter-card bg-primary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="4" style="flex: 1; max-width: 14%; margin: 0 4px;">
+            <i class="bi bi-check-circle me-2"></i>
+            <span class="fw-medium">Đã xác nhận (@confirmedCount)</span>
+        </div>
+        <div class="order-filter-card bg-warning text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="1" style="flex: 1; max-width: 14%; margin: 0 4px;">
+            <i class="bi bi-box-seam me-2"></i>
+            <span class="fw-medium">Chuẩn bị hàng (@preparingCount)</span>
+        </div>
+        <div class="order-filter-card bg-info text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="2" style="flex: 1; max-width: 14%; margin: 0 4px;">
+            <i class="bi bi-truck me-2"></i>
+            <span class="fw-medium">Đang vận chuyển (@shippingCount)</span>
+        </div>
+        <div class="order-filter-card bg-success text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="7" style="flex: 1; max-width: 14%; margin: 0 4px;">
+            <i class="bi bi-bag-check me-2"></i>
+            <span class="fw-medium">Hoàn thành (@completedCount)</span>
+        </div>
+        <div class="order-filter-card bg-danger text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="3" style="flex: 1; max-width: 14%; margin: 0 4px;">
+            <i class="bi bi-x-circle me-2"></i>
+            <span class="fw-medium">Đã hủy (@cancelledCount)</span>
         </div>
     </div>
 
@@ -185,7 +225,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="8" class="text-center py-4">
+                            <td colspan="9" class="text-center py-4">
                                 <div class="text-secondary">
                                     <i class="bi bi-inbox-fill" style="font-size: 3rem;"></i>
                                     <p class="mt-2">Không tìm thấy hóa đơn nào.</p>
@@ -207,6 +247,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+
             $('table tbody tr').hover(
                 function () {
                     $(this).addClass('table-active');
@@ -216,6 +257,71 @@
                 }
             );
 
+
+            $('.order-filter-card').css({
+                'cursor': 'pointer',
+                'transition': 'all 0.2s ease'
+            }).hover(
+                function () {
+                    $(this).css({
+                        'transform': 'translateY(-3px)',
+                        'box-shadow': '0 .5rem 1rem rgba(0,0,0,.15)'
+                    });
+                },
+                function () {
+                    $(this).css({
+                        'transform': 'translateY(0)',
+                        'box-shadow': '0 .125rem .25rem rgba(0,0,0,.075)'
+                    });
+                }
+            );
+
+            $('.order-filter-card').click(function () {
+                // Get the status value from the data attribute
+                const statusValue = $(this).data('status-value');
+                console.log("Đã chọn lọc theo trạng thái: " + statusValue);
+                // Set the statusFilter value
+                $('#statusFilter').val(statusValue);
+
+
+                $('#searchCode, #customerName, #orderCodePrefix, #minAmount, #maxAmount, #startDate, #endDate').val('');
+
+                // Highlight the active card
+                $('.order-filter-card').removeClass('active');
+                $(this).addClass('active');
+
+                // Before submitting, check if the statusFilter value maps correctly
+                const currentStatusValue = $('#statusFilter').val();
+                console.log("Submitting with status filter: " + currentStatusValue);
+
+                // Submit the form
+                $('#searchForm').submit();
+            });
+
+            // Kiểm tra nếu đang có filter trạng thái, highlight card tương ứng
+            const currentStatus = $('#statusFilter').val();
+            if (currentStatus) {
+                $(`.order-filter-card[data-status-value="${currentStatus}"]`).addClass('active');
+            } else {
+                // Mặc định highlight card "Tất cả"
+                $(`.order-filter-card[data-status-value="0"]`).addClass('active');
+            }
+
+            // Thêm style cho filter-card khi active
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                            .order-filter-card {
+                                border: 2px solid transparent;
+                                box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+                            }
+                            .order-filter-card.active {
+                                border-color: white;
+                                box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+                            }
+                        `)
+                .appendTo('head');
+
             // Định dạng số với dấu chấm mỗi 3 số 0
             $('.number-input').on('input', function () {
                 let value = $(this).val().replace(/\./g, ''); // Xóa dấu chấm cũ
@@ -224,12 +330,49 @@
                 }
             });
 
+            // Kiểm tra giá trị không âm cho các trường giá
+            $('.positive-only').on('input', function () {
+                let value = $(this).val().replace(/\./g, ''); // Xóa dấu chấm để xử lý số
+
+                // Kiểm tra nếu giá trị là số âm
+                if (value.startsWith('-')) {
+                    // Xóa dấu trừ
+                    value = value.substring(1);
+                    // Hiển thị thông báo lỗi
+                    $(this).addClass('is-invalid');
+                    setTimeout(() => {
+                        $(this).removeClass('is-invalid');
+                    }, 2000);
+                }
+
+                // Cập nhật giá trị đã xử lý
+                if (value && !isNaN(value)) {
+                    $(this).val(Number(value).toLocaleString('vi-VN'));
+                }
+            });
+
             // Xử lý khi submit form để gửi giá trị số thô (không có dấu chấm)
-            $('#searchForm').on('submit', function () {
+            $('#searchForm').on('submit', function (e) {
+                let hasNegativeValues = false;
+
                 $('.number-input').each(function () {
                     let value = $(this).val().replace(/\./g, ''); // Xóa dấu chấm trước khi gửi
+
+                    // Kiểm tra giá trị âm trước khi submit
+                    if (value.startsWith('-')) {
+                        $(this).addClass('is-invalid');
+                        hasNegativeValues = true;
+                        return false; // Ngừng vòng lặp
+                    }
+
                     $(this).val(value);
                 });
+
+                // Ngăn chặn submit nếu có giá trị âm
+                if (hasNegativeValues) {
+                    e.preventDefault();
+                    return false;
+                }
             });
         });
     </script>

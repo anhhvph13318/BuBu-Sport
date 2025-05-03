@@ -6,12 +6,13 @@ using System.Text;
 using System.Net.WebSockets;
 using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.Model_DTO.Order_DTO;
+using Newtonsoft.Json;
 
 namespace DATN_ACV_DEV.Controllers
 {
     public interface IEmailService
     {
-        Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type, List<OrderProduct>? products, IList<OrderItem>? orderItems);
+        Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type, List<OrderProduct>? products, IList<OrderItem>? orderItems, IList<OrderItem>? productsUOT);
     }
 
     public class EmailService : IEmailService
@@ -35,8 +36,10 @@ namespace DATN_ACV_DEV.Controllers
             _fromName = "BuBuSport";
         }
 
-        public async Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type, List<OrderProduct>? products, IList<OrderItem>? orderItems)
+        public async Task SendOrderConfirmationAsync(string? email, string? orderCode, string? customerName, string? phonenumber ,string? status,string? password,int? type, List<OrderProduct>? products, IList<OrderItem>? orderItems, IList<OrderItem>? productsUOT)
         {
+            var outOfStockIds = productsUOT != null ? string.Join(",", productsUOT.Select(p => p.Id)) : null;
+            string outOfStockTable = string.Empty;
             string productTable = string.Empty;
             string productTablee = string.Empty;
             if (products != null)
@@ -154,13 +157,88 @@ namespace DATN_ACV_DEV.Controllers
                     </tfoot>
                 </table><br/>";
             }
+            if(productsUOT != null)
+            {
+                // Tạo bảng cho sản phẩm hết hàng
+                decimal total = 0;
+                int stt = 1;
+
+                string outOfStockTableRows = "";
+                foreach (var item in productsUOT ?? new List<OrderItem>())
+                {
+                    decimal itemTotal = item.Price * item.Quantity;
+                    total += itemTotal;
+                    outOfStockTableRows += $@"
+                <tr>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>{stt++}</td>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>
+                        <img src='{item.ProductImage}' alt='Ảnh' style='width: 50px; height: 50px; object-fit: cover;'/>
+                    </td>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>{item.Code}</td>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>{item.ProductName}</td>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>{item.Size}</td>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>{item.Color}</td>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>{item.Quantity}</td>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>{item.Price:n0}đ</td>
+                    <td style='border: 1px solid #ddd; padding: 8px;'>{itemTotal:n0}đ</td>
+                </tr>";
+                }
+
+                // Bảng cho sản phẩm hết hàng
+                outOfStockTable = $@"
+                <h4>Sản phẩm hết hàng:</h4>
+                <table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;'>
+                    <thead>
+                        <tr style='background-color: #f2f2f2;'>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>STT</th>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>Ảnh</th>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>Mã sản phẩm</th>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>Tên sản phẩm</th>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>Size</th>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>Màu</th>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>Số lượng</th>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>Đơn giá</th>
+                            <th style='border: 1px solid #ddd; padding: 8px;'>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {outOfStockTableRows}
+                    </tbody>
+                <tfoot>
+                                        <tr>
+                                            <td colspan='8' style='border: 1px solid #ddd; padding: 8px; text-align: right;'><strong>Tổng tiền:</strong></td>
+                                            <td style='border: 1px solid #ddd; padding: 8px;'><strong>{total:n0}đ</strong></td>
+                                        </tr>
+                                    </tfoot>
+                </table>";
+            }    
             if (string.IsNullOrWhiteSpace(email))
             {
                 Console.WriteLine("Email không hợp lệ, bỏ qua gửi email xác nhận.");
                 return;
             }
-            string contentProduct = productTable != string.Empty ? productTable : productTablee;
 
+            string contentProduct = productTable != string.Empty ? productTable : productTablee;
+            var orderId = _context.TbOrders.Where(c=>c.OrderCode == orderCode).Select(c=>c.Id).FirstOrDefault();
+            var baseUrl = "http://localhost:5011";
+            var linkConfirmPartial = $"{baseUrl}/orders/confirm-partial?orderId={orderId}&outOfStock={outOfStockIds}";
+            var linkCancelOrder = $"{baseUrl}/orders/confirm-cancel?orderId={orderId}";
+            var linkWaitForStock = $"{baseUrl}/orders/wait-stock?orderId={orderId}";
+            string buttonPartial = "";
+            if (productsUOT != null && orderItems != null && orderItems.Count() != productsUOT.Count())
+            {
+                buttonPartial = $@"
+                <a href='{linkConfirmPartial}' style='
+                    display: inline-block;
+                    background-color: #28a745;
+                    color: white;
+                    padding: 10px 20px;
+                    margin-right: 10px;
+                    border-radius: 5px;
+                    text-decoration: none;
+                    font-weight: bold;
+                '>Nhận phần còn lại</a>";
+            }
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("BuBuSport", "sprtbubu@gmail.com"));
             message.To.Add(new MailboxAddress(customerName, email));
@@ -209,9 +287,59 @@ namespace DATN_ACV_DEV.Controllers
                 <p>Xin cảm ơn,</p>
                 <p>Nhóm tài khoản BuBu Sport</p>
             ";
-            var builder = new BodyBuilder();
-            builder.HtmlBody = type == 0 ? resetpass : ( type == 2 ? cancelorder : orderstatus );
+  
+            var lastproduct = $@"
+              <h2>Trạng thái đơn hàng BuBu Sport</h2>
+              <p>Xin chào {customerName},</p>
+              <p><strong>Số điện thoại:</strong> {phonenumber}</p>
+              <p><strong>Mã hóa đơn:</strong> {orderCode}</p>
+              <p>Chúng tôi xin thông báo rằng trong đơn hàng của bạn có một hoặc vài sản phẩm đã hết hàng tạm thời.</p>
+              <p>Danh sách các sản phẩm trong giỏ hàng của bạn:</p>
+              {productTablee}
 
+              <p>Danh sách các sản phẩm hết hàng:</p>
+              {outOfStockTable}
+
+              <p>
+                Bạn có thể lựa chọn cách xử lý đơn hàng bên dưới:
+              </p>
+                <div style=""margin: 20px 0;"">
+                {buttonPartial}
+
+                <a href='{linkCancelOrder}' style='
+                  display: inline-block;
+                  background-color: #dc3545;
+                  color: white;
+                  padding: 10px 20px;
+                  margin-right: 10px;
+                  border-radius: 5px;
+                  text-decoration: none;
+                  font-weight: bold;
+                '>Hủy đơn hàng</a>
+
+                <a href='{linkWaitForStock}' style='
+                  display: inline-block;
+                  background-color: #ffc107;
+                  color: black;
+                  padding: 10px 20px;
+                  border-radius: 5px;
+                  text-decoration: none;
+                  font-weight: bold;
+                '>Chờ đủ hàng</a>
+              </div>
+              <p>Nếu bạn không thực hiện yêu cầu nào trong số trên, đơn hàng sẽ được xử lý mặc định sau 24 giờ.</p>
+              <p>Cảm ơn bạn đã tin tưởng sử dụng dịch vụ của chúng tôi!</p>
+              <p>Trân trọng,</p>
+              <p><strong>Nhóm chăm sóc khách hàng BuBu Sport</strong></p>
+            ";
+            var builder = new BodyBuilder();
+            builder.HtmlBody = type == 0
+                ? resetpass
+                : type == 2
+                    ? cancelorder
+                    : type == 3
+                        ? lastproduct
+                        : orderstatus;
 
 
             message.Body = builder.ToMessageBody();

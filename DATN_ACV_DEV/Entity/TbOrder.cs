@@ -34,6 +34,7 @@ public partial class TbOrder
     public string? OrderCode { get; set; }
 
     public string? OrderCodeGhn { get; set; }
+    public string? IsWait { get; set; }
 
     public Guid? AddressDeliveryId { get; set; }
 

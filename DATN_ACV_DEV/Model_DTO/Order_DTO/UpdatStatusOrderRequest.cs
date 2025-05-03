@@ -12,5 +12,6 @@ namespace DATN_ACV_DEV.Model_DTO.Order_DTO
         public string phone { get; set; }
         public string statusText { get; set; }
         public IList<OrderItem> products { get; set; }
+        public int isCancel { get; set; }
     }
 }

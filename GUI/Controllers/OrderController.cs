@@ -16,6 +16,10 @@ using System.Globalization;
 using Rotativa.AspNetCore;
 using System.Net.WebSockets;
 using OrderItem = DATN_ACV_DEV.Model_DTO.Order_DTO.OrderItem;
+using DATN_ACV_DEV.Entity;
+using DATN_ACV_DEV.Controllers.Order;
+using Microsoft.EntityFrameworkCore;
+using static DATN_ACV_DEV.Controllers.Order.AdminCreateOrderController;
 
 namespace GUI.Controllers;
 
@@ -43,7 +47,7 @@ public class OrderController : Controller
     public async Task<IActionResult> Index(
     [FromQuery] string? code = "",
     [FromQuery] string? customerName = "",
-    [FromQuery] int status = 0,
+    [FromQuery] int status = -1,
     [FromQuery] decimal? minAmount = null,
     [FromQuery] decimal? maxAmount = null,
     [FromQuery] string? orderCodePrefix = "", 
@@ -122,8 +126,8 @@ public class OrderController : Controller
     }
 
     [HttpGet]
-    [Route("{id}")]
-    public async Task<IActionResult> Detail(string id)
+    [Route("/detaill/{id}")]
+    public async Task<IActionResult> Detail(string id, bool? autoUpdate = false)
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
@@ -133,10 +137,77 @@ public class OrderController : Controller
                 await rawResponse.Content.ReadAsStringAsync());
         var order = response!.Data;
         order.ReCalculatePaymentInfo();
-
+        ViewBag.AutoUpdate = autoUpdate; // Gửi cờ này sang view
         return View(response!.Data);
     }
+    [HttpGet]
+    [Route("wait-stock")]
+    public IActionResult WaitForStock(Guid orderId)
+    {
+        DBContext context = new DBContext();
+        context = context ?? new DBContext();
+        TbOrder Order = new TbOrder();
+        Order = context.TbOrders.Where(c => c.Id == orderId).FirstOrDefault();
+        Order.IsWait = "1";
+        context.SaveChanges();
+        return View(model: Order.OrderCode); // Hoặc trả JSON nếu là API thuần
+    }
+    [HttpGet]
+    [Route("confirm-cancel")]
+    public IActionResult ConfirmCancel(Guid orderId)
+    {
+        DBContext context = new DBContext();
+        context = context ?? new DBContext();
+        var order = context.TbOrders.Where(c => c.Id == orderId).FirstOrDefault();
+        order.Status = 3;
+        order.ReasionCancel = "Lựa chọn của khách hàng";
+        context.SaveChanges();
+        return View(model: order.OrderCode); // Hoặc trả JSON nếu là API thuần
+    }
+    [HttpGet]
+    [Route("confirm-partial")]
+    public IActionResult ConfirmPartial(Guid orderId, string outOfStock)
+    {
+        DBContext context = new DBContext();
+        context = context ?? new DBContext();
+        // Giải mã chuỗi JSON từ query
+        var orderdetail = context.TbOrderDetails
+    .Where(c => c.OrderId == orderId)
+    .ToList();
+            var ids = outOfStock.Split(',').Select(Guid.Parse).ToList();
 
+        // Lọc các bản ghi cần xóa
+        var toRemove = orderdetail.Where(o => ids.Contains(o.ProductId)).ToList();
+
+        // Xóa khỏi DbSet
+        context.TbOrderDetails.RemoveRange(toRemove);
+
+        // Lấy orderId (giả sử tất cả bản ghi cùng orderId)
+        var orderIdd = toRemove.First().OrderId;
+
+        var remainingOrderDetails = context.TbOrderDetails
+            .Where(od => od.OrderId == orderId && !ids.Contains(od.ProductId))
+            .ToList();
+        decimal newTotal = 0;
+        foreach (var item in remainingOrderDetails)
+        {
+            var price = context.TbProductDetails.Where(c=>c.Id == item.ProductId).Select(c=>c.Price).FirstOrDefault();
+            var productdetail = context.TbProductDetails.Where(c => c.Id == item.ProductId).FirstOrDefault();
+            productdetail.Quantity -= item.Quantity;
+            newTotal += item.Quantity * price;
+        }
+
+        var order = context.TbOrders.Where(c => c.Id == orderId).FirstOrDefault();
+        if (order != null)
+        {
+            order.TotalAmount = newTotal;
+            order.Status = 4; // Cập nhật trạng thái
+            
+        }
+        // Lưu thay đổi
+        context.SaveChanges();
+        return View(model: order.OrderCode);
+    }
     [HttpGet]
     [Route("{id}/view")]
     public async Task<IActionResult> ViewOrder([FromRoute] string id)
@@ -275,7 +346,7 @@ public class OrderController : Controller
             Shipping = order.ShippingInfo,
             Payment = order.PaymentInfo,
         };
-        var updateRequest = new UpdateItemOrderRequest()
+        var updateRequest = new GUI.Models.DTOs.Order_DTO.UpdateItemOrderRequest()
         {
             Items = payload.Items,
             Status = checkout.Status
@@ -293,7 +364,7 @@ public class OrderController : Controller
             {
                 if (order.Customer.Email != "")
                 {
-                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1, null, order.Items);
+                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1, null, order.Items, null);
                 }
             }
             catch (Exception ex)
