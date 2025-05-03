@@ -12,6 +12,7 @@ namespace GUI.Models.DTOs.Product_DTO
         public string Code { get; set; }
 
         public decimal Price { get; set; }
+        public decimal PriceSale { get; set; }
 
         public int Quantity { get; set; }
 

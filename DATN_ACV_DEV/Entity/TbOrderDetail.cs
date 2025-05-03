@@ -12,7 +12,7 @@ public partial class TbOrderDetail
     public Guid OrderId { get; set; }
 
     public int Quantity { get; set; }
-    public decimal? Price { get; set; }
+    public decimal Price { get; set; }
 
     public virtual TbOrder Order { get; set; } = null!;
 

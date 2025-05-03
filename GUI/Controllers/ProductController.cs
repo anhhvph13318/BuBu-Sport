@@ -61,12 +61,14 @@ namespace GUI.Controllers
             var categories = await FetchCategory();
             ViewBag.Categories = categories;
 
-            // Xử lý khuyến mãi
+            // Xử lý khuyến mãi 
             var promotion = _context.TbDiscountProducts.ToList();
             foreach (var item in promotion)
             {
                 var discount = _context.TbDiscounts
-                    .Where(c => c.Id == item.DiscountId && c.EndDate >= DateTime.Now)
+                    .Where(c => c.Id == item.DiscountId
+                           && c.StartDate <= DateTime.Now
+                           && c.EndDate >= DateTime.Now) 
                     .Select(c => c.DiscountValue)
                     .FirstOrDefault();
                 if (discount != null)

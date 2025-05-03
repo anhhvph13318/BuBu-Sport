@@ -286,7 +286,9 @@ namespace GUI.Controllers
             foreach (var item in promotion)
             {
                 var discount = _context.TbDiscounts
-                    .Where(c => c.Id == item.DiscountId && c.EndDate >= DateTime.Now)
+                    .Where(c => c.Id == item.DiscountId
+                             && c.StartDate <= DateTime.Now
+                             && c.EndDate >= DateTime.Now)   
                     .Select(c => c.DiscountValue)
                     .FirstOrDefault();
                 if (discount != null)
@@ -400,14 +402,43 @@ namespace GUI.Controllers
             {
                 item.UrlImage = _context.TbImages.Where(c => c.Id == item.ImageId).Select(c => c.Url).FirstOrDefault();
             }
-            var promotion = _context.TbDiscountProducts.ToList();
-            var productId = _context.TbDiscountProducts.Where(c => c.ProductId == result.Data.Id).Select(c => c.DiscountId).FirstOrDefault();
-            var discount = _context.TbDiscounts
-               .Where(c => c.Id == productId)
-               .Select(c => c.DiscountValue)
-               .FirstOrDefault();
-            if (discount != null)
+            //var promotion = _context.TbDiscountProducts.ToList();
+            //var productId = _context.TbDiscountProducts.Where(c => c.ProductId == result.Data.Id).Select(c => c.DiscountId).FirstOrDefault();
+            //var discount = _context.TbDiscounts
+            //    .Where(c => c.Id == productId
+            //             && c.StartDate <= DateTime.Now  
+            //             && c.EndDate >= DateTime.Now)   
+            //    .Select(c => c.DiscountValue)
+            //    .FirstOrDefault();
+
+            //if (discount != null)
+            //{
+            //    result.Data.Price = Convert.ToDecimal(result.Data.Price - (result.Data.Price * discount / 100));
+            //}
+            var promotion = _context.TbDiscountProducts.Where(c => c.ProductId == result.Data.Id).ToList();
+            var discount = 0m; 
+
+            foreach (var item in promotion)
             {
+                var discountValue = _context.TbDiscounts
+                    .Where(c => c.Id == item.DiscountId
+                             && c.StartDate <= DateTime.Now
+                             && c.EndDate >= DateTime.Now)
+                    .Select(c => c.DiscountValue)
+                    .FirstOrDefault();
+
+                if (discountValue != null)
+                {
+                    if (discountValue > discount)
+                    {
+                        discount = discountValue ?? 0m;
+                    }
+                }
+            }
+
+            if (discount > 0)
+            {
+                result.Data.PriceSale = result.Data.Price; 
                 result.Data.Price = Convert.ToDecimal(result.Data.Price - (result.Data.Price * discount / 100));
             }
             var model = result.Data;
