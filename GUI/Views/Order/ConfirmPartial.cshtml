@@ -1,0 +1,31 @@
+﻿@Model string
+@{
+    ViewData["Title"] = "Tiếp tục giao đơn hàng";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    var orderId = ViewBag.OrderId; // Giả sử bạn truyền orderId vào ViewBag
+}
+
+<div style="max-width: 600px; margin: 40px auto; padding: 30px; border: 1px solid #ccc; border-radius: 10px; background-color: #e6f4ea; font-family: Arial, sans-serif;">
+    <h2 style="color: #28a745; text-align: center;">🚚 Đơn hàng vẫn tiếp tục giao</h2>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+        Chúng tôi đã nhận được phản hồi của bạn. Đơn hàng của bạn sẽ được <strong>tiếp tục giao</strong> những sản phẩm còn hàng trong đơn hàng của bạn.
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+        Nếu bạn có bất kỳ yêu cầu gì thêm, hãy liên hệ với chúng tôi qua thông tin hỗ trợ trên website.
+    </p>
+
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/store" style="background-color: #007bff; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px;">
+            Quay lại trang chủ
+        </a>
+    </div>
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/OrderChecking?s=@Model" style="background-color: #007bff; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px;">
+            Xem chi tiết đơn hàng
+        </a>
+    </div>
+</div>
+

@@ -4,5 +4,6 @@
     {
         public Guid id { get; set; }
         public string? orderCode { get; set; }
+        public IList<OrderItem> products { get; set; }
     }
 }

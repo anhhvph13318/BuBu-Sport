@@ -1,0 +1,28 @@
+﻿@Model string
+@{
+    ViewData["Title"] = "Đã hủy đơn hàng";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml"; // Không dùng layout admin
+}
+
+<div style="max-width: 600px; margin: 40px auto; padding: 30px; border: 1px solid #ccc; border-radius: 10px; background-color: #fdf2f2; font-family: Arial, sans-serif;">
+    <h2 style="color: #dc3545; text-align: center;">🚫 Đơn hàng đã được hủy</h2>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+        Chúng tôi xác nhận bạn đã yêu cầu <strong>hủy đơn hàng</strong>. Đơn hàng sẽ không được xử lý hoặc giao hàng.
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+        Nếu bạn thay đổi ý định, vui lòng đặt hàng lại trên website của chúng tôi.
+    </p>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/store" style="background-color: #007bff; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px;">
+            Quay lại trang chủ
+        </a>
+    </div>
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/OrderChecking?s=@Model" style="background-color: #007bff; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px;">
+            Xem chi tiết đơn hàng
+        </a>
+    </div>
+</div>

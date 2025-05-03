@@ -1,0 +1,34 @@
+﻿@Model string
+@{
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml"; // layout không có menu trái
+}
+@{
+    ViewData["Title"] = "Đã ghi nhận yêu cầu chờ hàng";
+}
+
+<div style="max-width: 600px; margin: 40px auto; padding: 30px; border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9; font-family: Arial, sans-serif;">
+    <h2 style="color: #28a745; text-align: center;">✅ Đã ghi nhận yêu cầu chờ hàng</h2>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+        Cảm ơn bạn đã lựa chọn <strong>BuBu Sport</strong>!
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+        Yêu cầu <strong>chờ có hàng</strong> của bạn đã được ghi nhận thành công. Chúng tôi sẽ thông báo ngay khi sản phẩm bạn quan tâm có lại trong kho.
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+        Trong thời gian chờ, bạn có thể theo dõi thêm các sản phẩm khác tại website của chúng tôi.
+    </p>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/store" style="background-color: #007bff; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px;">
+            Quay lại trang chủ
+        </a>
+    </div>
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/OrderChecking?s=@Model" style="background-color: #007bff; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px;">
+            Xem chi tiết đơn hàng
+        </a>
+    </div>
+</div>
