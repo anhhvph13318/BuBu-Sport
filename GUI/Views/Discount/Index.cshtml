@@ -1,5 +1,6 @@
 ﻿@using GUI.Models.DTOs.Discount_DTO
 @using System.Globalization
+@using DATN_ACV_DEV.Entity
 @model DiscountListViewModel
 
 <div class="container-fluid px-4 mt-3">
@@ -20,25 +21,14 @@
         </div>
         <div class="card-body">
             <form asp-controller="Discount" asp-action="Index" method="get" class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="searchName" class="form-label">Tên khuyến mại</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-tag"></i></span>
                         <input type="text" class="form-control" id="searchName" name="name" placeholder="Nhập tên khuyến mại...">
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <label for="discountTypeFilter" class="form-label">Loại giảm giá</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-percent"></i></span>
-                        <select class="form-select" id="discountTypeFilter" name="discountType">
-                            <option value="">-- Tất cả loại --</option>
-                            <option value="percent">Giảm theo %</option>
-                            <option value="fixed">Giảm cố định</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="statusFilter" class="form-label">Trạng thái</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
@@ -88,10 +78,18 @@
                         foreach (var discount in Model.Discounts)
                         {
                             var status = DateTime.Now < discount.StartDate
-                            ? "Chưa bắt đầu"
+                            ? Status.InActive
                             : (DateTime.Now >= discount.StartDate && DateTime.Now <= discount.EndDate
-                            ? "Hoạt động"
-                            : "Hết hiệu lực");
+                            ? Status.Active
+                            : Status.Expired);
+
+                            var (statusClass, statusText, statusIcon) = status switch
+                            {
+                                Status.Active => ("bg-success", "Hoạt động", "bi-check-circle"),
+                                Status.InActive => ("bg-warning", "Chưa bắt đầu", "bi-clock"),
+                                Status.Expired => ("bg-danger", "Hết hiệu lực", "bi-x-circle"),
+                                _ => ("bg-secondary", "Không xác định", "bi-question-circle")
+                            };
 
                             <tr>
                                 <td class="text-center">@index</td>
@@ -108,7 +106,12 @@
                                 </td>
                                 <td class="text-center">@discount.StartDate.Value.ToString("dd/MM/yyyy")</td>
                                 <td class="text-center">@discount.EndDate.Value.ToString("dd/MM/yyyy")</td>
-                                <td class="text-center">@status</td>
+                                <td class="text-center">
+                                    <span class="badge @statusClass">
+                                        <i class="bi @statusIcon me-1"></i>
+                                        @statusText
+                                    </span>
+                                </td>
                                 <td class="text-center">
                                     <div class="btn-group">
                                         <a asp-action="Details" asp-route-id="@discount.Id" class="btn btn-outline-warning btn-sm">
@@ -141,18 +144,31 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     @if (TempData["RegisterSuccess"] != null)
     {
         <text>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Thành công!',
-                    text: '@Html.Raw(TempData["RegisterSuccess"])',
-                    confirmButtonText: 'OK'
-                });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: '@Html.Raw(TempData["RegisterSuccess"])',
+                            confirmButtonText: 'OK'
+                        });
         </text>
     }
+
+        $(document).ready(function () {
+            // Hiệu ứng hover cho các hàng trong bảng
+            $('table tbody tr').hover(
+                function () {
+                    $(this).addClass('table-active');
+                },
+                function () {
+                    $(this).removeClass('table-active');
+                }
+            );
         });
+    });
 </script>

@@ -1,36 +1,36 @@
 ﻿@model GUI.Models.DTOs.Discount_DTO.CreateDiscountViewModel
 
 <div class="p-4 bg-light rounded-3 shadow-sm">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mb-3">
+            @Html.Raw(TempData["ErrorMessage"])
+        </div>
+    }
     <form asp-controller="Discount" asp-action="CreateDiscount" method="post" onsubmit="return confirmAction()">
         <input type="hidden" name="Id" value="@Model.Id" />
         <input type="hidden" name="actionType" value="@(Model.Id != Guid.Empty ? "update" : "create")" />
+        <input type="hidden" asp-for="DiscountType" value="percent" />
 
         <div class="row g-3">
             <!-- Cột trái -->
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="mb-2">
                     <label class="form-label">Tên chương trình</label>
                     <input asp-for="Name" class="form-control form-control-sm" required />
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Kiểu giảm giá</label>
-                    <select asp-for="DiscountType" class="form-select form-select-sm" onchange="toggleMaxDiscount()" id="discountType">
-                        <option value="percent">Giảm theo %</option>
-                        <option value="fixed">Giảm cố định</option>
-                    </select>
+                    <div class="form-control form-control-sm">Giảm theo %</div>
                 </div>
                 <div class="mb-2">
-                    <label class="form-label">Giá trị giảm</label>
-                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" />
-                </div>
-                <div class="mb-2" id="maxDiscountAmountDiv">
-                    <label class="form-label">Giảm tối đa</label>
-                    <input asp-for="MaxDiscountAmount" class="form-control form-control-sm" type="number" />
+                    <label class="form-label">Giá trị giảm (%)</label>
+                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" max="100" />
                 </div>
             </div>
 
             <!-- Cột phải -->
-            <div class="col-md-6">
+            <div class="col-md-9">
                 @{
                     var currentDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
                 }
@@ -38,7 +38,7 @@
                 <div class="mb-2 row g-2">
                     <div class="col-6">
                         <label class="form-label">Bắt đầu</label>
-                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local"/>
+                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local" />
                     </div>
                     <div class="col-6">
                         <label class="form-label">Kết thúc</label>
@@ -56,17 +56,26 @@
                             }
                         </select>
 
-                        <input type="text" id="productSearch" class="form-control form-control-sm w-auto" placeholder="Tìm theo tên..." onkeyup="filterProducts()" />
+                        <input type="text" id="codeSearch" class="form-control form-control-sm w-auto" placeholder="Tìm theo mã..." onkeyup="filterProducts()" />
+                        <input type="text" id="nameSearch" class="form-control form-control-sm w-auto" placeholder="Tìm theo tên..." onkeyup="filterProducts()" />
                     </div>
 
                     <div class="overflow-auto border rounded p-2" style="max-height: 200px;">
                         @foreach (var product in Model.Products)
                         {
-                            <div class="form-check" data-category="@product.CategoryId">
+                            <div class="form-check" data-category="@product.CategoryId" data-code="@product.Code" data-name="@product.Name">
                                 <input class="form-check-input" type="checkbox"
                                        name="ProductIds" value="@product.Id"
                                 @(Model.ProductIds != null && Model.ProductIds.Contains(product.Id) ? "checked" : "") />
-                                <label class="form-check-label">@product.Name (@product.Price.ToString("N0") đ)</label>
+                                <label class="form-check-label">
+                                    <span class="fw-medium">[@product.Code]</span> @product.Name -
+                                    <span class="text-primary">@product.Price.ToString("N0") đ</span>
+                                    <span class="ms-2 text-muted">(Số lượng: @product.Quantity)</span>
+                                    @if (Model.ProductsInOtherDiscounts != null && Model.ProductsInOtherDiscounts.Contains(product.Id))
+                                    {
+                                        <span class="badge badge-warning ms-2">Đã thuộc chương trình khác</span>
+                                    }
+                                </label>
                             </div>
                         }
 
@@ -85,6 +94,40 @@
             <a class="btn btn-sm btn-danger" asp-action="Index">Quay lại</a>
         </div>
     </form>
+</div>
+
+<div class="p-4 bg-light rounded-3 shadow-sm mt-4" id="discountedProductsSection">
+    <h5 class="mb-3">Sản phẩm đang được áp dụng giảm giá từ chương trình khác</h5>
+
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <select class="form-select form-select-sm w-auto" id="discountFilter">
+            <option value="">-- Tất cả chương trình giảm giá --</option>
+        </select>
+        <input type="text" id="productCodeFilter" class="form-control form-control-sm w-auto" placeholder="Tìm theo mã sản phẩm..." />
+        <input type="text" id="productNameFilter" class="form-control form-control-sm w-auto" placeholder="Tìm theo tên sản phẩm..." />
+        <button class="btn btn-sm btn-primary" onclick="applyDiscountProductsFilter()">Lọc</button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="resetDiscountProductsFilter()">Đặt lại</button>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Mã sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th>Chương trình giảm giá</th>
+                <th>Giá</th>
+                <th>Giá trị giảm</th>
+                <th>Giá sau giảm</th>
+                <th>Thời gian áp dụng</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody id="discountProductsTable">
+            <tr>
+                <td colspan="8" class="text-center text-muted fst-italic">Đang tải dữ liệu...</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <style>
@@ -114,6 +157,33 @@
         background-color: #dc3545;
         border-color: #dc3545;
     }
+
+    .badge {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+    }
+
+    .badge-success {
+        color: #fff;
+        background-color: #28a745;
+    }
+
+    .badge-warning {
+        color: #212529;
+        background-color: #ffc107;
+    }
+
+    .badge-danger {
+        color: #fff;
+        background-color: #dc3545;
+    }
 </style>
 
 <script>
@@ -121,32 +191,67 @@
     @if (TempData["RegisterSuccess"] != null)
     {
         <text>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Thành công!',
-                    text: '@Html.Raw(TempData["RegisterSuccess"])',
-                    confirmButtonText: 'OK'
-                });
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: '@Html.Raw(TempData["RegisterSuccess"])',
+                                confirmButtonText: 'OK'
+                            });
         </text>
     }
+        filterProducts(); 
+
+        loadDiscountPrograms();
+
+        loadDiscountedProducts();
+
+        document.getElementById('productCodeFilter').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyDiscountProductsFilter();
+            }
         });
-    function toggleMaxDiscount() {
-        const selected = document.getElementById("discountType").value;
-        document.getElementById("maxDiscountAmountDiv").style.display = selected === "percent" ? "block" : "none";
+
+        document.getElementById('productNameFilter').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyDiscountProductsFilter();
+            }
+        });
+    });
+
+    function loadDiscountPrograms() {
+        const discountFilter = document.getElementById('discountFilter');
+        discountFilter.innerHTML = '<option value="">-- Đang tải chương trình giảm giá --</option>';
+
+        fetch('/Discount/GetDiscounts')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                discountFilter.innerHTML = '<option value="">-- Tất cả chương trình giảm giá --</option>';
+                if (data && data.length > 0) {
+                    data.forEach(discount => {
+                        const option = document.createElement('option');
+                        option.value = discount.id;
+                        option.textContent = discount.name;
+                        discountFilter.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading discounts:', error);
+                discountFilter.innerHTML = '<option value="">-- Không thể tải chương trình giảm giá --</option>';
+            });
     }
-    window.onload = function () {
-        toggleMaxDiscount();
-        filterProducts(); // Gọi luôn lọc khi load nếu có giá trị sẵn
-    };
 
     function confirmAction() {
         const actionType = document.querySelector('input[name="actionType"]').value;
         if (!actionType) {
             document.getElementById('validate-message').style.display = 'block';
-            return false; // Ngừng submit form nếu không có giá trị actionType
+            return false;
         }
-
-        // Ngừng submit form ngay lập tức
         event.preventDefault();
 
         Swal.fire({
@@ -158,28 +263,30 @@
             cancelButtonText: 'Không, hủy bỏ!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Nếu người dùng chọn "Đồng ý", submit form
-                document.querySelector('form').submit(); // Submit form sau khi xác nhận
+                document.querySelector('form').submit();
             }
         });
 
-        return false; // Ngừng submit form nếu chưa xác nhận
+        return false;
     }
 
     function filterProducts() {
         const categoryId = document.getElementById("categoryFilter").value;
-        const searchTerm = document.getElementById("productSearch").value.toLowerCase();
+        const codeSearch = document.getElementById("codeSearch").value.toLowerCase();
+        const nameSearch = document.getElementById("nameSearch").value.toLowerCase();
         const items = document.querySelectorAll(".form-check[data-category]");
         let visibleCount = 0;
 
         items.forEach(item => {
-            const label = item.querySelector("label").textContent.toLowerCase();
+            const itemCode = item.getAttribute("data-code").toLowerCase();
+            const itemName = item.getAttribute("data-name").toLowerCase();
             const itemCat = item.getAttribute("data-category");
 
             const matchCategory = !categoryId || itemCat === categoryId;
-            const matchName = label.includes(searchTerm);
+            const matchCode = !codeSearch || itemCode.includes(codeSearch);
+            const matchName = !nameSearch || itemName.includes(nameSearch);
 
-            if (matchCategory && matchName) {
+            if (matchCategory && matchCode && matchName) {
                 item.style.display = "block";
                 visibleCount++;
             } else {
@@ -189,5 +296,167 @@
 
         document.getElementById("noProductMessage").style.display = visibleCount === 0 ? "block" : "none";
     }
-</script>
 
+    function loadDiscountedProducts() {
+        const discountId = document.getElementById('discountFilter').value;
+        const productCode = document.getElementById('productCodeFilter').value;
+        const productName = document.getElementById('productNameFilter').value;
+
+        document.getElementById('discountProductsTable').innerHTML =
+            '<tr><td colspan="8" class="text-center text-muted fst-italic">Đang tải dữ liệu...</td></tr>';
+
+        const params = new URLSearchParams();
+        if (discountId) params.append('discountId', discountId);
+        if (productCode) params.append('productCode', productCode);
+        if (productName) params.append('productName', productName);
+
+        const url = '/Discount/GetDiscountedProducts' + (params.toString() ? '?' + params.toString() : '');
+
+        console.log("Calling API with URL:", url); 
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("API response:", data);
+                renderDiscountProducts(data);
+            })
+            .catch(error => {
+                console.error('Error fetching discounted products:', error);
+                document.getElementById('discountProductsTable').innerHTML =
+                    '<tr><td colspan="8" class="text-center text-danger">Không thể tải dữ liệu. Vui lòng thử lại sau.</td></tr>';
+            });
+    }
+
+    function applyDiscountProductsFilter() {
+        loadDiscountedProducts();
+    }
+
+    function resetDiscountProductsFilter() {
+        document.getElementById('discountFilter').value = '';
+        document.getElementById('productCodeFilter').value = '';
+        document.getElementById('productNameFilter').value = '';
+        loadDiscountedProducts();
+    }
+
+    function formatDateTime(dateStr) {
+        const date = new Date(dateStr);
+        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('vi-VN').format(value) + ' đ';
+    }
+
+    function getDiscountStatus(startDate, endDate) {
+        const now = new Date();
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        if (now < start) {
+            return '<span class="badge badge-warning">Chưa bắt đầu</span>';
+        } else if (now > end) {
+            return '<span class="badge badge-danger">Đã kết thúc</span>';
+        } else {
+            return '<span class="badge badge-success">Đang áp dụng</span>';
+        }
+    }
+
+    function formatDiscountType(type, value, maxAmount) {
+        if (type === 'percent') {
+            let result = `${value}%`;
+            if (maxAmount) {
+                result += ` (tối đa ${formatCurrency(maxAmount)})`;
+            }
+            return result;
+        } else {
+            return formatCurrency(value);
+        }
+    }
+
+    function renderDiscountProducts(data) {
+        const tableBody = document.getElementById('discountProductsTable');
+
+        if (!data || data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="8" class="text-center text-muted fst-italic">Không có sản phẩm nào đang áp dụng giảm giá</td></tr>';
+            return;
+        }
+
+        const now = new Date();
+        const activeProducts = data.filter(item => {
+            const startDate = new Date(item.startDate);
+            const endDate = new Date(item.endDate);
+            return now >= startDate && now <= endDate;
+        });
+
+        if (activeProducts.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="8" class="text-center text-muted fst-italic">Không có sản phẩm nào đang áp dụng giảm giá</td></tr>';
+            return;
+        }
+
+        let html = '';
+        activeProducts.forEach(item => {
+            let discountedPrice = item.discountType === 'percent'
+                ? item.productPrice * (1 - item.discountValue / 100)
+                : Math.max(0, item.productPrice - item.discountValue);
+            html += `<tr>
+                <td>${item.productCode}</td>
+                <td>${item.productName}</td>
+                <td>${item.discountName}</td>
+                <td>${formatCurrency(item.productPrice)}</td>
+                <td>${formatDiscountType(item.discountType, item.discountValue, item.maxDiscountAmount)}</td>
+                <td>${formatCurrency(discountedPrice)}
+                <td>${formatDateTime(item.startDate)} - ${formatDateTime(item.endDate)}</td>
+                <td><span class="badge badge-success">Đang áp dụng</span></td>
+            </tr>`;
+        });
+
+        tableBody.innerHTML = html;
+    }
+    function loadProductDiscountInfo() {
+        const productsWithInfo = document.querySelectorAll(".form-check input[type='checkbox']");
+
+        productsWithInfo.forEach(checkbox => {
+            if (checkbox.closest('.form-check').querySelector('.badge-warning')) {
+                const productId = checkbox.value;
+
+                fetch(`/Discount/GetProductDiscountInfo?productId=${productId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const infoElement = document.createElement('span');
+                            infoElement.className = 'ms-2 text-info product-discount-info';
+                            infoElement.setAttribute('data-bs-toggle', 'tooltip');
+                            infoElement.setAttribute('data-bs-html', 'true');
+
+                            let tooltipContent = 'Thuộc các chương trình:<br/>';
+                            data.forEach(info => {
+                                const start = new Date(info.startDate);
+                                const end = new Date(info.endDate);
+                                tooltipContent += `- ${info.discountName}: ${formatDateTime(start)} - ${formatDateTime(end)}<br/>`;
+                            });
+
+                            infoElement.setAttribute('title', tooltipContent);
+                            infoElement.innerHTML = '<i class="bi bi-info-circle"></i>';
+
+                            checkbox.closest('.form-check').querySelector('.badge-warning').after(infoElement);
+
+                            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                return new bootstrap.Tooltip(tooltipTriggerEl);
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error loading product discount info:', error));
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadProductDiscountInfo();
+    });
+</script>

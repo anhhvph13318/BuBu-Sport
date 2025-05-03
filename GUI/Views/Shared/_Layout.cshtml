@@ -55,7 +55,21 @@
 
         .nav-link {
             color: #495057;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
+
+            .nav-link:hover {
+                background-color: rgba(13, 110, 253, 0.1);
+            }
+
+            /* Style cho menu active */
+            .nav-link.active {
+                background-color: #0d6efd;
+                color: white;
+                font-weight: 500;
+            }
 
         .container {
             flex-grow: 1;
@@ -126,9 +140,6 @@
                 <img src="~/Image/LogoBuBu.png" alt="BuBu Logo" class="logo" />
             </div>
             <nav class="nav flex-column p-3">
-                @*<a class="nav-link" href="/customer">
-                    <i class="bi bi-people-fill"> Quản lý khách hàng </i>                  
-                </a> *@
                 <a class="nav-link" href="/orders/create/instore">
                     <i class="fa-solid fa-shop"> </i> <span>Bán hàng tại quầy</span>
                 </a>
@@ -159,9 +170,6 @@
                 <a class="nav-link" href="/customers">
                     <i class="bi bi-people-fill"></i> <span>Quản lý khách hàng</span>
                 </a>
-@*                 <a class="nav-link" href="/orders/create/online">
-                    <i class="bi bi-cart-fill"></i> <span>Bán hàng online </span>
-                </a> *@
                 <a class="nav-link" href="/SignIn" id="logout-link">
                     <i class="bi bi-door-open-fill"></i><span>Đăng xuất</span>
                 </a>
@@ -186,7 +194,45 @@
     document.getElementById("toggleSidebar").addEventListener("click", function () {
         document.querySelector(".sidebar").classList.toggle("collapsed");
     });
+
     document.addEventListener("DOMContentLoaded", function () {
+        // Xử lý highlight menu active dựa trên URL hiện tại
+        const currentPath = window.location.pathname.toLowerCase();
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // Đầu tiên, tìm match chính xác
+        let exactMatch = false;
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href').toLowerCase();
+            if (currentPath === href) {
+                link.classList.add('active');
+                exactMatch = true;
+            }
+        });
+
+        // Nếu không có match chính xác, mới xem xét các trường hợp đặc biệt
+        if (!exactMatch) {
+            // Xử lý trường hợp đặc biệt với URL có cấu trúc phức tạp
+            if (currentPath.startsWith('/orders/create/instore')) {
+                // Highlight menu "Bán hàng tại quầy"
+                document.querySelector('.nav-link[href="/orders/create/instore"]').classList.add('active');
+            } else if (currentPath.startsWith('/orders') && currentPath !== '/orders/create/instore') {
+                // Highlight menu "Quản lý hoá đơn" chỉ khi path bắt đầu bằng /orders và không phải là trang bán hàng tại quầy
+                document.querySelector('.nav-link[href="/orders"]').classList.add('active');
+            } else {
+                // Với các URL khác, xử lý theo cách thông thường
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href').toLowerCase();
+                    // Loại trừ những URL đặc biệt đã xử lý ở trên và trang đăng xuất
+                    if (href !== '/signin' && href !== '/orders' && href !== '/orders/create/instore' &&
+                        currentPath.startsWith(href)) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // Xử lý sự kiện đăng xuất
         const logoutLink = document.getElementById("logout-link");
 
         logoutLink.addEventListener("click", function (e) {

@@ -70,29 +70,45 @@
 
                         <!-- Color filter -->
                         <div class="filter-item">
-                            <h4 class="filter-title">Màu sắc</h4>
-                            <div class="color-filter-wrapper">
-                                @foreach (var color in ViewBag.Colors)
-                                {
-                                    <label class="color-checkbox-wrapper" title="@color.Name">
-                                        <input type="radio" name="selectedColor" class="color-radio" data-color-id="@color.Id" @(ViewBag.CurrentColorId != null && (Guid)ViewBag.CurrentColorId == color.Id ? "checked" : "") />
-                                        <span class="color-circle" style="background-color:@color.Name"></span>
-                                    </label>
-                                }
+                            <div class="filter-header" id="color-filter-header">
+                                <h4 class="filter-title">Màu sắc</h4>
+                                <button type="button" class="btn-toggle-filter" aria-expanded="false">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="color-filter-content">
+                                <div class="color-filter-wrapper">
+                                    @foreach (var color in ViewBag.Colors)
+                                    {
+                                        <label class="color-checkbox-wrapper" title="@color.Name">
+                                            <input type="radio" name="selectedColor" class="color-radio" data-color-id="@color.Id" @(ViewBag.CurrentColorId != null && (Guid)ViewBag.CurrentColorId == color.Id ? "checked" : "") />
+                                            <span class="color-circle @(color.Name.ToLower() == "#ffffff" ? "white-color" : "") @(color.Name.ToLower() == "#000000" ? "dark-color" : "")"
+                                                  style="background-color:@color.Name"></span>
+                                            <span class="color-name">@color.Name</span>
+                                        </label>
+                                    }
+                                </div>
                             </div>
                         </div>
 
                         <!-- Size filter -->
                         <div class="filter-item">
-                            <h4 class="filter-title">Kích cỡ</h4>
-                            <div class="size-filter-wrapper">
-                                @foreach (var size in ViewBag.Sizes)
-                                {
-                                    <label class="size-checkbox-wrapper">
-                                        <input type="radio" name="selectedSize" class="size-radio" data-size-id="@size.Id" @(ViewBag.CurrentSizeId != null && (Guid)ViewBag.CurrentSizeId == size.Id ? "checked" : "") />
-                                        <span class="size-label">@size.SizeName</span>
-                                    </label>
-                                }
+                            <div class="filter-header" id="size-filter-header">
+                                <h4 class="filter-title">Kích cỡ</h4>
+                                <button type="button" class="btn-toggle-filter" aria-expanded="false">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="size-filter-content">
+                                <div class="size-filter-wrapper">
+                                    @foreach (var size in ViewBag.Sizes)
+                                    {
+                                        <label class="size-checkbox-wrapper">
+                                            <input type="radio" name="selectedSize" class="size-radio" data-size-id="@size.Id" @(ViewBag.CurrentSizeId != null && (Guid)ViewBag.CurrentSizeId == size.Id ? "checked" : "") />
+                                            <span class="size-label">@size.SizeName</span>
+                                        </label>
+                                    }
+                                </div>
                             </div>
                         </div>
 
@@ -111,7 +127,7 @@
                                      data-name="@item.Name"
                                      data-category="@item.CategoryName"
                                      data-status="@(item.Quantity > 0 ? "available" : "out-of-stock")"
-                                     data-price="@item.Price"
+                                     data-price="@item.Price"*
                                      data-price="@item.PriceSale"
                                      data-colors="@item.Color?.Replace(" ", "").ToLowerInvariant()"
                                      data-sizes="@item.SizeName?.Replace(" ", "").ToLowerInvariant()">
@@ -138,9 +154,8 @@
                                                 }
                                             </h4>
                                             <div class="product-btns">
-                                                <button class="quick-view" onclick="redirectToDetail('@item.Id')">
-                                                    <i class="fa fa-eye"></i>
-                                                    <span class="tooltipp">xem chi tiết</span>
+                                                <button class="detail-btn" onclick="redirectToDetail('@item.Id')">
+                                                    XEM CHI TIẾT
                                                 </button>
                                             </div>
                                         </div>
@@ -175,153 +190,365 @@
         </div>
 
         <style>
-            .product-old-price {
-                color: #999;
-                margin-left: 10px;
-                font-size: 0.9em;
-            }
-            .filter-sidebar {
-                width: 250px;
-                background: #f4f4f4;
-                padding: 20px;
-                transition: all 0.3s ease-in-out;
+            .product-btns .btn {
+                padding: 5px 10px;
+                font-size: 12px;
+                border-radius: 4px;
+                transition: all 0.3s ease;
             }
 
-                .filter-sidebar.collapsed {
-                    display: none;
-                }
-
-            .store-container {
-                flex: 1;
-                transition: all 0.3s ease-in-out;
-            }
-
-            .product-item {
-                margin-bottom: 20px;
-            }
-
-            .product-img {
-                position: relative;
-                overflow: hidden;
-            }
-
-                .product-img img {
-                    width: 100%;
-                    height: auto;
-                    transition: transform 0.3s;
-                }
-
-                .product-img:hover img {
-                    transform: scale(1.05);
-                }
-
-            .product-label {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: rgba(255, 255, 255, 0.7);
-            }
-
-                .product-label span {
-                    background: rgba(0, 0, 0, 0.6);
-                    color: #fff;
-                    padding: 6px 12px;
-                    font-size: 14px;
-                }
-
-            .color-filter-wrapper {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
-                margin-top: 8px;
-            }
-
-            .color-checkbox-wrapper {
+            .detail-btn {
                 display: inline-block;
-                position: relative;
-                cursor: pointer;
-            }
-
-            .color-circle {
-                width: 26px;
-                height: 26px;
-                border-radius: 50%;
-                display: inline-block;
-                border: 2px solid #ccc;
-                transition: 0.2s;
-            }
-
-            .size-filter-wrapper {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                max-width: 100%;
-                margin-top: 8px;
-            }
-
-            .size-label {
-                padding: 6px 12px;
-                background-color: #f0f0f0;
-                border-radius: 6px;
-                cursor: pointer;
-                user-select: none;
-                font-size: 14px;
-                display: inline-block;
-                white-space: nowrap;
-            }
-
-            .size-radio:checked + .size-label {
-                background-color: #007bff;
-                color: white;
+                min-width: 120px;
+                padding: 8px 15px;
+                background-color: #0066cc !important; /* Thêm !important để đảm bảo màu nền */
+                color: #fff !important; /* Đổi màu text thành trắng để dễ đọc trên nền xanh */
+                border: 2px solid #0066cc !important; /* Thêm !important */
                 font-weight: bold;
+                text-transform: uppercase;
+                font-size: 12px;
+                text-align: center;
+                cursor: pointer;
+                margin-top: 10px;
+                line-height: 1.5 !important; /* Thay đổi line-height để căn giữa text */
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                transition: none !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                vertical-align: middle !important; /* Thêm để căn giữa text */
+                border-radius: 10px !important;
             }
 
-            @@media (max-width: 768px) {
-                .filter-sidebar {
-                    display: none !important;
+                .detail-btn:hover {
+                    background-color: #0066cc !important; /* Thêm !important */
+                    color: #fff !important; /* Giữ màu text trắng khi hover */
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                    border: 2px solid #0066cc !important;
+                    border-radius: 10px !important;
                 }
-
-                .flex-container {
-                    flex-direction: column;
-                }
+            /* Nếu muốn nút rộng hơn */
+            .product-btns {
+                text-align: center; /* Căn giữa nút */
             }
 
-            .grid-5-cols {
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 20px;
+            /* Đảm bảo text luôn hiển thị */
+            .detail-btn span,
+            .detail-btn::before,
+            .detail-btn::after {
+                opacity: 1 !important;
+                visibility: visible !important;
             }
+.product-old-price {
+    color: #999;
+    margin-left: 10px;
+    font-size: 0.9em;
+}
 
-                .grid-5-cols .product-item {
-                    width: 100%; /* Đảm bảo chiếm full width của cột */
-                    margin-bottom: 20px;
-                }
+.filter-sidebar {
+    margin-top: 12px;
+    width: 250px;
+    background: transparent; 
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+    border: none; 
+}
 
-                .grid-5-cols .product-img img {
-                    width: 100%;
-                    height: auto;
-                    object-fit: cover; /* Giữ tỷ lệ ảnh */
-                    aspect-ratio: 1/1; /* Tỷ lệ vuông */
-                }
+    .filter-sidebar.collapsed {
+        display: none;
+    }
 
-            .grid-5-cols {
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 15px;
-                margin: 0; /* Reset margin của Bootstrap */
-                padding: 0; /* Reset padding của Bootstrap */
-            }
+.store-container {
+    flex: 1;
+    transition: all 0.3s ease-in-out;
+}
 
-                .grid-5-cols .product-item {
-                    float: none; /* Reset float của Bootstrap */
-                    width: 100%;
-                    padding: 0; /* Reset padding của col-* */
-                }
+.product-item {
+    margin-bottom: 20px;
+}
+
+.product-img {
+    width: 100%;
+    aspect-ratio: 1/1; /* Tỷ lệ vuông cho tất cả ảnh */
+    overflow: hidden;
+    position: relative;
+}
+
+    .product-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Đảm bảo ảnh luôn đẹp và không bị méo */
+        transition: transform 0.3s;
+    }
+
+.row .product-item .product-img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+}
+
+    .row .product-item .product-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-img:hover img {
+        transform: scale(1.05);
+    }
+
+.product-body {
+    padding: 15px;
+    text-align: center;
+}
+
+.product-name {
+    min-height: 44px; 
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.product-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+}
+.product-label span {
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        padding: 6px 12px;
+        font-size: 14px;
+}
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+.filter-header:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.btn-toggle-filter {
+    background: none;
+    border: none;
+    color: #777;
+    font-size: 16px;
+    padding: 0;
+    cursor: pointer;
+}
+.btn-toggle-filter i {
+    transition: transform 0.3s ease;
+}
+
+.btn-toggle-filter[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+
+.color-filter-content, .size-filter-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+    opacity: 0;
+    margin-top: 0;
+    padding: 0;
+}
+
+.color-filter-content.expanded, .size-filter-content.expanded {
+    max-height: 300px;
+    opacity: 1;
+    margin-top: 8px;
+    padding: 5px 0;
+}
+.color-filter-wrapper {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 10px;
+}
+.color-checkbox-wrapper {
+     display: flex;
+     align-items: center;
+     position: relative;
+     cursor: pointer;
+     padding: 6px;
+     width: calc(50% - 5px);
+     transition: transform 0.2s ease, background-color 0.2s ease;
+     border-radius: 4px;
+}
+.color-checkbox-wrapper:hover {
+    transform: translateY(-2px);
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+ .color-checkbox-wrapper input[type="radio"] {
+    margin: 0;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+.color-name {
+     transition: color 0.2s ease, font-weight 0.2s ease;
+     display: inline-block;
+     vertical-align: middle;
+     margin-left: 5px;
+     flex-grow: 1;
+}
+.color-checkbox-wrapper input[type="radio"] {
+     width: 16px;
+     height: 16px;
+}
+.color-checkbox-wrapper {
+     min-height: 30px;
+     justify-content: flex-start;
+}
+.size-filter-wrapper {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    max-width: 100%;
+}
+
+.size-checkbox-wrapper {
+    display: block;
+    text-align: center;
+    margin: 0;
+    transition: transform 0.2s ease;
+}
+
+.size-checkbox-wrapper:hover {
+    transform: translateY(-2px);
+}
+
+.size-label {
+    display: block;
+    width: 100%;
+    padding: 6px 0;
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.size-radio:checked + .size-label {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.size-checkbox-wrapper:hover .size-label {
+    box-shadow: 0 0 3px #2196F3;
+}
+
+.color-filter-wrapper, .size-filter-wrapper {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.color-filter-wrapper::-webkit-scrollbar, .size-filter-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.color-filter-wrapper::-webkit-scrollbar-thumb, .size-filter-wrapper::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.color-filter-wrapper::-webkit-scrollbar-thumb:hover, .size-filter-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Media queries */
+@@media (max-width: 768px) {
+    .filter-sidebar {
+        display: none !important;
+    }
+
+    .flex-container {
+        flex-direction: column;
+    }
+}
+
+.grid-5-cols {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+    .grid-5-cols .product-item {
+        width: 100%; /* Đảm bảo chiếm full width của cột */
+        margin-bottom: 20px;
+    }
+
+    .grid-4-cols .product-img img {
+        width: 100%;
+        height: auto;
+        object-fit: cover; /* Giữ tỷ lệ ảnh */
+        aspect-ratio: 1/1; /* Tỷ lệ vuông */
+    }
+
+.grid-5-cols {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin: 0; /* Reset margin của Bootstrap */
+    padding: 0; /* Reset padding của Bootstrap */
+}
+
+    .grid-5-cols .product-item {
+        float: none; /* Reset float của Bootstrap */
+        width: 100%;
+        padding: 0; /* Reset padding của col-* */
+    }
+
+.grid-4-cols {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+    .grid-4-cols .product-item {
+        width: 100%;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .grid-4-cols .product-img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        overflow: hidden;
+    }
+
+        .grid-4-cols .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+/* Animation keyframes để thêm hiệu ứng mượt mà */
+@@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-5px); }
+}
         </style>
 
         <script>
@@ -330,21 +557,104 @@
                 const sidebar = document.getElementById("filter-sidebar");
                 const productList = document.getElementById("product-list");
 
+                // Color filter elements
+                const colorFilterHeader = document.getElementById('color-filter-header');
+                const colorFilterContent = document.querySelector('.color-filter-content');
+                const colorToggleFilterBtn = colorFilterHeader.querySelector('.btn-toggle-filter');
+
+                // Size filter elements
+                const sizeFilterHeader = document.getElementById('size-filter-header');
+                const sizeFilterContent = document.querySelector('.size-filter-content');
+                const sizeToggleFilterBtn = sizeFilterHeader.querySelector('.btn-toggle-filter');
+
+                // Xóa thuộc tính style.display nếu có
+                colorFilterContent.removeAttribute('style');
+                sizeFilterContent.removeAttribute('style');
+
+                // Check if color has been previously selected
+                const hasSelectedColor = document.querySelector('.color-radio:checked');
+                if (hasSelectedColor) {
+                    colorFilterContent.classList.add('expanded');
+                    colorToggleFilterBtn.setAttribute('aria-expanded', 'true');
+                }
+
+                // Check if size has been previously selected
+                const hasSelectedSize = document.querySelector('.size-radio:checked');
+                if (hasSelectedSize) {
+                    sizeFilterContent.classList.add('expanded');
+                    sizeToggleFilterBtn.setAttribute('aria-expanded', 'true');
+                }
+
+                // Toggle color filter
+                colorFilterHeader.addEventListener('click', function () {
+                    toggleFilterSection(colorFilterContent, colorToggleFilterBtn);
+                });
+
+                // Toggle size filter
+                sizeFilterHeader.addEventListener('click', function () {
+                    toggleFilterSection(sizeFilterContent, sizeToggleFilterBtn);
+                });
+
+                // Improved toggle function (đồng bộ cho cả color và size)
+                function toggleFilterSection(contentElement, buttonElement) {
+                    const isExpanded = buttonElement.getAttribute('aria-expanded') === 'true';
+
+                    if (isExpanded) {
+                        // Close filter section
+                        contentElement.classList.remove('expanded');
+                        buttonElement.setAttribute('aria-expanded', 'false');
+                    } else {
+                        // Open filter section
+                        contentElement.classList.add('expanded');
+                        buttonElement.setAttribute('aria-expanded', 'true');
+                    }
+                }
+
+                // Toggle sidebar
                 toggleBtn.addEventListener("click", function () {
                     const isCollapsed = sidebar.classList.contains("collapsed");
                     sidebar.classList.toggle("collapsed");
 
                     if (isCollapsed) {
-                        // Khi hiện bộ lọc (sidebar không collapsed)
-                        productList.classList.remove("grid-5-cols");
+                        // Khi hiển thị bộ lọc => 3 sản phẩm/hàng
+                        productList.classList.remove("grid-4-cols");
                         productList.classList.add("row");
                         toggleBtn.innerHTML = ' Ẩn Bộ Lọc';
                     } else {
-                        // Khi ẩn bộ lọc (sidebar collapsed)
+                        // Khi ẩn bộ lọc => 4 sản phẩm/hàng
                         productList.classList.remove("row");
-                        productList.classList.add("grid-5-cols");
+                        productList.classList.add("grid-4-cols");
                         toggleBtn.innerHTML = ' Hiện Bộ Lọc';
                     }
+
+                    // Đảm bảo tất cả các ảnh sản phẩm được load lại đúng kích thước
+                    setTimeout(() => {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 300);
+                });
+
+                // Thêm animation hover cho các options
+                const sizeOptions = document.querySelectorAll('.size-checkbox-wrapper');
+                const colorOptions = document.querySelectorAll('.color-checkbox-wrapper');
+
+                // Radio buttons click handler cho màu sắc
+                document.querySelectorAll('.color-radio').forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.checked) {
+                            // Reset các màu khác
+                            document.querySelectorAll('.color-name').forEach(name => {
+                                name.style.fontWeight = 'normal';
+                                name.style.color = '#444';
+                            });
+                            
+                            // Highlight màu được chọn
+                            const colorName = this.parentElement.querySelector('.color-name');
+                            if (colorName) {
+                                colorName.style.fontWeight = '600';
+                                colorName.style.color = '#2196F3';
+                            }
+                        }
+                    });
                 });
 
                 // Format currency input
@@ -355,6 +665,7 @@
                 function parseCurrencyVN(value) {
                     return parseInt(value.replace(/[^\d]/g, '')) || 0;
                 }
+
                 document.getElementById('price-min').addEventListener('input', function () {
                     const raw = parseCurrencyVN(this.value);
                     const scaled = raw / 100;
@@ -366,17 +677,11 @@
                     const scaled = raw / 100;
                     this.value = formatCurrencyVN(scaled);
                 });
-                // document.getElementById('price-min').addEventListener('input', function () {
-                //     this.value = formatCurrencyVN(parseCurrencyVN(this.value));
-                // });
-
-                // document.getElementById('price-max').addEventListener('input', function () {
-                //     this.value = formatCurrencyVN(parseCurrencyVN(this.value));
-                // });
 
                 // Pagination click handler
                 document.querySelectorAll('.pagination-btn').forEach(btn => {
-                    btn.addEventListener('click', function () {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
                         const page = this.getAttribute('data-page');
                         updateUrlParameter('p', page);
                     });
@@ -407,7 +712,7 @@
                     if (colorId) params.set('colorId', colorId);
                     if (sizeId) params.set('sizeId', sizeId);
 
-                    params.set('p', '0'); // Reset page về 0
+                    params.set('p', '0'); // Reset page to 0
 
                     window.location.href = `${currentUrl.pathname}?${params.toString()}`;
                 });
@@ -419,6 +724,11 @@
                 document.getElementById('filter-category').value = '';
 
                 document.querySelectorAll('.color-radio, .size-radio').forEach(cb => cb.checked = false);
+                const colorNames = document.querySelectorAll('.color-name');
+                colorNames.forEach(name => {
+                    name.style.fontWeight = 'normal';
+                    name.style.color = '#444';
+                });
             }
 
             function redirectToDetail(productId) {
