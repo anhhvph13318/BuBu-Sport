@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-5">
-    <form asp-action="Edit" class="bg-light p-4 rounded shadow-sm">
+    <form asp-action="Edit" class="bg-light p-4 rounded shadow-sm" id="editUserForm">
         <h2 class="text-center mb-4">Chỉnh sửa nhân viên</h2>
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -14,9 +14,10 @@
             <!-- Cột hiển thị thông tin nhân viên -->
             <div class="col-md-6">
                 <div class="form-group mb-3">
-                    <label asp-for="UserName" class="form-label">Số điện thoại</label>
-                    <input asp-for="UserName" class="form-control" placeholder="Nhập số điện thoại" />
+                    <label asp-for="UserName" class="form-label">Số điện thoại<span class="text-danger">*</span></label>
+                    <input asp-for="UserName" class="form-control" placeholder="Nhập số điện thoại" maxlength="10" required />
                     <span asp-validation-for="UserName" class="text-danger"></span>
+                    <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ.</div>
                 </div>
 
                 <div class="form-group mb-3">
@@ -26,9 +27,10 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="Nhập email" />
+                    <label asp-for="Email" class="form-label">Email<span class="text-danger">*</span></label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="Nhập email" required />
                     <span asp-validation-for="Email" class="text-danger"></span>
+                    <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
                 </div>
 
                 <div class="form-group mb-3">
@@ -42,20 +44,24 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label asp-for="FullName" class="form-label">Họ tên</label>
-                    <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên" />
+                    <label asp-for="FullName" class="form-label">Họ tên<span class="text-danger">*</span></label>
+                    <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên" required />
                     <span asp-validation-for="FullName" class="text-danger"></span>
+                    <div class="invalid-feedback">Vui lòng nhập họ tên.</div>
                 </div>
 
                 <div class="form-group mb-3">
                     <label asp-for="UserCode" class="form-label">Mã Nhân Viên</label>
-                    <input asp-for="UserCode" class="form-control" placeholder="Nhập mã nhân viên" />
+                    <input asp-for="UserCode" class="form-control" placeholder="Nhập mã nhân viên" readonly />
                     <span asp-validation-for="UserCode" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label asp-for="InActive" class="form-label">Hoạt động</label>
-                    <input type="checkbox" asp-for="InActive" class="form-check-input" />
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="InActive" class="form-check-input" />
+                        <label class="form-check-label" for="InActive">Đánh dấu nếu không hoạt động</label>
+                    </div>
                     <span asp-validation-for="InActive" class="text-danger"></span>
                 </div>
 
@@ -71,40 +77,131 @@
         </div>
     </form>
 </div>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script>
-    document.getElementById('saveButton').addEventListener('click', function () {
-        Swal.fire({
-            title: 'Bạn có chắc muốn cập nhật không?',
-            text: "Thao tác này sẽ cập nhật dữ liệu!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Đồng ý',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('spinner').style.display = 'inline-block';
-                document.querySelector('form').submit(); // submit form HTML
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function validateForm() {
+            var isValid = true;
+            var form = document.querySelector('form');
+            
+            // Số điện thoại
+            var phoneInput = form.querySelector('[name="UserName"]');
+            if (!phoneInput.value.trim()) {
+                phoneInput.classList.add('is-invalid');
+                isValid = false;
+            } else if (phoneInput.value.trim().length !== 10 || isNaN(phoneInput.value.trim())) {
+                phoneInput.classList.add('is-invalid');
+                var errorDiv = phoneInput.parentElement.querySelector('.invalid-feedback');
+                if (errorDiv) errorDiv.textContent = 'Số điện thoại phải có 10 chữ số.';
+                isValid = false;
+            } else {
+                phoneInput.classList.remove('is-invalid');
+                phoneInput.classList.add('is-valid');
+            }
+
+            // Email
+            var emailInput = form.querySelector('[name="Email"]');
+            if (!emailInput.value.trim()) {
+                emailInput.classList.add('is-invalid');
+                isValid = false;
+            } else if (!validateEmail(emailInput.value.trim())) {
+                emailInput.classList.add('is-invalid');
+                var errorDiv = emailInput.parentElement.querySelector('.invalid-feedback');
+                if (errorDiv) errorDiv.textContent = 'Email không đúng định dạng.';
+                isValid = false;
+            } else {
+                emailInput.classList.remove('is-invalid');
+                emailInput.classList.add('is-valid');
+            }
+
+            // Họ tên
+            var nameInput = form.querySelector('[name="FullName"]');
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('is-invalid');
+                var errorDiv = nameInput.parentElement.querySelector('.invalid-feedback');
+                if (errorDiv) errorDiv.textContent = 'Họ tên không được để trống.';
+                isValid = false;
+            } else {
+                nameInput.classList.remove('is-invalid');
+                nameInput.classList.add('is-valid');
+            }
+
+            return isValid;
+        }
+
+        function validateEmail(email) {
+            if (!email) return false;
+            
+            var atIndex = email.indexOf(String.fromCharCode(64)); 
+            if (atIndex <= 0 || atIndex === email.length - 1) return false;
+            
+            var localPart = email.substring(0, atIndex);
+            var domainPart = email.substring(atIndex + 1);
+            
+            // Kiểm tra phần local và domain không được rỗng
+            if (!localPart || !domainPart) return false;
+            
+            // Kiểm tra domain có ít nhất 1 dấu chấm
+            var dotIndex = domainPart.indexOf('.');
+            if (dotIndex <= 0 || dotIndex === domainPart.length - 1) return false;
+            
+            // Kiểm tra phần mở rộng tên miền (.com, .vn, .org, ...)
+            var tld = domainPart.substring(dotIndex + 1);
+            if (tld.length < 2) return false;
+            
+            return true;
+        }
+
+        document.getElementById('saveButton').addEventListener('click', function () {
+            if (!validateForm()) return;
+
+            Swal.fire({
+                title: 'Bạn có chắc muốn cập nhật không?',
+                text: "Thao tác này sẽ cập nhật dữ liệu!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('spinner').style.display = 'inline-block';
+                    document.querySelector('form').submit();
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.querySelector('form');
+            var inputs = form.querySelectorAll('input[required]');
+
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener('input', function () {
+                    if (this.value.trim()) {
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            }
+            
+            // thông báo khi cập nhật thành công
+            @if (TempData["UpdateSuccess"] != null)
+            {
+                <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: '@Html.Raw(TempData["UpdateSuccess"])',
+                        confirmButtonText: 'OK'
+                    });
+                </text>
             }
         });
-    });
-    // thông báo khi đăng ký thành công
-    document.addEventListener("DOMContentLoaded", function () {
-    @if (TempData["RegisterSuccess"] != null)
-    {
-        <text>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Thành công!',
-                    text: '@Html.Raw(TempData["RegisterSuccess"])',
-                    confirmButtonText: 'OK'
-                });
-        </text>
-    }
-
-                });
-</script>
+    </script>
+}
