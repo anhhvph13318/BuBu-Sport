@@ -32,10 +32,9 @@ public class GetOrderAdminController : ControllerBase
             .Where(e =>
                 (string.IsNullOrEmpty(code) || e.OrderCode == code) &&
                 (string.IsNullOrEmpty(customerName) || e.Customer.Name.StartsWith(customerName)) &&
-                (status == 0 || e.Status == status) &&
-                (!startDate.HasValue || e.CreateDate.Date >= startDate.Value.Date) && 
+                (status == -1 || e.Status == status) &&
+                (!startDate.HasValue || e.CreateDate.Date >= startDate.Value.Date) &&
                 (!endDate.HasValue || e.CreateDate <= endDate.Value.Date.AddDays(1).AddTicks(-1))
-
             )
             .OrderByDescending(e => e.CreateDate)
             .Select(e => new OrderListItem()
@@ -48,7 +47,6 @@ public class GetOrderAdminController : ControllerBase
                 nameCustomer = _context.TbCustomers.Where(c=>c.Id == e.CustomerId).Select(c=>c.Name).FirstOrDefault() ,
                 status = Common.ConvertStatusOrder(e.Status ?? 0),
                 CreateDate = e.CreateDate,
-                // Lấy tên sản phẩm từ ProductDetail → Product
                 products = "",
 
             }).ToListAsync();

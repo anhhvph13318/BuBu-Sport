@@ -63,8 +63,8 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
                         <select class="form-select" id="statusFilter" name="status">
-                            <option value="0" selected="@(Context.Request.Query["status"].ToString() == "0")">-- Tất cả trạng thái --</option>
-                            <option value="5" selected="@(Context.Request.Query["status"].ToString() == "5")">Chờ xác nhận</option>
+                            <option value="-1" selected="@(Context.Request.Query["status"].ToString() == "-1")">-- Tất cả trạng thái --</option>
+                            <option value="0" selected="@(Context.Request.Query["status"].ToString() == "0")">Chờ xác nhận</option>
                             <option value="4" selected="@(Context.Request.Query["status"].ToString() == "4")">Xác nhận</option>
                             <option value="1" selected="@(Context.Request.Query["status"].ToString() == "1")">Chuẩn bị hàng</option>
                             <option value="2" selected="@(Context.Request.Query["status"].ToString() == "2")">Đang vận chuyển</option>
@@ -133,11 +133,11 @@
     </div>
 
     <div class="d-flex justify-content-between mb-4">
-        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="0" style="flex: 1; max-width: 14%; margin: 0 4px;">
+        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="-1" style="flex: 1; max-width: 14%; margin: 0 4px;">
             <i class="bi bi-grid me-2"></i>
             <span class="fw-medium">Tổng số đơn (@totalCount)</span>
         </div>
-        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="5" style="flex: 1; max-width: 14%; margin: 0 4px;">
+        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="0" style="flex: 1; max-width: 14%; margin: 0 4px;">
             <i class="bi bi-clock-history me-2"></i>
             <span class="fw-medium">Chờ xác nhận (@pendingCount)</span>
         </div>

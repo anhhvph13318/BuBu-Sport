@@ -43,7 +43,7 @@ public class OrderController : Controller
     public async Task<IActionResult> Index(
     [FromQuery] string? code = "",
     [FromQuery] string? customerName = "",
-    [FromQuery] int status = 0,
+    [FromQuery] int status = -1,
     [FromQuery] decimal? minAmount = null,
     [FromQuery] decimal? maxAmount = null,
     [FromQuery] string? orderCodePrefix = "", 
