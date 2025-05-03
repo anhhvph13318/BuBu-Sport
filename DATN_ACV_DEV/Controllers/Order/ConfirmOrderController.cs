@@ -193,7 +193,7 @@ namespace DATN_ACV_DEV.Controllers
                     Id = Guid.NewGuid(),
                     OrderId = _order.Id,
                     ProductId = i.productId,
-                    Quantity = i.quantity
+                    Quantity = i.quantity,
                 };
                 _lstOrderDetail.Add(_orderDetail);
                 _response.products.Add(i);
