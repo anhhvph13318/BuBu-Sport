@@ -176,7 +176,7 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             foreach (var item in payload.Items)
             {
-                var existItem = _context.TbOrderDetails.FirstOrDefault(e => e.ProductId == Guid.Parse(item.Id));
+                var existItem = _context.TbOrderDetails.Where(e => e.ProductId == Guid.Parse(item.Id) && e.OrderId == Guid.Parse(id)).FirstOrDefault();
                 if (existItem == null)
                 {
                     var productDetail = _context.TbProductDetails.FirstOrDefault(p => p.Id == Guid.Parse(item.Id));
@@ -201,8 +201,10 @@ namespace DATN_ACV_DEV.Controllers.Order
                         Id = Guid.NewGuid(),
                         ProductId = Guid.Parse(item.Id),
                         Quantity = item.Quantity,
+                        OrderId = tbOrder.Id,
                         Price = actualPrice
                     });
+                    tbOrder.TotalAmount += actualPrice;
                 }
                 else
                 {
