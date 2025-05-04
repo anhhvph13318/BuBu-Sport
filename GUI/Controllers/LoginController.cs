@@ -57,7 +57,9 @@ namespace GUI.Controllers
                     ? "Đang vận chuyển"
                     : request.status == 4
                         ? "Xác nhận"
-                        : "Hoàn thành";
+                        : request.status == 9
+                            ? "Giao hàng thành công"
+                            : "Hoàn thành";
             if (autoUpdate == true)
             {
                 request.isCancel = 1;
