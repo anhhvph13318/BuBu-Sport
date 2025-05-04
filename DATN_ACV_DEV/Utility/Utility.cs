@@ -32,10 +32,10 @@
         public const string ORDER_STATUS_RETURNS_PRODUCT_TEXT = "Đã hoàn hàng";
         public const int ORDER_STATUS_PARTIAL_REFUND = 6; 
         public const string ORDER_STATUS_PARTIAL_REFUND_TEXT = "Trả hàng 1 phần";
-
         public const int ORDER_DURING_THE_RETURN_PERIOD = 8; // hoặc 9 nếu cần thêm
         public const string ORDER_DURING_THE_RETURN_PERIOD_TEXT = "Trong thời gian đổi trả";
-
+        public const int ORDER_STATUS_DELIVERY_SUCCESS = 9;// giao hàng thành công
+        public const string ORDER_STATUS_DELIVERY_SUCCESS_TEXT = "Giao hàng thành công";
         public const int ORDER_STATUS_DONE = 7;// giao thành công.
         public const string ORDER_STATUS_DONE_TEXT = "Hoàn thành đơn hàng";
         public const int LimitDefault = 15;
