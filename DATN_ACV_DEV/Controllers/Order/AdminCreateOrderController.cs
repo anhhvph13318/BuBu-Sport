@@ -25,17 +25,45 @@ namespace DATN_ACV_DEV.Controllers.Order
         {
             var errors = new Dictionary<string, string>();
 
-            var items = payload.Items.Select(e => new TbOrderDetail
+            var items = payload.Items.Select(e =>
             {
-                Id = Guid.NewGuid(),
-                ProductId = Guid.Parse(e.Id),
-                Quantity = e.Quantity,
-            });
+                var productDetail = _context.TbProductDetails.FirstOrDefault(p => p.Id == Guid.Parse(e.Id));
+                var productId = productDetail?.ProductId;
+                var product = productId != null ? _context.TbProducts.FirstOrDefault(p => p.Id == productId) : null;
+
+                if (product == null || productDetail == null)
+                {
+                    errors.Add($"Product.{e.Id}", "Sản phẩm không tồn tại");
+                    return null;
+                }
+
+                var discount = _context.TbDiscountProducts
+                    .Where(dp => dp.ProductId == productId)
+                    .Join(_context.TbDiscounts, dp => dp.DiscountId, d => d.Id, (dp, d) => d)
+                    .Where(d => d.StartDate <= DateTime.Now && d.EndDate >= DateTime.Now)
+                    .Select(d => d.DiscountValue)
+                    .FirstOrDefault();
+                var actualPrice = discount != null ? product.Price - (product.Price * discount / 100) : product.Price;
+
+                return new TbOrderDetail
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = Guid.Parse(e.Id),
+                    Quantity = e.Quantity,
+                    Price = actualPrice ?? 0m 
+                };
+            }).Where(e => e != null).ToList();
+
+            // Kiểm tra lỗi
+            if (errors.Count > 0)
+            {
+                return BadRequest(new { errors });
+            }
 
             var order = new TbOrder
             {
                 Id = Guid.NewGuid(),
-                TbOrderDetails = items.ToList(),
+                TbOrderDetails = items,
                 Status = payload.IsDraft == true ? 0 : payload.Status,
                 TotalAmount = payload.Payment.TotalAmount,
                 TotalAmountDiscount = payload.Payment.TotalDiscount,
@@ -78,9 +106,7 @@ namespace DATN_ACV_DEV.Controllers.Order
                 };
             }
 
-            
-
-            if(payload.Payment.VoucherId is not null && payload.Payment.VoucherId != Guid.Empty)
+            if (payload.Payment.VoucherId is not null && payload.Payment.VoucherId != Guid.Empty)
             {
                 var voucher = await _context.TbVouchers.FirstOrDefaultAsync(e => e.Id == payload.Payment.VoucherId)
                     ?? throw new NullReferenceException();
@@ -94,7 +120,6 @@ namespace DATN_ACV_DEV.Controllers.Order
                 }
             }
 
-            // re-update product stock
             foreach (var item in payload.Items)
             {
                 var productID = _context.TbProductDetails.Where(c => c.Id == Guid.Parse(item.Id)).Select(c => c.ProductId).FirstOrDefault();
@@ -104,31 +129,35 @@ namespace DATN_ACV_DEV.Controllers.Order
                 if (product.Quantity <= 0)
                 {
                     errors.Add($"Product.{product.Id}", $"{product.Name} - Không đủ số lượng");
-                } else
+                }
+                else
                 {
                     product.Quantity -= item.Quantity;
                 }
             }
 
-            if(errors.Count == 0)
+            if (errors.Count == 0)
             {
                 try
                 {
-					await _context.TbOrders.AddAsync(order);
-					await _context.SaveChangesAsync();
-				}
+                    await _context.TbOrders.AddAsync(order);
+                    await _context.SaveChangesAsync();
+                    return Ok(new { Success = true });
+                }
                 catch (Exception ex)
                 {
-                    throw;
+                    return StatusCode(500, new
+                    {
+                        Success = false,
+                        Message = ex.Message,
+                        Detail = ex.InnerException?.Message
+                    });
                 }
-                return Ok(new { Success = true });
             }
 
-            return BadRequest(new
-            {
-                errors
-            });
+            return BadRequest(new { errors });
         }
+
         [HttpPatch]
         [Route("update/{id}")]
         public async Task<IActionResult> UpdateItemOrder(
@@ -147,21 +176,64 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             foreach (var item in payload.Items)
             {
-                var existItem = _context.TbOrderDetails.Where(e => e.ProductId == Guid.Parse(item.Id) && e.OrderId == Guid.Parse(id)).FirstOrDefault();
-
+                var existItem = _context.TbOrderDetails.FirstOrDefault(e => e.ProductId == Guid.Parse(item.Id));
                 if (existItem == null)
                 {
-                    productdetailid.Add(item);
-                }    
+                    var productDetail = _context.TbProductDetails.FirstOrDefault(p => p.Id == Guid.Parse(item.Id));
+                    var productId = productDetail?.ProductId;
+                    var product = productId != null ? _context.TbProducts.FirstOrDefault(p => p.Id == productId) : null;
+                    var actualPrice = product != null ? product.Price : 0m;
+
+                    // Tính giá khuyến mãi nếu có
+                    if (product != null)
+                    {
+                        var discount = _context.TbDiscountProducts
+                            .Where(dp => dp.ProductId == productId)
+                            .Join(_context.TbDiscounts, dp => dp.DiscountId, d => d.Id, (dp, d) => d)
+                            .Where(d => d.StartDate <= DateTime.Now && d.EndDate >= DateTime.Now)
+                            .Select(d => d.DiscountValue)
+                            .FirstOrDefault();
+                        actualPrice = discount != null ? product.Price - (product.Price * (decimal)discount / 100) : product.Price;
+                    }
+
+                    _context.TbOrderDetails.Add(new TbOrderDetail
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = Guid.Parse(item.Id),
+                        Quantity = item.Quantity,
+                        Price = actualPrice
+                    });
+                }
+                else
+                {
+                    existItem.Quantity = item.Quantity;
+                }
             }
             foreach (var item1 in productdetailid)
             {
+                var productDetail = _context.TbProductDetails.FirstOrDefault(c => c.Id == Guid.Parse(item1.Id));
+                var productId = productDetail?.ProductId;
+                var product = productId != null ? _context.TbProducts.FirstOrDefault(c => c.Id == productId) : null;
+                var actualPrice = product != null ? product.Price : 0m;
+
+                if (product != null)
+                {
+                    var discount = _context.TbDiscountProducts
+                        .Where(dp => dp.ProductId == productId)
+                        .Join(_context.TbDiscounts, dp => dp.DiscountId, d => d.Id, (dp, d) => d)
+                        .Where(d => d.StartDate <= DateTime.Now && d.EndDate >= DateTime.Now)
+                        .Select(d => d.DiscountValue)
+                        .FirstOrDefault();
+                    actualPrice = discount != null ? product.Price - (product.Price * (decimal)discount / 100) : product.Price;
+                }
+
                 newOrderDetails.Add(new TbOrderDetail
                 {
                     Id = Guid.NewGuid(),
                     ProductId = Guid.Parse(item1.Id),
                     OrderId = Guid.Parse(id),
                     Quantity = item1.Quantity,
+                    Price = actualPrice
                 });
             }
             foreach (var item2 in productdetailid)
@@ -192,7 +264,7 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             return Ok(new { Success = true });
         }
-            [HttpPatch]
+        [HttpPatch]
         [Route("{id}")]
         public async Task<IActionResult> Update(
             [FromRoute] string id,
