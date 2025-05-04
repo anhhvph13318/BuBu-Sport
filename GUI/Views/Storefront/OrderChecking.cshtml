@@ -69,6 +69,13 @@
                                 </div>
                             </div>
                             <div class="order-details">
+                                @if (order.Voucher != null && order.Voucher.Discount != null && order.Voucher.Discount != 0)
+                                {
+                                    <div class="order-col mb-3">
+                                        <div class="order-label">Voucher (@order.Voucher.Code) </div>
+                                        <div class="order-value"> - @order.Voucher.Discount.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>
+                                    </div>
+                                }
                                 <div class="order-col mb-3">
                                     <div class="order-label">Tổng thanh toán</div>
                                     <div class="order-value">@finalTotal.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"))</div>

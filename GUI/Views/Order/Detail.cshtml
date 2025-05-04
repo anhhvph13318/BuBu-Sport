@@ -182,7 +182,7 @@ else
                         <td colspan="3" class="pe-2 text-end">@Model.PaymentInfo.ShippingFee.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td> *@
                     </tr>
                     <tr>
-                        <td>Voucher giảm</td>
+                        <td>Voucher giảm (@Model.Voucher.Code)</td>
                         <td colspan="3" class="pe-2 text-end text-danger">-@Model.PaymentInfo.TotalDiscount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                     </tr>
                     <tr>

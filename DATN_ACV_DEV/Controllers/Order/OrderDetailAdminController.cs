@@ -29,7 +29,10 @@ public class OrderDetailAdminController : ControllerBase
             .Include(o => o.TbOrderDetails)
             .ThenInclude(d => d.Product)
             .FirstOrDefaultAsync(e => e.Id == orderId);
-
+        if (orderEntity.Voucher == null && orderEntity.VoucherId != null)
+        {
+            orderEntity.Voucher = _context.TbVouchers.Where(c => c.Id == orderEntity.VoucherId).FirstOrDefault();
+        }
         if (orderEntity == null)
             return NotFound("Không tìm thấy đơn hàng.");
         var customerId = _context.TbOrders.Where(c => c.Id == Guid.Parse(id)).Select(c => c.CustomerId).FirstOrDefault();
