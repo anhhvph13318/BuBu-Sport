@@ -189,7 +189,9 @@
             </div>
             <div class="modal-body">
                 <label for="newSizeName" class="form-label">Tên size</label>
-                <input type="text" id="newSizeName" class="form-control" placeholder="Nhập tên size">
+                <input type="text" id="newSizeName" class="form-control" placeholder="Nhập size (VD: 40, 40.5)"
+                       pattern="^\d{1,2}(\.5)?$"
+                       title="Size phải là số nguyên hoặc số thập phân .5 (VD: 40, 40.5, 41, 41.5)" required>
                 <input type="hidden" id="modalProductIdSize" />
             </div>
             <div class="modal-footer">
@@ -499,17 +501,26 @@
         });
     });
 
-    // Save New Size Function
     async function saveNewSize() {
         const SizeName = document.getElementById("newSizeName").value.trim();
+        const sizeRegex = /^\d{1,2}(\.5)?$/; 
+
         if (!SizeName) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên size' });
             return;
         }
 
+        if (!sizeRegex.test(SizeName)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Size phải là số nguyên hoặc số thập phân .5 (VD: 40, 40.5, 41, 41.5)'
+        });
+        return;
+    }
+
         try {
             saveSection1Data();
-            // Set the active section BEFORE making the request
             localStorage.setItem("activeSection", "imageSection");
 
             const response = await fetch("/ProductDetail/CreateSizeDetail", {
@@ -518,21 +529,33 @@
                 body: JSON.stringify({ SizeName: SizeName })
             });
 
-            if (!response.ok) throw new Error("Thêm size thất bại!");
+            if (!response.ok) {
+                const errorData = await response.json();
+                const errorMessage = errorData.messages && errorData.messages.length > 0
+                    ? errorData.messages[0].messageText
+                    : "Thêm size thất bại, size đã tồn tại!";
+                throw new Error(errorMessage);
+            }
 
             const newSize = await response.json();
-            const tableBody = document.getElementById("sizeTableBody");
-            const newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                    <td class="align-middle">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
-                            <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
-                        </div>
-                    </td>
-                `;
+            const sizeGridContainer = document.getElementById("sizeGridContainer");
+            const newSizeDiv = document.createElement("div");
+            newSizeDiv.className = "col-md-4 col-6";
+            newSizeDiv.innerHTML = `
+                <div class="size-item border rounded p-2 d-flex align-items-center">
+                    <div class="form-check me-2">
+                        <input type="checkbox" class="form-check-input sizeCheckbox" id="size_${newSize.id}" data-size-id="${newSize.id}">
+                        <label class="form-check-label fw-bold" for="size_${newSize.id}">${newSize.SizeName}</label>
+                    </div>
+                    <div class="input-group input-group-sm flex-grow-1">
+                        <input type="number" class="form-control form-control-sm quantityInput" id="quantity_${newSize.id}" min="0" value="0" disabled>
+                        <input type="hidden" class="sizeIdInput" value="${newSize.id}">
+                    </div>
+                </div>
+            `;
+            sizeGridContainer.insertBefore(newSizeDiv, sizeGridContainer.firstChild);
 
-            const newCheckbox = newRow.querySelector(".sizeCheckbox");
+            const newCheckbox = newSizeDiv.querySelector(".sizeCheckbox");
             newCheckbox.addEventListener("change", function () {
                 const sizeId = this.getAttribute("data-size-id");
                 const quantityInput = document.getElementById(`quantity_${sizeId}`);
@@ -544,13 +567,11 @@
                     quantityInput.disabled = true;
                     quantityInput.value = 0;
                 }
-                validateSizeSelection();
             });
 
             bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
             document.getElementById("newSizeName").value = "";
-
-            // Reload page while preserving section state
+            await Swal.fire({ icon: 'success', title: 'Thành công', text: 'Thêm size thành công!' });
             window.location.reload();
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
