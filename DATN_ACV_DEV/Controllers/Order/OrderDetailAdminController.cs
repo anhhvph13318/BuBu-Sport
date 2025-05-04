@@ -95,7 +95,7 @@ public class OrderDetailAdminController : ControllerBase
                 Code = _context.TbProducts.Where(c => c.Id ==
                 _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.ProductId).FirstOrDefault()).Select(c => c.Code).FirstOrDefault(),
                 //Price = _context.TbProductDetails.Where(c => c.Id == orderDetail.ProductId).Select(c => c.Price).FirstOrDefault(),
-                Price = orderDetail.Price,
+                Price = Convert.ToDecimal(orderDetail.Price),
                 Quantity = orderDetail.Quantity,
                 ProductImage = _context.TbImages.Where(c => c.Id ==
                 _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.ImageId).FirstOrDefault()).Select(c => c.Url).FirstOrDefault(),
@@ -193,7 +193,7 @@ public class OrderDetailAdminController : ControllerBase
                 Items = e.TbOrderDetails.Select(d => new OrderItem()
                 {
                     Id = d.ProductId,
-                    Price = d.Price,
+                    Price = Convert.ToDecimal(d.Price),
                     Quantity = d.Quantity,
                     ProductImage = d.Product.tb_Image.Url,
                     ProductName = d.Product.Name
@@ -279,7 +279,7 @@ public class OrderDetailAdminController : ControllerBase
                     {
                         Id = _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault(),
                         //Price = _context.TbProductDetails.Where(c => c.Id == _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault()).Select(c => c.Price).FirstOrDefault(),
-                        Price = d.Price,
+                        Price = Convert.ToDecimal(d.Price),
                         Quantity = d.Quantity,
                         ProductImage = _context.TbImages.Where(c => c.Id == _context.TbProductDetails.Where(a => a.Id == d.ProductId).Select(c => c.ImageId).FirstOrDefault()).Select(c => c.Url).FirstOrDefault(),
                         ProductName = _context.TbProducts.Where(v=>v.Id == _context.TbProductDetails.Where(c => c.Id == 

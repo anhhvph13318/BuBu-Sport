@@ -12,6 +12,7 @@ using GUI.Models.DTOs;
 using DATN_ACV_DEV.Entity;
 using Microsoft.EntityFrameworkCore;
 using Azure.Core;
+using System.Net.WebSockets;
 
 namespace GUI.Controllers
 {
@@ -314,17 +315,30 @@ namespace GUI.Controllers
         [Route("api/products")]
         public async Task<IActionResult> GetProducts()
         {
+            var lstprice = new decimal();
+            TbOrderDetail tbOrderDetails = new TbOrderDetail();
             var products = await _context.TbProducts
-                .Select(p => new
+                .Select(p => new ProductOFFDTO
                 {
-                    p.Id,
-                    p.Code,
-                    p.Name,
-                    p.Price,
+                    Id = p.Id,
+                    Code = p.Code,
+                    Name = p.Name,
+                    Price = p.Price,
                     Image = p.TbProductDetails.FirstOrDefault().Image.Url
                 })
                 .ToListAsync();
-
+            foreach (var product in products)
+            {
+                var lstDiscountId = _context.TbDiscountProducts.Where(c => c.ProductId == product.Id).Select(c=>c.DiscountId).ToList();
+                foreach (var item in lstDiscountId)
+                {
+                    var discount = _context.TbDiscounts.Where(c=>c.Id == item && c.EndDate >= DateTime.Now).Select(c=>c.DiscountValue).FirstOrDefault();
+                    if (discount != null)
+                    {
+                        product.Price = Convert.ToDecimal(product.Price * (1 - discount / 100));
+                    }
+                }
+            }
             return Ok(products);
         }
         [HttpGet]
@@ -373,6 +387,12 @@ namespace GUI.Controllers
                 return NotFound();
             }
 
+            var discount = _context.TbDiscounts.Where(c => c.Id == _context.TbDiscountProducts.Where(a => a.ProductId == productDetail.ProductId).Select(a => a.DiscountId).FirstOrDefault() && c.EndDate >= DateTime.Now).Select(c => c.DiscountValue).FirstOrDefault();
+            if (discount != null)
+            {
+                productDetail.Price = Convert.ToDecimal(productDetail.Price * (1 - discount / 100));
+            }
+            
             return Ok(productDetail);
         }
 		public class ProductDetailDTO
