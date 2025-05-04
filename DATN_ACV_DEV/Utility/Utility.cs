@@ -20,14 +20,14 @@
         public const int FORM_DISTRICT_ID_DEFAULT = 3440;
         public const int ORDER_STATUS_WAIT_CONFIRM = 0;
         public const string ORDER_STATUS_WAIT_CONFIRM_TEXT = "Chờ xác nhận";
+        public const int ORDER_STATUS_CONFIRMED = 4;
+        public const string ORDER_STATUS_CONFIRMED_TEXT = "Xác nhận";
         public const int ORDER_STATUS_PREPARE_GOODS = 1;// chuẩn bị hàng
         public const string ORDER_STATUS_PREPARE_GOODS_TEXT = "Chuẩn bị hàng";
         public const int ORDER_STATUS_SHIPPED = 2; // gửi hàng 
         public const string ORDER_STATUS_SHIPPED_TEXT = "Đang vận chuyển"; 
         public const int ORDER_STATUS_CANCELLED = 3; // đã hủy đơn
         public const string ORDER_STATUS_CANCELLED_TEXT = "Đã hủy";
-        public const int ORDER_STATUS_CONFIRMED = 4;
-        public const string ORDER_STATUS_CONFIRMED_TEXT = "Xác nhận";
         public const int ORDER_STATUS_RETURNS_PRODUCT = 5; 
         public const string ORDER_STATUS_RETURNS_PRODUCT_TEXT = "Đã hoàn hàng";
         public const int ORDER_STATUS_PARTIAL_REFUND = 6; 
