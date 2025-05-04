@@ -44,16 +44,18 @@ namespace DATN_ACV_DEV.Controllers
 
                 // Truy vấn doanh thu (chỉ tính đơn hàng hoàn thành và không phải nháp)
                 var query = _context.TbOrders
-                    .Where(o => o.Status == 7); // Giả định Status = 1 là hoàn thành
+                    .Where(o => o.Status == 7); // Giả định Status = 7 là hoàn thành
 
                 // Lấy tất cả đơn hàng không phải bản nháp
                 var allOrders = await _context.TbOrders.ToListAsync();
 
                 // Thống kê theo từng trạng thái
                 var totalOrders = allOrders.Count;
-                var confirmedOrders = allOrders.Count(o => o.Status == 1);       // Đã xác nhận
                 var waitingOrders = allOrders.Count(o => o.Status == 0);         // Chờ xác nhận
+                var confirmedOrders = allOrders.Count(o => o.Status == 1);       // Đã xác nhận
+                var preparingOrders = allOrders.Count(o => o.Status == 4);      // Đang chuẩn bị hàng
                 var deliveringOrders = allOrders.Count(o => o.Status == 2);      // Đang giao hàng
+                var deliverySuccessOrders = allOrders.Count(o => o.Status == 9);      // Giao hàng thành công
                 var completedOrders = allOrders.Count(o => o.Status == 7);       // Hoàn thành
                 var cancelledOrders = allOrders.Count(o => o.Status == 3);       // Đã hủy
 
@@ -121,7 +123,9 @@ namespace DATN_ACV_DEV.Controllers
                     TotalOrders = totalOrders,
                     ConfirmedOrders = confirmedOrders,
                     WaitingOrders = waitingOrders,
+                    PreparingOrders = preparingOrders,
                     DeliveringOrders = deliveringOrders,
+                    DeliverySucessOrders = deliverySuccessOrders,
                     CompletedOrders = completedOrders,
                     CancelledOrders = cancelledOrders
                 };

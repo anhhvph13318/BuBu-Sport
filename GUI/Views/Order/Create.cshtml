@@ -279,19 +279,21 @@
                 const productListBody = $('#productListBody').empty();
                 data.forEach((product, index) => {
                     if (!product.image?.trim()) return;
+                    const formattedPrice = Number(product.price).toLocaleString('vi-VN'); 
                     const row = `
                         <tr>
                             <td></td>
                             <td><span class="badge bg-secondary">${product.code}</span></td>
                             <td>${product.name}</td>
                             <td><img src="${product.image}" style="width: 50px; height: 50px;" /></td>
-                            <td>${product.price} VNĐ</td>
+                            <td>${formattedPrice} VNĐ</td>
                             <td><button class="btn btn-info btn-detail" data-id="${product.id}" data-name="${product.name}">Chi tiết</button></td>
                         </tr>`;
                     productListBody.append(row);
                 });
                 updateTableSTT('#productListModal table');
             }
+
 
             let currentProductName = '';
 

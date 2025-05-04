@@ -94,7 +94,15 @@
                     @if (Model != null && Model.Any())
                     {
                         var index = 1;
-                        @foreach (var voucher in Model)
+                        var sortedVouchers = Model.OrderBy(v =>
+                        {
+                            if (currentDate < v.StartDate)
+                                return 2; // Chưa bắt đầu
+                            if (currentDate >= v.StartDate && currentDate <= v.EndDate)
+                                return 0; // Hoạt động - Ưu tiên hàng đầu
+                            return 1; // Hết hiệu lực
+                        }).ThenBy(v => v.StartDate); // Tùy chọn sắp xếp tiếp theo theo ngày bắt đầu
+                        foreach (var voucher in sortedVouchers)
                         {
                             var status = currentDate < voucher.StartDate
                             ? Status.InActive
