@@ -273,6 +273,10 @@ namespace GUI.Controllers
             {
                 detail.Quantity = model.Quantity;
                 _context.SaveChanges();
+                var productDetail = _context.TbProductDetails.Where(d => d.ProductId == detail.ProductId).ToList();
+                var product = _context.TbProducts.Where(c => c.Id == detail.ProductId).FirstOrDefault();
+                product.Quantity = productDetail.Sum(d => d.Quantity);
+                _context.SaveChanges();
                 return Json(new { success = true });
             }
             return Json(new { success = false });
