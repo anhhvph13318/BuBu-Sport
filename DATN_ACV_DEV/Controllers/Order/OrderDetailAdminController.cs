@@ -94,6 +94,7 @@ public class OrderDetailAdminController : ControllerBase
                 Id = orderDetail.ProductId,
                 Code = _context.TbProducts.Where(c => c.Id ==
                 _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.ProductId).FirstOrDefault()).Select(c => c.Code).FirstOrDefault(),
+                //Price = _context.TbProductDetails.Where(c => c.Id == orderDetail.ProductId).Select(c => c.Price).FirstOrDefault(),
                 Price = orderDetail.Price,
                 Quantity = orderDetail.Quantity,
                 ProductImage = _context.TbImages.Where(c => c.Id ==
