@@ -60,7 +60,7 @@ namespace DATN_ACV_DEV.Controllers.Order
                     var lst = _context.TbProductDetails
     .Where(c => c.Id == item.Id).Select(c=>c.ProductId).FirstOrDefault();
                     var tbProductDetaill = _context.TbProductDetails
-                        .Where(c => c.ProductId == lst)
+                        .Where(c => c.ProductId == lst && c.Id == item.Id)
                         .Sum(c => (int?)c.Quantity) ?? 0;
                     if (_Order.Status == 0 && tbProductDetaill == 0)
                     {
