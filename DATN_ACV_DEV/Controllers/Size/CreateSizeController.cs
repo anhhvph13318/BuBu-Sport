@@ -1,5 +1,6 @@
 ﻿using DATN_ACV_DEV.Entity;
 using DATN_ACV_DEV.FileBase;
+using System.Linq;
 using DATN_ACV_DEV.Model_DTO.Color_DTO;
 using DATN_ACV_DEV.Model_DTO.Image_DTO;
 using DATN_ACV_DEV.Model_DTO.Size_DTO;
@@ -65,6 +66,12 @@ namespace DATN_ACV_DEV.Controllers.Size
             try
             {
                 _request = request;
+                if (_context.TbSizes.Any(s => s.SizeName == _request.SizeName && s.FootLength == _request.FootLength))
+                {
+                    _res.Status = StatusCodes.Status400BadRequest.ToString();
+                    _res.Messages.Add(Message.CreateErrorMessage(_apiCode, _res.Status, "Size đã tồn tại", string.Empty));
+                    return _res;
+                }
                 //CheckAuthorization();
                 //PreValidation();
                 GenerateObjects();

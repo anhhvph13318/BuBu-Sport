@@ -26,7 +26,10 @@
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Giá trị giảm (%)</label>
-                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" max="100" />
+                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" max="100" required />
+                    <div id="discountValueValidationMessage" class="text-danger mt-1" style="display: none;">
+                        Vui lòng nhập giá trị từ 1 đến 100.
+                    </div>
                 </div>
             </div>
 
@@ -39,11 +42,11 @@
                 <div class="mb-2 row g-2">
                     <div class="col-6">
                         <label class="form-label">Bắt đầu</label>
-                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local" />
+                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local" required />
                     </div>
                     <div class="col-6">
                         <label class="form-label">Kết thúc</label>
-                        <input asp-for="EndDate" class="form-control form-control-sm" type="datetime-local" />
+                        <input asp-for="EndDate" class="form-control form-control-sm" type="datetime-local" required />
                     </div>
                 </div>
                 <div class="mb-2">
@@ -198,17 +201,17 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        @if (TempData["RegisterSuccess"] != null)
-        {
-            <text>
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Thành công!',
-                                        text: '@Html.Raw(TempData["RegisterSuccess"])',
-                                        confirmButtonText: 'OK'
-                                    });
-            </text>
-        }
+    @if (TempData["RegisterSuccess"] != null)
+    {
+        <text>
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Thành công!',
+                                            text: '@Html.Raw(TempData["RegisterSuccess"])',
+                                            confirmButtonText: 'OK'
+                                        });
+        </text>
+    }
             filterProducts();
 
             loadDiscountPrograms();
@@ -234,11 +237,37 @@
         if (checkboxes.length === 0) {
             document.getElementById('productValidationMessage').style.display = 'block';
             return false;
+        } else {
+            document.getElementById('productValidationMessage').style.display = 'none';
         }
 
-         // Kiểm tra ngày kết thúc phải sau hoặc bằng ngày bắt đầu
-        const startDate = new Date(document.querySelector('input[name="StartDate"]').value);
-        const endDate = new Date(document.querySelector('input[name="EndDate"]').value);
+        // Kiểm tra giá trị giảm giá
+        const discountValueInput = document.querySelector('input[name="DiscountValue"]');
+        const discountValue = discountValueInput.value;
+        if (!discountValue) {
+            document.getElementById('discountValueValidationMessage').style.display = 'block';
+            return false;
+        } else if (discountValue < 1 || discountValue > 100) {
+            document.getElementById('discountValueValidationMessage').style.display = 'block';
+            return false;
+        } else {
+            document.getElementById('discountValueValidationMessage').style.display = 'none';
+        }
+
+        // Kiểm tra ngày tháng
+        const startDateInput = document.querySelector('input[name="StartDate"]');
+        const endDateInput = document.querySelector('input[name="EndDate"]');
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (!startDateInput.value || !endDateInput.value) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi ngày tháng',
+                text: 'Vui lòng nhập đầy đủ ngày bắt đầu và ngày kết thúc.'
+            });
+            return false;
+        }
 
         if (endDate < startDate) {
             Swal.fire({
@@ -287,9 +316,9 @@
             confirmButtonColor: '#d33'
         }).then((result) => {
             if (result.isConfirmed) {
-                const pastDate = new Date(1970, 0, 1, 0, 0); 
+                const pastDate = new Date(1970, 0, 1, 0, 0);
 
-                const formattedDate = pastDate.toISOString().slice(0, 16); 
+                const formattedDate = pastDate.toISOString().slice(0, 16);
 
                 document.querySelector('input[name="StartDate"]').value = formattedDate;
                 document.querySelector('input[name="EndDate"]').value = formattedDate;
@@ -326,30 +355,6 @@
                 console.error('Error loading discounts:', error);
                 discountFilter.innerHTML = '<option value="">-- Không thể tải chương trình giảm giá --</option>';
             });
-    }
-
-    function confirmAction() {
-        const actionType = document.querySelector('input[name="actionType"]').value;
-        if (!actionType) {
-            document.getElementById('validate-message').style.display = 'block';
-            return false;
-        }
-        event.preventDefault();
-
-        Swal.fire({
-            title: 'Cảnh báo',
-            text: "Bạn có chắc chắn muốn cập nhật khuyến mại này?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Có, lưu lại!',
-            cancelButtonText: 'Không, hủy bỏ!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.querySelector('form').submit();
-            }
-        });
-
-        return false;
     }
 
     function filterProducts() {
@@ -394,7 +399,7 @@
 
         const url = '/Discount/GetDiscountedProducts' + (params.toString() ? '?' + params.toString() : '');
 
-        console.log("Calling API with URL:", url); 
+        console.log("Calling API with URL:", url);
 
         fetch(url)
             .then(response => {
@@ -499,6 +504,7 @@
 
         tableBody.innerHTML = html;
     }
+
     function loadProductDiscountInfo() {
         const productsWithInfo = document.querySelectorAll(".form-check input[type='checkbox']");
 
