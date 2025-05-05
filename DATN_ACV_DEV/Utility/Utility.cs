@@ -20,22 +20,22 @@
         public const int FORM_DISTRICT_ID_DEFAULT = 3440;
         public const int ORDER_STATUS_WAIT_CONFIRM = 0;
         public const string ORDER_STATUS_WAIT_CONFIRM_TEXT = "Chờ xác nhận";
+        public const int ORDER_STATUS_CONFIRMED = 4;
+        public const string ORDER_STATUS_CONFIRMED_TEXT = "Xác nhận";
         public const int ORDER_STATUS_PREPARE_GOODS = 1;// chuẩn bị hàng
         public const string ORDER_STATUS_PREPARE_GOODS_TEXT = "Chuẩn bị hàng";
         public const int ORDER_STATUS_SHIPPED = 2; // gửi hàng 
         public const string ORDER_STATUS_SHIPPED_TEXT = "Đang vận chuyển"; 
         public const int ORDER_STATUS_CANCELLED = 3; // đã hủy đơn
         public const string ORDER_STATUS_CANCELLED_TEXT = "Đã hủy";
-        public const int ORDER_STATUS_CONFIRMED = 4;
-        public const string ORDER_STATUS_CONFIRMED_TEXT = "Xác nhận";
         public const int ORDER_STATUS_RETURNS_PRODUCT = 5; 
         public const string ORDER_STATUS_RETURNS_PRODUCT_TEXT = "Đã hoàn hàng";
         public const int ORDER_STATUS_PARTIAL_REFUND = 6; 
         public const string ORDER_STATUS_PARTIAL_REFUND_TEXT = "Trả hàng 1 phần";
-
         public const int ORDER_DURING_THE_RETURN_PERIOD = 8; // hoặc 9 nếu cần thêm
         public const string ORDER_DURING_THE_RETURN_PERIOD_TEXT = "Trong thời gian đổi trả";
-
+        public const int ORDER_STATUS_DELIVERY_SUCCESS = 9;// giao hàng thành công
+        public const string ORDER_STATUS_DELIVERY_SUCCESS_TEXT = "Giao hàng thành công";
         public const int ORDER_STATUS_DONE = 7;// giao thành công.
         public const string ORDER_STATUS_DONE_TEXT = "Hoàn thành đơn hàng";
         public const int LimitDefault = 15;

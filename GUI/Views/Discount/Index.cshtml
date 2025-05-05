@@ -75,7 +75,17 @@
                     @if (Model.Discounts != null && Model.Discounts.Any())
                     {
                         var index = 1;
-                        foreach (var discount in Model.Discounts)
+                        var sortedDiscounts = Model.Discounts.OrderBy(d =>
+                        {
+                            var now = DateTime.Now;
+                            if (now < d.StartDate)
+                                return 2; // Chưa bắt đầu
+                            if (now >= d.StartDate && now <= d.EndDate)
+                                return 0; // Hoạt động
+                            return 1; // Hết hiệu lực
+                        }).ThenBy(d => d.StartDate); // Tùy chọn: tiếp tục sắp xếp theo ngày bắt đầu nếu cần
+
+                        foreach (var discount in sortedDiscounts)
                         {
                             var status = DateTime.Now < discount.StartDate
                             ? Status.InActive

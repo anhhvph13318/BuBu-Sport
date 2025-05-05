@@ -283,6 +283,7 @@
                 const productListBody = $('#productListBody').empty();
                 data.forEach((product, index) => {
                     if (!product.image?.trim()) return;
+                    const formattedPrice = Number(product.price).toLocaleString('vi-VN'); 
                     const row = `
                         <tr>
                             <td></td>
@@ -296,6 +297,7 @@
                 });
                 updateTableSTT('#productListModal table');
             }
+
 
             let currentProductName = '';
 

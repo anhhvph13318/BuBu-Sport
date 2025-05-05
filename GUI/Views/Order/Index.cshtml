@@ -13,13 +13,13 @@
             "Xác nhận" => 2,
             "Chuẩn bị hàng" => 3,
             "Đang vận chuyển" => 4,
-            "Đã hủy" => 5,
+            "Giao hàng thành công" => 5,
             "Hoàn thành đơn hàng" => 6,
-            _ => 7
+            "Đã hủy" => 7,
+            _ => 8
         };
     })
     .ThenByDescending(o => o.id);
-
 
     int totalCount = Model?.Count() ?? 0;
     int confirmedCount = Model?.Count(o => o.status == "Xác nhận") ?? 0;
@@ -27,6 +27,7 @@
     int preparingCount = Model?.Count(o => o.status == "Chuẩn bị hàng") ?? 0;
     int shippingCount = Model?.Count(o => o.status == "Đang vận chuyển") ?? 0;
     int completedCount = Model?.Count(o => o.status == "Hoàn thành đơn hàng") ?? 0;
+    int deliverySuccessCount = Model?.Count(o => o.status == "Giao hàng thành công") ?? 0; 
     int cancelledCount = Model?.Count(o => o.status == "Đã hủy") ?? 0;
 }
 
@@ -68,8 +69,9 @@
                             <option value="4" selected="@(Context.Request.Query["status"].ToString() == "4")">Xác nhận</option>
                             <option value="1" selected="@(Context.Request.Query["status"].ToString() == "1")">Chuẩn bị hàng</option>
                             <option value="2" selected="@(Context.Request.Query["status"].ToString() == "2")">Đang vận chuyển</option>
-                            <option value="3" selected="@(Context.Request.Query["status"].ToString() == "3")">Đã hủy</option>
+                            <option value="9" selected="@(Context.Request.Query["status"].ToString() == "9")">Giao hàng thành công</option>
                             <option value="7" selected="@(Context.Request.Query["status"].ToString() == "7")">Hoàn thành</option>
+                            <option value="3" selected="@(Context.Request.Query["status"].ToString() == "3")">Đã hủy</option>
                         </select>
                     </div>
                 </div>
@@ -132,32 +134,36 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-between mb-4">
-        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="-1" style="flex: 1; max-width: 14%; margin: 0 4px;">
+    <div class="d-flex justify-content-between mb-4 flex-wrap">
+        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="-1" style="flex: 1; max-width: 12.5%; margin: 0 4px;">
             <i class="bi bi-grid me-2"></i>
             <span class="fw-medium">Tổng số đơn (@totalCount)</span>
         </div>
-        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="0" style="flex: 1; max-width: 14%; margin: 0 4px;">
+        <div class="order-filter-card bg-secondary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="0" style="flex: 1; max-width: 12.5%; margin: 0 4px;">
             <i class="bi bi-clock-history me-2"></i>
             <span class="fw-medium">Chờ xác nhận (@pendingCount)</span>
         </div>
-        <div class="order-filter-card bg-primary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="4" style="flex: 1; max-width: 14%; margin: 0 4px;">
+        <div class="order-filter-card bg-primary text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="4" style="flex: 1; max-width: 12.5%; margin: 0 4px;">
             <i class="bi bi-check-circle me-2"></i>
             <span class="fw-medium">Đã xác nhận (@confirmedCount)</span>
         </div>
-        <div class="order-filter-card bg-warning text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="1" style="flex: 1; max-width: 14%; margin: 0 4px;">
+        <div class="order-filter-card bg-warning text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="1" style="flex: 1; max-width: 12.5%; margin: 0 4px;">
             <i class="bi bi-box-seam me-2"></i>
             <span class="fw-medium">Chuẩn bị hàng (@preparingCount)</span>
         </div>
-        <div class="order-filter-card bg-info text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="2" style="flex: 1; max-width: 14%; margin: 0 4px;">
+        <div class="order-filter-card bg-info text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="2" style="flex: 1; max-width: 12.5%; margin: 0 4px;">
             <i class="bi bi-truck me-2"></i>
             <span class="fw-medium">Đang vận chuyển (@shippingCount)</span>
         </div>
-        <div class="order-filter-card bg-success text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="7" style="flex: 1; max-width: 14%; margin: 0 4px;">
+        <div class="order-filter-card bg-teal text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="9" style="flex: 1; max-width: 12.5%; margin: 0 4px; background-color: #20c997;">
+            <i class="bi bi-check2-all me-2"></i>
+            <span class="fw-medium">Giao hàng thành công (@deliverySuccessCount)</span>
+        </div>
+        <div class="order-filter-card bg-success text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="7" style="flex: 1; max-width: 12.5%; margin: 0 4px;">
             <i class="bi bi-bag-check me-2"></i>
             <span class="fw-medium">Hoàn thành (@completedCount)</span>
         </div>
-        <div class="order-filter-card bg-danger text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="3" style="flex: 1; max-width: 14%; margin: 0 4px;">
+        <div class="order-filter-card bg-danger text-white rounded px-3 py-2 d-inline-flex align-items-center justify-content-center" data-status-value="3" style="flex: 1; max-width: 12.5%; margin: 0 4px;">
             <i class="bi bi-x-circle me-2"></i>
             <span class="fw-medium">Đã hủy (@cancelledCount)</span>
         </div>
@@ -220,6 +226,7 @@
                                 "Xác nhận" => "bg-primary",
                                 "Chuẩn bị hàng" => "bg-warning",
                                 "Đang vận chuyển" => "bg-info",
+                                "Giao hàng thành công" => "bg-teal",
                                 "Đã hủy" => "bg-danger",
                                 "Hoàn thành đơn hàng" => "bg-success",
                                 _ => "bg-secondary"
@@ -300,35 +307,35 @@
             );
 
             $('.order-filter-card').click(function () {
-                // Get the status value from the data attribute
-                const statusValue = $(this).data('status-value');
-                console.log("Đã chọn lọc theo trạng thái: " + statusValue);
-                // Set the statusFilter value
-                $('#statusFilter').val(statusValue);
+                        // Get the status value from the data attribute
+                        const statusValue = $(this).data('status-value');
+                        console.log("Đã chọn lọc theo trạng thái: " + statusValue);
 
+                        // Set the statusFilter value
+                        $('#statusFilter').val(statusValue);
 
-                $('#searchCode, #customerName, #orderCodePrefix, #minAmount, #maxAmount, #startDate, #endDate').val('');
+                        // Reset các trường tìm kiếm khác
+                        $('#searchCode, #customerName, #orderCodePrefix, #minAmount, #maxAmount, #startDate, #endDate').val('');
 
-                // Highlight the active card
-                $('.order-filter-card').removeClass('active');
-                $(this).addClass('active');
+                        // Highlight the active card
+                        $('.order-filter-card').removeClass('active');
+                        $(this).addClass('active');
 
-                // Before submitting, check if the statusFilter value maps correctly
-                const currentStatusValue = $('#statusFilter').val();
-                console.log("Submitting with status filter: " + currentStatusValue);
+                        // Before submitting, check if the statusFilter value maps correctly
+                        const currentStatusValue = $('#statusFilter').val();
+                        console.log("Submitting with status filter: " + currentStatusValue);
 
-                // Submit the form
-                $('#searchForm').submit();
+                        // Submit the form
+                        $('#searchForm').submit();
             });
 
             // Kiểm tra nếu đang có filter trạng thái, highlight card tương ứng
             const currentStatus = $('#statusFilter').val();
-            if (currentStatus) {
-                $(`.order-filter-card[data-status-value="${currentStatus}"]`).addClass('active');
-            } else {
-                // Mặc định highlight card "Tất cả"
-                $(`.order-filter-card[data-status-value="0"]`).addClass('active');
-            }
+                    if (currentStatus) {
+                        $(`.order-filter-card[data-status-value="${currentStatus}"]`).addClass('active');
+                    } else {
+                        $(`.order-filter-card[data-status-value="-1"]`).addClass('active');
+                    }
 
             // Thêm style cho filter-card khi active
             $('<style>')
@@ -341,6 +348,9 @@
                             .order-filter-card.active {
                                 border-color: white;
                                 box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+                            }
+                            .bg-teal {
+                                background-color: #20c997 !important;
                             }
                         `)
                 .appendTo('head');

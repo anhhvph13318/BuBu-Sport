@@ -76,15 +76,58 @@
 							<a id="customer-submit" class="primary-btn customer-submit d-flex right" href="#">Cập nhật</a>
 						</div>
 					</div>
-					 
+
 					<div class="billing-details tab-pane fade" id="order">
 						<div class="section-title">
-							<h3 class="title" style="margin-bottom:30px">Danh sách đơn hàng</h3>
-							<div style="max-height: 500px; overflow:auto;">
+							<h3 class="title" style="margin-bottom:20px">Danh sách đơn hàng</h3>
+						</div>
+
+						<!-- Filter Section -->
+						<div class="order-filters" style="margin-bottom:20px; border: 1px solid #e4e7ed; padding: 15px; border-radius: 4px;">
+							<form id="filter-form" onsubmit="return false;">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="filter-code">Mã đơn</label>
+											<input id="filter-code" class="input" type="text" placeholder="Nhập mã đơn hàng">
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="filter-date">Ngày tạo</label>
+											<input id="filter-date" class="input" type="date">
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="filter-status">Trạng thái</label>
+											<select id="filter-status" class="input">
+												<option value="">Tất cả</option>
+												<option value="Chờ xác nhận">Chờ xác nhận</option>
+												<option value="Đã xác nhận">Đã xác nhận</option>
+												<option value="Đang vận chuyển">Đang vận chuyển</option>
+												<option value="Giao hàng thành công">Giao hàng thành công</option>
+												<option value="Đã giao">Đã giao</option>
+												<option value="Đã hủy">Đã hủy</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<button type="button" id="apply-filters" class="primary-btn" style="float:right;">Lọc đơn hàng</button>
+										<button type="button" id="reset-filters" class="primary-btn" style="float:right; margin-right:10px; background-color:#999;">Đặt lại</button>
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- End Filter Section -->
+
+						<div style="max-height: 500px; overflow:auto;">
 							@if (Model != null && Model.Orders != null && Model.Orders.Any())
 							{
-								<table class="table table-bordered text-center">
-										<thead style="background-color: #1abc9c; color: white;text-align: center; vertical-align: middle;">
+								<table class="table table-bordered text-center" id="orders-table">
+									<thead style="background-color: #1abc9c; color: white;text-align: center; vertical-align: middle;">
 										<tr>
 											<th>STT</th>
 											<th>Mã đơn</th>
@@ -100,12 +143,12 @@
 											int index = 1;
 											foreach (var order in Model.Orders)
 											{
-												<tr>
+												<tr class="order-row">
 													<td>@index</td>
-													<td>@order.Code</td>
+													<td class="order-code">@order.Code</td>
 													<td>@order.PaymentInfo.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-													<td>@order.StatusText</td>
-													<td>@order.Created.ToString("dd/MM/yyyy HH:mm")</td>
+													<td class="order-status">@order.StatusText</td>
+													<td class="order-date" data-date="@order.Created.ToString("yyyy-MM-dd")">@order.Created.ToString("dd/MM/yyyy HH:mm")</td>
 													<td>
 														<a class="btn btn-sm btn-primary" href="/OrderChecking?s=@order.Code">
 															Chi tiết
@@ -124,7 +167,6 @@
 									</tbody>
 								</table>
 							}
-							</div>
 						</div>
 					</div>
 
@@ -159,7 +201,108 @@
 </div>
 <!-- /SECTION -->
 <style>
-	.order-summary .order-col > div:last-child{
+	.order-summary .order-col > div:last-child {
 		width: 250px;
 	}
+
+	#apply-filters, #reset-filters {
+		padding: 8px 16px;
+		margin-top: 10px;
+	}
+
+	.no-results {
+		text-align: center;
+		padding: 20px;
+		font-style: italic;
+		color: #999;
+	}
 </style>
+
+<script type="text/javascript">
+	document.addEventListener("DOMContentLoaded", function() {
+		// Đảm bảo trang đã load hoàn toàn
+		console.log("DOM loaded - Filter script initialized");
+
+		// Filter functionality
+		document.getElementById("apply-filters").addEventListener("click", function() {
+			console.log("Apply filter clicked");
+			filterOrders();
+		});
+
+		// Reset filters
+		document.getElementById("reset-filters").addEventListener("click", function() {
+			console.log("Reset filter clicked");
+			document.getElementById("filter-code").value = "";
+			document.getElementById("filter-date").value = "";
+			document.getElementById("filter-status").value = "";
+
+			var rows = document.querySelectorAll(".order-row");
+			rows.forEach(function(row) {
+				row.style.display = "";
+			});
+
+			// Remove no results message if exists
+			var noResultsRow = document.getElementById("no-results-row");
+			if (noResultsRow) {
+				noResultsRow.remove();
+			}
+
+			updateRowNumbers();
+		});
+
+		function filterOrders() {
+			var codeFilter = document.getElementById("filter-code").value.toLowerCase();
+			var dateFilter = document.getElementById("filter-date").value;
+			var statusFilter = document.getElementById("filter-status").value;
+
+			console.log("Filtering with - Code: " + codeFilter + ", Date: " + dateFilter + ", Status: " + statusFilter);
+
+			var rows = document.querySelectorAll(".order-row");
+			var hasVisibleRows = false;
+
+			rows.forEach(function(row) {
+				var code = row.querySelector(".order-code").textContent.toLowerCase();
+				var date = row.querySelector(".order-date").getAttribute("data-date");
+				var status = row.querySelector(".order-status").textContent;
+
+				var matchesCode = codeFilter === "" || code.includes(codeFilter);
+				var matchesDate = dateFilter === "" || date === dateFilter;
+				var matchesStatus = statusFilter === "" || status === statusFilter;
+
+				console.log("Row " + code + " - Code match: " + matchesCode + ", Date match: " + matchesDate + ", Status match: " + matchesStatus);
+
+				if (matchesCode && matchesDate && matchesStatus) {
+					row.style.display = "";
+					hasVisibleRows = true;
+				} else {
+					row.style.display = "none";
+				}
+			});
+
+			// Show "no results" message if no matches
+			var noResultsRow = document.getElementById("no-results-row");
+			if (!hasVisibleRows) {
+				if (!noResultsRow) {
+					var ordersTable = document.getElementById("orders-table");
+					var tbody = ordersTable.querySelector("tbody");
+					var newRow = document.createElement("tr");
+					newRow.id = "no-results-row";
+					newRow.innerHTML = '<td colspan="6" class="no-results">Không tìm thấy đơn hàng phù hợp với điều kiện lọc.</td>';
+					tbody.appendChild(newRow);
+				}
+			} else if (noResultsRow) {
+				noResultsRow.remove();
+			}
+
+			updateRowNumbers();
+		}
+
+		function updateRowNumbers() {
+			var index = 1;
+			var visibleRows = document.querySelectorAll(".order-row:not([style*='display: none'])");
+			visibleRows.forEach(function(row) {
+				row.querySelector("td:first-child").textContent = index++;
+			});
+		}
+	});
+</script>

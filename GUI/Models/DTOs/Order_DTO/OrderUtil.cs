@@ -8,6 +8,7 @@
             { 4, "Xác nhận" }, 
             { 1, "Chuẩn bị hàng" },
             { 2, "Đang giao hàng" },
+            { 9, "Giao hàng thành công" },
             { 7, "Hoàn thành" },
             { 3, "Đã hủy" }
         };
@@ -41,6 +42,9 @@
                     steps.Add(2, OrderStepProcessing[2]);
                     break;
                 case 2:
+                    steps.Add(9, OrderStepProcessing[9]);
+                    break;
+                case 9:
                     steps.Add(7, OrderStepProcessing[7]);
                     break;
                 default:

@@ -38,6 +38,7 @@ namespace GUI.Controllers
             httpService = new();
         }
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> UpdateStatusONOrder([FromBody] UpdatStatusOrderRequest request)
         {
             var autoUpdate = Request.Query["autoUpdate"].ToString() == "true";
@@ -57,7 +58,9 @@ namespace GUI.Controllers
                     ? "Đang vận chuyển"
                     : request.status == 4
                         ? "Xác nhận"
-                        : "Hoàn thành";
+                        : request.status == 9
+                            ? "Giao hàng thành công"
+                            : "Hoàn thành";
             if (autoUpdate == true)
             {
                 request.isCancel = 1;
@@ -66,27 +69,29 @@ namespace GUI.Controllers
             var param = JsonConvert.SerializeObject(request);
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<UpdatStatusOrderResponse>>(res) ?? new();
+
             if (result.Data.products != null)
             {
                 await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 3, null, request.products, result.Data.products);
                 return Json(new
                 {
-                    success = true,
+                    success = false,
                     redirectUrl = $"/orders/{request.id}",
-                    message = "Thông tin đơn hàng đã được gửi cho khách hàng, đơn hàng sẽ được chuyển qua danh sách chờ"
+                    message = "Có sản phẩm đã hết hàng. Đơn hàng không thể được xử lý."
                 });
             }
+
             if (result.Data.products == null)
             {
-                await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 1, null, request.products,null);
+                await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 1, null, request.products, null);
             }
+
             return Json(new
             {
                 success = true,
                 redirectUrl = $"/orders/{request.id}",
                 message = "Đơn hàng đã được cập nhật thành công"
             });
-            //return Redirect($"/orders/{request.id}");
         }
         [Route("/SignIn")]
         public async Task<IActionResult> Login([FromQuery] int? action)
