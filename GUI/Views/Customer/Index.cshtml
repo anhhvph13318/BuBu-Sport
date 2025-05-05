@@ -5,6 +5,9 @@
     int currentPage = ViewBag.CurrentPage;
     int totalPages = ViewBag.TotalPages;
     int startIndex = (currentPage - 1) * 10 + 1;
+
+    // Lọc bỏ "Khách tại quầy" từ danh sách hiển thị
+    var filteredCustomers = Model != null ? Model.Where(c => c.Name != "Khách tại quầy").ToList() : new List<GUI.Models.DTOs.CustomerDTO>();
 }
 
 <div class="container-fluid px-4 mt-3">
@@ -61,9 +64,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
+                    @if (filteredCustomers.Any())
                     {
-                        @foreach (var customer in Model.Select((c, index) => new { c, index }))
+                        @foreach (var customer in filteredCustomers.Select((c, index) => new { c, index }))
                         {
                             <tr>
                                 <td class="text-center">@(startIndex + customer.index)</td>
@@ -102,7 +105,7 @@
         </div>
         <div class="card-footer bg-light d-flex justify-content-between align-items-center">
             <div>
-                <span class="text-muted">Hiển thị @(Model?.Count() ?? 0) khách hàng</span>
+                <span class="text-muted">Hiển thị @(filteredCustomers.Count) khách hàng</span>
             </div>
             <nav>
                 <ul class="pagination justify-content-center m-0">
