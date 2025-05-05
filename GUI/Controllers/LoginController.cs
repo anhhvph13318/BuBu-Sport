@@ -113,9 +113,14 @@ namespace GUI.Controllers
             {
                 
                 var userId = result.Messages!.First().MessageText;
-                
-                var role = result.Data.Role == 0 ? "Guest" : "Admin";
-                var claims = new List<Claim>
+
+                string role = result.Data.Role switch
+                {
+                    0 => "Guest",
+                    1 => "Employee",
+                    2 => "Admin",
+                    _ => "Unknown"
+                }; var claims = new List<Claim>
                 {
                    new(ClaimTypes.NameIdentifier, userId),
                    new(ClaimTypes.Role, role)
@@ -131,7 +136,7 @@ namespace GUI.Controllers
 
                 return result.Data != null && result.Data.Role == 0
                     ? RedirectToAction("Store", "Storefront")
-                    : RedirectToAction("", "Product");
+                    : RedirectToAction("Index", "orders");
             }
             else
             {

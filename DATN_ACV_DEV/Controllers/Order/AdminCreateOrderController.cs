@@ -234,6 +234,13 @@ namespace DATN_ACV_DEV.Controllers.Order
                     var product = productDetail.ProductId != null ? _context.TbProducts.FirstOrDefault(p => p.Id == productDetail.ProductId) : null;
                     if (productDetail.Quantity != 0 && product.Quantity != 0)
                     {
+                        if (tbOrder.TbOrderDetails != null)
+                        {
+                            foreach (var item1 in tbOrder.TbOrderDetails.Where(c=>c.ProductId == Guid.Parse(item.Id)))
+                            {
+                                item1.Quantity = item.Quantity;
+                            }
+                        }
                         if (tbOrder.Status == 7)
                         {
                             productDetail.Quantity -= item.Quantity;
@@ -284,6 +291,11 @@ namespace DATN_ACV_DEV.Controllers.Order
                 }
                 if (device == 1)
                 {
+                    if (tbOrder.VoucherId != null)
+                    {
+                        var vouchers = _context.TbVouchers.Where(c => c.Id == tbOrder.VoucherId).FirstOrDefault();
+                        vouchers.Quantity -= 1;
+                    }
                     _context.TbOrders.Update(tbOrder); // Cập nhật đơn hàng
                     await _context.SaveChangesAsync();
                     return Ok();

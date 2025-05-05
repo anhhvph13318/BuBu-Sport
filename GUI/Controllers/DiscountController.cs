@@ -2,12 +2,15 @@
 using GUI.Controllers.Shared;
 using GUI.Models.DTOs;
 using GUI.Models.DTOs.Discount_DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GUI.Controllers
 {
     [Controller]
     [Route("Discount")]
+    [Authorize(Roles = "Admin,Employee")]
+
     public class DiscountController : ControllerSharedBase
     {
         private readonly DBContext _context;

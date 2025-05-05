@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace GUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public class HomeController : ControllerSharedBase
     {
         private readonly ILogger<HomeController> _logger;

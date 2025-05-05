@@ -25,7 +25,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("orders")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,Employee")]
 public class OrderController : Controller
 {
     private readonly IEmailService _emailService;
@@ -311,6 +311,23 @@ public class OrderController : Controller
     [Route("save-to-session")]
     public async Task<IActionResult> SaveOrder([FromBody] Checkout checkout)
     {
+        if (checkout != null)
+        {
+            checkout.OrderItems = checkout.OrderItems
+                .GroupBy(x => new { x.ProductName, x.ProductImage, x.Size, x.Color, x.Code, x.Price })
+                .Select(g => new OrderItem
+                {
+                    ProductName = g.Key.ProductName,
+                    ProductImage = g.Key.ProductImage,
+                    Size = g.Key.Size,
+                    Color = g.Key.Color,
+                    Code = g.Key.Code,
+                    Price = g.Key.Price,
+                    Quantity = g.Sum(x => x.Quantity),
+                    Id = g.First().Id 
+                })
+                .ToList();
+        }
         var order = HttpContext.Session.GetCurrentOrder();
         if (order.Items.Count == 0 || order.Items.Count < checkout.OrderItems.Count)
         {
@@ -358,7 +375,7 @@ public class OrderController : Controller
         };
         var updateRequest = new GUI.Models.DTOs.Order_DTO.UpdateItemOrderRequest()
         {
-            Items = payload.Items,
+            Items = checkout.OrderItems,
             Status = checkout.Status,
             paymentMethod = checkout.paymentMethod,
             CustomerInfo = checkout.CustomerInfo,
