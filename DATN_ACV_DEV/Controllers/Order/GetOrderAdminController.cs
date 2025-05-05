@@ -129,7 +129,11 @@ public class GetOrderAdminController : ControllerBase
                     TotalDiscount = e.TotalAmountDiscount!.Value,
                     TotalAmount = e.TotalAmount,
                     VoucherId = e.VoucherId,
-                    ShippingFee = e.AmountShip ?? 0
+                    ShippingFee = e.AmountShip ?? 0,
+                    FinalAmount = _context.TbOrderDetails
+                      .Where(c => c.OrderId == e.Id)
+                      .Select(c => (decimal?)(c.Quantity * c.Price))
+                      .Sum() ?? 0
                 },
                 Items = e.TbOrderDetails.Select(e => new OrderItem()
                 {

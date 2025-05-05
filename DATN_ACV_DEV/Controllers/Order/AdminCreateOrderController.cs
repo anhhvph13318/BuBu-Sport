@@ -180,7 +180,6 @@ namespace DATN_ACV_DEV.Controllers.Order
             {
                 tbOrder.Status = 7;              
             }
-
             foreach (var item in payload.Items)
             {
                 var existItem = _context.TbOrderDetails.Where(e => e.ProductId == Guid.Parse(item.Id) && e.OrderId == Guid.Parse(id)).FirstOrDefault();

@@ -3,12 +3,12 @@
 <div class="col-12">
     @if (Model == 0)
     {
-        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderAction()">Tạo</button>
+        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderAction(0)">Tạo</button>
     }
 
     @if(Model == 1)
     {
-        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderAction()">Cập nhật</button>
+        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderAction(0)">Cập nhật</button>
         <button class="btn btn-primary text-nowrap w-100 mt-2" onclick="confirmOrderAction(7)">Hoàn thành</button>
     }
 
@@ -19,8 +19,8 @@
 
 </div>
 <script>
-    function confirmOrderAction() {
-
+    function confirmOrderAction(stts) {
+        $('#orderStatus').val(stts);
         Swal.fire({
             title: 'Xác nhận thực hiện hành động',
             text: "Bạn có chắc chắn muốn thực hiện hành động này?",

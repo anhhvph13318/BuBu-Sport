@@ -71,5 +71,5 @@ public class PaymentInfo
     public decimal TotalAmount { get; set; }
     public decimal TotalTax { get; set; }
     public decimal TotalDiscount { get; set; }
-    public decimal FinalAmount => TotalAmount + ShippingFee - TotalDiscount;
+    public decimal FinalAmount { get; set; }
 }
