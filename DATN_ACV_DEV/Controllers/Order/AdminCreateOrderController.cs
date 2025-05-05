@@ -183,7 +183,7 @@ namespace DATN_ACV_DEV.Controllers.Order
 
             foreach (var item in payload.Items)
             {
-                var existItem = _context.TbOrderDetails.FirstOrDefault(e => e.ProductId == Guid.Parse(item.Id));
+                var existItem = _context.TbOrderDetails.Where(e => e.ProductId == Guid.Parse(item.Id) && e.OrderId == Guid.Parse(id)).FirstOrDefault();
                 if (existItem == null)
                 {
                     var productDetail = _context.TbProductDetails.FirstOrDefault(p => p.Id == Guid.Parse(item.Id));
@@ -207,9 +207,11 @@ namespace DATN_ACV_DEV.Controllers.Order
                     {
                         Id = Guid.NewGuid(),
                         ProductId = Guid.Parse(item.Id),
+                        OrderId = tbOrder.Id,
                         Quantity = item.Quantity,
                         Price = actualPrice
                     });
+                    tbOrder.TotalAmount += actualPrice;
                 }
                 else
                 {
@@ -217,8 +219,11 @@ namespace DATN_ACV_DEV.Controllers.Order
                     var product = productDetail.ProductId != null ? _context.TbProducts.FirstOrDefault(p => p.Id == productDetail.ProductId) : null;
                     if (productDetail.Quantity != 0 && product.Quantity != 0)
                     {
-                        productDetail.Quantity -= item.Quantity;
-                        product.Quantity -= item.Quantity;
+                        if (tbOrder.Status == 7)
+                        {
+                            productDetail.Quantity -= item.Quantity;
+                            product.Quantity -= item.Quantity;
+                        }
                         device = 1;
                     }
                 }
