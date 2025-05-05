@@ -214,8 +214,11 @@ namespace DATN_ACV_DEV.Controllers.Order
                 {
                     var productDetail = _context.TbProductDetails.FirstOrDefault(p => p.Id == Guid.Parse(item.Id));
                     var product = productDetail.ProductId != null ? _context.TbProducts.FirstOrDefault(p => p.Id == productDetail.ProductId) : null;
-                    productDetail.Quantity -= item.Quantity;
-                    product.Quantity -= item.Quantity;
+                    if (productDetail.Quantity != 0 && product.Quantity != 0)
+                    {
+                        productDetail.Quantity -= item.Quantity;
+                        product.Quantity -= item.Quantity;
+                    }
                 }
             }
             foreach (var item1 in productdetailid)
