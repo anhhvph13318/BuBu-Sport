@@ -17,28 +17,61 @@
         <div class="stat-box">
             <h3>@Model.RevenueToday.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
             <p>Doanh thu hôm nay</p>
-            <p class="growth-positive">+@Model.GrowthToday% so với @Model.CompareDate</p>
+            @if (Model.GrowthToday > 0)
+            {
+                <p class="growth-positive">+@Model.GrowthToday% so với @Model.CompareDate</p>
+            }
+            else if (Model.GrowthToday < 0)
+            {
+                <p class="growth-negative">@Model.GrowthToday% so với @Model.CompareDate</p>
+            }
+            else
+            {
+                <p class="growth-neutral">@Model.GrowthToday% so với @Model.CompareDate</p>
+            }
         </div>
         <div class="stat-box">
             <h3>@Model.RevenueThisWeek.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
             <p>Doanh thu tuần này</p>
-            <p class="growth-positive">+@Model.GrowthThisWeek% so với tuần trước</p>
+            @if (Model.GrowthThisWeek > 0)
+            {
+                <p class="growth-positive">+@Model.GrowthThisWeek% so với tuần trước</p>
+            }
+            else if (Model.GrowthThisWeek < 0)
+            {
+                <p class="growth-negative">@Model.GrowthThisWeek% so với tuần trước</p>
+            }
+            else
+            {
+                <p class="growth-neutral">@Model.GrowthThisWeek% so với tuần trước</p>
+            }
         </div>
         <div class="stat-box">
             <h3>@Model.RevenueThisMonth.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</h3>
             <p>Doanh thu tháng này</p>
-            <p class="growth-positive">+@Model.GrowthThisMonth% so với tháng trước</p>
+            @if (Model.GrowthThisMonth > 0)
+            {
+                <p class="growth-positive">+@Model.GrowthThisMonth% so với tháng trước</p>
+            }
+            else if (Model.GrowthThisMonth < 0)
+            {
+                <p class="growth-negative">@Model.GrowthThisMonth% so với tháng trước</p>
+            }
+            else
+            {
+                <p class="growth-neutral">@Model.GrowthThisMonth% so với tháng trước</p>
+            }
         </div>
     </div>
     <div class="order-stats-container">
-        <div class="stat-box"><h3>@Model.TotalOrders</h3><p>Tổng số đơn</p></div>
-        <div class="stat-box"><h3>@Model.WaitingOrders</h3><p>Chờ xác nhận</p></div>
-        <div class="stat-box"><h3>@Model.ConfirmedOrders</h3><p>Đã xác nhận</p></div>
-        <div class="stat-box"><h3>@Model.PreparingOrders</h3><p>Chuẩn bị hàng</p></div>
-        <div class="stat-box"><h3>@Model.DeliveringOrders</h3><p>Đang giao hàng</p></div>
-        <div class="stat-box"><h3>@Model.DeliverySuccessOrders</h3><p>Giao hàng thành công</p></div>
-        <div class="stat-box"><h3>@Model.CompletedOrders</h3><p>Hoàn thành</p></div>
-        <div class="stat-box"><h3>@Model.CancelledOrders</h3><p>Đã hủy</p></div>
+        <div class="order-stat-box"><h3>@Model.TotalOrders</h3><p>Tổng số đơn</p></div>
+        <div class="order-stat-box"><h3>@Model.WaitingOrders</h3><p>Chờ xác nhận</p></div>
+        <div class="order-stat-box"><h3>@Model.ConfirmedOrders</h3><p>Đã xác nhận</p></div>
+        <div class="order-stat-box"><h3>@Model.PreparingOrders</h3><p>Chuẩn bị hàng</p></div>
+        <div class="order-stat-box"><h3>@Model.DeliveringOrders</h3><p>Đang giao hàng</p></div>
+        <div class="order-stat-box"><h3>@Model.DeliverySuccessOrders</h3><p>Giao hàng thành công</p></div>
+        <div class="order-stat-box"><h3>@Model.CompletedOrders</h3><p>Hoàn thành</p></div>
+        <div class="order-stat-box"><h3>@Model.CancelledOrders</h3><p>Đã hủy</p></div>
     </div>
 
     <!-- Biểu đồ doanh thu -->
@@ -158,7 +191,7 @@
 
         .revenue-dashboard .order-stats-container {
             display: flex;
-            gap: 20px;
+            gap: 5px;
             justify-content: center;
             margin-bottom: 40px;
             flex-wrap: wrap;
@@ -172,6 +205,29 @@
             width: 250px;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .revenue-dashboard .order-stat-box {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            width: 160px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .revenue-dashboard .order-stat-box h3 {
+            margin: 0;
+            font-size: 28px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .revenue-dashboard .order-stat-box p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
         }
 
             .revenue-dashboard .stat-box h3 {
@@ -274,6 +330,24 @@
             .revenue-dashboard .filter-btn:hover {
                 background-color: #45a049;
             }
+
+        .revenue-dashboard .growth-positive {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .revenue-dashboard .growth-negative {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .revenue-dashboard .growth-neutral {
+            color: #6c757d;
+            font-weight: bold;
+            font-size: 14px;
+        }
 
     /* Media queries for responsiveness */
     @@media (max-width: 768px) {
