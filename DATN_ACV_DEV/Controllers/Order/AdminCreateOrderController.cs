@@ -175,10 +175,21 @@ namespace DATN_ACV_DEV.Controllers.Order
             List<TbOrderDetail> newOrderDetails = new List<TbOrderDetail>();
             TbOrder tbOrder = new TbOrder();
             tbOrder = _context.TbOrders.Where(c => c.Id == Guid.Parse(id)).FirstOrDefault();
-
+            if (tbOrder.CustomerId != null && payload.CustomerInfo != null)
+            {
+                TbCustomer tbCustomer  = new TbCustomer();
+                tbCustomer = _context.TbCustomers.Where(c=>c.Id == tbOrder.CustomerId).FirstOrDefault();
+                tbCustomer.Name = payload.CustomerInfo.Name;
+                tbCustomer.Phone = payload.CustomerInfo.PhoneNumber;
+                tbCustomer.Adress = payload.CustomerInfo.Address;
+            }
             if (payload.Items.Select(c=>c.Status).FirstOrDefault() != payload.Status)
             {
                 tbOrder.Status = 7;              
+            }
+            if (payload.paymentMethod != null && payload.paymentMethod == 2)
+            {
+                tbOrder.PaymentMethod = payload.paymentMethod;
             }
             foreach (var item in payload.Items)
             {
@@ -513,6 +524,9 @@ namespace DATN_ACV_DEV.Controllers.Order
         {
             public IList<OrderItem> Items { get; set; }
             public int Status { get; set; }
+            public int paymentMethod { get; set; }
+            public CustomerInfo CustomerInfo { get; set; } = new CustomerInfo();
+
         }
     }
 }

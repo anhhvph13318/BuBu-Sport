@@ -40,8 +40,16 @@
     <p class="col-6">Hình thức thanh toán:</p>
     <div class="col-6">
         <select class="form-select" id="paymentMethod" onchange="paymentMethodChange()" disabled="@(Model.Status > 0)">
-            <option value="0">Tiền mặt</option>
-            <option value="2">VNPAY</option>
+            @if (Model.paymentMethod == 0)
+            {
+                <option value="0" selected>Tiền mặt</option>
+                <option value="2">Chuyển khoản</option>
+            }
+            else
+            {
+                <option value="0">Tiền mặt</option>
+                <option value="2" selected>Chuyển khoản</option>
+            }
         </select>
     </div>
 </div>

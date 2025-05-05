@@ -310,14 +310,14 @@ public class OrderController : Controller
     [HttpPost]
     [Route("save-to-session")]
     public async Task<IActionResult> SaveOrder([FromBody] Checkout checkout)
-    {
+    {  
         var order = HttpContext.Session.GetCurrentOrder();
         if (order.Items.Count == 0)
         {
             order.Items = checkout.OrderItems;
             order.PaymentInfo.TotalAmount = order.Items.Sum(c => c.Price);
         }
-        if (order.Items.Count < checkout.OrderItems.Count)
+        if (order != null && checkout != null && order.Items.Count < checkout.OrderItems.Count)
         {
             order.Items = checkout.OrderItems;
         }
@@ -364,7 +364,9 @@ public class OrderController : Controller
         var updateRequest = new GUI.Models.DTOs.Order_DTO.UpdateItemOrderRequest()
         {
             Items = payload.Items,
-            Status = checkout.Status
+            Status = checkout.Status,
+            paymentMethod = checkout.paymentMethod,
+            CustomerInfo = checkout.CustomerInfo,
         };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
             ? await httpClient.PatchAsJsonAsync($"api/orders/update/{order.Id}", updateRequest)
@@ -796,7 +798,9 @@ public class OrderController : Controller
     public async Task<IActionResult> ChangeShipping([FromQuery] int method)
     {
         var order = HttpContext.Session.GetCurrentOrder();
-        if(method == 0)
+        order.PaymentInfo.paymentMethod = order.PaymentMethod;
+
+        if (method == 0)
         {
             order.IsCustomerTakeYourSelf = true;
             order.PaymentInfo.IsCustomerTakeYourSelf = true;

@@ -474,10 +474,10 @@ else
             isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
             status: parseInt($('#orderStatus').val()),
             customerInfo: {
-                name: isTakeAway ? "Khách tại quầy" : ($('#customerName').val() || "Khách vãng lai"),
-                phoneNumber: isTakeAway ? "" : ($('#customerPhoneNumber').val() || ""),
-                address: isTakeAway ? "" : ($('#customerAddress').val() || ""),
-                email: isTakeAway ? "" : ($('#customerEmail').val() || "")
+                name:  ($('#customerName').val() || "Khách tại quầy"),
+                phoneNumber:  ($('#customerPhoneNumber').val() || ""),
+                address:  ($('#customerAddress').val() || ""),
+                email:   ($('#customerEmail').val() || "")
             },
             shippingInfo: {
                 name: isTakeAway ? "" : ($('#receiverName').val() || customerInfo.name),
@@ -485,7 +485,8 @@ else
                 address: isTakeAway ? "" : ($('#receiverAddress').val() || customerInfo.address)
             },
             isDraft,
-            orderItems
+            orderItems,
+            paymentMethod: $('#paymentMethod').val()
         };
 
         // Tiếp tục với quá trình lưu đơn hàng

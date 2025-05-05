@@ -11,6 +11,7 @@
         public decimal TotalAmount { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal FinalAmount { get; set; }
+        public int paymentMethod { get; set; }
         public string[] Products { get; set; } = Array.Empty<string>();
     }
 }

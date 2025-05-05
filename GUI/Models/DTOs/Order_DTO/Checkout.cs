@@ -9,6 +9,7 @@
         public int Status { get; set; }
         public bool IsDraft { get; set; }
         public int PaymentStatus { get; set; }
+        public int paymentMethod { get; set; }
         public List<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderItem> OrderItems { get; set; } = new(); // Thêm dòng này
 
     }
