@@ -14,12 +14,39 @@ namespace GUI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IActionResult> Index(int days = 7) // Thêm tham số days, mặc định là 7
+        public async Task<IActionResult> Index(DateTime? startDate = null, DateTime? endDate = null)
         {
             try
             {
+                // Nếu không có ngày được chọn, mặc định là 7 ngày gần nhất
+                if (!startDate.HasValue)
+                {
+                    startDate = DateTime.Today.AddDays(-6); // 7 ngày gần nhất (bao gồm hôm nay)
+                }
+
+                if (!endDate.HasValue)
+                {
+                    endDate = DateTime.Today;
+                }
+
+                // Đảm bảo ngày bắt đầu không lớn hơn ngày kết thúc
+                if (startDate > endDate)
+                {
+                    var temp = startDate;
+                    startDate = endDate;
+                    endDate = temp;
+                }
+
+                // Lưu giá trị ngày vào ViewBag để sử dụng trong View
+                ViewBag.StartDate = startDate.Value.ToString("yyyy-MM-dd");
+                ViewBag.EndDate = endDate.Value.ToString("yyyy-MM-dd");
+
+                // Tính số ngày giữa hai mốc thời gian
+                int days = (int)(endDate.Value - startDate.Value).TotalDays + 1;
+
+                // Gọi API với tham số startDate và endDate
                 var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"http://localhost:5059/api/revenue/stats?days={days}");
+                var response = await client.GetAsync($"http://localhost:5059/api/revenue/stats?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -29,8 +56,6 @@ namespace GUI.Controllers
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                     });
 
-                    // Lưu giá trị days vào ViewBag để sử dụng trong View
-                    ViewBag.SelectedDays = days;
                     return View(revenueData);
                 }
                 else
@@ -63,7 +88,7 @@ namespace GUI.Controllers
         public decimal GrowthThisMonth { get; set; }
         public decimal[] DailyRevenues { get; set; }
         public string[] Dates { get; set; }
-        public decimal TotalRevenuePeriod { get; set; } // Đổi tên để phản ánh khoảng thời gian tùy chỉnh
+        public decimal TotalRevenuePeriod { get; set; }
         public int TotalOrders { get; set; }
         public int WaitingOrders { get; set; }
         public int ConfirmedOrders { get; set; }
@@ -72,6 +97,5 @@ namespace GUI.Controllers
         public int DeliverySuccessOrders { get; set; }
         public int CompletedOrders { get; set; }
         public int CancelledOrders { get; set; }
-
     }
 }
