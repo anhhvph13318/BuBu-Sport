@@ -10,7 +10,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("vouchers")]
-//[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class VoucherController : Controller
 {
     private const string URI = "http://localhost:5059";

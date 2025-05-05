@@ -16,7 +16,7 @@ using System.Net.WebSockets;
 
 namespace GUI.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ProductController : ControllerSharedBase
     {
         private readonly DBContext _context;
@@ -321,7 +321,7 @@ namespace GUI.Controllers
         {
             var lstprice = new decimal();
             TbOrderDetail tbOrderDetails = new TbOrderDetail();
-            var products = await _context.TbProducts
+            var products = await _context.TbProducts.Where(c=>c.IsDelete != true)
                 .Select(p => new ProductOFFDTO
                 {
                     Id = p.Id,

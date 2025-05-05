@@ -20,7 +20,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("categories")]
-//[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class CategoryController : ControllerSharedBase
 {
     private readonly DBContext _context;
