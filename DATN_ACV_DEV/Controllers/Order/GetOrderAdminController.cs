@@ -40,7 +40,7 @@ public class GetOrderAdminController : ControllerBase
             .Select(e => new OrderListItem()
             {
                 code = e.OrderCode,
-                totalAmount = e.TbOrderDetails.Sum(d => d.Price) != 0 ? e.TbOrderDetails.Sum(d => d.Price) : e.TotalAmount,
+                totalAmount = e.TbOrderDetails.Sum(d => d.Price * d.Quantity) != 0 ? e.TbOrderDetails.Sum(d => d.Price * d.Quantity) : e.TotalAmount,
                 amountDiscount = e.TotalAmountDiscount,
                 amountShip = 0,
                 id = e.Id,
