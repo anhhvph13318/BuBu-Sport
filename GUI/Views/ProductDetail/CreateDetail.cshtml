@@ -44,7 +44,9 @@
                             </div>
                             <div class="modal-body">
                                 <label for="newColorName" class="form-label">Tên màu sắc</label>
-                                <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên màu">
+                                <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên màu"
+                                       pattern="^[A-Za-zÀ-ỹ\s]+$"
+                                       title="Tên màu chỉ được chứa chữ cái và khoảng trắng" required>
                                 <input type="hidden" id="modalProductId" />
                             </div>
                             <div class="modal-footer">
@@ -346,39 +348,48 @@
             });
         });
 
-        async function saveColor() {
-            const newColorName = document.getElementById("newColorName").value.trim();
-            const productId = document.getElementById("modalProductId").value;
+    async function saveColor() {
+        const newColorName = document.getElementById("newColorName").value.trim();
+        const productId = document.getElementById("modalProductId").value;
+        const letterOnlyRegex = /^[A-Za-zÀ-ỹ\s]+$/;
 
-            if (!newColorName) {
-                Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
-                return;
-            }
-
-            try {
-                const response = await fetch("/ProductDetail/CreateColorDetail", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name: newColorName, productId })
-                });
-
-                if (!response.ok) throw new Error("Thêm màu thất bại!");
-
-                const newColor = await response.json();
-                const select = document.getElementById("colorSelect");
-                const newOption = document.createElement("option");
-                newOption.value = newColor.id;
-                newOption.textContent = newColor.name;
-                newOption.selected = true;
-                select.insertBefore(newOption, select.lastElementChild);
-
-                bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
-                document.getElementById("newColorName").value = "";
-                window.location.reload();
-            } catch (error) {
-                Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
-            }
+        if (!newColorName) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
+            return;
         }
+
+        if (!letterOnlyRegex.test(newColorName)) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Tên màu chỉ được chứa chữ cái và khoảng trắng' });
+            return;
+        }
+
+        try {
+            const response = await fetch("/ProductDetail/CreateColorDetail", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: newColorName, productId })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Thêm màu thất bại!");
+            }
+
+            const newColor = await response.json();
+            const select = document.getElementById("colorSelect");
+            const newOption = document.createElement("option");
+            newOption.value = newColor.id;
+            newOption.textContent = newColor.name;
+            newOption.selected = true;
+            select.insertBefore(newOption, select.lastElementChild);
+
+            bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
+            document.getElementById("newColorName").value = "";
+            window.location.reload();
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+        }
+    }
 
         // Lưu kích thước mới
         document.getElementById("saveNewSize").addEventListener("click", function () {

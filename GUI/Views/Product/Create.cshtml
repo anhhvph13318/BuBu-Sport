@@ -214,7 +214,9 @@
                     <label for="newColorName" class="form-label">Tên màu sắc</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-palette"></i></span>
-                        <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên màu">
+                        <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên màu"
+                               pattern="^[A-Za-zÀ-ỹ\s]+$"
+                               title="Tên màu chỉ được chứa chữ cái và khoảng trắng" required>
                     </div>
                     <input type="hidden" id="modalProductId" />
                 </div>
@@ -319,13 +321,19 @@
 
     async function saveNewColor() {
         const Name = document.getElementById("newColorName").value.trim();
+        const letterOnlyRegex = /^[A-Za-zÀ-ỹ\s]+$/;
+
         if (!Name) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
             return null;
         }
 
+        if (!letterOnlyRegex.test(Name)) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Tên màu chỉ được chứa chữ cái và khoảng trắng' });
+            return null;
+        }
+
         try {
-            // Set the active section BEFORE making the request
             saveSection1Data();
             localStorage.setItem("activeSection", "imageSection");
 
@@ -335,13 +343,14 @@
                 body: JSON.stringify({ name: Name })
             });
 
-            if (!response.ok) throw new Error("Thêm màu thất bại!");
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Thêm màu thất bại!");
+            }
 
             const newColor = await response.json();
             document.getElementById("newColorName").value = "";
             bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
-
-            // Reload page while preserving section state
             window.location.reload();
             return newColor;
         } catch (error) {

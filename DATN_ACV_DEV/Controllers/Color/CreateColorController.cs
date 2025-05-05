@@ -43,6 +43,18 @@ namespace DATN_ACV_DEV.Controllers.Color
 
         public void GenerateObjects()
         {
+            var existingColor = _context.TbColors
+                .FirstOrDefault(c => c.Name.ToLower() == _request.Name.ToLower());
+
+            if (existingColor != null)
+            {
+                var errorMessage = new DATN_ACV_DEV.FileBase.Message
+                {
+                    MessageText = "Màu sắc đã tồn tại"
+                };
+                throw new ACV_Exception(errorMessage);
+            }
+
             _Color = new TbColor()
             {
                 Id = Guid.NewGuid(),
