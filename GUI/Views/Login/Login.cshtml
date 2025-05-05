@@ -38,15 +38,22 @@
                     </a>
                     <div class="w-full">
                         <h2 class="form_title text-center">ĐĂNG KÝ</h2>
+                        <input type="text" name="FullName" id="fullName" placeholder="Họ và tên"
+                               pattern="^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$"
+                               title="Họ và tên không được chứa số hoặc ký tự đặc biệt"
+                               required class="input form-control form-control-lg" />
                         <input type="text" name="PhoneNumber" placeholder="Số điện thoại"
                                pattern="^0[3-9][0-9]{8}$"
                                title="Số điện thoại phải bắt đầu bằng 0, số thứ 2 trong khoảng từ 3->9 và có đúng 10 chữ số."
                                required class="input form-control form-control-lg" />
-                        <input type="password" name="Password" placeholder="Mật khẩu" minlength="1" maxlength="20" required class="input form-control form-control-lg" />
                         <input type="email" name="Email" placeholder="Email"
                                pattern="^[a-zA-Z0-9.%+-]+@@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
                                title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@gmail.com)."
                                required class="input form-control form-control-lg" />
+                        <input type="password" name="Password" id="password" placeholder="Mật khẩu"
+                               minlength="6" maxlength="20" required class="input form-control form-control-lg" />
+                        <input type="password" name="ConfirmPassword" id="confirmPassword" placeholder="Nhập lại mật khẩu"
+                               minlength="6" maxlength="20" required class="input form-control form-control-lg" />
                         <a data-bs-toggle="modal" data-bs-target="#forgotpassword" class="btn link text-right">Bạn quên mật khẩu?</a>
                         <button class="btn-authenticator" type="submit">Đăng ký</button>
                     </div>
@@ -136,6 +143,53 @@
 </script>
 @section Scripts {
     <script>
+        // Validate form đăng ký
+        document.addEventListener("DOMContentLoaded", function () {
+            const registerForm = document.getElementById("registerForm");
+            const passwordInput = document.getElementById("password");
+            const confirmPasswordInput = document.getElementById("confirmPassword");
+            const fullNameInput = document.getElementById("fullName");
+
+            registerForm.addEventListener("submit", function (e) {
+                // Kiểm tra họ tên
+                if (fullNameInput.value.trim().length < 2) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Lỗi',
+                        text: 'Họ và tên phải có ít nhất 2 ký tự!',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                // Kiểm tra họ tên không chứa ký tự đặc biệt và số
+                const nameRegex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/;
+                if (!nameRegex.test(fullNameInput.value.trim())) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Họ và tên không được chứa số hoặc ký tự đặc biệt!',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                // Kiểm tra mật khẩu trùng khớp
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Mật khẩu nhập lại không khớp!',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+            });
+        });
+
         // thông báo khi đăng ký thành công
         document.addEventListener("DOMContentLoaded", function () {
         @if (TempData["RegisterSuccess"] != null)
@@ -150,7 +204,7 @@
             </text>
         }
 
-            });
+                            });
         // thông báo khi đăng ký không thành công
         document.addEventListener("DOMContentLoaded", function () {
         @if (TempData["RegisterError"] != null)
@@ -164,7 +218,7 @@
                     });
             </text>
         }
-            });
+                            });
         // kiểm tra để trống trường email trong quên mật khẩu
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.getElementById("forgotPasswordForm");
@@ -204,7 +258,7 @@
                     });
             </text>
         }
-                });
+                                });
     </script>
 }
 @* @if (TempData["SweetAlertMessage"] != null)

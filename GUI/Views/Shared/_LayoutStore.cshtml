@@ -1106,21 +1106,20 @@
     });
     document.addEventListener('DOMContentLoaded', initializeLanguage);
 </script>
-	@if (!string.IsNullOrEmpty(ViewBag.AccountId))
-	{
-		<script>
-			let id = "@ViewBag.CustomerId";
-			let name = "@ViewBag.CustomerName"
-			let phone = "@ViewBag.CustomerPhone"
-			if (id) {
-				setCookie("user-id", id, 60);
-			}
-			setCookie("aId", "@ViewBag.AccountId", 60)
-			setCookie("cName", name, 60);
-			setCookie("cPhone", phone, 60);
-			$('#customer-name').text(name);
-			$(".anonymous").hide();
-			$(".signed").show();
-		</script>
-	}
+@if (!string.IsNullOrEmpty(ViewBag.AccountId))
+{
+    <script>
+        //fix unicode
+        let id = "@Html.Raw(ViewBag.CustomerId)";
+        let name = "@Html.Raw(ViewBag.CustomerName)";
+        let phone = "@Html.Raw(ViewBag.CustomerPhone)";
+        if (id) setCookie("user-id", id, 60);
+        setCookie("aId", "@Html.Raw(ViewBag.AccountId)", 60);
+        setCookie("cName", name, 60);
+        setCookie("cPhone", phone, 60);
+        $('#customer-name').text(decodeURIComponent(name));
+        $(".anonymous").hide();
+        $(".signed").show();
+    </script>
+}
 

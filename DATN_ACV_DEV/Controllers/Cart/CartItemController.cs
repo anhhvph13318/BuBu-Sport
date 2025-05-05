@@ -144,8 +144,8 @@ namespace DATN_ACV_DEV.Controllers
 						model.SizeName = _context.TbSizes.First(c => c.Id == sizeId).SizeName;
 						model.Color = _context.TbColors.First(c => c.Id == colorId).Name;
                         model.receiverName = _context.TbCustomers.Where(c => c.Id == _request.UserId).Select(c => c.Name).FirstOrDefault();
-                        model.receiverPhone = _context.TbCustomers.Where(c => c.Id == _request.UserId).Select(c => c.Name).FirstOrDefault();
-                        model.receiverEmail = _context.TbAccounts.Where(c => c.CustomerId == _request.UserId).Select(c => c.Email).FirstOrDefault();
+						model.receiverPhone = _context.TbCustomers.Where(c => c.Id == _request.UserId).Select(c => c.Phone).FirstOrDefault();
+						model.receiverEmail = _context.TbAccounts.Where(c => c.CustomerId == _request.UserId).Select(c => c.Email).FirstOrDefault();
                         model.receiverWard = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.CreateDate).Select(c => c.WardName).FirstOrDefault();
                         model.receiverDistrict = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.CreateDate).Select(c => c.DistrictName).FirstOrDefault();
                         model.receiverProvince = _context.TbAddressDeliveries.Where(c => c.AccountId == accountId).OrderByDescending(c=>c.CreateDate).Select(c => c.ProvinceName).FirstOrDefault();
