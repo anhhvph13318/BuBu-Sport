@@ -135,6 +135,10 @@ public class OrderController : Controller
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
+        if (response.Data.Voucher == null)
+        {
+            response.Data.Voucher = new VoucherDTO();
+        }
         var order = response!.Data;
         order.ReCalculatePaymentInfo();
         ViewBag.AutoUpdate = autoUpdate; // Gửi cờ này sang view
