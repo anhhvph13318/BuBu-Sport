@@ -29,17 +29,7 @@
                         <input type="text" class="form-control" id="searchQuery" name="searchQuery" value="@Context.Request.Query["searchQuery"]" placeholder="Nhập tên hoặc số điện thoại...">
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="sexFilter" class="form-label">Giới tính</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
-                        <select class="form-select" id="sexFilter" name="sexFilter">
-                            <option value="">-- Tất cả giới tính --</option>
-                            <option value="1">Nam</option>
-                            <option value="0">Nữ</option>
-                        </select>
-                    </div>
-                </div>
+
 
                 <div class="col-12 mt-3">
                     <button type="submit" class="btn btn-primary me-2">
@@ -67,7 +57,6 @@
                         <th>Tên khách hàng</th>
                         <th>Số điện thoại</th>
                         <th>Địa chỉ</th>
-                        <th class="text-center">Giới tính</th>
                         @* <th class="text-center" style="width: 150px;">Hành động</th> *@
                     </tr>
                 </thead>
@@ -81,7 +70,6 @@
                                 <td>@customer.c.Name</td>
                                 <td>@customer.c.Phone</td>
                                 <td>@customer.c.Address</td>
-                                <td class="text-center">@(customer.c.Sex == 1 ? "Nam" : "Nữ")</td>
                                 @* <td class="text-center">
                         <div class="btn-group">
                         <a asp-action="Edit" asp-route-id="@customer.c.Id" class="btn btn-outline-warning btn-sm">

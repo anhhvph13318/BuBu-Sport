@@ -12,4 +12,4 @@ optionsBuilder.UseSqlServer("Data Source=DEC\\SQLEXPRESS;Initial Catalog=DB_BuBu
 
 
 Tuan Anh : Data Source=TW4NENH\TUANANH;Initial Catalog=DB_BuBu_26_03;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
-ngoc tu :"Data Source=MSI\\SQLEXPRESS;Initial Catalog=DB_BuBu_15_04;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
+ngoc tu :"Data Source=MSI\\SQLEXPRESS;Initial Catalog=DB_BuBu_03_05;Integrated Security=True;Trust Server Certificate=True; Encrypt=False;
