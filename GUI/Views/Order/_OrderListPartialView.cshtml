@@ -22,7 +22,6 @@ else
                     <th>Mã hóa đơn</th>
                     <th>Khách hàng</th>
                     <th>Thành tiền</th>
-                    <th>Kiểu</th>
                     <th>Trạng thái</th>
                     <th></th>
                 </tr>
@@ -34,7 +33,6 @@ else
                         <td>@order.Code</td>
                         <td>@order.Customer.Name</td>
                         <td>@order.PaymentInfo.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                        <td>@order.OrderTypeName</td>
                         <td>@order.StatusText</td>
                         <td class="d-flex justify-content-between">
                             <button class="btn btn-success" onclick="show('@order.Id')">Chi tiết</button>

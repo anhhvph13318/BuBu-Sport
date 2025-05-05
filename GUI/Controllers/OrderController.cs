@@ -50,8 +50,8 @@ public class OrderController : Controller
     [FromQuery] int status = -1,
     [FromQuery] decimal? minAmount = null,
     [FromQuery] decimal? maxAmount = null,
-    [FromQuery] string? orderCodePrefix = "", 
-    DateTime? startDate = null, 
+    [FromQuery] string? orderCodePrefix = "",
+    DateTime? startDate = null,
     DateTime? endDate = null)
     {
         try
@@ -68,13 +68,24 @@ public class OrderController : Controller
 
             var response = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
-            
+
             var orders = response!.Data;
 
-            // Lọc theo orderCodePrefix
             if (!string.IsNullOrEmpty(orderCodePrefix))
             {
-                orders = orders.Where(o => o.code.StartsWith(orderCodePrefix));
+                if (orderCodePrefix == "TEMP")
+                {
+                    orders = orders.Where(o => o.code.StartsWith(orderCodePrefix) && o.status != "Hoàn thành đơn hàng");
+                }
+                else if (orderCodePrefix == "OFF")
+                {
+                    orders = orders.Where(o => o.code.StartsWith(orderCodePrefix) ||
+                            (o.code.StartsWith("TEMP") && o.status == "Hoàn thành đơn hàng"));
+                }
+                else
+                {
+                    orders = orders.Where(o => o.code.StartsWith(orderCodePrefix));
+                }
             }
 
             if (minAmount.HasValue)
@@ -95,7 +106,7 @@ public class OrderController : Controller
             }
 
 
-            return View(orders.OrderByDescending(c=>c.CreateDate));
+            return View(orders.OrderByDescending(c => c.CreateDate));
         }
         catch (Exception ex)
         {
