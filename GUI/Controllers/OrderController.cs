@@ -360,7 +360,7 @@ public class OrderController : Controller
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
         if (rawResponse.IsSuccessStatusCode)
-        {
+        {          
 
             var orders = await FetchOrderList();
 
@@ -382,10 +382,27 @@ public class OrderController : Controller
                 Buttons = await RenderViewAsync(OrderButtonActionPartialView, 0)
             });
         }
+        if (rawResponse.IsSuccessStatusCode != true)
+        {
+            var content = rawResponse.Content != null ? await rawResponse.Content.ReadFromJsonAsync<ResponseModel>() : null;
+            if (content != null && !string.IsNullOrEmpty(content.Message))
+            {
+                // Trả JSON có thông báo ra giao diện và DỪNG lại
+                return Json(new
+                {
+                    Message = content.Message
+                });
+            }
+        }
 
         return BadRequest();
     }
-
+    public class ResponseModel
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public string Detail { get; set; }
+    }
     [HttpDelete]
     [Route("draft/{id}/remove")]
     public async Task<IActionResult> RemoveDraftOrder([FromRoute] string id)

@@ -500,6 +500,10 @@ else
         })
             .then(res => res.json())
             .then(data => {
+                if (data.message) {
+                    toastr.error(data.message);
+                    return; // dừng không chạy phần còn lại
+                }
                 $('#orderTempSaveContainer').html(data.orders);
                 $('#orderButtonActionContainer').html(data.buttons);
                 changeResetButtonText(false);
