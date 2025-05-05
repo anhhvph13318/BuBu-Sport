@@ -224,32 +224,29 @@ else
     }
 
     function show(id) {
-        // Xóa highlight từ tất cả các hàng đơn hàng trước
         clearHighlightedOrders();
-
-        // Thêm highlight cho hàng đơn hàng hiện tại
         $(`#order-row-${id}`).addClass('highlighted-order');
 
         fetch(SHOW_ORDER_API(id))
             .then(res => res.json())
             .then(data => {
                 updateAllView(data);
-
-                // Cập nhật lại nội dung nút Lưu tạm
-                $('#tempSaveButtonContainer').html('');
                 $('#tempSaveButtonContainer').html(data.tempSaveButton);
-
-                // Ẩn lại nút Lưu tạm sau khi render
                 setTimeout(() => {
-                    $('#tempSaveButton').hide(); // ẩn đúng nút
+                    $('#tempSaveButton').hide();
                 }, 0);
 
-                // Cập nhật các trường khác
                 $('#shippingLocation').val(data.isCustomerTakeYourSelf ? '0' : '1');
                 $('#orderStatus').val(data.status.toString());
                 $('#shippingLocation').trigger('change');
                 $('#orderStatus').trigger('change');
                 $('#isSameAsCustomerAddress').trigger('change');
+                $('#orderItemContainer input.order-item-quantity').prop('disabled', true);
+                $('#orderItemContainer button.remove-item-btn').prop('disabled', true);
+            })
+            .catch(error => {
+                console.error("Lỗi khi tải đơn hàng:", error);
+                toastr.error("Không thể tải đơn hàng!");
             });
     }
 
@@ -272,27 +269,40 @@ else
                 size: size,
             })
         })
-            .then(res => res.json())
-            .then(data => updateItemAndPaymentView(data))
-            .catch(_ => {
-                showOutOfStockToastMessage();
-            });
-    };
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Có lỗi khi thêm sản phẩm');
+            }
+            return res.json();
+        })
+        .then(data => {
+            updateItemAndPaymentView(data); 
+        })
+        .catch(error => {
+            console.error(error);
+            showOutOfStockToastMessage();
+        });
+    }
 
     function updateQuantity(event, id) {
         const value = parseInt(event.target.value);
-
         if (value < 1) return;
 
         fetch(ORDER_UPDATE_ITEM_QUANTITY(id, value), {
             method: 'PATCH'
         })
-            .then(res => res.json())
-            .then(data => updateItemAndPaymentView(data))
-            .catch(_ => {
-                showOutOfStockToastMessage();
-                event.target.value = productStorage.OldQuantity;
-            });
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Có lỗi khi cập nhật số lượng');
+            }
+            return res.json();
+        })
+        .then(data => updateItemAndPaymentView(data))
+        .catch(error => {
+            console.error(error);
+            showOutOfStockToastMessage();
+            event.target.value = productStorage.OldQuantity; 
+        });
     }
 
     function removeItem(id) {

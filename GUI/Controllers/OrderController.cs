@@ -310,16 +310,11 @@ public class OrderController : Controller
     [HttpPost]
     [Route("save-to-session")]
     public async Task<IActionResult> SaveOrder([FromBody] Checkout checkout)
-    {  
+    {
         var order = HttpContext.Session.GetCurrentOrder();
-        if (order.Items.Count == 0)
+        if (order.Items.Count == 0 || order.Items.Count < checkout.OrderItems.Count)
         {
-            order.Items = checkout.OrderItems;
-            order.PaymentInfo.TotalAmount = order.Items.Sum(c => c.Price);
-        }
-        if (order != null && checkout != null && order.Items.Count < checkout.OrderItems.Count)
-        {
-            order.Items = checkout.OrderItems;
+            order.Items = checkout.OrderItems; // Đảm bảo danh sách sản phẩm từ client là mới nhất
         }
         if (order.Customer.Id == Guid.Empty)
             order.Customer = checkout.CustomerInfo;
@@ -339,14 +334,14 @@ public class OrderController : Controller
         if (order.Id == Guid.Empty)
         {
             if (order.IsCustomerTakeYourSelf)
-                order.Status = 7; // set status to complete
+                order.Status = 7; // Hoàn thành
             else
-                order.Status = 1; // set status to prepare
+                order.Status = 1; // Chuẩn bị
         }
 
         order.PaymentInfo.ShippingFee = order.IsCustomerTakeYourSelf ? 0 : 0;
 
-        // submit to database
+        // Gửi dữ liệu lên API
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(URI);
         var payload = new
@@ -373,39 +368,19 @@ public class OrderController : Controller
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
         if (rawResponse.IsSuccessStatusCode)
-        {          
-
+        {
             var orders = await FetchOrderList();
-
-            try
-            {
-                if (order.Customer.Email != "")
-                {
-                    await _emailService.SendOrderConfirmationAsync(order.Customer.Email, order.Code, order.Customer.Name, order.Customer.PhoneNumber, order.Status == 7 ? "Hoàn thành" : order.StatusText, "", 1, null, order.Items, null);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi khi gửi email xác nhận: {ex.Message}");
-            }
-
             return Json(new
             {
                 Orders = await RenderViewAsync(OrderListPartialView, orders),
                 Buttons = await RenderViewAsync(OrderButtonActionPartialView, 0)
             });
         }
-        if (rawResponse.IsSuccessStatusCode != true)
+        // Xử lý lỗi nếu có
+        var content = await rawResponse.Content.ReadFromJsonAsync<ResponseModel>();
+        if (content != null && !string.IsNullOrEmpty(content.Message))
         {
-            var content = rawResponse.Content != null ? await rawResponse.Content.ReadFromJsonAsync<ResponseModel>() : null;
-            if (content != null && !string.IsNullOrEmpty(content.Message))
-            {
-                // Trả JSON có thông báo ra giao diện và DỪNG lại
-                return Json(new
-                {
-                    Message = content.Message
-                });
-            }
+            return Json(new { Message = content.Message });
         }
 
         return BadRequest();
@@ -437,22 +412,50 @@ public class OrderController : Controller
     public async Task<IActionResult> AddItemToOrder([FromBody] OrderItem item)
     {
         var order = HttpContext.Session.GetCurrentOrder();
-        var stock = await GetProductStock(item.Id);
-        //if (stock.Quantity < item.Quantity)
-            //return BadRequest();
 
-        var existItem = order.Items.FirstOrDefault(e => e.Id == item.Id);
-        if (existItem is null)
-            order.Items.Add(item);
+        if (order.Id != Guid.Empty)
+        {
+            using var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(URI);
+            var rawResponse = await httpClient.GetAsync($"/api/admin/orders/{order.Id}");
+            var response = JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(await rawResponse.Content.ReadAsStringAsync());
+            order = response!.Data;
+        }
+
+        var stock = await GetProductStock(item.Id);
+        if (stock.Quantity < item.Quantity)
+            return BadRequest(new { Message = "Số lượng vượt quá tồn kho." });
+
+        var existItem = order.Items.FirstOrDefault(e => e.Id == item.Id && e.Color == item.Color && e.Size == item.Size);
+        if (existItem != null)
+        {
+            existItem.Quantity += item.Quantity;
+            if (existItem.Quantity > stock.Quantity)
+                return BadRequest(new { Message = "Tổng số lượng vượt quá tồn kho." });
+        }
         else
-            existItem.Quantity += 1;
+        {
+            order.Items.Add(item);
+        }
 
         order.ReCalculatePaymentInfo();
         HttpContext.Session.SaveCurrentOrder(order);
 
+        var mappedItems = order.Items.Select(x => new GUI.Models.DTOs.Order_DTO.OrderItem
+        {
+            ProductName = x.ProductName,
+            ProductImage = x.ProductImage,
+            Color = x.Color,
+            Size = x.Size,
+            Quantity = x.Quantity,
+            Price = x.Price,
+            Code = x.Code,
+            Id = x.Id
+        }).ToList();
+
         return Json(new
         {
-            Items = await RenderViewAsync(OrderItemListPartialView, order.Items),
+            Items = await RenderViewAsync(OrderItemListPartialView, mappedItems),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo)
         });
     }
