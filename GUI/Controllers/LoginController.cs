@@ -146,14 +146,16 @@ namespace GUI.Controllers
                 Random random = new Random();
                 int randomNumber = random.Next(10, 100); // Tạo số ngẫu nhiên từ 10 đến 99
                 request.Role = 0;
-                request.Name = request.PhoneNumber;
+                request.Name = request.FullName; // Use FullName from registration form instead of PhoneNumber
                 var URL = _settings.APIAddress + "api/CreateAccount/Process";
                 var param = JsonConvert.SerializeObject(request);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
                 var result = JsonConvert.DeserializeObject<BaseResponse<GetListUserResponse>>(res) ?? new();
                 if (result.Status == "200")
                 {
+                    HttpContext.Response.Cookies.Append("RegisteredPhone", request.PhoneNumber);
                     TempData["RegisterSuccess"] = "Đăng ký thành công!";
+
                     return RedirectToAction("Login");
                 }
                 if (result.Status == "400")
