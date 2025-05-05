@@ -217,6 +217,7 @@ namespace DATN_ACV_DEV.Utility
             else if (status == 5) return Utility.ORDER_STATUS_RETURNS_PRODUCT_TEXT;
             else if (status == 6) return Utility.ORDER_STATUS_PARTIAL_REFUND_TEXT;
             else if (status == 8) return Utility.ORDER_DURING_THE_RETURN_PERIOD_TEXT;
+            else if (status == 9) return Utility.ORDER_STATUS_DELIVERY_SUCCESS_TEXT;
             else if (status == 0) return Utility.ORDER_STATUS_WAIT_CONFIRM_TEXT;
             else return Utility.ORDER_STATUS_DONE_TEXT;
         }

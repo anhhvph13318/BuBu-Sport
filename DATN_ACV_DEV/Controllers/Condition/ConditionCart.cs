@@ -22,9 +22,9 @@ namespace DATN_ACV_DEV.Controllers.Condition
         public static void AddToCart_C02(DBContext context, AddToCartRequest request, string apiCode, string con02, string conCO2Field)
         {
             ACV_Exception aCV_Exception;
-            var Model = context.TbProducts.Where(c => c.Id == request.ProductId && c.IsDelete == false).FirstOrDefault();
+            var Model = context.TbProductDetails.Where(c => c.ProductId == request.ProductId).ToList();
 
-            if (Model.Quantity < request.Quantity)
+            if (Model.Sum(c=>c.Quantity) < request.Quantity)
             {
                 aCV_Exception = new ACV_Exception();
                 //To-do: Lay thong message text tu message code

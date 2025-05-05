@@ -3,8 +3,11 @@
 
 <div class="mb-3 d-flex align-items-center">
     <label class="form-label text-nowrap me-2">Nơi nhận hàng</label>
-    <select onchange="isCustomerTakeYourSelfChange()" value="@(Model.IsCustomerTakeYourSelf ? 0 : 1)"
-        id="shippingLocation" class="form-select">
+    <select onchange="isCustomerTakeYourSelfChange()"
+            value="@(Model.IsCustomerTakeYourSelf ? 0 : 1)"
+            id="shippingLocation"
+            class="form-select"
+            disabled>
         <option value="0">Khách nhận tại quầy</option>
         <option value="1">Giao hàng</option>
     </select>

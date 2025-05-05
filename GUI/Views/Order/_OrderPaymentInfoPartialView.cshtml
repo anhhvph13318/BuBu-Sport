@@ -53,6 +53,8 @@
         </select>
     </div>
 </div>
+<input type="hidden" id="voucherCode" data-id="@Model.VoucherId" value="@Model.VoucherCode" />
+
 <div class="row ps-2 pe-2">
     <p class="col-6">Tạm tính: </p>
     <p id="total-amount" class="text-end col-6">@Model.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
@@ -63,5 +65,5 @@
 </div>
 <div class="row ps-2 pe-2">
     <p class="col-6">Thành tiền: </p>
-    <p id="total-amount" class="text-end col-6">@((Model.TotalAmount - Model.TotalDiscount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</p>
+    <p id="final-amount" class="text-end col-6">@((Model.TotalAmount - Model.TotalDiscount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</p>
 </div>

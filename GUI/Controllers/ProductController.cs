@@ -390,8 +390,16 @@ namespace GUI.Controllers
             {
                 return NotFound();
             }
-
-            var discount = _context.TbDiscounts.Where(c => c.Id == _context.TbDiscountProducts.Where(a => a.ProductId == productDetail.ProductId).Select(a => a.DiscountId).FirstOrDefault() && c.EndDate >= DateTime.Now).Select(c => c.DiscountValue).FirstOrDefault();
+            decimal? discount = 0m;
+            var discountavai = _context.TbDiscountProducts.Where(a => a.ProductId == productDetail.ProductId).ToList();
+            foreach (var item in discountavai)
+            {
+                var discountDate = _context.TbDiscounts.Where(c => c.Id == item.DiscountId).FirstOrDefault();
+                if (discountDate.EndDate >= DateTime.Now)
+                {
+                    discount = discountDate.DiscountValue;
+                }
+            }
             if (discount != null)
             {
                 productDetail.Price = Convert.ToDecimal(productDetail.Price * (1 - discount / 100));

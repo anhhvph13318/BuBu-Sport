@@ -14,6 +14,7 @@
         public int? Key { get; set; }
         public int? Role { get; set; }
 
+        public string? FullName { get; set; }
         public Guid CustomerId { get; set; }
         public Guid EmployeeId { get; set; }
     }

@@ -362,6 +362,7 @@ public class OrderController : Controller
             Status = checkout.Status,
             paymentMethod = checkout.paymentMethod,
             CustomerInfo = checkout.CustomerInfo,
+            paymentInfo = checkout.paymentInfo,
         };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
             ? await httpClient.PatchAsJsonAsync($"api/orders/update/{order.Id}", updateRequest)
@@ -585,26 +586,46 @@ public class OrderController : Controller
         var order = HttpContext.Session.GetCurrentOrder();
         var target = order.Customer.Id == Guid.Empty ? order.Customer.PhoneNumber : order.Customer.Id.ToString();
 
+        // Kiểm tra mã voucher
         var voucher = await CheckCustomerCanUseVoucher(id, target);
 
-        if (voucher is null)
+        if (voucher == null)
         {
             return BadRequest(new { Message = "Mã Voucher không hợp lệ hoặc đơn hàng không đủ điều kiện tối thiểu." });
         }
 
+        // Cập nhật thông tin voucher vào đơn hàng
         order.Voucher = voucher;
         order.PaymentInfo.VoucherId = voucher.Id;
         order.PaymentInfo.VoucherCode = voucher.Code;
 
+        // Tính lại các thông tin thanh toán
         order.ReCalculatePaymentInfo();
         Console.WriteLine($"TotalDiscount after apply: {order.PaymentInfo.TotalDiscount}");
+
+        // Lưu lại đơn hàng đã cập nhật
         HttpContext.Session.SaveCurrentOrder(order);
 
+        // Trả về JSON chứa thông tin thanh toán
         return Json(new
         {
-            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo)
+            PaymentInfo = new
+            {
+                order.PaymentInfo.IsCustomerTakeYourSelf,
+                order.PaymentInfo.VoucherId,
+                order.PaymentInfo.VoucherCode,
+                order.PaymentInfo.PaymentStatus,
+                order.PaymentInfo.Status,
+                order.PaymentInfo.ShippingFee,
+                order.PaymentInfo.TotalAmount,
+                order.PaymentInfo.TotalDiscount,
+                order.PaymentInfo.FinalAmount,
+                order.PaymentInfo.paymentMethod,
+                Products = order.PaymentInfo.Products // hoặc có thể xử lý thêm nếu cần
+            }
         });
     }
+
 
     [HttpPost]
     [Route("cancel-apply-voucher")]
@@ -619,10 +640,26 @@ public class OrderController : Controller
         order.ReCalculatePaymentInfo();
 
         HttpContext.Session.SaveCurrentOrder(order);
-
+        if (order.PaymentInfo.TotalAmount == order.PaymentInfo.FinalAmount)
+        {
+            order.PaymentInfo.TotalDiscount = 0;
+        }
         return Json(new
         {
-            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+            PaymentInfo = new
+            {
+                order.PaymentInfo.IsCustomerTakeYourSelf,
+                order.PaymentInfo.VoucherId,
+                order.PaymentInfo.VoucherCode,
+                order.PaymentInfo.PaymentStatus,
+                order.PaymentInfo.Status,
+                order.PaymentInfo.ShippingFee,
+                order.PaymentInfo.TotalAmount,
+                order.PaymentInfo.TotalDiscount,
+                order.PaymentInfo.FinalAmount,
+                order.PaymentInfo.paymentMethod,
+                Products = order.PaymentInfo.Products // hoặc có thể xử lý thêm nếu cần
+            }
         });
     }
 

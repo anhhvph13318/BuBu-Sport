@@ -369,6 +369,7 @@ else
             2 => "đang vận chuyển",
             4 => "xác nhận",
             7 => "hoàn thành",
+            9 => "giao hàng thành công",
             _ => "không xác định"
         }));
 
@@ -440,6 +441,7 @@ else
             }
             const result = await response.json();
             document.getElementById('loadingOverlay').classList.remove('active');
+
             if (result.success) {
                 Swal.fire({
                     icon: "success",
@@ -450,18 +452,27 @@ else
                     location.reload();
                 });
             } else {
-                alert(result.message || "Có lỗi khi cập nhật");
+                // Hiển thị thông báo lỗi với SweetAlert
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi!",
+                    text: result.message || "Có lỗi khi cập nhật trạng thái đơn hàng",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    // Vẫn reload để hiển thị trạng thái hiện tại
+                    location.reload();
+                });
             }
         } catch (err) {
             console.error("Lỗi:", err);
             document.getElementById('loadingOverlay').classList.remove('active');
+
+            // Hiển thị thông báo lỗi nếu có lỗi khi xử lý
             Swal.fire({
-                icon: "success",
-                title: "Thành công!",
-                text: "Cập nhật trạng thái thành công!",
-                confirmButtonText: "OK"
-            }).then(() => {
-                location.reload();
+                icon: "error",
+                title: "Lỗi!",
+                text: "Đã xảy ra lỗi khi xử lý yêu cầu",
+                confirmButtonText: "Đóng"
             });
         }
     }
