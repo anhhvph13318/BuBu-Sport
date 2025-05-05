@@ -7,10 +7,11 @@
             @Html.Raw(TempData["ErrorMessage"])
         </div>
     }
-    <form asp-controller="Discount" asp-action="CreateDiscount" method="post" onsubmit="return confirmAction()">
+    <form asp-controller="Discount" asp-action="CreateDiscount" method="post" id="discountForm" onsubmit="return validateAndConfirmAction()">
         <input type="hidden" name="Id" value="@Model.Id" />
         <input type="hidden" name="actionType" value="@(Model.Id != Guid.Empty ? "update" : "create")" />
         <input type="hidden" asp-for="DiscountType" value="percent" />
+        <input type="hidden" name="isExpiring" id="isExpiring" value="false" />
 
         <div class="row g-3">
             <!-- Cột trái -->
@@ -25,7 +26,10 @@
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Giá trị giảm (%)</label>
-                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" max="100" />
+                    <input asp-for="DiscountValue" class="form-control form-control-sm" type="number" min="1" max="100" required />
+                    <div id="discountValueValidationMessage" class="text-danger mt-1" style="display: none;">
+                        Vui lòng nhập giá trị từ 1 đến 100.
+                    </div>
                 </div>
             </div>
 
@@ -38,15 +42,15 @@
                 <div class="mb-2 row g-2">
                     <div class="col-6">
                         <label class="form-label">Bắt đầu</label>
-                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local" />
+                        <input asp-for="StartDate" class="form-control form-control-sm" type="datetime-local" required />
                     </div>
                     <div class="col-6">
                         <label class="form-label">Kết thúc</label>
-                        <input asp-for="EndDate" class="form-control form-control-sm" type="datetime-local" />
+                        <input asp-for="EndDate" class="form-control form-control-sm" type="datetime-local" required />
                     </div>
                 </div>
                 <div class="mb-2">
-                    <label class="form-label">Sản phẩm áp dụng</label>
+                    <label class="form-label">Sản phẩm áp dụng <span class="text-danger">*</span></label>
                     <div class="d-flex flex-wrap gap-2 mb-2">
                         <select class="form-select form-select-sm w-auto" id="categoryFilter" onchange="filterProducts()">
                             <option value="">-- Tất cả danh mục --</option>
@@ -64,7 +68,7 @@
                         @foreach (var product in Model.Products)
                         {
                             <div class="form-check" data-category="@product.CategoryId" data-code="@product.Code" data-name="@product.Name">
-                                <input class="form-check-input" type="checkbox"
+                                <input class="form-check-input product-checkbox" type="checkbox"
                                        name="ProductIds" value="@product.Id"
                                 @(Model.ProductIds != null && Model.ProductIds.Contains(product.Id) ? "checked" : "") />
                                 <label class="form-check-label">
@@ -83,6 +87,9 @@
                             Không có sản phẩm nào phù hợp.
                         </div>
                     </div>
+                    <div id="productValidationMessage" class="text-danger mt-1" style="display: none;">
+                        Vui lòng chọn ít nhất một sản phẩm.
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,6 +98,12 @@
             <button type="submit" class="btn btn-sm me-2 @(Model.Id != Guid.Empty ? "btn-success" : "btn-primary")">
                 @(Model.Id != Guid.Empty ? "Cập nhật" : "Tạo")
             </button>
+            @if (Model.Id != Guid.Empty)
+            {
+                <button type="button" class="btn btn-sm btn-warning me-2" onclick="expireDiscount()">
+                    Đặt trạng thái về hết hiệu lực
+                </button>
+            }
             <a class="btn btn-sm btn-danger" asp-action="Index">Quay lại</a>
         </div>
     </form>
@@ -191,32 +204,130 @@
     @if (TempData["RegisterSuccess"] != null)
     {
         <text>
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Thành công!',
-                                text: '@Html.Raw(TempData["RegisterSuccess"])',
-                                confirmButtonText: 'OK'
-                            });
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Thành công!',
+                                            text: '@Html.Raw(TempData["RegisterSuccess"])',
+                                            confirmButtonText: 'OK'
+                                        });
         </text>
     }
-        filterProducts(); 
+            filterProducts();
 
-        loadDiscountPrograms();
+            loadDiscountPrograms();
 
-        loadDiscountedProducts();
+            loadDiscountedProducts();
 
-        document.getElementById('productCodeFilter').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                applyDiscountProductsFilter();
+            document.getElementById('productCodeFilter').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    applyDiscountProductsFilter();
+                }
+            });
+
+            document.getElementById('productNameFilter').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    applyDiscountProductsFilter();
+                }
+            });
+        });
+
+    function validateAndConfirmAction() {
+        // Kiểm tra xem có ít nhất một sản phẩm được chọn không
+        const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+        if (checkboxes.length === 0) {
+            document.getElementById('productValidationMessage').style.display = 'block';
+            return false;
+        } else {
+            document.getElementById('productValidationMessage').style.display = 'none';
+        }
+
+        // Kiểm tra giá trị giảm giá
+        const discountValueInput = document.querySelector('input[name="DiscountValue"]');
+        const discountValue = discountValueInput.value;
+        if (!discountValue) {
+            document.getElementById('discountValueValidationMessage').style.display = 'block';
+            return false;
+        } else if (discountValue < 1 || discountValue > 100) {
+            document.getElementById('discountValueValidationMessage').style.display = 'block';
+            return false;
+        } else {
+            document.getElementById('discountValueValidationMessage').style.display = 'none';
+        }
+
+        // Kiểm tra ngày tháng
+        const startDateInput = document.querySelector('input[name="StartDate"]');
+        const endDateInput = document.querySelector('input[name="EndDate"]');
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (!startDateInput.value || !endDateInput.value) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi ngày tháng',
+                text: 'Vui lòng nhập đầy đủ ngày bắt đầu và ngày kết thúc.'
+            });
+            return false;
+        }
+
+        if (endDate < startDate) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi ngày tháng',
+                text: 'Ngày kết thúc không thể trước ngày bắt đầu. Vui lòng điều chỉnh thời gian!'
+            });
+            return false;
+        }
+
+        const isExpiring = document.getElementById('isExpiring').value === 'true';
+        if (isExpiring) {
+            return true; // Không hiển thị thông báo xác nhận nếu đang thực hiện hết hạn
+        }
+
+        // Ngăn chặn submit mặc định để hiển thị dialog xác nhận
+        event.preventDefault();
+
+        const actionType = document.querySelector('input[name="actionType"]').value;
+        const actionText = actionType === 'update' ? 'cập nhật' : 'tạo';
+
+        Swal.fire({
+            title: 'Xác nhận',
+            text: `Bạn có chắc chắn muốn ${actionText} chương trình khuyến mãi này?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Có, tiếp tục!',
+            cancelButtonText: 'Không, hủy bỏ!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('discountForm').submit();
             }
         });
 
-        document.getElementById('productNameFilter').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                applyDiscountProductsFilter();
+        return false;
+    }
+
+    function expireDiscount() {
+        Swal.fire({
+            title: 'Xác nhận hết hạn',
+            text: 'Bạn có chắc chắn muốn đánh dấu chương trình này là đã hết hạn?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, đánh dấu hết hạn!',
+            cancelButtonText: 'Không, hủy bỏ!',
+            confirmButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const pastDate = new Date(1970, 0, 1, 0, 0);
+
+                const formattedDate = pastDate.toISOString().slice(0, 16);
+
+                document.querySelector('input[name="StartDate"]').value = formattedDate;
+                document.querySelector('input[name="EndDate"]').value = formattedDate;
+                document.getElementById('isExpiring').value = 'true';
+
+                document.getElementById('discountForm').submit();
             }
         });
-    });
+    }
 
     function loadDiscountPrograms() {
         const discountFilter = document.getElementById('discountFilter');
@@ -244,30 +355,6 @@
                 console.error('Error loading discounts:', error);
                 discountFilter.innerHTML = '<option value="">-- Không thể tải chương trình giảm giá --</option>';
             });
-    }
-
-    function confirmAction() {
-        const actionType = document.querySelector('input[name="actionType"]').value;
-        if (!actionType) {
-            document.getElementById('validate-message').style.display = 'block';
-            return false;
-        }
-        event.preventDefault();
-
-        Swal.fire({
-            title: 'Cảnh báo',
-            text: "Bạn có chắc chắn muốn cập nhật khuyến mại này?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Có, lưu lại!',
-            cancelButtonText: 'Không, hủy bỏ!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.querySelector('form').submit();
-            }
-        });
-
-        return false;
     }
 
     function filterProducts() {
@@ -312,7 +399,7 @@
 
         const url = '/Discount/GetDiscountedProducts' + (params.toString() ? '?' + params.toString() : '');
 
-        console.log("Calling API with URL:", url); 
+        console.log("Calling API with URL:", url);
 
         fetch(url)
             .then(response => {
@@ -417,6 +504,7 @@
 
         tableBody.innerHTML = html;
     }
+
     function loadProductDiscountInfo() {
         const productsWithInfo = document.querySelectorAll(".form-check input[type='checkbox']");
 

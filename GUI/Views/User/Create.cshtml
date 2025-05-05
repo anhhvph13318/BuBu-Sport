@@ -83,35 +83,37 @@
     </div>
 </div>
 
-
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-       
     }
+
     <script>
         function validateForm() {
             var isValid = true;
             var form = document.getElementById('createUserForm');
+
             var phoneInput = form.querySelector('[name="UserName"]');
             if (!phoneInput.value.trim()) {
                 phoneInput.classList.add('is-invalid');
+                var errorDiv = phoneInput.parentElement.querySelector('.invalid-feedback');
+                if (errorDiv) errorDiv.textContent = 'Vui lòng nhập số điện thoại.';
                 isValid = false;
-            } else if (phoneInput.value.trim().length !== 10 || isNaN(phoneInput.value.trim())) {
+            } else if (phoneInput.value.trim().length !== 10 || !/^\d+$/.test(phoneInput.value.trim())) {
                 phoneInput.classList.add('is-invalid');
                 var errorDiv = phoneInput.parentElement.querySelector('.invalid-feedback');
-                if (errorDiv) errorDiv.textContent = 'Số điện thoại phải có 10 chữ số.';
+                if (errorDiv) errorDiv.textContent = 'Số điện thoại phải có đúng 10 chữ số.';
                 isValid = false;
             } else {
                 phoneInput.classList.remove('is-invalid');
                 phoneInput.classList.add('is-valid');
             }
 
-            // Email
             var emailInput = form.querySelector('[name="Email"]');
             if (!emailInput.value.trim()) {
                 emailInput.classList.add('is-invalid');
+                var errorDiv = emailInput.parentElement.querySelector('.invalid-feedback');
+                if (errorDiv) errorDiv.textContent = 'Vui lòng nhập email.';
                 isValid = false;
             } else if (!validateEmail(emailInput.value.trim())) {
                 emailInput.classList.add('is-invalid');
@@ -123,10 +125,11 @@
                 emailInput.classList.add('is-valid');
             }
 
-            // Họ tên
             var nameInput = form.querySelector('[name="FullName"]');
             if (!nameInput.value.trim()) {
                 nameInput.classList.add('is-invalid');
+                var errorDiv = nameInput.parentElement.querySelector('.invalid-feedback');
+                if (errorDiv) errorDiv.textContent = 'Vui lòng nhập họ tên.';
                 isValid = false;
             } else {
                 nameInput.classList.remove('is-invalid');
@@ -136,49 +139,27 @@
             return isValid;
         }
 
-        
         function validateEmail(email) {
             if (!email) return false;
-            
-         
-            var atIndex = email.indexOf(String.fromCharCode(64)); 
+
+            var atIndex = email.indexOf(String.fromCharCode(64));
             if (atIndex <= 0 || atIndex === email.length - 1) return false;
-            
-        
+
             var localPart = email.substring(0, atIndex);
             var domainPart = email.substring(atIndex + 1);
-            
-            // Kiểm tra phần local và domain không được rỗng
             if (!localPart || !domainPart) return false;
-            
-            // Kiểm tra domain có ít nhất 1 dấu chấm
             var dotIndex = domainPart.indexOf('.');
             if (dotIndex <= 0 || dotIndex === domainPart.length - 1) return false;
-            
-            // Kiểm tra phần mở rộng tên miền (.com, .vn, .org, ...)
             var tld = domainPart.substring(dotIndex + 1);
             if (tld.length < 2) return false;
-            
+
             return true;
         }
 
-        document.getElementById('saveButton').addEventListener('click', function () {
-            if (!validateForm()) return;
-
-            Swal.fire({
-                title: 'Bạn có chắc muốn thêm mới không?',
-                text: "Thao tác này sẽ cập nhật dữ liệu!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Đồng ý',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('spinner').style.display = 'inline-block';
-                    document.querySelector('form').submit();
-                }
-            });
-        });
+        window.onload = function () {
+            var randomCode = 'nv' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('userCode').value = randomCode;
+        }
 
         document.addEventListener('DOMContentLoaded', function () {
             var form = document.getElementById('createUserForm');
@@ -191,28 +172,28 @@
                     }
                 });
             }
+
+
+            document.getElementById('saveButton').addEventListener('click', function () {
+
+                if (!validateForm()) {
+                    return false;
+                }
+
+                Swal.fire({
+                    title: 'Bạn có chắc muốn thêm mới không?',
+                    text: "Thao tác này sẽ cập nhật dữ liệu!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đồng ý',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('spinner').style.display = 'inline-block';
+                        document.getElementById('createUserForm').submit();
+                    }
+                });
+            });
         });
     </script>
 }
-<script>
-    document.getElementById('saveButton').addEventListener('click', function () {
-        Swal.fire({
-            title: 'Bạn có chắc muốn thêm mới không?',
-            text: "Thao tác này sẽ cập nhật dữ liệu!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Đồng ý',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('spinner').style.display = 'inline-block';
-                document.querySelector('form').submit(); // submit form HTML
-            }
-        });
-    });
-    window.onload = function () {
-        // Tạo mã nhân viên có định dạng 'nv' + 4 số ngẫu nhiên
-        var randomCode = 'nv' + Math.floor(1000 + Math.random() * 9000);
-        document.getElementById('userCode').value = randomCode;
-    }
-</script>

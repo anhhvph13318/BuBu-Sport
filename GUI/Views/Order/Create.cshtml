@@ -275,6 +275,10 @@
                 renderProductList(filtered);
             });
 
+            function formatCurrency(amount) {
+                return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+
             function renderProductList(data) {
                 const productListBody = $('#productListBody').empty();
                 data.forEach((product, index) => {
@@ -286,7 +290,7 @@
                             <td><span class="badge bg-secondary">${product.code}</span></td>
                             <td>${product.name}</td>
                             <td><img src="${product.image}" style="width: 50px; height: 50px;" /></td>
-                            <td>${formattedPrice} VNĐ</td>
+                            <td>${formatCurrency(product.price)} VNĐ</td>
                             <td><button class="btn btn-info btn-detail" data-id="${product.id}" data-name="${product.name}">Chi tiết</button></td>
                         </tr>`;
                     productListBody.append(row);
@@ -488,15 +492,28 @@
                             throw new Error(error.Message || 'Không thể áp dụng Voucher.');
                         });
                     }
-                    return response.json();
+                    return response.json(); // Chuyển đổi sang JSON
                 })
                 .then(data => {
-                    console.log('Payment data:', data.Payment);
-                    $('#orderPaymentInfoContainer').html(data.Payment);
-                    $('#voucherModal').modal('hide');
-                    toastr.success('Áp dụng Voucher thành công!');
+                    console.log(data.paymentInfo)
+                    // Lấy dữ liệu từ JSON trả về
+                    let paymentInfo = data.paymentInfo;
+
+                    // Cập nhật thông tin thanh toán vào giao diện
+                    $('#voucherCode').val(paymentInfo.voucherCode);
+                    $('#total-amount').text(paymentInfo.totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                    $('#discount-amount').text(`- ${paymentInfo.totalDiscount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}`);
+                    $('#final-amount').text(paymentInfo.finalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+
+                    // Cập nhật trạng thái thanh toán
+                    $('#paymentMethod').val(paymentInfo.paymentMethod);
+
+                    // Thay đổi nút áp dụng voucher
+                    if (paymentInfo.voucherId) {
+                        $('#applyVoucherBtn').text('Huỷ áp mã').attr('onclick', 'cancelApplyVoucher()');
+                    }
+
                     $('#loading-overlay').css('display', 'none');
-                    $('#applyVoucherBtn').text('Huỷ áp mã').attr('onclick', 'cancelApplyVoucher()');
                 })
                 .catch(error => {
                     console.error('Lỗi khi áp dụng Voucher:', error);
@@ -520,8 +537,17 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Cập nhật thông tin thanh toán
-                    $('#orderPaymentInfoContainer').html(data.Payment);
+                    let paymentInfo = data.paymentInfo;
+
+                    // Cập nhật thông tin thanh toán (chắc chắn rằng data.paymentInfo có dữ liệu đúng)
+                    // Cập nhật thông tin thanh toán vào giao diện
+                    $('#voucherCode').val(paymentInfo.voucherCode);
+                    $('#total-amount').text(paymentInfo.totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+                    $('#discount-amount').text(`- ${paymentInfo.totalDiscount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}`);
+                    $('#final-amount').text(paymentInfo.finalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+
+                    // Cập nhật trạng thái thanh toán
+                    $('#paymentMethod').val(paymentInfo.paymentMethod);
 
                     // Thông báo thành công
                     toastr.success('Hủy áp dụng voucher thành công!');

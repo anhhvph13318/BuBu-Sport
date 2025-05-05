@@ -183,7 +183,7 @@
                         <th>Kiểu</th>
                         <th>Khách hàng</th>
                         <th>Sản phẩm</th>
-                        <th>Thanh tiền</th>
+                        <th>Thành tiền</th>
                         <th>Ngày tạo</th>
                         <th class="text-center">Trạng thái</th>
                         <th class="text-center" style="width: 150px;">Hành động</th>
@@ -195,7 +195,30 @@
                         var index = 1;
                         @foreach (var order in sortedOrders)
                         {
-                            var orderType = (order.code.StartsWith("OFF") || order.code.StartsWith("TEMP")) ? "Tại quầy" : "Online";
+                            string orderType;
+                            string orderTypeBadgeClass = "bg-secondary";
+
+                            if (order.code.StartsWith("TEMP"))
+                            {
+                                if (order.status == "Hoàn thành đơn hàng")
+                                {
+                                    orderType = "Tại quầy (OFF)";
+
+                                }
+                                else
+                                {
+                                    orderType = "Tại quầy (TEMP)";
+                                }
+                            }
+                            else if (order.code.StartsWith("OFF"))
+                            {
+                                orderType = "Tại quầy (OFF)";
+                            }
+                            else
+                            {
+                                orderType = "Online (ON)";
+                                orderTypeBadgeClass = "bg-info";
+                            }
 
                             var statusClass = order.status switch
                             {
@@ -212,7 +235,7 @@
                             <tr>
                                 <td class="text-center">@index</td>
                                 <td><span class="badge bg-secondary">@order.code</span></td>
-                                <td>@orderType</td>
+                                <td><span class="badge @orderTypeBadgeClass">@orderType</span></td>
                                 <td>@order.nameCustomer</td>
                                 <td>@order.products</td>
                                 <td>@order.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>

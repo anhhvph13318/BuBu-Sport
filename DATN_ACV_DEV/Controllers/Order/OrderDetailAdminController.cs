@@ -29,7 +29,10 @@ public class OrderDetailAdminController : ControllerBase
             .Include(o => o.TbOrderDetails)
             .ThenInclude(d => d.Product)
             .FirstOrDefaultAsync(e => e.Id == orderId);
-
+        if (orderEntity.Voucher == null && orderEntity.VoucherId != null)
+        {
+            orderEntity.Voucher = _context.TbVouchers.Where(c => c.Id == orderEntity.VoucherId).FirstOrDefault();
+        }
         if (orderEntity == null)
             return NotFound("Không tìm thấy đơn hàng.");
         var customerId = _context.TbOrders.Where(c => c.Id == Guid.Parse(id)).Select(c => c.CustomerId).FirstOrDefault();
@@ -84,7 +87,7 @@ public class OrderDetailAdminController : ControllerBase
             },
             IsCustomerTakeYourSelf = orderEntity.IsCustomerTakeYourself,
             IsSameAsCustomerAddress = orderEntity.IsShippingAddressSameAsCustomerAddress,
-            PaymentMethodName = orderEntity.PaymentMethod == 2 ? "VNPay" : "Tiền mặt",
+            PaymentMethodName = orderEntity.OrderCode.StartsWith("TEMP") || orderEntity.OrderCode.StartsWith("OFF") ? (orderEntity.PaymentMethod == 2 ? "Chuyển khoản" : "Tiền mặt" ) : orderEntity.PaymentMethod == 2 ? "VNPay" : "Tiền mặt",
             StatusText = Common.ConvertStatusOrder(orderEntity.Status ?? 0),
             Status = orderEntity.Status ?? 0,
 
@@ -94,7 +97,8 @@ public class OrderDetailAdminController : ControllerBase
                 Id = orderDetail.ProductId,
                 Code = _context.TbProducts.Where(c => c.Id ==
                 _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.ProductId).FirstOrDefault()).Select(c => c.Code).FirstOrDefault(),
-                Price = _context.TbProductDetails.Where(c => c.Id == orderDetail.ProductId).Select(c => c.Price).FirstOrDefault(),
+                //Price = _context.TbProductDetails.Where(c => c.Id == orderDetail.ProductId).Select(c => c.Price).FirstOrDefault(),
+                Price = Convert.ToDecimal(orderDetail.Price),
                 Quantity = orderDetail.Quantity,
                 ProductImage = _context.TbImages.Where(c => c.Id ==
                 _context.TbProductDetails.Where(a => a.Id == orderDetail.ProductId).Select(a => a.ImageId).FirstOrDefault()).Select(c => c.Url).FirstOrDefault(),
@@ -192,7 +196,7 @@ public class OrderDetailAdminController : ControllerBase
                 Items = e.TbOrderDetails.Select(d => new OrderItem()
                 {
                     Id = d.ProductId,
-                    Price = d.Product.Price,
+                    Price = Convert.ToDecimal(d.Price),
                     Quantity = d.Quantity,
                     ProductImage = d.Product.tb_Image.Url,
                     ProductName = d.Product.Name
@@ -277,7 +281,8 @@ public class OrderDetailAdminController : ControllerBase
                     Items = e.TbOrderDetails.Select(d => new OrderItem()
                     {
                         Id = _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault(),
-                        Price = _context.TbProductDetails.Where(c => c.Id == _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault()).Select(c => c.Price).FirstOrDefault(),
+                        //Price = _context.TbProductDetails.Where(c => c.Id == _context.TbOrderDetails.Where(c => c.Id == d.Id).Select(c => c.ProductId).FirstOrDefault()).Select(c => c.Price).FirstOrDefault(),
+                        Price = Convert.ToDecimal(d.Price),
                         Quantity = d.Quantity,
                         ProductImage = _context.TbImages.Where(c => c.Id == _context.TbProductDetails.Where(a => a.Id == d.ProductId).Select(c => c.ImageId).FirstOrDefault()).Select(c => c.Url).FirstOrDefault(),
                         ProductName = _context.TbProducts.Where(v=>v.Id == _context.TbProductDetails.Where(c => c.Id == 

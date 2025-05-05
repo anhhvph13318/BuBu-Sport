@@ -171,13 +171,22 @@ namespace DATN_ACV_DEV.Controllers
 					{
 						var image = _context.TbImages.Where(i => i.Id == model.ImageId).FirstOrDefault();
                         var productdetailId = _context.TbProductDetails.Where(c=>c.SizeId == item.SizeId && c.ColorId == item.ColorId && c.ProductId == item.ProductId).Select(c=>c.Id).FirstOrDefault();
-						OrderProduct product = new OrderProduct()
+                        
+                        var discount = _context.TbDiscountProducts
+                            .Where(dp => dp.ProductId == model.Id)
+                            .Join(_context.TbDiscounts, dp => dp.DiscountId, d => d.Id, (dp, d) => d)
+                            .Where(d => d.StartDate <= DateTime.Now && d.EndDate >= DateTime.Now)
+                            .Select(d => d.DiscountValue)
+                            .FirstOrDefault();
+                        decimal? actualPrice = discount != null ? model.Price - (model.Price * discount / 100) : model.Price;
+
+                        OrderProduct product = new OrderProduct()
 						{
 							productId = productdetailId,
 							categoryId = model.CategoryId,
 							productName = model.Name,
 							productCode = model.Code,
-							price = model.Price,
+							price = actualPrice,
 							quantity = item.Quantity.Value,
 							url = image != null ? _context.TbImages.Where(c=>c.Id == _context.TbProductDetails.Where(a=>a.Id == productdetailId).Select(a=>a.ImageId).FirstOrDefault()).Select(c=>c.Url).FirstOrDefault() : ""
 						};
@@ -194,6 +203,7 @@ namespace DATN_ACV_DEV.Controllers
                     OrderId = _order.Id,
                     ProductId = i.productId,
                     Quantity = i.quantity,
+                    Price = i.price ?? 0m
                 };
                 _lstOrderDetail.Add(_orderDetail);
                 _response.products.Add(i);

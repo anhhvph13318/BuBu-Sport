@@ -5,6 +5,9 @@
     int currentPage = ViewBag.CurrentPage;
     int totalPages = ViewBag.TotalPages;
     int startIndex = (currentPage - 1) * 10 + 1;
+
+    // Lọc bỏ "Khách tại quầy" từ danh sách hiển thị
+    var filteredCustomers = Model != null ? Model.Where(c => c.Name != "Khách tại quầy").ToList() : new List<GUI.Models.DTOs.CustomerDTO>();
 }
 
 <div class="container-fluid px-4 mt-3">
@@ -29,17 +32,7 @@
                         <input type="text" class="form-control" id="searchQuery" name="searchQuery" value="@Context.Request.Query["searchQuery"]" placeholder="Nhập tên hoặc số điện thoại...">
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="sexFilter" class="form-label">Giới tính</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
-                        <select class="form-select" id="sexFilter" name="sexFilter">
-                            <option value="">-- Tất cả giới tính --</option>
-                            <option value="1">Nam</option>
-                            <option value="0">Nữ</option>
-                        </select>
-                    </div>
-                </div>
+
 
                 <div class="col-12 mt-3">
                     <button type="submit" class="btn btn-primary me-2">
@@ -67,21 +60,19 @@
                         <th>Tên khách hàng</th>
                         <th>Số điện thoại</th>
                         <th>Địa chỉ</th>
-                        <th class="text-center">Giới tính</th>
                         @* <th class="text-center" style="width: 150px;">Hành động</th> *@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
+                    @if (filteredCustomers.Any())
                     {
-                        @foreach (var customer in Model.Select((c, index) => new { c, index }))
+                        @foreach (var customer in filteredCustomers.Select((c, index) => new { c, index }))
                         {
                             <tr>
                                 <td class="text-center">@(startIndex + customer.index)</td>
                                 <td>@customer.c.Name</td>
                                 <td>@customer.c.Phone</td>
                                 <td>@customer.c.Address</td>
-                                <td class="text-center">@(customer.c.Sex == 1 ? "Nam" : "Nữ")</td>
                                 @* <td class="text-center">
                         <div class="btn-group">
                         <a asp-action="Edit" asp-route-id="@customer.c.Id" class="btn btn-outline-warning btn-sm">
@@ -114,7 +105,7 @@
         </div>
         <div class="card-footer bg-light d-flex justify-content-between align-items-center">
             <div>
-                <span class="text-muted">Hiển thị @(Model?.Count() ?? 0) khách hàng</span>
+                <span class="text-muted">Hiển thị @(filteredCustomers.Count) khách hàng</span>
             </div>
             <nav>
                 <ul class="pagination justify-content-center m-0">

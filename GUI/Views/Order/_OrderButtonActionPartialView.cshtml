@@ -3,23 +3,25 @@
 <div class="col-12">
     @if (Model == 0)
     {
-        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderAction()">Tạo</button>
+        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderAction(0)">Tạo</button>
     }
 
     @if(Model == 1)
     {
-        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderAction()">Cập nhật</button>
+        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderAction(0)">Cập nhật</button>
+        <button class="btn btn-primary text-nowrap w-100 mt-2" onclick="confirmOrderAction(7)">Hoàn thành</button>
     }
 
     @if(Model == 2)
     {
-        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderActionVNPay()">Thanh toán</button>
+        <button class="btn btn-primary text-nowrap w-100" onclick="confirmOrderActionVNPay(7)">Thanh toán</button>
+        <button class="btn btn-primary text-nowrap w-100 mt-2" onclick="confirmOrderAction(0)">Cập nhật</button>
     }
 
 </div>
 <script>
-    function confirmOrderAction() {
-
+    function confirmOrderAction(stts) {
+        $('#orderStatus').val(stts);
         Swal.fire({
             title: 'Xác nhận thực hiện hành động',
             text: "Bạn có chắc chắn muốn thực hiện hành động này?",
@@ -33,18 +35,22 @@
             }
         });
     }
-    function confirmOrderActionVNPay() {
-
+    function confirmOrderActionVNPay(stts) {
+        $('#orderStatus').val(stts);
         Swal.fire({
-            title: 'Xác nhận thực hiện hành động',
-            text: "Bạn có chắc chắn muốn thực hiện hành động này?",
-            icon: 'warning',
+            title: 'Quét mã để thanh toán',
+            html: `
+                <div>
+                    <p>Vui lòng quét mã QR để thanh toán đơn hàng.</p>
+                        <img src="/Image/IMG_5800.png" alt="QR Code" style="width: 250px; height: 250px; object-fit: contain;" />
+                </div>
+            `,
             showCancelButton: true,
-            confirmButtonText: 'Có, lưu lại!',
-            cancelButtonText: 'Không, hủy bỏ!'
+            confirmButtonText: 'Xác nhận đã thanh toán',
+            cancelButtonText: 'Hủy bỏ',
         }).then((result) => {
             if (result.isConfirmed) {
-                saveOrder(false);
+                saveOrder(false); // Chỉ gọi khi xác nhận đã thanh toán
             }
         });
     }

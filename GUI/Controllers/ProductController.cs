@@ -12,10 +12,11 @@ using GUI.Models.DTOs;
 using DATN_ACV_DEV.Entity;
 using Microsoft.EntityFrameworkCore;
 using Azure.Core;
+using System.Net.WebSockets;
 
 namespace GUI.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ProductController : ControllerSharedBase
     {
         private readonly DBContext _context;
@@ -61,12 +62,14 @@ namespace GUI.Controllers
             var categories = await FetchCategory();
             ViewBag.Categories = categories;
 
-            // Xử lý khuyến mãi
+            // Xử lý khuyến mãi 
             var promotion = _context.TbDiscountProducts.ToList();
             foreach (var item in promotion)
             {
                 var discount = _context.TbDiscounts
-                    .Where(c => c.Id == item.DiscountId && c.EndDate >= DateTime.Now)
+                    .Where(c => c.Id == item.DiscountId
+                           && c.StartDate <= DateTime.Now
+                           && c.EndDate >= DateTime.Now) 
                     .Select(c => c.DiscountValue)
                     .FirstOrDefault();
                 if (discount != null)
@@ -316,17 +319,30 @@ namespace GUI.Controllers
         [Route("api/products")]
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _context.TbProducts
-                .Select(p => new
+            var lstprice = new decimal();
+            TbOrderDetail tbOrderDetails = new TbOrderDetail();
+            var products = await _context.TbProducts.Where(c=>c.IsDelete != true)
+                .Select(p => new ProductOFFDTO
                 {
-                    p.Id,
-                    p.Code,
-                    p.Name,
-                    p.Price,
+                    Id = p.Id,
+                    Code = p.Code,
+                    Name = p.Name,
+                    Price = p.Price,
                     Image = p.TbProductDetails.FirstOrDefault().Image.Url
                 })
                 .ToListAsync();
-
+            foreach (var product in products)
+            {
+                var lstDiscountId = _context.TbDiscountProducts.Where(c => c.ProductId == product.Id).Select(c=>c.DiscountId).ToList();
+                foreach (var item in lstDiscountId)
+                {
+                    var discount = _context.TbDiscounts.Where(c=>c.Id == item && c.EndDate >= DateTime.Now).Select(c=>c.DiscountValue).FirstOrDefault();
+                    if (discount != null)
+                    {
+                        product.Price = Convert.ToDecimal(product.Price * (1 - discount / 100));
+                    }
+                }
+            }
             return Ok(products);
         }
         [HttpGet]
@@ -374,7 +390,21 @@ namespace GUI.Controllers
             {
                 return NotFound();
             }
-
+            decimal? discount = 0m;
+            var discountavai = _context.TbDiscountProducts.Where(a => a.ProductId == productDetail.ProductId).ToList();
+            foreach (var item in discountavai)
+            {
+                var discountDate = _context.TbDiscounts.Where(c => c.Id == item.DiscountId).FirstOrDefault();
+                if (discountDate.EndDate >= DateTime.Now)
+                {
+                    discount = discountDate.DiscountValue;
+                }
+            }
+            if (discount != null)
+            {
+                productDetail.Price = Convert.ToDecimal(productDetail.Price * (1 - discount / 100));
+            }
+            
             return Ok(productDetail);
         }
 		public class ProductDetailDTO

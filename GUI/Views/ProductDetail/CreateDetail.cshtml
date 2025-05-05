@@ -44,7 +44,9 @@
                             </div>
                             <div class="modal-body">
                                 <label for="newColorName" class="form-label">Tên màu sắc</label>
-                                <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên màu">
+                                <input type="text" id="newColorName" class="form-control" placeholder="Nhập tên màu"
+                                       pattern="^[A-Za-zÀ-ỹ\s]+$"
+                                       title="Tên màu chỉ được chứa chữ cái và khoảng trắng" required>
                                 <input type="hidden" id="modalProductId" />
                             </div>
                             <div class="modal-footer">
@@ -113,7 +115,9 @@
                             </div>
                             <div class="modal-body">
                                 <label for="newSizeName" class="form-label">Tên size</label>
-                                <input type="text" id="newSizeName" class="form-control" placeholder="Nhập tên size">
+                                <input type="text" id="newSizeName" class="form-control" placeholder="Nhập size (VD: 40, 40.5)"
+                                       pattern="^\d{1,2}(\.5)?$"
+                                       title="Size phải là số nguyên hoặc số thập phân .5 (VD: 40, 40.5, 41, 41.5)" required>
                                 <input type="hidden" id="modalProductIdSize" />
                             </div>
                             <div class="modal-footer">
@@ -344,39 +348,48 @@
             });
         });
 
-        async function saveColor() {
-            const newColorName = document.getElementById("newColorName").value.trim();
-            const productId = document.getElementById("modalProductId").value;
+    async function saveColor() {
+        const newColorName = document.getElementById("newColorName").value.trim();
+        const productId = document.getElementById("modalProductId").value;
+        const letterOnlyRegex = /^[A-Za-zÀ-ỹ\s]+$/;
 
-            if (!newColorName) {
-                Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
-                return;
-            }
-
-            try {
-                const response = await fetch("/ProductDetail/CreateColorDetail", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name: newColorName, productId })
-                });
-
-                if (!response.ok) throw new Error("Thêm màu thất bại!");
-
-                const newColor = await response.json();
-                const select = document.getElementById("colorSelect");
-                const newOption = document.createElement("option");
-                newOption.value = newColor.id;
-                newOption.textContent = newColor.name;
-                newOption.selected = true;
-                select.insertBefore(newOption, select.lastElementChild);
-
-                bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
-                document.getElementById("newColorName").value = "";
-                window.location.reload();
-            } catch (error) {
-                Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
-            }
+        if (!newColorName) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên màu sắc' });
+            return;
         }
+
+        if (!letterOnlyRegex.test(newColorName)) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Tên màu chỉ được chứa chữ cái và khoảng trắng' });
+            return;
+        }
+
+        try {
+            const response = await fetch("/ProductDetail/CreateColorDetail", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: newColorName, productId })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Thêm màu thất bại!");
+            }
+
+            const newColor = await response.json();
+            const select = document.getElementById("colorSelect");
+            const newOption = document.createElement("option");
+            newOption.value = newColor.id;
+            newOption.textContent = newColor.name;
+            newOption.selected = true;
+            select.insertBefore(newOption, select.lastElementChild);
+
+            bootstrap.Modal.getInstance(document.getElementById('addColorModal')).hide();
+            document.getElementById("newColorName").value = "";
+            window.location.reload();
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
+        }
+    }
 
         // Lưu kích thước mới
         document.getElementById("saveNewSize").addEventListener("click", function () {
@@ -396,10 +409,20 @@
 
         async function saveSize() {
             const newSizeName = document.getElementById("newSizeName").value.trim();
+            const sizeRegex = /^\d{1,2}(\.5)?$/; 
             const productId = document.getElementById("modalProductIdSize").value;
 
             if (!newSizeName) {
                 Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Vui lòng nhập tên size' });
+                return;
+            }
+
+            if (!sizeRegex.test(newSizeName)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Size phải là số nguyên hoặc số thập phân .5 (VD: 40, 40.5, 41, 41.5)'
+                });
                 return;
             }
 
@@ -410,21 +433,32 @@
                     body: JSON.stringify({ SizeName: newSizeName, productId })
                 });
 
-                if (!response.ok) throw new Error("Thêm size thất bại!");
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    const errorMessage = errorData.messages && errorData.messages.length > 0
+                        ? errorData.messages[0].messageText
+                        : "Thêm size thất bại, size đã tồn tại!";
+                    throw new Error(errorMessage);
+                }
 
                 const newSize = await response.json();
                 const tableBody = document.getElementById("sizeTableBody");
                 const newRow = document.createElement("tr");
                 newRow.innerHTML = `
-                <td class="align-middle">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
-                        <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
-                    </div>
-                </td>
-           
-            `;
+                    <td class="align-middle">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
+                            <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
+                        </div>
+                    </td>
+                    <td class="align-middle text-center">
+                        <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
+                               id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
+                        <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
+                    </td>
+                `;
                 tableBody.insertBefore(newRow, tableBody.firstChild);
+
                 const newCheckbox = newRow.querySelector(".sizeCheckbox");
                 newCheckbox.addEventListener("change", function () {
                     const sizeId = this.getAttribute("data-size-id");
@@ -442,12 +476,10 @@
 
                 bootstrap.Modal.getInstance(document.getElementById('addSizeModal')).hide();
                 document.getElementById("newSizeName").value = "";
-
-                // Hiển thị thông báo thành công
                 await Swal.fire({ icon: 'success', title: 'Thành công', text: 'Thêm size thành công!' });
-
                 window.location.reload();
             } catch (error) {
+                console.log(error)
                 Swal.fire({ icon: 'error', title: 'Lỗi', text: error.message });
             }
         }

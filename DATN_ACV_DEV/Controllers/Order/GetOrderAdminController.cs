@@ -40,9 +40,9 @@ public class GetOrderAdminController : ControllerBase
             .Select(e => new OrderListItem()
             {
                 code = e.OrderCode,
-                totalAmount = e.TotalAmount,
+                totalAmount = e.TbOrderDetails.Sum(d => d.Price * d.Quantity) != 0 ? e.TbOrderDetails.Sum(d => d.Price * d.Quantity) : e.TotalAmount,
                 amountDiscount = e.TotalAmountDiscount,
-                amountShip = e.AmountShip,
+                amountShip = 0,
                 id = e.Id,
                 nameCustomer = _context.TbCustomers.Where(c=>c.Id == e.CustomerId).Select(c=>c.Name).FirstOrDefault() ,
                 status = Common.ConvertStatusOrder(e.Status ?? 0),
@@ -129,7 +129,11 @@ public class GetOrderAdminController : ControllerBase
                     TotalDiscount = e.TotalAmountDiscount!.Value,
                     TotalAmount = e.TotalAmount,
                     VoucherId = e.VoucherId,
-                    ShippingFee = e.AmountShip ?? 0
+                    ShippingFee = e.AmountShip ?? 0,
+                    FinalAmount = _context.TbOrderDetails
+                      .Where(c => c.OrderId == e.Id)
+                      .Select(c => (decimal?)(c.Quantity * c.Price))
+                      .Sum() ?? 0
                 },
                 Items = e.TbOrderDetails.Select(e => new OrderItem()
                 {

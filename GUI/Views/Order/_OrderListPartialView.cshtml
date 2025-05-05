@@ -22,7 +22,6 @@ else
                     <th>Mã hóa đơn</th>
                     <th>Khách hàng</th>
                     <th>Thành tiền</th>
-                    <th>Kiểu</th>
                     <th>Trạng thái</th>
                     <th></th>
                 </tr>
@@ -34,7 +33,6 @@ else
                         <td>@order.Code</td>
                         <td>@order.Customer.Name</td>
                         <td>@order.PaymentInfo.FinalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
-                        <td>@order.OrderTypeName</td>
                         <td>@order.StatusText</td>
                         <td class="d-flex justify-content-between">
                             <button class="btn btn-success" onclick="show('@order.Id')">Chi tiết</button>
@@ -453,7 +451,11 @@ else
             phoneNumber: $('#receiverPhone').val() || customerInfo.phoneNumber,
             address: $('#receiverAddress').val() || customerInfo.address
         };
-
+        const paymentInfo = {
+            voucherId: $('#voucherCode').data('id') || null,
+            voucherCode: $('#voucherCode').val() || "",
+            totalDiscount: parseFloat($('#discount-amount').data('value') || 0)
+        };
         // Lấy dữ liệu sản phẩm đang hiển thị trong bảng
         const orderItems = [];
         $('#orderItemContainer table tbody tr').each(function () {
@@ -476,10 +478,10 @@ else
             isShippingAddressSameAsCustomerAddress: $('#isSameAsCustomerAddress').is(':checked'),
             status: parseInt($('#orderStatus').val()),
             customerInfo: {
-                name: isTakeAway ? "Khách tại quầy" : ($('#customerName').val() || "Khách vãng lai"),
-                phoneNumber: isTakeAway ? "" : ($('#customerPhoneNumber').val() || ""),
-                address: isTakeAway ? "" : ($('#customerAddress').val() || ""),
-                email: isTakeAway ? "" : ($('#customerEmail').val() || "")
+                name:  ($('#customerName').val() || "Khách tại quầy"),
+                phoneNumber:  ($('#customerPhoneNumber').val() || ""),
+                address:  ($('#customerAddress').val() || ""),
+                email:   ($('#customerEmail').val() || "")
             },
             shippingInfo: {
                 name: isTakeAway ? "" : ($('#receiverName').val() || customerInfo.name),
@@ -487,7 +489,14 @@ else
                 address: isTakeAway ? "" : ($('#receiverAddress').val() || customerInfo.address)
             },
             isDraft,
-            orderItems
+            orderItems,
+            paymentMethod: $('#paymentMethod').val(),
+            PaymentInfo: {
+                voucherCode: $('#voucherCode').val() || "",
+                voucherId: $('#voucherCode').data('id') || null,
+                totalDiscount: parseFloat($('#discount-amount').text().replace(/[^\d]/g, '')) || 0,
+            }
+
         };
 
         // Tiếp tục với quá trình lưu đơn hàng
@@ -500,6 +509,10 @@ else
         })
             .then(res => res.json())
             .then(data => {
+                if (data.message) {
+                    toastr.error(data.message);
+                    return; // dừng không chạy phần còn lại
+                }
                 $('#orderTempSaveContainer').html(data.orders);
                 $('#orderButtonActionContainer').html(data.buttons);
                 changeResetButtonText(false);

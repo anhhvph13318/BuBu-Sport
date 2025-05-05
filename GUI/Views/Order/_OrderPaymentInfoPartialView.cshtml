@@ -5,11 +5,11 @@
 
 @if(Model.IsCustomerTakeYourSelf)
 {
-    <div class=" ps-2 pe-2 mb-2 d-flex justify-content-between align-items-center">
+    <div class="ps-2 pe-2 mb-2 d-flex justify-content-between align-items-center d-none">
         <label class="text-nowrap me-2">Trạng thái:</label>
         <select class="form-select w-50" id="orderStatus">
             <option value="0" selected>Chờ xác nhận</option>
-            <option value="7" class="hidden-option">Hoàn thành</option>
+            <option value="7">Hoàn thành</option>
         </select>
     </div>
 }
@@ -40,11 +40,21 @@
     <p class="col-6">Hình thức thanh toán:</p>
     <div class="col-6">
         <select class="form-select" id="paymentMethod" onchange="paymentMethodChange()" disabled="@(Model.Status > 0)">
-            <option value="0">Tiền mặt</option>
-            <option value="2">VNPAY</option>
+            @if (Model.paymentMethod == 0)
+            {
+                <option value="0" selected>Tiền mặt</option>
+                <option value="2">Chuyển khoản</option>
+            }
+            else
+            {
+                <option value="0">Tiền mặt</option>
+                <option value="2" selected>Chuyển khoản</option>
+            }
         </select>
     </div>
 </div>
+<input type="hidden" id="voucherCode" data-id="@Model.VoucherId" value="@Model.VoucherCode" />
+
 <div class="row ps-2 pe-2">
     <p class="col-6">Tạm tính: </p>
     <p id="total-amount" class="text-end col-6">@Model.TotalAmount.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</p>
@@ -55,5 +65,5 @@
 </div>
 <div class="row ps-2 pe-2">
     <p class="col-6">Thành tiền: </p>
-    <p id="total-amount" class="text-end col-6">@((Model.TotalAmount - Model.TotalDiscount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</p>
+    <p id="final-amount" class="text-end col-6">@((Model.TotalAmount - Model.TotalDiscount).ToString("C", CultureInfo.GetCultureInfo("vi-VN")))</p>
 </div>

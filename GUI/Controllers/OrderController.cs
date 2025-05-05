@@ -25,7 +25,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("orders")]
-//[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class OrderController : Controller
 {
     private readonly IEmailService _emailService;
@@ -50,8 +50,8 @@ public class OrderController : Controller
     [FromQuery] int status = -1,
     [FromQuery] decimal? minAmount = null,
     [FromQuery] decimal? maxAmount = null,
-    [FromQuery] string? orderCodePrefix = "", 
-    DateTime? startDate = null, 
+    [FromQuery] string? orderCodePrefix = "",
+    DateTime? startDate = null,
     DateTime? endDate = null)
     {
         try
@@ -68,13 +68,24 @@ public class OrderController : Controller
 
             var response = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
-            
+
             var orders = response!.Data;
 
-            // Lọc theo orderCodePrefix
             if (!string.IsNullOrEmpty(orderCodePrefix))
             {
-                orders = orders.Where(o => o.code.StartsWith(orderCodePrefix));
+                if (orderCodePrefix == "TEMP")
+                {
+                    orders = orders.Where(o => o.code.StartsWith(orderCodePrefix) && o.status != "Hoàn thành đơn hàng");
+                }
+                else if (orderCodePrefix == "OFF")
+                {
+                    orders = orders.Where(o => o.code.StartsWith(orderCodePrefix) ||
+                            (o.code.StartsWith("TEMP") && o.status == "Hoàn thành đơn hàng"));
+                }
+                else
+                {
+                    orders = orders.Where(o => o.code.StartsWith(orderCodePrefix));
+                }
             }
 
             if (minAmount.HasValue)
@@ -95,7 +106,7 @@ public class OrderController : Controller
             }
 
 
-            return View(orders.OrderByDescending(c=>c.CreateDate));
+            return View(orders.OrderByDescending(c => c.CreateDate));
         }
         catch (Exception ex)
         {
@@ -135,6 +146,10 @@ public class OrderController : Controller
         var response =
             JsonConvert.DeserializeObject<BaseResponse<OrderDetail>>(
                 await rawResponse.Content.ReadAsStringAsync());
+        if (response.Data.Voucher == null)
+        {
+            response.Data.Voucher = new VoucherDTO();
+        }
         var order = response!.Data;
         order.ReCalculatePaymentInfo();
         ViewBag.AutoUpdate = autoUpdate; // Gửi cờ này sang view
@@ -260,7 +275,7 @@ public class OrderController : Controller
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-            Buttons = await RenderViewAsync(OrderButtonActionPartialView, 1),
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, order.PaymentMethod != 2 ? 1 : 2),
             IsDraft = order.IsDraft || order.Code.StartsWith("TEMP"),
             TempSaveButton = tempOrderSaveButton,
             order.ShippingInfo.IsCustomerTakeYourSelf,
@@ -295,14 +310,14 @@ public class OrderController : Controller
     [HttpPost]
     [Route("save-to-session")]
     public async Task<IActionResult> SaveOrder([FromBody] Checkout checkout)
-    {
+    {  
         var order = HttpContext.Session.GetCurrentOrder();
         if (order.Items.Count == 0)
         {
             order.Items = checkout.OrderItems;
             order.PaymentInfo.TotalAmount = order.Items.Sum(c => c.Price);
         }
-        if (order.Items.Count < checkout.OrderItems.Count)
+        if (order != null && checkout != null && order.Items.Count < checkout.OrderItems.Count)
         {
             order.Items = checkout.OrderItems;
         }
@@ -349,14 +364,17 @@ public class OrderController : Controller
         var updateRequest = new GUI.Models.DTOs.Order_DTO.UpdateItemOrderRequest()
         {
             Items = payload.Items,
-            Status = checkout.Status
+            Status = checkout.Status,
+            paymentMethod = checkout.paymentMethod,
+            CustomerInfo = checkout.CustomerInfo,
+            paymentInfo = checkout.paymentInfo,
         };
         HttpResponseMessage rawResponse = order.Id != Guid.Empty
             ? await httpClient.PatchAsJsonAsync($"api/orders/update/{order.Id}", updateRequest)
             : await httpClient.PostAsJsonAsync("api/orders/create", payload);
 
         if (rawResponse.IsSuccessStatusCode)
-        {
+        {          
 
             var orders = await FetchOrderList();
 
@@ -378,10 +396,27 @@ public class OrderController : Controller
                 Buttons = await RenderViewAsync(OrderButtonActionPartialView, 0)
             });
         }
+        if (rawResponse.IsSuccessStatusCode != true)
+        {
+            var content = rawResponse.Content != null ? await rawResponse.Content.ReadFromJsonAsync<ResponseModel>() : null;
+            if (content != null && !string.IsNullOrEmpty(content.Message))
+            {
+                // Trả JSON có thông báo ra giao diện và DỪNG lại
+                return Json(new
+                {
+                    Message = content.Message
+                });
+            }
+        }
 
         return BadRequest();
     }
-
+    public class ResponseModel
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public string Detail { get; set; }
+    }
     [HttpDelete]
     [Route("draft/{id}/remove")]
     public async Task<IActionResult> RemoveDraftOrder([FromRoute] string id)
@@ -548,26 +583,46 @@ public class OrderController : Controller
         var order = HttpContext.Session.GetCurrentOrder();
         var target = order.Customer.Id == Guid.Empty ? order.Customer.PhoneNumber : order.Customer.Id.ToString();
 
+        // Kiểm tra mã voucher
         var voucher = await CheckCustomerCanUseVoucher(id, target);
 
-        if (voucher is null)
+        if (voucher == null)
         {
             return BadRequest(new { Message = "Mã Voucher không hợp lệ hoặc đơn hàng không đủ điều kiện tối thiểu." });
         }
 
+        // Cập nhật thông tin voucher vào đơn hàng
         order.Voucher = voucher;
         order.PaymentInfo.VoucherId = voucher.Id;
         order.PaymentInfo.VoucherCode = voucher.Code;
 
+        // Tính lại các thông tin thanh toán
         order.ReCalculatePaymentInfo();
         Console.WriteLine($"TotalDiscount after apply: {order.PaymentInfo.TotalDiscount}");
+
+        // Lưu lại đơn hàng đã cập nhật
         HttpContext.Session.SaveCurrentOrder(order);
 
+        // Trả về JSON chứa thông tin thanh toán
         return Json(new
         {
-            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo)
+            PaymentInfo = new
+            {
+                order.PaymentInfo.IsCustomerTakeYourSelf,
+                order.PaymentInfo.VoucherId,
+                order.PaymentInfo.VoucherCode,
+                order.PaymentInfo.PaymentStatus,
+                order.PaymentInfo.Status,
+                order.PaymentInfo.ShippingFee,
+                order.PaymentInfo.TotalAmount,
+                order.PaymentInfo.TotalDiscount,
+                order.PaymentInfo.FinalAmount,
+                order.PaymentInfo.paymentMethod,
+                Products = order.PaymentInfo.Products // hoặc có thể xử lý thêm nếu cần
+            }
         });
     }
+
 
     [HttpPost]
     [Route("cancel-apply-voucher")]
@@ -582,10 +637,26 @@ public class OrderController : Controller
         order.ReCalculatePaymentInfo();
 
         HttpContext.Session.SaveCurrentOrder(order);
-
+        if (order.PaymentInfo.TotalAmount == order.PaymentInfo.FinalAmount)
+        {
+            order.PaymentInfo.TotalDiscount = 0;
+        }
         return Json(new
         {
-            Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
+            PaymentInfo = new
+            {
+                order.PaymentInfo.IsCustomerTakeYourSelf,
+                order.PaymentInfo.VoucherId,
+                order.PaymentInfo.VoucherCode,
+                order.PaymentInfo.PaymentStatus,
+                order.PaymentInfo.Status,
+                order.PaymentInfo.ShippingFee,
+                order.PaymentInfo.TotalAmount,
+                order.PaymentInfo.TotalDiscount,
+                order.PaymentInfo.FinalAmount,
+                order.PaymentInfo.paymentMethod,
+                Products = order.PaymentInfo.Products // hoặc có thể xử lý thêm nếu cần
+            }
         });
     }
 
@@ -764,7 +835,9 @@ public class OrderController : Controller
     public async Task<IActionResult> ChangeShipping([FromQuery] int method)
     {
         var order = HttpContext.Session.GetCurrentOrder();
-        if(method == 0)
+        order.PaymentInfo.paymentMethod = order.PaymentMethod;
+
+        if (method == 0)
         {
             order.IsCustomerTakeYourSelf = true;
             order.PaymentInfo.IsCustomerTakeYourSelf = true;
