@@ -183,6 +183,11 @@ namespace DATN_ACV_DEV.Controllers.Order
                 tbCustomer.Phone = payload.CustomerInfo.PhoneNumber;
                 tbCustomer.Adress = payload.CustomerInfo.Address;
             }
+            if (payload.paymentInfo != null && payload.paymentInfo.TotalDiscount != null && payload.paymentInfo.TotalDiscount != 0)
+            {
+                tbOrder.VoucherId = _context.TbVouchers.Where(c => c.Code == payload.paymentInfo.VoucherCode).Select(c => c.Id).FirstOrDefault();
+                tbOrder.TotalAmountDiscount = payload.paymentInfo.TotalDiscount;
+            }
             if (payload.Items.Select(c=>c.Status).FirstOrDefault() != payload.Status)
             {
                 tbOrder.Status = 7;              
@@ -525,6 +530,7 @@ namespace DATN_ACV_DEV.Controllers.Order
             public IList<OrderItem> Items { get; set; }
             public int Status { get; set; }
             public int paymentMethod { get; set; }
+            public PaymentInfo paymentInfo  { get; set; }
             public CustomerInfo CustomerInfo { get; set; } = new CustomerInfo();
 
         }

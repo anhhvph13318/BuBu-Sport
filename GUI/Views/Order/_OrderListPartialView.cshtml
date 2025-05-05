@@ -451,7 +451,11 @@ else
             phoneNumber: $('#receiverPhone').val() || customerInfo.phoneNumber,
             address: $('#receiverAddress').val() || customerInfo.address
         };
-
+        const paymentInfo = {
+            voucherId: $('#voucherCode').data('id') || null,
+            voucherCode: $('#voucherCode').val() || "",
+            totalDiscount: parseFloat($('#discount-amount').data('value') || 0)
+        };
         // Lấy dữ liệu sản phẩm đang hiển thị trong bảng
         const orderItems = [];
         $('#orderItemContainer table tbody tr').each(function () {
@@ -486,7 +490,13 @@ else
             },
             isDraft,
             orderItems,
-            paymentMethod: $('#paymentMethod').val()
+            paymentMethod: $('#paymentMethod').val(),
+            PaymentInfo: {
+                voucherCode: $('#voucherCode').val() || "",
+                voucherId: $('#voucherCode').data('id') || null,
+                totalDiscount: parseFloat($('#discount-amount').text().replace(/[^\d]/g, '')) || 0,
+            }
+
         };
 
         // Tiếp tục với quá trình lưu đơn hàng
