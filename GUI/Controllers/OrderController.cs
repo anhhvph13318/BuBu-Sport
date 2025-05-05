@@ -275,7 +275,7 @@ public class OrderController : Controller
             Customer = await RenderViewAsync(OrderCustomerInfoPartialView, order.Customer),
             Payment = await RenderViewAsync(OrderPaymentInfoPartialView, order.PaymentInfo),
             Shipping = await RenderViewAsync(OrderShippingInfoPartialView, order.ShippingInfo),
-            Buttons = await RenderViewAsync(OrderButtonActionPartialView, 1),
+            Buttons = await RenderViewAsync(OrderButtonActionPartialView, order.PaymentMethod != 2 ? 1 : 2),
             IsDraft = order.IsDraft || order.Code.StartsWith("TEMP"),
             TempSaveButton = tempOrderSaveButton,
             order.ShippingInfo.IsCustomerTakeYourSelf,

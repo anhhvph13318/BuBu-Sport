@@ -87,7 +87,7 @@ public class OrderDetailAdminController : ControllerBase
             },
             IsCustomerTakeYourSelf = orderEntity.IsCustomerTakeYourself,
             IsSameAsCustomerAddress = orderEntity.IsShippingAddressSameAsCustomerAddress,
-            PaymentMethodName = orderEntity.PaymentMethod == 2 ? "VNPay" : "Tiền mặt",
+            PaymentMethodName = orderEntity.OrderCode.StartsWith("TEMP") || orderEntity.OrderCode.StartsWith("OFF") ? (orderEntity.PaymentMethod == 2 ? "Chuyển khoản" : "Tiền mặt" ) : orderEntity.PaymentMethod == 2 ? "VNPay" : "Tiền mặt",
             StatusText = Common.ConvertStatusOrder(orderEntity.Status ?? 0),
             Status = orderEntity.Status ?? 0,
 
