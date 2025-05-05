@@ -170,6 +170,7 @@ namespace DATN_ACV_DEV.Controllers.Order
         [FromRoute] string id,
         [FromBody] UpdateItemOrderRequest payload)
         {
+            var device = 0;
             List<OrderItem> productdetailid = new List<OrderItem>();
             List<TbOrderDetail> newOrderDetails = new List<TbOrderDetail>();
             TbOrder tbOrder = new TbOrder();
@@ -218,6 +219,7 @@ namespace DATN_ACV_DEV.Controllers.Order
                     {
                         productDetail.Quantity -= item.Quantity;
                         product.Quantity -= item.Quantity;
+                        device = 1;
                     }
                 }
             }
@@ -260,9 +262,22 @@ namespace DATN_ACV_DEV.Controllers.Order
                 {
                     await _context.TbOrderDetails.AddRangeAsync(newOrderDetails);
                 }
-                _context.TbOrders.Update(tbOrder); // Cập nhật đơn hàng
-                await _context.SaveChangesAsync();
-                return Ok();
+                if (device == 1)
+                {
+                    _context.TbOrders.Update(tbOrder); // Cập nhật đơn hàng
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
+                if (device == 0)
+                {
+                    return StatusCode(400, new
+                    {
+                        Success = false,
+                        Message = "Có sản phẩm đã hết hàng, vui lòng kiểm tra lại !",
+                        Detail = "",
+                        Data = ""
+                    });
+                }              
             }
             catch (Exception ex)
             {
