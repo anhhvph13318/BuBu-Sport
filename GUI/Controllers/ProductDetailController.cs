@@ -97,6 +97,14 @@ namespace GUI.Controllers
         {
             try
             {
+                var existingColor = await _context.TbColors
+                    .FirstOrDefaultAsync(c => c.Name.ToLower() == colorDto.Name.ToLower());
+
+                if (existingColor != null)
+                {
+                    return BadRequest(new { success = false, message = "Màu sắc này đã tồn tại." });
+                }
+
                 var URL = _settings.APIAddress + "api/CreateColor/Process";
                 var param = JsonConvert.SerializeObject(colorDto);
                 var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
