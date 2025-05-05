@@ -132,6 +132,9 @@ namespace DATN_ACV_DEV.Controllers.Order
                 }
                 else
                 {
+                    TbProductDetail tbProductDetail = new TbProductDetail();
+                    tbProductDetail = _context.TbProductDetails.Where(c => c.Id == Guid.Parse(item.Id)).FirstOrDefault();
+                    tbProductDetail.Quantity -= item.Quantity;
                     product.Quantity -= item.Quantity;
                 }
             }
