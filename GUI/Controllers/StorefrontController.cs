@@ -475,17 +475,24 @@ namespace GUI.Controllers
         public async Task<IActionResult> CancelOrder(string email, string name, string phone, string orderCode, string reasonCancel, string codeCancelOrder)
         {
             TbOrder tbOrder = new TbOrder();
+            TbVoucher tbVoucher = new TbVoucher();
             tbOrder = _context.TbOrders.Where(c => c.Id == _context.TbOrders.Where(c => c.OrderCode == orderCode).Select(c => c.Id).FirstOrDefault()).FirstOrDefault();
-
             if (reasonCancel == null && codeCancelOrder == null)
             {
                 var codeCancel = RandomCodeGenerator.GenerateRandomCode();
                 tbOrder.OrderCodeGhn = codeCancel;
+                
                 _context.SaveChanges();
                 await _emailService.SendOrderConfirmationAsync(email, orderCode, name, phone, codeCancel, "", 2, null, null, null);
             }
             if (reasonCancel != null && codeCancelOrder != null)
             {
+                if (tbOrder.VoucherId != null)
+                {
+                    tbVoucher = _context.TbVouchers.Where(c => c.Id == tbOrder.VoucherId).FirstOrDefault();
+                    tbVoucher.Quantity += 1;
+                    _context.SaveChanges();
+                }
                 var req = new CancelOrderRequest();
                 req.Id = tbOrder.Id;
                 req.ReasonCancel = reasonCancel;
