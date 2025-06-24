@@ -5,21 +5,7 @@
     ViewData["Title"] = "Quản Lý Hóa Đơn";
     var currentDate = DateTime.Now;
 
-    var sortedOrders = Model?.OrderBy(o =>
-    {
-        return o.status switch
-        {
-            "Chờ xác nhận" => 1,
-            "Xác nhận" => 2,
-            "Chuẩn bị hàng" => 3,
-            "Đang vận chuyển" => 4,
-            "Giao hàng thành công" => 5,
-            "Hoàn thành đơn hàng" => 6,
-            "Đã hủy" => 7,
-            _ => 8
-        };
-    })
-    .ThenByDescending(o => o.id);
+    var sortedOrders = Model; // Hoặc OrderDate nếu tên khác
 
     int totalCount = Model?.Count() ?? 0;
     int confirmedCount = Model?.Count(o => o.status == "Xác nhận") ?? 0;

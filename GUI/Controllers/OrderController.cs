@@ -25,7 +25,7 @@ namespace GUI.Controllers;
 
 [Controller]
 [Route("orders")]
-[Authorize(Roles = "Admin,Employee")]
+//[Authorize(Roles = "Admin,Employee")]
 public class OrderController : Controller
 {
     private readonly IEmailService _emailService;
@@ -68,8 +68,8 @@ public class OrderController : Controller
 
             var response = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<OrderListItem>>>(
                 await rawResponse.Content.ReadAsStringAsync());
-
-            var orders = response!.Data;
+            var dataOrderby = response!.Data.GroupBy(c => c.status).Count() == 1 ? response.Data.OrderByDescending(c=>c.CreateDate).ToList() : response.Data;
+            var orders = dataOrderby;
 
             if (!string.IsNullOrEmpty(orderCodePrefix))
             {

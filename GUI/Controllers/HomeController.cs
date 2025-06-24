@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace GUI.Controllers
 {
-    [Authorize(Roles = "Admin,Employee")]
+    //[Authorize(Roles = "Admin,Employee")]
     public class HomeController : ControllerSharedBase
     {
         private readonly ILogger<HomeController> _logger;
@@ -25,7 +25,7 @@ namespace GUI.Controllers
 			httpService = new();
 		}
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
 		public IActionResult Index()
         {
             return View(_settings);

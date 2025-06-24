@@ -9,7 +9,7 @@ namespace GUI.Controllers
 {
     [Controller]
     [Route("Discount")]
-    [Authorize(Roles = "Admin,Employee")]
+    //[Authorize(Roles = "Admin,Employee")]
 
     public class DiscountController : ControllerSharedBase
     {

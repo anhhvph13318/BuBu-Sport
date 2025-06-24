@@ -42,7 +42,7 @@ using static System.Net.WebRequestMethods;
 
 namespace GUI.Controllers
 {
-    [Authorize(Roles = "Guest")]
+    //[Authorize(Roles = "Guest")]
     [AllowAnonymous]
     public class StorefrontController : ControllerSharedBase
     {

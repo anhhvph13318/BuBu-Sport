@@ -16,7 +16,7 @@ using System.Net.WebSockets;
 
 namespace GUI.Controllers
 {
-    [Authorize(Roles = "Admin,Employee")]
+    //[Authorize(Roles = "Admin,Employee")]
     public class ProductController : ControllerSharedBase
     {
         private readonly DBContext _context;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
 
     public class RevenueController : Controller
     {

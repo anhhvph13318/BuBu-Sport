@@ -61,7 +61,6 @@ function updateCategory(id) {
             $('#categoryModal').modal('hide');
             toastr.success("Cập nhật thành công");
         }).catch(_ => {
-            $('#validate-message').html('Tên đã bị trùng');
             $('#validate-message').css({ 'display': 'block' });
         });
 }
