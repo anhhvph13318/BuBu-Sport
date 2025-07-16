@@ -24,14 +24,30 @@ namespace GUI.Controllers
             _context = context;
         }
         [Route("/CreateDetail")]
-        public async Task<ActionResult> CreateDetail(int ProductId)
+        public async Task<ActionResult> CreateDetail(Guid ProductId)
         {
             var colors = await FetchColor();
             ViewBag.Colors = colors;
             var sizes = await FetchSize();
             ViewBag.Sizes = sizes;
+            ViewBag.Color = sizes;
             ViewBag.ProductId = ProductId;
-            return View();
+            var entity = _context.TbProductDetails.Where(c => c.Id == ProductId).FirstOrDefault();
+            var model = new CreateProductDetailRequest
+            {
+                Color = entity.ColorId,
+                UrlImage = _context.TbImages.Where(c=>c.Id == entity.ImageId).Select(c=>c.Url).FirstOrDefault(),
+                SizesQuantities = new List<SizeQuantityDto>
+    {
+                new SizeQuantityDto
+                {
+                    IdSize = (Guid)entity.SizeId,
+                    QuantitySize = entity.Quantity // giả sử entity có Quantity
+                }
+    }
+                // map các thuộc tính khác nếu cần
+            };
+            return View(model);
         }
         private async Task<IEnumerable<ColorDTO>> FetchColor()
         {

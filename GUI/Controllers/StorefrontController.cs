@@ -1057,6 +1057,10 @@ namespace GUI.Controllers
                     try
                     {
                         var response = JsonConvert.DeserializeObject<BaseResponse<List<OrderDetail>>>(await rawResponse.Content.ReadAsStringAsync());
+                        foreach (var item1 in response.Data)
+                        {
+                            item1.PaymentInfo.FinalAmount = item1.Items.Sum(c => c.Price);
+                        }
                         model.Orders = response.Data;
                     }
                     catch (Exception)
