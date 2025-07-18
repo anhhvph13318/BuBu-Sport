@@ -52,13 +52,13 @@ namespace DATN_ACV_DEV.Controllers.Order
             TbProductDetail tbProductDetail = new TbProductDetail();
 
             _Order = _context.TbOrders.Where(c => c.Id == _request.id).FirstOrDefault();
-            if (_request.products != null)
+            if (_request.products != null && _Order.Status != _request.status)
             {
                 foreach (var item in _request.products)
                 {
                     tbProductDetail = _context.TbProductDetails.Where(c => c.Id == item.Id).FirstOrDefault();
                     var lst = _context.TbProductDetails
-    .Where(c => c.Id == item.Id).Select(c=>c.ProductId).FirstOrDefault();
+    .Where(c => c.Id == item.Id).Select(c => c.ProductId).FirstOrDefault();
                     var tbProductDetaill = _context.TbProductDetails
                         .Where(c => c.ProductId == lst && c.Id == item.Id)
                         .Sum(c => (int?)c.Quantity) ?? 0;
@@ -66,7 +66,7 @@ namespace DATN_ACV_DEV.Controllers.Order
                     {
                         response.products.Add(item);
                         _response.products = response.products;
-                        if(_request.isCancel == 1)
+                        if (_request.isCancel == 1)
                         {
                             _context.Remove(tbProductDetail);
                         }
@@ -76,6 +76,10 @@ namespace DATN_ACV_DEV.Controllers.Order
                         tbProductDetail.Quantity -= item.Quantity;
                     }
                 }
+            }
+            if(_Order.Status == _request.status)
+            {
+                _response.orderCode = "22";
             }
             if (_Order != null && _response.products == null)
             {

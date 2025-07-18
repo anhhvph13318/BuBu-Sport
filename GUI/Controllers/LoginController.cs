@@ -70,6 +70,15 @@ namespace GUI.Controllers
             var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
             var result = JsonConvert.DeserializeObject<BaseResponse<UpdatStatusOrderResponse>>(res) ?? new();
 
+            if (result.Data.orderCode == "22")
+            {
+                return Json(new
+                {
+                    success = false,
+                    redirectUrl = $"/orders/{request.id}",
+                    message = "Không thể cập nhật trạng thái hiện tại của đơn hàng sang chính nó"
+                });
+            }
             if (result.Data.products != null)
             {
                 await _emailService.SendOrderConfirmationAsync(request.email, request.code, request.name, request.phone, request.statusText, "", 3, null, request.products, result.Data.products);

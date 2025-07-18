@@ -8,7 +8,7 @@
 <div class="container my-4">
     <h1 class="text-primary"><i class="fas fa-box-open me-2"></i>Thêm chi tiết sản phẩm</h1>
     <hr class="border-primary" />
-    <form asp-action="CreateDetail" method="post" class="needs-validation" novalidate>
+    <form asp-action="EditDetail" method="post" class="needs-validation" novalidate>
         <div class="row g-4">
             <div class="col-md-6">
                 <input type="hidden" asp-for="ProductID" />
@@ -80,19 +80,35 @@
                                     }
                                     @foreach (var item in sortedSizes)
                                     {
+                                        // Tìm size tương ứng trong Model
+                                        var matchedSize = Model.SizesQuantities?.FirstOrDefault(sq => sq.IdSize == item.Id);
+                                        bool isChecked = matchedSize != null;
+                                        int quantity = matchedSize?.QuantitySize ?? 0;
+
                                         <tr>
                                             <td class="align-middle">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="@item.Id" id="size_@item.Id">
+                                                    <input type="checkbox" class="form-check-input sizeCheckbox"
+                                                           data-size-id="@item.Id"
+                                                           id="size_@item.Id"
+                                                           name="SizesQuantities[@index].Selected"
+                                                    @(isChecked ? "checked" : "") />
                                                     <label class="form-check-label" for="size_@item.Id">@item.SizeName</label>
                                                 </div>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[@index].QuantitySize"
-                                                       id="quantity_@item.Id" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
-                                                <input type="hidden" name="SizesQuantities[@index].IdSize" value="@item.Id">
+                                                <input type="number" class="form-control form-control-sm quantityInput"
+                                                       name="SizesQuantities[@index].QuantitySize"
+                                                       id="quantity_@item.Id"
+                                                       min="0"
+                                                       value="@quantity"
+                                                       style="width: 100px; margin: 0 auto;"
+                                                @(isChecked ? "" : "disabled") />
+
+                                                <input type="hidden" name="SizesQuantities[@index].IdSize" value="@item.Id" />
                                             </td>
                                         </tr>
+
                                         index++;
                                     }
                                 </tbody>
@@ -145,8 +161,8 @@
                                 <input type="file" id="fileInput" class="form-control" accept="image/*" required title="Vui lòng chọn một ảnh sản phẩm" />
                             </div>
                             <div class="text-center">
-                                <img id="imagePreview" src="/path/to/default-image.jpg" alt="Image preview" style="width: 300px; height: 300px; object-fit: cover;" class="mt-3 img-thumbnail shadow-sm" />
-                                <input type="hidden" asp-for="UrlImage" id="urlImage" />
+                                <img id="imagePreview" src="@Model.UrlImage" alt="Image preview"
+                                     style="width: 300px; height: 300px; object-fit: cover;" class="mt-3 img-thumbnail shadow-sm" />                                <input type="hidden" asp-for="UrlImage" id="urlImage" />
                                 <span asp-validation-for="UrlImage" class="text-danger d-block mt-2"></span>
                             </div>
                         </div>
@@ -445,18 +461,18 @@
                 const tableBody = document.getElementById("sizeTableBody");
                 const newRow = document.createElement("tr");
                 newRow.innerHTML = `
-                        <td class="align-middle">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
-                                <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
-                            </div>
-                        </td>
-                        <td class="align-middle text-center">
-                            <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
-                                   id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
-                            <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
-                        </td>
-                    `;
+                            <td class="align-middle">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input sizeCheckbox" data-size-id="${newSize.id}" id="size_${newSize.id}">
+                                    <label class="form-check-label" for="size_${newSize.id}">${newSize.SizeName}</label>
+                                </div>
+                            </td>
+                            <td class="align-middle text-center">
+                                <input type="number" class="form-control form-control-sm quantityInput" name="SizesQuantities[${tableBody.children.length}].QuantitySize"
+                                       id="quantity_${newSize.id}" min="0" value="0" style="width: 100px; margin: 0 auto;" disabled>
+                                <input type="hidden" name="SizesQuantities[${tableBody.children.length}].IdSize" value="${newSize.id}">
+                            </td>
+                        `;
                 tableBody.insertBefore(newRow, tableBody.firstChild);
 
                 const newCheckbox = newRow.querySelector(".sizeCheckbox");

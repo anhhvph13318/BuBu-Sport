@@ -396,7 +396,9 @@ else
             cancelButtonText: 'Không, hủy bỏ!'
         }).then((result) => {
             if (result.isConfirmed) {
-                saveOrderStatus();
+                if (currentStatusLabel != selectedLabel) {
+                    saveOrderStatus();
+                }
             }
         });
     }

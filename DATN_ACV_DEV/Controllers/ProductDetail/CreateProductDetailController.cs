@@ -41,7 +41,8 @@ namespace DATN_ACV_DEV.Controllers.ProductDetail
                 _context.TbProductDetails.AddRange(_ProductDetails); // Lưu nhiều bản ghi cùng lúc
                 _context.SaveChanges();
                 _Product = _context.TbProducts.Where(p => p.Id == _request.ProductID).FirstOrDefault();
-                _Product.Quantity = _ProductDetails.Sum(c => c.Quantity);
+                var quantityProduct = _context.TbProductDetails.Where(p => p.ProductId == _Product.Id).Sum(p => p.Quantity);
+                _Product.Quantity = _Product.Quantity != null ? quantityProduct : 0;
                 _context.SaveChanges(); // Lưu thay đổi số lượng              
             }
             else 

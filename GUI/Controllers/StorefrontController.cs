@@ -39,6 +39,8 @@ using System.Drawing;
 using DATN_ACV_DEV.Model_DTO.CancelOrder_DTO;
 using System.Text;
 using static System.Net.WebRequestMethods;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Collections.Generic;
 
 namespace GUI.Controllers
 {
@@ -98,7 +100,37 @@ namespace GUI.Controllers
                 userId = new Guid(Request.Cookies["user-id"]);
             }
             catch (Exception) { }
-            ViewBag.CartItemCount = await GetCartItemCount(userId); 
+            ViewBag.CartItemCount = await GetCartItemCount(userId);
+            var order = _context.TbOrders.FirstOrDefault(c => c.OrderCode == vnp_TxnRef);
+            var listOrderDetails = _context.TbOrderDetails
+                .Where(c => c.OrderId == order.Id)
+                .ToList();
+
+            List<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderProduct> orderProducts = new List<DATN_ACV_DEV.Model_DTO.Order_DTO.OrderProduct>();
+
+            foreach (var item in listOrderDetails)
+            {
+                var product = _context.TbProductDetails.FirstOrDefault(p => p.Id == item.ProductId);
+                if (product != null)
+                {
+                    var orderProduct = new DATN_ACV_DEV.Model_DTO.Order_DTO.OrderProduct
+                    {
+                        productId = product.Id,
+                        productName = _context.TbProducts.Where(c=>c.Id == product.ProductId).Select(c=>c.Name).FirstOrDefault(),
+                        productCode = _context.TbProducts.Where(c => c.Id == product.ProductId).Select(c => c.Code).FirstOrDefault(),
+                        price = product.Price,
+                        colorName = _context.TbColors.Where(c=>c.Id == product.ColorId).Select(c=>c.Name).FirstOrDefault(),
+                        sizeName = _context.TbSizes.Where(c => c.Id == product.SizeId).Select(c => c.SizeName).FirstOrDefault(),
+                        url = _context.TbImages.Where(c => c.Id == product.ImageId).Select(c => c.Url).FirstOrDefault(), // hoặc tùy vào tên trường ảnh của bạn
+                        quantity = listOrderDetails.Sum(c=>c.Quantity)
+                    };
+
+                    orderProducts.Add(orderProduct);
+                }
+            }
+            var account = _context.TbAccounts.Where(c => c.CustomerId == order.AccountId).FirstOrDefault();
+            var customer = _context.TbCustomers.Where(c => c.Id == order.AccountId).FirstOrDefault();
+            await _emailService.SendOrderConfirmationAsync(account.Email, order.OrderCode, customer.Name, customer.Phone, "Chờ xác nhận", "", 1, orderProducts, null, null);
             return View();
         }
 

@@ -33,11 +33,13 @@ namespace GUI.Controllers
             ViewBag.Color = sizes;
             ViewBag.ProductId = ProductId;
             var entity = _context.TbProductDetails.Where(c => c.Id == ProductId).FirstOrDefault();
-            var model = new CreateProductDetailRequest
+            if (entity != null)
             {
-                Color = entity.ColorId,
-                UrlImage = _context.TbImages.Where(c=>c.Id == entity.ImageId).Select(c=>c.Url).FirstOrDefault(),
-                SizesQuantities = new List<SizeQuantityDto>
+                var model = new CreateProductDetailRequest
+                {
+                    Color = entity.ColorId,
+                    UrlImage = _context.TbImages.Where(c => c.Id == entity.ImageId).Select(c => c.Url).FirstOrDefault(),
+                    SizesQuantities = new List<SizeQuantityDto>
     {
                 new SizeQuantityDto
                 {
@@ -45,9 +47,41 @@ namespace GUI.Controllers
                     QuantitySize = entity.Quantity // giả sử entity có Quantity
                 }
     }
-                // map các thuộc tính khác nếu cần
-            };
-            return View(model);
+                    // map các thuộc tính khác nếu cần
+                };
+                return View(model);
+            }
+            return View();
+        }
+        [Route("/EditDetail")]
+        public async Task<ActionResult> EditDetail(Guid ProductId)
+        {
+            var colors = await FetchColor();
+            ViewBag.Colors = colors;
+            var sizes = await FetchSize();
+            ViewBag.Sizes = sizes;
+            ViewBag.Color = sizes;
+            ViewBag.ProductId = ProductId;
+            var entity = _context.TbProductDetails.Where(c => c.Id == ProductId).FirstOrDefault();
+            if (entity != null)
+            {
+                var model = new CreateProductDetailRequest
+                {
+                    Color = entity.ColorId,
+                    UrlImage = _context.TbImages.Where(c => c.Id == entity.ImageId).Select(c => c.Url).FirstOrDefault(),
+                    SizesQuantities = new List<SizeQuantityDto>
+    {
+                new SizeQuantityDto
+                {
+                    IdSize = (Guid)entity.SizeId,
+                    QuantitySize = entity.Quantity // giả sử entity có Quantity
+                }
+    }
+                    // map các thuộc tính khác nếu cần
+                };
+                return View(model);
+            }
+            return View();
         }
         private async Task<IEnumerable<ColorDTO>> FetchColor()
         {
@@ -91,6 +125,30 @@ namespace GUI.Controllers
                     return Empty;
                 }
                 return Redirect($"/Product/Edit/{product.ProductID}");
+
+            }
+            catch
+            {
+                return View();
+            }
+        }
+        [HttpPost]
+        [Route("EditDetail")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditDetail(CreateProductDetailRequest product)
+        {
+            try
+            {
+                var URL = _settings.APIAddress + "api/EditProductDetail/Process";
+                var param = JsonConvert.SerializeObject(product);
+                var res = await httpService.PostAsync(URL, param, HttpMethod.Post, "application/json");
+                var result = JsonConvert.DeserializeObject<BaseResponse<CreateProductDetailResponse>>(res) ?? new();
+                if (result.Status == "400")
+                {
+                    ModelState.AddModelError("UserName", result.Messages.FirstOrDefault().MessageText);
+                    return Empty;
+                }
+                return Redirect($"/Product/Edit/{result.Data.ID}");
 
             }
             catch
