@@ -13,6 +13,7 @@ using DATN_ACV_DEV.Entity;
 using Microsoft.EntityFrameworkCore;
 using Azure.Core;
 using System.Net.WebSockets;
+using ExcelDataReader;
 
 namespace GUI.Controllers
 {
@@ -141,6 +142,153 @@ namespace GUI.Controllers
                 })
                 .ToListAsync();
         }
+        private async Task<List<ProductImportModel>> ReadExcelFile(IFormFile file)
+        {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            var products = new List<ProductImportModel>();
+
+            using (var stream = file.OpenReadStream())
+            using (var reader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream))
+            {
+                var result = reader.AsDataSet();
+
+                var table = result.Tables[0]; // Sheet đầu tiên
+
+                for (int i = 1; i < table.Rows.Count; i++) // Bỏ row header
+                {
+                    var row = table.Rows[i];
+
+                    var p = new ProductImportModel
+                    {
+                        Name = row[0].ToString(),
+                        Code = row[1].ToString(),
+                        CategoryId = row[2].ToString(),
+                        Color = row[3].ToString(),
+                        Description = row[4].ToString(),
+                        Price = Convert.ToDecimal(row[5]),
+                        UrlImage = row[6].ToString(),
+
+                        XS = Convert.ToInt32(row[7]),
+                        S = Convert.ToInt32(row[8]),
+                        M = Convert.ToInt32(row[9]),
+                        L = Convert.ToInt32(row[10]),
+                        XL = Convert.ToInt32(row[11]),
+                        XXL = Convert.ToInt32(row[12]),
+                    };
+
+                    products.Add(p);
+                }
+            }
+
+            return products;
+        }
+        [HttpPost]
+        public async Task<IActionResult> ImportExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Vui lòng chọn file Excel.");
+
+            // Bước 2: Đọc file Excel
+            var productList = await ReadExcelFile(file);
+
+            // TODO: Lưu dữ liệu vào DB 
+            CreateProductRequest product = new CreateProductRequest();
+            List<SizeQuantityDto> lstSize = new List<SizeQuantityDto>();
+            SizeQuantityDto size = new SizeQuantityDto();
+            foreach (var item in productList)
+            {
+                if (item.XS != 0)
+                {
+                    size = new SizeQuantityDto();
+                    size.IdSize = _context.TbSizes.Where(c => c.SizeName == "XS").Select(c => c.Id).FirstOrDefault();
+                    size.QuantitySize = item.XS;
+                    lstSize.Add(size);
+                }
+                if (item.S != 0)
+                {
+                    size = new SizeQuantityDto();
+                    size.IdSize = _context.TbSizes.Where(c => c.SizeName == "S").Select(c => c.Id).FirstOrDefault();
+                    size.QuantitySize = item.S;
+                    lstSize.Add(size);
+                }
+                if (item.L != 0)
+                {
+                    size = new SizeQuantityDto();
+                    size.IdSize = _context.TbSizes.Where(c => c.SizeName == "L").Select(c => c.Id).FirstOrDefault();
+                    size.QuantitySize = item.L;
+                    lstSize.Add(size);
+                }
+                if (item.M != 0)
+                {
+                    size = new SizeQuantityDto();
+                    size.IdSize = _context.TbSizes.Where(c => c.SizeName == "M").Select(c => c.Id).FirstOrDefault();
+                    size.QuantitySize = item.M;
+                    lstSize.Add(size);
+                }
+                if (item.XXL != 0)
+                {
+                    size = new SizeQuantityDto();
+                    size.IdSize = _context.TbSizes.Where(c => c.SizeName == "XXL").Select(c => c.Id).FirstOrDefault();
+                    size.QuantitySize = item.XXL;
+                    lstSize.Add(size);
+                }
+                if (item.XL != 0)
+                {
+                    size = new SizeQuantityDto();
+                    size.IdSize = _context.TbSizes.Where(c => c.SizeName == "XL").Select(c => c.Id).FirstOrDefault();
+                    size.QuantitySize = item.XL;
+                    lstSize.Add(size);
+                }
+            }
+            foreach (var item in productList)
+            {
+                product.Name = item.Name;
+                product.Code = "SP" + item.Code;
+                product.Color = _context.TbColors.Where(c => c.Name == item.Color).Select(c => c.Id).FirstOrDefault();
+                product.CategoryId = _context.TbCategories.Where(c => c.Name == item.CategoryId).Select(c => c.Id).FirstOrDefault();
+                product.Price = item.Price;
+                product.Description = item.Description;
+                product.SizesQuantities = lstSize;
+                product.UrlImage = item.UrlImage;
+                // SaveToDatabase(productList);
+                if (_context.TbProducts.Where(c=>c.Code != product.Code).Select(c=>c.Code).FirstOrDefault().Count() == 0)
+                {
+                    Create(product);
+                }
+                else {
+                    foreach (var item1 in product.SizesQuantities)
+                    {
+                        var colorId = product.Color;
+                        var sizeId = item1.IdSize;
+                        var productId = _context.TbProducts.Where(c => c.Code == product.Code).Select(c => c.Id).FirstOrDefault();
+                        var tbProductDetail = _context.TbProductDetails.Where(c => c.ColorId == colorId && c.SizeId == sizeId && c.ProductId == productId).FirstOrDefault();
+                        if (tbProductDetail == null)
+                        {
+                            var tbProductDetails = new TbProductDetail();
+                            tbProductDetails.Id = Guid.NewGuid();
+                            tbProductDetails.Price = item.Price;
+                            tbProductDetails.Quantity = item1.QuantitySize;
+                            tbProductDetails.ImageId = _context.TbImages.Where(c => c.Url == item.UrlImage).Select(c => c.Id).FirstOrDefault();
+                            tbProductDetails.ColorId = colorId;
+                            tbProductDetails.SizeId = sizeId;
+                            tbProductDetails.ProductId = productId;
+                            tbProductDetails.CreateDate = DateTime.Now;
+                            _context.TbProductDetails.Add(tbProductDetails);
+                            _context.SaveChanges();
+                        }
+                        else
+                        {
+                            tbProductDetail.Quantity += item1.QuantitySize;
+                            _context.SaveChanges();
+                        }
+                    }
+                }
+            }
+
+            TempData["success"] = "Import thành công!";
+            return RedirectToAction("Index");
+        }
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -159,7 +307,7 @@ namespace GUI.Controllers
                     ModelState.AddModelError("UserName", result.Messages.FirstOrDefault().MessageText);
                     return Empty;
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect("http://localhost:5011/product");
             }
             catch
             {

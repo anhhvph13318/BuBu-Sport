@@ -9,6 +9,10 @@
         <h2 class="text-primary fw-bold">
             <i class="bi bi-bag-fill me-2"></i>Danh Sách Sản Phẩm
         </h2>
+        <form asp-action="ImportExcel" enctype="multipart/form-data" method="post">
+            <input type="file" name="file" accept=".xlsx,.xls" />
+            <button type="submit">Import sản phẩm</button>
+        </form>
         <a asp-action="Create" class="btn btn-success">
             <i class="bi bi-plus-circle me-1"></i>Tạo mới
         </a>
